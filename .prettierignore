@@ -1,0 +1,9 @@
+# Local files, secrets and build output also follow .gitignore.
+
+# Generated files and public assets.
+package-lock.json
+next-env.d.ts
+public/
+
+# Next.js maintains the rules block in this file.
+AGENTS.md

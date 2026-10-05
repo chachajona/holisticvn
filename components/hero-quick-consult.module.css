@@ -1,0 +1,190 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 470px;
+}
+.form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(247, 243, 240, 0.35);
+  border-radius: 999px;
+  background: rgba(247, 243, 240, 0.08);
+}
+.form:focus-within {
+  border-color: #f7f3f0;
+}
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 18px;
+  border: 0;
+  background: transparent;
+  color: #f7f3f0;
+  font: 300 16px var(--font-accent);
+}
+.input::placeholder {
+  color: rgba(247, 243, 240, 0.6);
+}
+.input:focus {
+  outline: none;
+}
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #f7f3f0;
+  color: var(--ink);
+  font: 400 15px var(--font-accent);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.button:hover {
+  background: var(--clay-deep);
+  color: #fff;
+}
+.button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.labelWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.label {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.label::after {
+  content: "\00a0\00a0";
+}
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(247, 243, 240, 0.72);
+}
+@media (max-width: 700px) {
+  .input {
+    padding-inline: 14px;
+    font-size: 15px;
+  }
+  .button {
+    padding-inline: 13px;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  /* label collapses via grid track (1fr -> 0fr) instead of animating width/padding */
+  .labelWrap {
+    transition: grid-template-columns 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .label {
+    transition: opacity 0.15s ease;
+  }
+  .button[data-collapsed] .labelWrap {
+    grid-template-columns: 0fr;
+  }
+  .button[data-collapsed] .label {
+    opacity: 0;
+  }
+  .button[data-ready] {
+    background: var(--clay-deep);
+    color: #fff;
+  }
+  .button[data-ready] .arrow {
+    transform: translateX(2px);
+  }
+}
+.toastRegion {
+  position: fixed;
+  top: 146px;
+  left: 50%;
+  z-index: 80;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 20px;
+  border-radius: 18px;
+  background: var(--ink, #3a2a24);
+  color: #f7f3f0;
+  border: 1px solid rgba(247, 243, 240, 0.25);
+  font: 300 15px/1.4 var(--font-accent, Manrope, sans-serif);
+  text-align: center;
+  animation: toastIn 0.25s ease;
+}
+.toast[data-kind="error"] {
+  background: var(--clay-deep, #744d40);
+}
+.toast a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  pointer-events: auto;
+}
+.toast button {
+  border: 0;
+  padding: 0 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+@media (max-width: 700px) {
+  .toastRegion {
+    top: 180px;
+  }
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .labelWrap,
+  .label,
+  .arrow {
+    transition: none;
+  }
+  .toast {
+    animation: none;
+  }
+}
