@@ -32,9 +32,15 @@ Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắ
 và xóa khoảng trắng cuối dòng. Markdown giữ khoảng trắng cuối dòng để hỗ trợ hard
 line breaks. Editor cần hỗ trợ EditorConfig hoặc cài extension tương ứng.
 
+Prettier được ghim version trong dự án và đọc `.editorconfig` cùng
+`.prettierrc.json`. Chạy `npm run format` để format code và tài liệu;
+`npm run format:check` chỉ kiểm tra, không ghi file. CI kiểm tra format trước lint.
+Xem [hướng dẫn Prettier chính thức](https://prettier.io/docs/install).
+
 ## Kiểm tra
 
 ```bash
+npm run format:check
 npm run lint
 npm run typecheck
 npm test
@@ -48,7 +54,7 @@ và trước production/cutover.
 
 ## Baseline và CI
 
-Pull request vào `main` chạy cài đặt sạch, ESLint (không warnings), typecheck,
+Pull request vào `main` chạy cài đặt sạch, format check, ESLint (không warnings), typecheck,
 unit tests, production build và HTTP smoke test trên Node.js 24.
 Next.js 16 không chạy lint trong build; CI chạy lint riêng.
 
