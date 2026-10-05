@@ -1,0 +1,13 @@
+.widgets { position: fixed; right: 16px; bottom: 16px; z-index: 100; display: flex; flex-direction: column; gap: 12px; transition: opacity .25s ease, transform .25s ease; }
+.button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; padding: 12px; border-radius: 999px; color: #fff; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -4px rgba(0, 0, 0, .1); transition: transform .15s ease; }
+.button:hover { transform: scale(1.1); }
+.button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 4px var(--clay-deep, #744d40); }
+.button svg { width: 100%; height: 100%; }
+.zalo { background: #826b63; }
+.messenger { background: #9a7f74; }
+.dial { background: #48614c; }
+.widgets[data-form-visible] { visibility: hidden; opacity: 0; transform: translateY(8px); pointer-events: none; }
+@media (min-width: 768px) { .widgets { right: 16px; gap: 16px; } .button { width: 56px; height: 56px; padding: 14px; } }
+@media (min-width: 1024px) { .button { width: 64px; height: 64px; padding: 18px; } }
+@media (max-width: 700px) { .widgets[data-hold] { visibility: hidden; opacity: 0; transform: translateY(8px); pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) { .widgets, .button { transition: none; } .button:hover { transform: none; } }
