@@ -1,18 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
-import { branches, mapsHref, noBreakAddress, site } from "@/lib/content";
+import { mapsHref, noBreakAddress } from "@/lib/content";
+import { getPublicSiteData } from "@/lib/sanity";
 import { FacebookIcon, InstagramIcon, ZaloIcon } from "@/components/brand-icons";
 import styles from "./holistic-chrome.module.css";
 
 const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
 
-export function HolisticFooter({
+export async function HolisticFooter({
   column2Label,
   column2Links,
 }: {
   column2Label: string;
   column2Links: Array<[string, string]>;
 }) {
+  const { site, branches } = await getPublicSiteData();
   const phoneDigits = site.phone.replace(/\s+/g, "");
   return (
     <footer className={styles.footer}>

@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { createMetadata } from "@/lib/seo";
-import { site, testimonials, reviewSummary } from "@/lib/content";
+import { testimonials, reviewSummary } from "@/lib/content";
+import { getPublicSiteData } from "@/lib/sanity";
 import { HolisticFooter } from "@/components/holistic-footer";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
@@ -340,7 +341,8 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { site } = await getPublicSiteData();
   return (
     <main
       id="main"
@@ -606,34 +608,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.team}>
-        <div
-          className={styles.teamMedia}
-          style={{ display: "grid", placeItems: "center", background: "var(--warm-band-2)" }}
-        >
-          <span
-            style={{
-              font: "400 12px var(--font-mono)",
-              color: "var(--clay)",
-              textAlign: "center",
-              padding: "0 24px",
-            }}
-          >
-            Ảnh đội ngũ &amp; founders — cần bổ sung
-          </span>
-        </div>
-        <div className={styles.teamCopy}>
-          <h2>Những người đã đi qua cơn đau.</h2>
-          <p>
-            Tất cả founder của Holistic đều từng trải qua chấn thương hoặc có kinh nghiệm trị liệu.
-            Đội ngũ được đào tạo chuyên môn và tham gia giảng dạy trong ngành.
-          </p>
-          <Link href="/about" className={styles.outlineButton}>
-            Gặp đội ngũ
-          </Link>
-        </div>
-      </section>
-
       <section className={styles.testimonials}>
         <div className={styles.testimonialsHead}>
           <h2>Khách hàng nói gì</h2>
@@ -662,13 +636,17 @@ export default function HomePage() {
           <strong>Lộ trình 12 buổi</strong>
           <span>Trị liệu kết hợp tập luyện, theo sát bởi cùng một chuyên viên.</span>
           <Link href="/services" className={styles.primaryButton}>
-            Xem bảng giá
+            Khám phá dịch vụ
           </Link>
         </div>
       </section>
 
       <section className={styles.social}>
-        <h2>Theo dõi hành trình hồi phục @holistic.rehab</h2>
+        <h2>
+          <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
+            Theo dõi hành trình hồi phục trên Instagram
+          </a>
+        </h2>
         <div className={styles.igGrid}>
           {igImages.map((src, i) => (
             <div className={styles.igItem} key={src + i}>

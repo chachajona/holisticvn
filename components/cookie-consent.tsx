@@ -3,18 +3,26 @@
 import { useSyncExternalStore } from "react";
 
 const key = "holisticvn-cookie-consent-v1";
-const getVisible = () => localStorage.getItem(key) === null;
+const getVisible = () =>
+  !document.cookie
+    .split("; ")
+    .some((cookie) => cookie === `${key}=accepted` || cookie === `${key}=rejected`);
 const getServerVisible = () => false;
 const subscribe = (onChange: () => void) => {
-  window.addEventListener("storage", onChange);
-  return () => window.removeEventListener("storage", onChange);
+  window.addEventListener("focus", onChange);
+  document.addEventListener("visibilitychange", onChange);
+  const timer = window.setInterval(onChange, 30_000);
+  return () => {
+    window.removeEventListener("focus", onChange);
+    document.removeEventListener("visibilitychange", onChange);
+    window.clearInterval(timer);
+  };
 };
 
 export function CookieConsent() {
   const visible = useSyncExternalStore(subscribe, getVisible, getServerVisible);
   if (!visible) return null;
   const setConsent = (value: "accepted" | "rejected") => {
-    localStorage.setItem(key, value);
     document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Lax`;
     window.location.reload();
   };

@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { site } from "@/lib/content";
+import { useSiteData } from "@/components/site-data";
 
 export function SiteFooter() {
+  const { site } = useSiteData();
   return (
     <footer className="site-footer">
       <div className="shell site-footer__grid">

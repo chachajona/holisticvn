@@ -2,16 +2,20 @@
 
 import { FormEvent, useState } from "react";
 import { track } from "@/components/gtm";
-import { site } from "@/lib/content";
+import { useSiteData } from "@/components/site-data";
 
 type Props = { kind: "contact" | "booking"; treatment?: string };
 
 export function LeadForm({ kind, treatment }: Props) {
+  const { site } = useSiteData();
+  const [error, setError] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
+    if (state === "sending") return;
+    setError("");
     setState("sending");
     const fields = new FormData(form);
     const response = await fetch("/api/leads", {
@@ -35,6 +39,10 @@ export function LeadForm({ kind, treatment }: Props) {
       track(kind === "booking" ? "booking_submit" : "contact_submit");
       form.reset();
     } else {
+      const data = await response?.json().catch(() => null);
+      setError(
+        typeof data?.error === "string" ? data.error : "Chưa gửi được yêu cầu. Vui lòng thử lại.",
+      );
       setState("error");
     }
   };
@@ -128,8 +136,7 @@ export function LeadForm({ kind, treatment }: Props) {
           : null}
         {state === "error" ? (
           <>
-            Chưa gửi được yêu cầu. Vui lòng thử lại hoặc{" "}
-            <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.
+            {error} Bạn có thể <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.
           </>
         ) : null}
       </div>

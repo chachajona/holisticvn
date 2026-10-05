@@ -28,7 +28,7 @@ export type Post = {
   slug: string;
   title: string;
   excerpt: string;
-  publishedAt: string;
+  publishedAt: string | null;
   category: string;
   body: string[];
 };

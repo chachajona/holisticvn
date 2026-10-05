@@ -27,10 +27,13 @@ export default async function BlogPage() {
               key={post.slug}
             >
               <span>
-                {post.category} ·{" "}
-                {new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" }).format(
-                  new Date(post.publishedAt),
-                )}
+                {post.category}
+                {post.publishedAt ? " · " : ""}
+                {post.publishedAt
+                  ? new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" }).format(
+                      new Date(post.publishedAt),
+                    )
+                  : null}
               </span>
               <h2 className="display">{post.title}</h2>
               <p>{post.excerpt}</p>

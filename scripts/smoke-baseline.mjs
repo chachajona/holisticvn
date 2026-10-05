@@ -24,7 +24,15 @@ for (let attempt = 0; attempt < 40; attempt++) {
 assert(ready, "Production server did not become ready");
 
 const assets = new Set();
-for (const path of ["/", "/services", "/treatments", "/booking"]) {
+for (const path of [
+  "/",
+  "/services",
+  "/treatments",
+  "/booking",
+  "/blog",
+  "/blog/dau-lung-khi-ngoi-lau",
+  "/treatments/dry-needling",
+]) {
   const response = await request(path);
   assert.equal(response.status, 200, path);
   const html = await response.text();

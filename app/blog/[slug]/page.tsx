@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { createMetadata } from "@/lib/seo";
 import { getPosts } from "@/lib/sanity";
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   return (await getPosts()).map(({ slug }) => ({ slug }));
 }
@@ -27,11 +29,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <p className="eyebrow">{post.category}</p>
           <h1 className="display">{post.title}</h1>
           <p>{post.excerpt}</p>
-          <time dateTime={post.publishedAt}>
-            {new Intl.DateTimeFormat("vi-VN", { dateStyle: "long" }).format(
-              new Date(post.publishedAt),
-            )}
-          </time>
+          {post.publishedAt ? (
+            <time dateTime={post.publishedAt}>
+              {new Intl.DateTimeFormat("vi-VN", { dateStyle: "long" }).format(
+                new Date(post.publishedAt),
+              )}
+            </time>
+          ) : null}
         </div>
         <div className="article__body">
           {post.body.map((paragraph) => (

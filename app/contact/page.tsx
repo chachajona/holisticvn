@@ -1,5 +1,5 @@
 import { LeadForm } from "@/components/lead-form";
-import { site } from "@/lib/content";
+import { getPublicSiteData } from "@/lib/sanity";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -7,7 +7,8 @@ export const metadata = createMetadata({
   description: "Liên hệ HolisticVN để nhận tư vấn.",
   path: "/contact",
 });
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { site, branches } = await getPublicSiteData();
   return (
     <main id="main">
       <section className="booking-page">
@@ -22,7 +23,9 @@ export default function ContactPage() {
             <div className="contact-details">
               <a href={`tel:${site.phone.replaceAll(" ", "")}`}>{site.phone}</a>
               <a href={`mailto:${site.email}`}>{site.email}</a>
-              <span>{site.address}</span>
+              {branches.map((branch) => (
+                <span key={branch.address}>{branch.address}</span>
+              ))}
             </div>
           </div>
           <div className="booking-page__form">

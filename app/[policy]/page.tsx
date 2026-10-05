@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
+import { createMetadata } from "@/lib/seo";
 
 const documents: Record<string, { title: string; intro: string; body: string[] }> = {
   "privacy-policy": {
     title: "Chính sách quyền riêng tư",
     intro: "HolisticVN tôn trọng và bảo vệ thông tin cá nhân của bạn.",
     body: [
-      "Chúng tôi chỉ thu thập thông tin bạn chủ động cung cấp qua form liên hệ, đặt lịch hoặc newsletter để phản hồi yêu cầu và cải thiện dịch vụ.",
-      "Thông tin từ form tư vấn, liên hệ và đặt lịch được chuyển qua dịch vụ email đến hộp thư của HolisticVN để nhân viên liên hệ lại; form không tự tạo lịch hẹn. Newsletter được lưu riêng để quản lý đăng ký nhận tin.",
+      "Chúng tôi chỉ thu thập thông tin bạn chủ động cung cấp qua form liên hệ hoặc đặt lịch để phản hồi yêu cầu và cải thiện dịch vụ.",
+      "Thông tin từ form tư vấn, liên hệ và đặt lịch được chuyển qua dịch vụ email Resend đến hộp thư nhân viên của HolisticVN để liên hệ lại; form không tự tạo lịch hẹn. Website không lưu yêu cầu vào cơ sở dữ liệu riêng; nhân viên xử lý và xác nhận lịch thủ công trên hệ thống đặt lịch của phòng khám.",
       "Chúng tôi không bán thông tin cá nhân cho bên thứ ba. Bạn có thể yêu cầu xem, cập nhật hoặc xóa thông tin bằng cách liên hệ với HolisticVN.",
     ],
   },
@@ -31,6 +32,12 @@ const documents: Record<string, { title: string; intro: string; body: string[] }
 };
 export function generateStaticParams() {
   return Object.keys(documents).map((policy) => ({ policy }));
+}
+export async function generateMetadata({ params }: { params: Promise<{ policy: string }> }) {
+  const { policy } = await params;
+  const document = documents[policy];
+  if (!document) notFound();
+  return createMetadata({ title: document.title, description: document.intro, path: `/${policy}` });
 }
 export default async function PolicyPage({ params }: { params: Promise<{ policy: string }> }) {
   const document = documents[(await params).policy];

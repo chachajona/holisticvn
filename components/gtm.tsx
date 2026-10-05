@@ -9,7 +9,8 @@ declare global {
 }
 
 export function track(event: string, data: Record<string, string> = {}) {
-  window.dataLayer?.push({ event, ...data });
+  if (document.cookie.split("; ").includes("holisticvn-cookie-consent-v1=accepted"))
+    window.dataLayer?.push({ event, ...data });
 }
 
 export function GoogleTagManager() {
@@ -19,6 +20,6 @@ export function GoogleTagManager() {
     <Script
       id="gtm"
       strategy="afterInteractive"
-    >{`if(document.cookie.includes('holisticvn-cookie-consent-v1=accepted')){window.dataLayer=window.dataLayer||[];window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});(function(w,d,s,l,i){var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${id}');}`}</Script>
+    >{`if(document.cookie.split('; ').includes('holisticvn-cookie-consent-v1=accepted')){window.dataLayer=window.dataLayer||[];window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});(function(w,d,s,l,i){var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${id}');}`}</Script>
   );
 }

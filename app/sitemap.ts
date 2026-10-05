@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
-import { posts, treatments } from "@/lib/content";
+import { getPosts, getTreatments } from "@/lib/sanity";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [posts, treatments] = await Promise.all([getPosts(), getTreatments()]);
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.vn";
   const paths = [
     "",

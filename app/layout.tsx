@@ -5,6 +5,8 @@ import { ChatWidgets } from "@/components/chat-widgets";
 import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleTagManager } from "@/components/gtm";
 import { SiteChrome } from "@/components/site-chrome";
+import { SiteDataProvider } from "@/components/site-data";
+import { getPublicSiteData } from "@/lib/sanity";
 
 const navSerif = Roboto_Serif({
   subsets: ["vietnamese", "latin"],
@@ -30,17 +32,20 @@ export const metadata: Metadata = {
     "Physical therapy và trị liệu vận động theo lộ trình cá nhân hóa tại TP. Hồ Chí Minh.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const data = await getPublicSiteData();
   return (
     <html lang="vi">
       <body className={`${navSerif.variable} ${navMono.variable}`}>
         <a className="skip" href="#main">
           Bỏ qua điều hướng
         </a>
-        <GoogleTagManager />
-        <SiteChrome>{children}</SiteChrome>
-        <ChatWidgets />
-        <CookieConsent />
+        <SiteDataProvider data={data}>
+          <GoogleTagManager />
+          <SiteChrome>{children}</SiteChrome>
+          <ChatWidgets />
+          <CookieConsent />
+        </SiteDataProvider>
       </body>
     </html>
   );

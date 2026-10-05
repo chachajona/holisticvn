@@ -5,6 +5,8 @@ import { LeadForm } from "@/components/lead-form";
 import { createMetadata } from "@/lib/seo";
 import { getTreatments } from "@/lib/sanity";
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   return (await getTreatments()).map(({ slug }) => ({ slug }));
 }

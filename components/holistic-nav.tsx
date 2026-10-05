@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { branches, mapsHref, noBreakAddress, site } from "@/lib/content";
+import { mapsHref, noBreakAddress } from "@/lib/content";
+import { useSiteData } from "@/components/site-data";
 import styles from "./holistic-chrome.module.css";
 
 const links: Array<[string, string]> = [
@@ -81,6 +82,7 @@ function ChevronIcon() {
 }
 
 export function HolisticNav() {
+  const { site, branches } = useSiteData();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
