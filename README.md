@@ -1,16 +1,19 @@
 # HolisticVN
 
-Website physical therapy bằng Next.js 15, với public site tiếng Việt, Sanity Studio, Supabase CRM phân quyền Admin/Staff và yêu cầu tư vấn/đặt lịch gửi qua Resend.
+Website physical therapy bằng Next.js 16, với public site tiếng Việt, Sanity Studio, Supabase CRM phân quyền Admin/Staff và yêu cầu tư vấn/đặt lịch gửi qua Resend.
 
 ## Chạy local
 
+Yêu cầu Node.js 24 (`nvm use`) và npm. Dependencies được ghim trong
+`package.json`; `package-lock.json` là nguồn cho cài đặt tái tạo được.
+
 ```bash
-npm install
+npm ci
 cp .env.example .env.local
 npm run dev
 ```
 
-Không có secrets, website vẫn render bằng dữ liệu fallback để review UI. Form tư vấn và đặt lịch chỉ báo thành công khi Resend nhận yêu cầu gửi email; nếu thiếu cấu hình, form hiện lỗi và hướng dẫn gọi trực tiếp. Studio và CRM cần cấu hình riêng.
+Có thể bỏ qua bước tạo `.env.local` khi chỉ review fallback UI. Không có secrets, website vẫn render bằng dữ liệu fallback để review UI. Form tư vấn và đặt lịch chỉ báo thành công khi Resend nhận yêu cầu gửi email; nếu thiếu cấu hình, form hiện lỗi và hướng dẫn gọi trực tiếp. Studio và CRM cần cấu hình riêng.
 
 ## Production setup
 
@@ -36,3 +39,19 @@ npm run build
 
 Dùng [front-end checklist theo dự án](docs/FRONTEND_CHECKLIST.md) khi review thay đổi UI
 và trước production/cutover.
+
+## Baseline và CI
+
+Pull request vào `main` chạy cài đặt sạch, ESLint (không warnings), typecheck,
+unit tests, production build và HTTP smoke test trên Node.js 24.
+Next.js 16 không chạy lint trong build; CI chạy lint riêng.
+
+```bash
+npm run start -- --hostname 127.0.0.1 --port 3102
+# Trong terminal khác:
+npm run smoke
+```
+
+Smoke test dành cho bản build fallback không cấu hình Sanity, Supabase hay Resend.
+Xem [báo cáo baseline](docs/BASELINE_VERIFICATION.md) và
+[ghi chú nâng dependencies](docs/DEPENDENCY_UPGRADE.md) để biết evidence và giới hạn.
