@@ -26,6 +26,12 @@ Có thể bỏ qua bước tạo `.env.local` khi chỉ review fallback UI. Khô
 Form ở hero, `/booking`, `/contact` và trang liệu pháp gửi email cho Holistic, không ghi yêu cầu mới vào bảng `leads` của Supabase. Nhân viên gọi lại, nhập lịch trên hệ thống cửa hàng rồi xác nhận với khách. Dashboard Supabase hiện không nhận các yêu cầu mới từ website; newsletter vẫn dùng Supabase.
 Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắn; form chưa tự động gửi thông báo Zalo OA. Xem [các bước thiết lập email](docs/EMAIL_SETUP.md) trước khi dùng form thật.
 
+## Quy ước editor
+
+`.editorconfig` thống nhất UTF-8, indent 2 spaces, xuống dòng LF, newline cuối file
+và xóa khoảng trắng cuối dòng. Markdown giữ khoảng trắng cuối dòng để hỗ trợ hard
+line breaks. Editor cần hỗ trợ EditorConfig hoặc cài extension tương ứng.
+
 ## Kiểm tra
 
 ```bash
