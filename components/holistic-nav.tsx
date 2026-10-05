@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { branches, mapsHref, noBreakAddress, site } from "@/lib/content";
@@ -113,8 +114,8 @@ export function HolisticNav() {
       <div ref={navRef} className={styles.navRow} data-scrolled={scrolled || undefined}>
         <header className={styles.navPill}>
           <Link href="/" className={styles.navBrand} aria-label="HolisticVN trang chủ" onClick={() => setOpen(false)}>
-            <img src="/assets/logo/lockup-on-light.svg" alt="holistic — rehab & performance" height={30} className={styles.navLogoFull} />
-            <img src="/assets/logo/symbol-on-light.svg" alt="" height={32} aria-hidden="true" className={styles.navLogoSymbol} />
+            <Image src="/assets/logo/lockup-on-light.svg" alt="holistic — rehab & performance" width={2103} height={470} className={styles.navLogoFull} />
+            <Image src="/assets/logo/symbol-on-light.svg" alt="" width={690} height={470} aria-hidden="true" className={styles.navLogoSymbol} />
           </Link>
           <nav className={styles.navLinks} aria-label="Điều hướng chính">
             {links.map(([label, href]) => (

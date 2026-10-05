@@ -1,16 +1,48 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import type { DashboardUser } from "@/lib/auth";
 
 type Lead = { id: string; kind: "contact" | "booking"; name: string; phone: string; email: string | null; message: string | null; treatment_name: string | null; source: string; status: "new" | "contacted" | "confirmed" | "completed" | "lost"; assigned_to: string | null; created_at: string; profiles?: { full_name: string | null } | null };
 const statuses = ["new", "contacted", "confirmed", "completed", "lost"] as const;
 const labels: Record<Lead["status"], string> = { new: "Mới", contacted: "Đã liên hệ", confirmed: "Đã xác nhận", completed: "Hoàn tất", lost: "Không thành" };
 
+async function fetchLeads(filter: string, search: string, signal?: AbortSignal) {
+  const params = new URLSearchParams();
+  if (filter !== "all") params.set("status", filter);
+  if (search) params.set("q", search);
+  const response = await fetch(`/api/dashboard/leads?${params}`, { signal });
+  const data = await response.json();
+  return { response, data };
+}
+
 export function LeadBoard({ user }: { user: DashboardUser }) {
-  const [leads, setLeads] = useState<Lead[]>([]); const [team, setTeam] = useState<{ id: string; full_name: string | null; role: string }[]>([]); const [selected, setSelected] = useState<Lead | null>(null); const [filter, setFilter] = useState("all"); const [search, setSearch] = useState(""); const [loading, setLoading] = useState(true); const [notice, setNotice] = useState("");
-  const load = async () => { setLoading(true); const params = new URLSearchParams(); if (filter !== "all") params.set("status", filter); if (search) params.set("q", search); const response = await fetch(`/api/dashboard/leads?${params}`); const data = await response.json(); if (response.ok) setLeads(data.leads); else setNotice(data.error || "Không thể tải lead"); setLoading(false); };
-  useEffect(() => { void load(); }, [filter]);
+  const [leads, setLeads] = useState<Lead[]>([]); const [team, setTeam] = useState<{ id: string; full_name: string | null; role: string }[]>([]); const [selected, setSelected] = useState<Lead | null>(null); const [filter, setFilter] = useState("all"); const [search, setSearch] = useState(""); const [refreshing, setRefreshing] = useState(false); const [loadedFilter, setLoadedFilter] = useState<string | null>(null); const [notice, setNotice] = useState("");
+  const loading = refreshing || loadedFilter !== filter;
+  // Typing filters the current list; status changes request the latest search snapshot.
+  const getSearch = useEffectEvent(() => search);
+  const load = async () => {
+    setRefreshing(true);
+    try {
+      const { response, data } = await fetchLeads(filter, search);
+      if (response.ok) setLeads(data.leads);
+      else setNotice(data.error || "Không thể tải lead");
+      setLoadedFilter(filter);
+    } catch { setNotice("Không thể tải lead"); }
+    finally { setRefreshing(false); }
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchLeads(filter, getSearch(), controller.signal).then(({ response, data }) => {
+      if (controller.signal.aborted) return;
+      if (response.ok) setLeads(data.leads);
+      else setNotice(data.error || "Không thể tải lead");
+      setLoadedFilter(filter);
+    }).catch(() => {
+      if (!controller.signal.aborted) { setNotice("Không thể tải lead"); setLoadedFilter(filter); }
+    });
+    return () => controller.abort();
+  }, [filter]);
   useEffect(() => { if (user.role !== "admin") return; void fetch("/api/dashboard/team").then(response => response.ok ? response.json() : null).then(data => setTeam(data?.members || [])); }, [user.role]);
   const filtered = useMemo(() => leads.filter(lead => !search || `${lead.name} ${lead.phone}`.toLowerCase().includes(search.toLowerCase())), [leads, search]);
   const update = async (id: string, changes: Record<string, string | null>) => { const response = await fetch("/api/dashboard/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...changes }) }); if (!response.ok) { const data = await response.json(); setNotice(data.error || "Không thể cập nhật"); return; } setSelected(null); await load(); };

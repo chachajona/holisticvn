@@ -3,41 +3,55 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "migrate:legacy": "node scripts/migrate-legacy.mjs"
   },
   "dependencies": {
-    "@react-email/components": "^1.0.12",
-    "@react-email/render": "^2.1.0",
-    "@sanity/client": "^6.29.0",
-    "@sanity/vision": "^3.61.0",
-    "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.75.0",
-    "next": "15.5.9",
-    "next-sanity": "^9.5.5",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "resend": "^4.0.0",
-    "sanity": "^3.61.0",
-    "zod": "^3.23.8"
+    "@react-email/components": "1.0.12",
+    "@react-email/render": "2.1.0",
+    "@sanity/client": "8.9.0",
+    "@sanity/vision": "6.17.0",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.2",
+    "next": "16.3.8",
+    "next-sanity": "13.3.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "resend": "6.32.0",
+    "sanity": "6.17.0",
+    "zod": "4.6.5",
+    "styled-components": "6.5.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.7",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "eslint": "^9.17.0",
-    "eslint-config-next": "15.5.9",
-    "typescript": "^5.7.2",
-    "vitest": "^3.0.5"
+    "@types/node": "26.6.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "10.12.0",
+    "eslint-config-next": "16.3.8",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vitest": "5.0.3",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "@eslint/compat": "2.1.1"
+  },
+  "type": "module",
+  "overrides": {
+    "eslint-plugin-react": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-import": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-jsx-a11y": {
+      "eslint": "$eslint"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { branches, mapsHref, noBreakAddress, site } from "@/lib/content";
 import { FacebookIcon, InstagramIcon, ZaloIcon } from "@/components/brand-icons";
 import styles from "./holistic-chrome.module.css";
@@ -11,7 +12,7 @@ export function HolisticFooter({ column2Label, column2Links }: { column2Label: s
     <footer className={styles.footer}>
       <div className={styles.footerGrid}>
         <div className={styles.footerBrand}>
-          <img src="/assets/logo/lockup-on-dark.svg" alt="holistic — rehab & performance" height={44} className={styles.footerLogo} />
+          <Image src="/assets/logo/lockup-on-dark.svg" alt="holistic — rehab & performance" width={2103} height={470} className={styles.footerLogo} />
           <address className={styles.footerContact}>
             {branches.map(branch => (
               <a key={branch.name} href={mapsHref(branch.address)} target="_blank" rel="noreferrer">

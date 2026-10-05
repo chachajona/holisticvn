@@ -1,19 +1,20 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { track } from "@/components/gtm";
 import styles from "./hero-quick-consult.module.css";
 
 type Props = { hours: string; phone: string };
+const subscribeToHydration = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export function HeroQuickConsult({ hours, phone }: Props) {
   const [sending, setSending] = useState(false);
   const [digits, setDigits] = useState(0);
   const [toast, setToast] = useState<{ kind: "success" | "error"; text: string } | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot);
 
   useEffect(() => {
     if (!toast || toast.kind === "error") return;

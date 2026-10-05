@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import styles from "@/app/page.module.css";
 
@@ -16,7 +17,7 @@ export function HomeNav() {
   return (
     <div className={styles.nav}>
       <Link href="/" aria-label="HolisticVN trang chủ">
-        <img src="/assets/wordmark-tight-dark.svg" alt="holistic — rehab & performance" height={26} style={{ display: "block" }} />
+        <Image src="/assets/wordmark-tight-dark.svg" alt="holistic — rehab & performance" width={1224} height={309} style={{ display: "block", width: "auto", height: 26 }} />
       </Link>
       <nav className={open ? `${styles.navLinks} ${styles.navLinksOpen}` : styles.navLinks} aria-label="Điều hướng chính">
         {links.map(([label, href]) => (

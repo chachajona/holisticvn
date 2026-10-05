@@ -24,7 +24,7 @@ Public marketing site (home, services, treatments, blog, about, contact, booking
 
 ## Capabilities and Constraints
 
-Next.js 15 (App Router) + React 19, Supabase for auth/CRM data, Sanity for content, Resend for transactional email, Zod for validation. The "HÀ NỘI · QUẬN HOÀN KIẾM" utility-bar bug is fixed — `lib/content.ts`'s `site.address` now carries the confirmed TP. Hồ Chí Minh address (see Evidence on Hand). Opening hours are now confirmed: 09:00–21:00, all seven days (no different Saturday/Sunday hours). Still undecided/unconfirmed: real staff/founder bios.
+Next.js 16 (App Router) + React 19, Supabase for auth/CRM data, Sanity for content, Resend for transactional email, Zod for validation. The "HÀ NỘI · QUẬN HOÀN KIẾM" utility-bar bug is fixed — `lib/content.ts`'s `site.address` now carries the confirmed TP. Hồ Chí Minh address (see Evidence on Hand). Opening hours are now confirmed: 09:00–21:00, all seven days (no different Saturday/Sunday hours). Still undecided/unconfirmed: real staff/founder bios.
 
 ## Brand Commitments
 

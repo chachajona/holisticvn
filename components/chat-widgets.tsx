@@ -23,7 +23,8 @@ export function ChatWidgets() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const [nearFooter, setNearFooter] = useState(false);
-  const [formVisible, setFormVisible] = useState(false);
+  const [observedForm, setObservedForm] = useState({ pathname: "", visible: false });
+  const formVisible = observedForm.pathname === pathname && observedForm.visible;
   useEffect(() => {
     const footer = document.querySelector("footer");
     if (!footer) return;
@@ -33,11 +34,8 @@ export function ChatWidgets() {
   }, [pathname]);
   useEffect(() => {
     const form = document.querySelector(".lead-form");
-    if (!form) {
-      setFormVisible(false);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => setFormVisible(entry.isIntersecting), { threshold: 0.15 });
+    if (!form) return;
+    const observer = new IntersectionObserver(([entry]) => setObservedForm({ pathname, visible: entry.isIntersecting }), { threshold: 0.15 });
     observer.observe(form);
     return () => observer.disconnect();
   }, [pathname]);

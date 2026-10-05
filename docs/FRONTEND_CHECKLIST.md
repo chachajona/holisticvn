@@ -1,6 +1,6 @@
 # Front-end checklist — HolisticVN
 
-Checklist này áp dụng cho website Next.js 15 của HolisticVN. Dùng nó khi review một
+Checklist này áp dụng cho website Next.js 16 của HolisticVN. Dùng nó khi review một
 thay đổi giao diện, trước khi mở một tính năng công khai, và trước khi cutover domain.
 Nó được điều chỉnh từ các chủ đề của
 [Front-End Checklist](https://github.com/thedaviddias/front-end-checklist), không phải
