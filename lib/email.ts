@@ -62,6 +62,7 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
       ...(input.email ? [["Email", input.email] as [string, string]] : []),
       ...(branch ? [["Chi nhánh", branch] as [string, string]] : []),
       ...(input.treatment ? [["Liệu pháp", input.treatment] as [string, string]] : []),
+      ["Nguồn", input.source],
     ],
     note: input.message?.trim() || null,
     emptyNote: input.source === "home-hero" ? null : "Không có ghi chú.",
@@ -95,13 +96,16 @@ export async function sendLeadNotification(
   if (!apiKey || !to || !from) return { ok: false, reason: "unconfigured" };
 
   try {
-    const { data, error } = await new Resend(apiKey).emails.send({
-      from,
-      to,
-      // lets staff reply straight to the customer when they left an email
-      ...(input.email ? { replyTo: input.email } : {}),
-      ...(await buildLeadEmail(input)),
-    });
+    const { data, error } = await new Resend(apiKey).emails.send(
+      {
+        from,
+        to,
+        // lets staff reply straight to the customer when they left an email
+        ...(input.email ? { replyTo: input.email } : {}),
+        ...(await buildLeadEmail(input)),
+      },
+      { signal: AbortSignal.timeout(10000) },
+    );
     if (error || !data?.id) {
       console.error("Lead email delivery failed", error?.name || "missing_message_id");
       return { ok: false, reason: "delivery_failed" };

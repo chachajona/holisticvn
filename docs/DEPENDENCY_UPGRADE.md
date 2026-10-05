@@ -10,8 +10,6 @@ Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 | `@react-email/render`     | `^2.1.0`   | `2.1.0`                             |
 | `@sanity/client`          | `^6.29.0`  | `8.9.0`                             |
 | `@sanity/vision`          | `^3.61.0`  | `6.17.0`                            |
-| `@supabase/ssr`           | `^0.7.0`   | `0.12.7`                            |
-| `@supabase/supabase-js`   | `^2.75.0`  | `2.117.2`                           |
 | `next`                    | `15.5.9`   | `16.3.8`                            |
 | `next-sanity`             | `^9.5.5`   | `13.3.4`                            |
 | `react`                   | `^19.1.1`  | `19.3.0`                            |
@@ -38,8 +36,8 @@ Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 - Vitest 5 / Vite 8 use Oxc JSX configuration. The project declares ESM, replacing the old esbuild config and avoiding the native config-loader warning.
 - Zod 4 uses top-level `z.email` and `z.uuid`. Email input is trimmed before validation through a pipeline, preserving the previous form behavior.
 - Sanity 3 → 4 → 5 → 6 requires a supported Node runtime and React 19.2.2+. Existing schemas/structure config remain supported; there are no custom auth providers or deprecated search settings to migrate. `styled-components` is explicitly declared as a Studio peer dependency.
-- React’s recommended lint rules reject synchronous state changes in effects. Cookie/hydration reads now use `useSyncExternalStore`; observers update state only in callbacks; dashboard requests update state from async callbacks and cancel on unmount. Search remains a local filter, while status changes fetch with the latest search snapshot via `useEffectEvent`.
-- Resend continues to require provider acceptance before returning success. Existing mocked email/API tests cover the upgraded SDK. Live delivery and CRM RLS remain separate acceptance work.
+- React’s recommended lint rules reject synchronous state changes in effects. Cookie/hydration reads now use `useSyncExternalStore`; observers update state only in callbacks.
+- Resend continues to require provider acceptance before returning success. Existing mocked email/API tests cover the upgraded SDK. Live delivery remains separate acceptance work.
 
 ## Official sources
 
@@ -53,7 +51,6 @@ Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 - [next-sanity migration guides](https://github.com/sanity-io/next-sanity#migration-guides)
 - [Vitest 5 migration](https://vitest.dev/guide/migration/)
 - [Zod 4 migration](https://zod.dev/v4/changelog)
-- [Supabase SSR clients](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
 - [Resend with Next.js](https://resend.com/docs/send-with-nextjs)
 - [React external store hydration](https://react.dev/reference/react/useSyncExternalStore)
 - [React Effect Events](https://react.dev/reference/react/useEffectEvent)

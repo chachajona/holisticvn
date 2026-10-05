@@ -78,7 +78,7 @@ bản sao toàn bộ checklist nguồn.
 - [ ] **Bắt buộc** Nội dung tiếng Việt giữ `lang="vi"`; link canonical, sitemap và robots
       cùng dùng `NEXT_PUBLIC_SITE_URL` của môi trường đích.
 - [ ] **Bắt buộc** Route public mới được đưa vào `app/sitemap.ts`; route nội bộ
-      (`/dashboard`, `/studio`, `/api`) không bị index.
+      (`/studio`, `/api`) không bị index.
 - [ ] **Bắt buộc** Redirect legacy mới hoặc đổi URL là permanent, đúng một hop và được
       thêm vào `next.config.ts` trước cutover.
 - [ ] **Nên có** Blog/treatment có metadata riêng theo nội dung Sanity; kiểm tra trang
@@ -103,15 +103,15 @@ bản sao toàn bộ checklist nguồn.
       secret nhạy cảm vào biến `NEXT_PUBLIC_*`.
 - [ ] **Bắt buộc** Không làm Largest Contentful Paint (LCP) image lazy-load; không preload
       nhiều ảnh/font không cần thiết.
-- [ ] **Nên có** Component nặng, dashboard-only và widget bên thứ ba được dynamic import
+- [ ] **Nên có** Component nặng và widget bên thứ ba được dynamic import
       khi hợp lý; kiểm tra layout shift và console errors trên route thay đổi.
 
-## Dashboard, CMS và bảo mật
+## CMS, email và bảo mật
 
-- [ ] **Bắt buộc** Dashboard/Studio/API không render dữ liệu lead hoặc thông tin nội bộ
+- [ ] **Bắt buộc** Studio/API không render dữ liệu khách hàng hoặc thông tin nội bộ
       trên public route, metadata, sitemap hay response lỗi.
-- [ ] **Bắt buộc** Phân quyền được xác thực ở server/Supabase RLS, không chỉ dựa vào UI:
-      Staff chỉ thấy/cập nhật lead được gán; Admin mới quản lý toàn bộ lead và team.
+- [ ] **Bắt buộc** Quyền chỉnh sửa CMS được xác thực qua Sanity; các API công khai không
+      có đường truy cập dữ liệu nội bộ hay lưu thông tin khách vào database website.
 - [ ] **Bắt buộc** Route handler xác thực input bằng Zod, có phản hồi lỗi an toàn và không
       trả về stack trace, secrets hay dữ liệu cá nhân vượt nhu cầu.
 - [ ] **Bắt buộc** Sanity revalidation endpoint yêu cầu secret hợp lệ; mọi secret chỉ nằm
@@ -135,9 +135,10 @@ bản sao toàn bộ checklist nguồn.
 - [ ] **Bắt buộc** Chạy đủ lint, typecheck, test, build; đọc output để chắc không có warning
       liên quan route, metadata hoặc environment.
 - [ ] **Bắt buộc** Smoke-test homepage, services, treatments, blog index/detail, about,
-      contact, booking, policy pages, dashboard login và Studio.
-- [ ] **Bắt buộc** Submit thử contact, booking và newsletter bằng môi trường staging;
-      xác minh validation, record Supabase, email Resend và không có PII trong analytics.
+      contact, booking, policy pages và Studio.
+- [ ] **Bắt buộc** Submit thử contact và booking bằng môi trường staging; xác minh validation,
+      giới hạn gửi, email Resend và không có PII trong analytics. Xác minh nhân viên
+      nhận yêu cầu, gọi lại và nhập lịch thủ công trên hệ thống phòng khám.
 - [ ] **Bắt buộc** Kiểm tra redirects legacy, `robots.txt`, `sitemap.xml`, canonical và
       OG preview trên domain production; đảm bảo staging không được index.
 - [ ] **Bắt buộc** Thay tất cả placeholder/fabricated contact details, testimonials,

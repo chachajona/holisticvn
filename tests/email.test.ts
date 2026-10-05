@@ -38,6 +38,8 @@ describe("sendLeadNotification", () => {
     expect(mail.replyTo).toBeUndefined();
     expect(mail.text).toContain("Chi nhánh: Xóm Chiếu");
     expect(mail.text).toContain("Ghi chú của khách: Buổi chiều");
+    expect(mail.text).toContain("Nguồn: /booking");
+    expect(send.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
     expect(mail.html).toContain('href="tel:0901234567"');
     expect(mail.html).toContain('href="https://zalo.me/84901234567"');
   });

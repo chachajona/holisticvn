@@ -19,7 +19,6 @@ export default defineConfig([
     "dist/**",
     "out/**",
     "next-env.d.ts",
-    "supabase/.temp/**",
   ]),
   {
     files: ["**/*.{js,mjs,ts,tsx}"],

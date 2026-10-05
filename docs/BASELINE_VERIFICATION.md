@@ -103,6 +103,10 @@ Findings requiring context:
 - An absent robots meta tag does not by itself establish conflicting directives.
   Preview `noindex` still needs verification on the actual deployment.
 
+## Scope update — 2026-10-05
+
+The customer database, staff CRM and subscription flow have been removed following the owner’s decision. Requests go directly to the staff inbox; appointments are managed manually in the clinic’s existing system. Earlier results above describe the original baseline and do not establish acceptance for the removed features. After switching to email-only notifications, Zalo OA code/configuration/tests have been removed. Email-only verification passed: 35 tests / 8 files, format, lint (zero warnings), typecheck and production build with configured Sanity. Earlier dual-channel verification results are historical. Live Resend acceptance still requires staging verification; the shared Redis limiter remains required for production.
+
 ## Verification boundaries
 
 Latest stable dependencies and compatible transitive refreshes still produce
@@ -111,12 +115,10 @@ and suggested direct-package downgrades are documented in
 [DEPENDENCY_UPGRADE.md](DEPENDENCY_UPGRADE.md). This baseline is not a security
 or launch sign-off.
 
-Live Resend delivery, configured Sanity Studio, Supabase auth/RLS and historical
-CRM behavior, configured analytics consent, Safari/Firefox, actual browser zoom,
+Live Resend delivery, configured Sanity Studio, configured analytics consent, Safari/Firefox, actual browser zoom,
 contrast measurement, and Core Web Vitals were not verified here. Their acceptance
 criteria remain in the corresponding child issues of #1.
 
 Only `.env.example` is tracked. Local environment files, provider secrets,
-generated output, editor/agent caches, private workspace documents, and the
-Supabase CLI cache are excluded. The development-only live-preview script was
+generated output, editor/agent caches, private workspace documents, are excluded. The development-only live-preview script was
 removed before the application baseline was committed.

@@ -1,6 +1,6 @@
 # HolisticVN
 
-Website physical therapy bằng Next.js 16, với public site tiếng Việt, Sanity Studio, Supabase CRM phân quyền Admin/Staff và yêu cầu tư vấn/đặt lịch gửi qua Resend.
+Website physical therapy bằng Next.js 16, với public site tiếng Việt, Sanity Studio và yêu cầu tư vấn/đặt lịch gửi qua email Resend.
 
 ## Chạy local
 
@@ -13,18 +13,17 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Có thể bỏ qua bước tạo `.env.local` khi chỉ review fallback UI. Không có secrets, website vẫn render bằng dữ liệu fallback để review UI. Form tư vấn và đặt lịch chỉ báo thành công khi Resend nhận yêu cầu gửi email; nếu thiếu cấu hình, form hiện lỗi và hướng dẫn gọi trực tiếp. Studio và CRM cần cấu hình riêng.
+Có thể bỏ qua bước tạo `.env.local` khi chỉ review fallback UI. Không có secrets, website vẫn render bằng dữ liệu fallback để review UI. Form tư vấn và đặt lịch chỉ báo thành công khi Resend nhận yêu cầu gửi email; nếu thiếu cấu hình, form hiện lỗi và hướng dẫn gọi trực tiếp. Studio cần cấu hình Sanity riêng. Website không có CRM, tài khoản nội bộ hay luồng lưu dữ liệu khách hàng.
 
 ## Production setup
 
-1. Tạo Sanity project/dataset, Supabase project và xác minh domain gửi trong Resend; đặt các biến trong `.env.example` trên Vercel. Với form, cần `RESEND_API_KEY`, `RESEND_FROM_EMAIL` và `LEAD_NOTIFICATION_EMAIL` là hộp thư nhân viên Holistic theo dõi.
-2. Chạy migration trong `supabase/migrations/` và bootstrap tài khoản Admin theo [Supabase setup](supabase/README.md).
-3. Thêm webhook Sanity gọi `POST /api/revalidate` với header `x-sanity-secret`.
-4. Cấu hình GA4/GTM, Zalo ID và Facebook Page ID; analytics chỉ tải sau cookie consent.
-5. Theo [legacy migration runbook](docs/MIGRATION.md), xác minh import và redirect 301 trước cutover.
+1. Tạo Sanity project/dataset và xác minh domain gửi trong Resend; đặt các biến trong `.env.example` trên Vercel. Với form production, cần `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL` và `LEAD_NOTIFICATION_EMAIL` là hộp thư nhân viên Holistic theo dõi.
+2. Thêm webhook Sanity gọi `POST /api/revalidate` với header `x-sanity-secret`.
+3. Cấu hình GA4/GTM, Zalo ID và Facebook Page ID; analytics chỉ tải sau cookie consent.
+4. Theo [legacy migration runbook](docs/MIGRATION.md), xác minh import và redirect 301 trước cutover.
 
-Form ở hero, `/booking`, `/contact` và trang liệu pháp gửi email cho Holistic, không ghi yêu cầu mới vào bảng `leads` của Supabase. Nhân viên gọi lại, nhập lịch trên hệ thống cửa hàng rồi xác nhận với khách. Dashboard Supabase hiện không nhận các yêu cầu mới từ website; newsletter vẫn dùng Supabase.
-Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắn; form chưa tự động gửi thông báo Zalo OA. Xem [các bước thiết lập email](docs/EMAIL_SETUP.md) trước khi dùng form thật.
+Form ở hero, `/booking`, `/contact` và trang liệu pháp gửi email cho nhân viên Holistic. Website không lưu dữ liệu khách hàng, không có CRM/dashboard và không có đăng ký newsletter. Nhân viên gọi lại, nhập lịch trên hệ thống của phòng khám rồi xác nhận với khách.
+Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắn. Thông báo form hiện chỉ gửi qua email. Xem [thiết lập email](docs/EMAIL_SETUP.md) trước khi dùng form thật. Redis chỉ giữ bộ đếm giới hạn gửi tự hết hạn sau một giờ, không giữ nội dung form.
 
 ## Quy ước editor
 
@@ -64,6 +63,6 @@ npm run start -- --hostname 127.0.0.1 --port 3102
 npm run smoke
 ```
 
-Smoke test dành cho bản build fallback không cấu hình Sanity, Supabase hay Resend.
+Smoke test dành cho bản build fallback không cấu hình Sanity hay Resend.
 Xem [báo cáo baseline](docs/BASELINE_VERIFICATION.md) và
 [ghi chú nâng dependencies](docs/DEPENDENCY_UPGRADE.md) để biết evidence và giới hạn.

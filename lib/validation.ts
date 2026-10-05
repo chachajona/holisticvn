@@ -23,23 +23,4 @@ export const leadSchema = z.object({
   website: z.string().optional().default(""),
 });
 
-export const newsletterSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .pipe(z.email({ error: "Email chưa hợp lệ" })),
-  website: z.string().optional().default(""),
-});
-export const leadStatusSchema = z.enum(["new", "contacted", "confirmed", "completed", "lost"]);
-export const leadUpdateSchema = z
-  .object({
-    status: leadStatusSchema.optional(),
-    assignedTo: z.uuid().nullable().optional(),
-    note: z.string().trim().min(1).max(2000).optional(),
-  })
-  .refine(
-    (value) => value.status || value.assignedTo !== undefined || value.note,
-    "Không có thay đổi",
-  );
-
 export type LeadInput = z.infer<typeof leadSchema>;
