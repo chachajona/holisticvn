@@ -32,8 +32,14 @@ export default defineConfig({
   schema: { types: schemaTypes },
   document: {
     newDocumentOptions: (prev, { creationContext }) =>
-      creationContext.type === "global" ? prev.filter((template) => !singletonTypes.has(template.templateId)) : prev,
+      creationContext.type === "global"
+        ? prev.filter((template) => !singletonTypes.has(template.templateId))
+        : prev,
     actions: (prev, { schemaType }) =>
-      singletonTypes.has(schemaType) ? prev.filter(({ action }) => action && ["publish", "discardChanges", "restore"].includes(action)) : prev,
+      singletonTypes.has(schemaType)
+        ? prev.filter(
+            ({ action }) => action && ["publish", "discardChanges", "restore"].includes(action),
+          )
+        : prev,
   },
 });

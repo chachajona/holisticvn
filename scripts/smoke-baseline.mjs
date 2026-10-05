@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { setTimeout } from "node:timers/promises";
 
 const base = new URL(process.env.SMOKE_BASE_URL || "http://127.0.0.1:3102");
-assert(["127.0.0.1", "localhost", "[::1]"].includes(base.hostname), "Run against a local fallback build only");
+assert(
+  ["127.0.0.1", "localhost", "[::1]"].includes(base.hostname),
+  "Run against a local fallback build only",
+);
 
 async function request(path, options = {}) {
   return fetch(new URL(path, base), { ...options, signal: AbortSignal.timeout(15_000) });
@@ -12,7 +15,9 @@ let ready = false;
 for (let attempt = 0; attempt < 40; attempt++) {
   try {
     ready = (await request("/")).ok;
-  } catch { /* The production server may still be starting. */ }
+  } catch {
+    /* The production server may still be starting. */
+  }
   if (ready) break;
   await setTimeout(500);
 }
@@ -32,7 +37,10 @@ for (const path of ["/", "/services", "/treatments", "/booking"]) {
   assert.match(html, /<meta[^>]*name="description"/, `${path}: description`);
   for (const [, src] of html.matchAll(/<script[^>]*src="([^"]+)"/g)) {
     const url = new URL(src, base);
-    assert(!(url.origin !== base.origin && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)), `${path}: unexpected local preview script`);
+    assert(
+      !(url.origin !== base.origin && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)),
+      `${path}: unexpected local preview script`,
+    );
     assert(!/live\.js/.test(url.pathname), `${path}: unexpected live preview script`);
   }
   for (const [, src] of html.matchAll(/<img[^>]*src="([^"]+)"/g)) {
@@ -46,7 +54,9 @@ for (const src of assets) {
 console.log(`PASS ${assets.size} local image URLs`);
 
 const invalid = await request("/api/leads", {
-  method: "POST", headers: { "Content-Type": "application/json" }, body: "{}",
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: "{}",
 });
 assert.equal(invalid.status, 400, "Invalid form input must be rejected");
 assert((await invalid.json()).error, "Invalid input must return an error");

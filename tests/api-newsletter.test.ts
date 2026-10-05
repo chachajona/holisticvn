@@ -6,7 +6,10 @@ import { createServiceSupabaseClient } from "@/lib/supabase/server";
 import { POST } from "@/app/api/newsletter/route";
 
 function req(body: unknown) {
-  return new Request("http://localhost/api/newsletter", { method: "POST", body: JSON.stringify(body) });
+  return new Request("http://localhost/api/newsletter", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 }
 
 describe("POST /api/newsletter", () => {
@@ -35,6 +38,9 @@ describe("POST /api/newsletter", () => {
     vi.mocked(createServiceSupabaseClient).mockReturnValue({ from } as never);
     const res = await POST(req({ email: "hello@holisticvn.vn" }));
     expect(res.status).toBe(201);
-    expect(upsert).toHaveBeenCalledWith({ email: "hello@holisticvn.vn", status: "subscribed" }, { onConflict: "email" });
+    expect(upsert).toHaveBeenCalledWith(
+      { email: "hello@holisticvn.vn", status: "subscribed" },
+      { onConflict: "email" },
+    );
   });
 });

@@ -11,7 +11,9 @@ const placeholderName = "Khách tư vấn nhanh";
 
 function formatPhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
-  return /^0\d{9}$/.test(digits) ? `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}` : phone.trim();
+  return /^0\d{9}$/.test(digits)
+    ? `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`
+    : phone.trim();
 }
 
 function zaloLink(phone: string) {
@@ -24,14 +26,33 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
   const hasName = input.name !== placeholderName;
   const phone = formatPhone(input.phone);
   const branch = input.branch ? branchNames[input.branch] : "";
-  const received = new Intl.DateTimeFormat("vi-VN", { timeZone, hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" }).format(now);
+  const received = new Intl.DateTimeFormat("vi-VN", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(now);
 
   // the subject leads with the action and the number so staff know who to call before opening the email
-  const subject = ["Gọi lại", hasName ? input.name : "", phone, isBooking ? `Đặt lịch${branch ? ` · ${branch}` : ""}` : "Tư vấn"].filter(Boolean).join(" · ");
+  const subject = [
+    "Gọi lại",
+    hasName ? input.name : "",
+    phone,
+    isBooking ? `Đặt lịch${branch ? ` · ${branch}` : ""}` : "Tư vấn",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://www.holisticvn.com";
   const props: LeadEmailProps = {
-    eyebrow: input.source === "home-hero" ? "Tư vấn nhanh" : isBooking ? "Yêu cầu đặt lịch" : "Yêu cầu tư vấn",
+    eyebrow:
+      input.source === "home-hero"
+        ? "Tư vấn nhanh"
+        : isBooking
+          ? "Yêu cầu đặt lịch"
+          : "Yêu cầu tư vấn",
     name: hasName ? input.name : null,
     phone,
     tel: input.phone.replace(/[^\d+]/g, ""),
@@ -57,13 +78,17 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     `Số điện thoại: ${phone}`,
     ...props.rows.map(([key, value]) => `${key}: ${value}`),
     "",
-    ...((props.note ?? props.emptyNote) !== null ? [`Ghi chú của khách: ${props.note ?? props.emptyNote}`, ""] : []),
+    ...((props.note ?? props.emptyNote) !== null
+      ? [`Ghi chú của khách: ${props.note ?? props.emptyNote}`, ""]
+      : []),
     `Zalo: ${props.zalo}`,
   ].join("\n");
   return { subject, html: await render(email), text };
 }
 
-export async function sendLeadNotification(input: LeadInput): Promise<{ ok: true } | { ok: false; reason: "unconfigured" | "delivery_failed" }> {
+export async function sendLeadNotification(
+  input: LeadInput,
+): Promise<{ ok: true } | { ok: false; reason: "unconfigured" | "delivery_failed" }> {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_NOTIFICATION_EMAIL;
   const from = process.env.RESEND_FROM_EMAIL;
@@ -83,7 +108,10 @@ export async function sendLeadNotification(input: LeadInput): Promise<{ ok: true
     }
     return { ok: true };
   } catch (error) {
-    console.error("Lead email delivery failed", error instanceof Error ? error.name : "unknown_error");
+    console.error(
+      "Lead email delivery failed",
+      error instanceof Error ? error.name : "unknown_error",
+    );
     return { ok: false, reason: "delivery_failed" };
   }
 }

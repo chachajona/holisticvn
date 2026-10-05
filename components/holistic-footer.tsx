@@ -6,15 +6,27 @@ import styles from "./holistic-chrome.module.css";
 
 const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
 
-export function HolisticFooter({ column2Label, column2Links }: { column2Label: string; column2Links: Array<[string, string]> }) {
+export function HolisticFooter({
+  column2Label,
+  column2Links,
+}: {
+  column2Label: string;
+  column2Links: Array<[string, string]>;
+}) {
   const phoneDigits = site.phone.replace(/\s+/g, "");
   return (
     <footer className={styles.footer}>
       <div className={styles.footerGrid}>
         <div className={styles.footerBrand}>
-          <Image src="/assets/logo/lockup-on-dark.svg" alt="holistic — rehab & performance" width={2103} height={470} className={styles.footerLogo} />
+          <Image
+            src="/assets/logo/lockup-on-dark.svg"
+            alt="holistic — rehab & performance"
+            width={2103}
+            height={470}
+            className={styles.footerLogo}
+          />
           <address className={styles.footerContact}>
-            {branches.map(branch => (
+            {branches.map((branch) => (
               <a key={branch.name} href={mapsHref(branch.address)} target="_blank" rel="noreferrer">
                 <span className={styles.footerBranchName}>{branch.name}</span>
                 {noBreakAddress(branch.address)}
@@ -24,14 +36,42 @@ export function HolisticFooter({ column2Label, column2Links }: { column2Label: s
             <a href={`mailto:${site.email}`}>{site.email}</a>
           </address>
           <div className={styles.footerSocial}>
-            <a href={site.facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook Holistic"><FacebookIcon /></a>
-            <a href={site.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram Holistic"><InstagramIcon /></a>
-            {site.zaloId ? <a href={`https://zalo.me/${site.zaloId}`} target="_blank" rel="noreferrer" aria-label="Zalo Holistic" data-brand="zalo"><ZaloIcon /></a> : null}
+            <a
+              href={site.facebookUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook Holistic"
+            >
+              <FacebookIcon />
+            </a>
+            <a
+              href={site.instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram Holistic"
+            >
+              <InstagramIcon />
+            </a>
+            {site.zaloId ? (
+              <a
+                href={`https://zalo.me/${site.zaloId}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Zalo Holistic"
+                data-brand="zalo"
+              >
+                <ZaloIcon />
+              </a>
+            ) : null}
           </div>
         </div>
         <div className={styles.footerCol}>
           <span className={styles.footerColLabel}>{column2Label}</span>
-          {column2Links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+          {column2Links.map(([label, href]) => (
+            <Link key={href} href={href}>
+              {label}
+            </Link>
+          ))}
         </div>
         <div className={styles.footerCol}>
           <span className={styles.footerColLabel}>HOLISTIC</span>
@@ -43,10 +83,20 @@ export function HolisticFooter({ column2Label, column2Links }: { column2Label: s
           <span className={styles.footerColLabel}>GIỜ MỞ CỬA</span>
           {/* desktop lists every day; hours are the same all seven days (confirmed), so one value repeats */}
           <dl className={styles.footerHoursDays}>
-            {weekdays.map(day => <div key={day}><dt>{day}</dt><dd>{site.hours}</dd></div>)}
+            {weekdays.map((day) => (
+              <div key={day}>
+                <dt>{day}</dt>
+                <dd>{site.hours}</dd>
+              </div>
+            ))}
           </dl>
-          <p className={styles.footerHoursRow}><span>{site.hoursNote}</span><span>{site.hours}</span></p>
-          <Link href="/booking" className={styles.footerCta}>Đặt lịch ngay</Link>
+          <p className={styles.footerHoursRow}>
+            <span>{site.hoursNote}</span>
+            <span>{site.hours}</span>
+          </p>
+          <Link href="/booking" className={styles.footerCta}>
+            Đặt lịch ngay
+          </Link>
         </div>
       </div>
       <div className={styles.footerBottom}>

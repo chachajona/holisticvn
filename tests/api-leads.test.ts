@@ -9,7 +9,13 @@ function req(body: unknown) {
   return new Request("http://localhost/api/leads", { method: "POST", body: JSON.stringify(body) });
 }
 
-const validLead = { kind: "booking", name: "Nguyễn An", phone: "0901234567", branch: "ban-co", source: "/booking" };
+const validLead = {
+  kind: "booking",
+  name: "Nguyễn An",
+  phone: "0901234567",
+  branch: "ban-co",
+  source: "/booking",
+};
 
 describe("POST /api/leads", () => {
   beforeEach(() => vi.clearAllMocks());

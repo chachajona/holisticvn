@@ -39,27 +39,100 @@ export function LeadForm({ kind, treatment }: Props) {
     }
   };
 
-  return <form className="lead-form" onSubmit={submit} onChange={() => { if (state !== "sending") setState("idle"); }}>
-    <input name="website" tabIndex={-1} autoComplete="off" className="honeypot" aria-hidden="true" />
-    <label>Họ và tên<input required name="name" minLength={2} autoComplete="name" placeholder="Tên của bạn" /></label>
-    <label>Số điện thoại<input required name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="09xx xxx xxx" /></label>
-    {kind === "booking" ? (
-      <label><span>Chi nhánh mong muốn <small>(không bắt buộc)</small></span>
-        <select name="branch" defaultValue=""><option value="">Trao đổi khi gọi lại</option><option value="ban-co">Bàn Cờ</option><option value="xom-chieu">Xóm Chiếu</option></select>
+  return (
+    <form
+      className="lead-form"
+      onSubmit={submit}
+      onChange={() => {
+        if (state !== "sending") setState("idle");
+      }}
+    >
+      <input
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        className="honeypot"
+        aria-hidden="true"
+      />
+      <label>
+        Họ và tên
+        <input required name="name" minLength={2} autoComplete="name" placeholder="Tên của bạn" />
       </label>
-    ) : <label><span>Email <small>(không bắt buộc)</small></span><input name="email" type="email" autoComplete="email" placeholder="ban@example.com" /></label>}
-    {kind === "booking" ? <details className="lead-form__details">
-      <summary>Thêm ghi chú <small>(không bắt buộc)</small></summary>
-      <label>Thời gian thuận tiện hoặc vấn đề bạn muốn trao đổi
-        <textarea name="message" maxLength={1000} rows={3} placeholder="Ví dụ: muốn được gọi vào buổi chiều" />
+      <label>
+        Số điện thoại
+        <input
+          required
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="09xx xxx xxx"
+        />
       </label>
-    </details> : <label>Bạn đang cần hỗ trợ gì?
-      <textarea name="message" maxLength={1000} rows={4} placeholder="Chia sẻ ngắn về tình trạng hoặc mục tiêu của bạn" />
-    </label>}
-    <button className="button" disabled={state === "sending"}>{state === "sending" ? "Đang gửi…" : "Gửi yêu cầu"} <span>→</span></button>
-    <div aria-live="polite" className={state === "sent" ? "form-message form-message--success" : "form-message"}>
-      {state === "sent" ? kind === "booking" ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian và chi nhánh; đây chưa phải lịch hẹn." : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn." : null}
-      {state === "error" ? <>Chưa gửi được yêu cầu. Vui lòng thử lại hoặc <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.</> : null}
-    </div>
-  </form>;
+      {kind === "booking" ? (
+        <label>
+          <span>
+            Chi nhánh mong muốn <small>(không bắt buộc)</small>
+          </span>
+          <select name="branch" defaultValue="">
+            <option value="">Trao đổi khi gọi lại</option>
+            <option value="ban-co">Bàn Cờ</option>
+            <option value="xom-chieu">Xóm Chiếu</option>
+          </select>
+        </label>
+      ) : (
+        <label>
+          <span>
+            Email <small>(không bắt buộc)</small>
+          </span>
+          <input name="email" type="email" autoComplete="email" placeholder="ban@example.com" />
+        </label>
+      )}
+      {kind === "booking" ? (
+        <details className="lead-form__details">
+          <summary>
+            Thêm ghi chú <small>(không bắt buộc)</small>
+          </summary>
+          <label>
+            Thời gian thuận tiện hoặc vấn đề bạn muốn trao đổi
+            <textarea
+              name="message"
+              maxLength={1000}
+              rows={3}
+              placeholder="Ví dụ: muốn được gọi vào buổi chiều"
+            />
+          </label>
+        </details>
+      ) : (
+        <label>
+          Bạn đang cần hỗ trợ gì?
+          <textarea
+            name="message"
+            maxLength={1000}
+            rows={4}
+            placeholder="Chia sẻ ngắn về tình trạng hoặc mục tiêu của bạn"
+          />
+        </label>
+      )}
+      <button className="button" disabled={state === "sending"}>
+        {state === "sending" ? "Đang gửi…" : "Gửi yêu cầu"} <span>→</span>
+      </button>
+      <div
+        aria-live="polite"
+        className={state === "sent" ? "form-message form-message--success" : "form-message"}
+      >
+        {state === "sent"
+          ? kind === "booking"
+            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian và chi nhánh; đây chưa phải lịch hẹn."
+            : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn."
+          : null}
+        {state === "error" ? (
+          <>
+            Chưa gửi được yêu cầu. Vui lòng thử lại hoặc{" "}
+            <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.
+          </>
+        ) : null}
+      </div>
+    </form>
+  );
 }

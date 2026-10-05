@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const send = vi.hoisted(() => vi.fn());
-vi.mock("resend", () => ({ Resend: class { emails = { send }; } }));
+vi.mock("resend", () => ({
+  Resend: class {
+    emails = { send };
+  },
+}));
 
 import { buildLeadEmail, sendLeadNotification } from "@/lib/email";
 
@@ -34,13 +38,17 @@ describe("sendLeadNotification", () => {
     expect(mail.replyTo).toBeUndefined();
     expect(mail.text).toContain("Chi nhánh: Xóm Chiếu");
     expect(mail.text).toContain("Ghi chú của khách: Buổi chiều");
-        expect(mail.html).toContain('href="tel:0901234567"');
+    expect(mail.html).toContain('href="tel:0901234567"');
     expect(mail.html).toContain('href="https://zalo.me/84901234567"');
   });
 
   it("escapes customer input and replies to the customer's email", async () => {
     send.mockResolvedValue({ data: { id: "email-2" }, error: null });
-    await sendLeadNotification({ ...request, message: "<script>alert(1)</script>", email: "an@example.com" });
+    await sendLeadNotification({
+      ...request,
+      message: "<script>alert(1)</script>",
+      email: "an@example.com",
+    });
     const mail = send.mock.calls[0][0];
     expect(mail.replyTo).toBe("an@example.com");
     expect(mail.html).not.toContain("<script>");
@@ -48,7 +56,15 @@ describe("sendLeadNotification", () => {
   });
 
   it("handles the nameless quick-consult lead", async () => {
-    const mail = await buildLeadEmail({ ...request, kind: "contact", name: "Khách tư vấn nhanh", branch: "", treatment: "", message: "", source: "home-hero" });
+    const mail = await buildLeadEmail({
+      ...request,
+      kind: "contact",
+      name: "Khách tư vấn nhanh",
+      branch: "",
+      treatment: "",
+      message: "",
+      source: "home-hero",
+    });
     expect(mail.subject).toBe("Gọi lại · 0901 234 567 · Tư vấn");
     expect(mail.html).toContain("Tư vấn nhanh");
     expect(mail.html).not.toContain("Khách chưa để lại tên");

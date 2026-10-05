@@ -7,9 +7,19 @@ export default defineConfig([
   // Next's React/import/a11y plugins still use context methods removed in ESLint 10.
   ...fixupConfigRules([...nextVitals, ...nextTypeScript]),
   globalIgnores([
-    ".next/**", ".context/**", ".agents/**", ".claude/**", ".impeccable/**",
-    ".playwright-mcp/**", "node_modules/**", "coverage/**", "migration-output/**",
-    "dist/**", "out/**", "next-env.d.ts", "supabase/.temp/**",
+    ".next/**",
+    ".context/**",
+    ".agents/**",
+    ".claude/**",
+    ".impeccable/**",
+    ".playwright-mcp/**",
+    "node_modules/**",
+    "coverage/**",
+    "migration-output/**",
+    "dist/**",
+    "out/**",
+    "next-env.d.ts",
+    "supabase/.temp/**",
   ]),
   {
     files: ["**/*.{js,mjs,ts,tsx}"],

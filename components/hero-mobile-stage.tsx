@@ -4,7 +4,15 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import styles from "./hero-mobile-stage.module.css";
 
-type Step = { num: string; title: string; href: string; image: string; alt: string; position: string; isDefault: boolean };
+type Step = {
+  num: string;
+  title: string;
+  href: string;
+  image: string;
+  alt: string;
+  position: string;
+  isDefault: boolean;
+};
 
 // Mobile-only swipeable photo carousel behind the hero copy (desktop uses the hover triptych instead).
 // Native scroll-snap handles swipe; the chip indicator follows scroll progress through the --p CSS variable.
@@ -33,8 +41,20 @@ export function HeroMobileStage({ steps }: { steps: Step[] }) {
       <div className={styles.photos}>
         <div className={styles.scroller} ref={scrollerRef} onScroll={onScroll}>
           {steps.map((step, index) => (
-            <div key={step.title} className={styles.slide} data-active={index === active || undefined}>
-              <Image src={step.image} alt={step.alt} fill sizes="200vw" fetchPriority={index === 0 ? "high" : undefined} className={styles.photo} style={{ objectPosition: step.position }} />
+            <div
+              key={step.title}
+              className={styles.slide}
+              data-active={index === active || undefined}
+            >
+              <Image
+                src={step.image}
+                alt={step.alt}
+                fill
+                sizes="200vw"
+                fetchPriority={index === 0 ? "high" : undefined}
+                className={styles.photo}
+                style={{ objectPosition: step.position }}
+              />
             </div>
           ))}
         </div>
@@ -44,7 +64,13 @@ export function HeroMobileStage({ steps }: { steps: Step[] }) {
         <div className={styles.chips} ref={chipsRef}>
           <span className={styles.indicator} aria-hidden="true" />
           {steps.map((step, index) => (
-            <button key={step.title} type="button" className={styles.chip} aria-pressed={index === active} onClick={() => goTo(index)}>
+            <button
+              key={step.title}
+              type="button"
+              className={styles.chip}
+              aria-pressed={index === active}
+              onClick={() => goTo(index)}
+            >
               {step.title}
             </button>
           ))}

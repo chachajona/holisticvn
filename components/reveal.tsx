@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-export function Reveal({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
+export function Reveal({
+  children,
+  className,
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -16,7 +24,7 @@ export function Reveal({ children, className, style }: { children: ReactNode; cl
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
     observer.observe(node);
     return () => observer.disconnect();

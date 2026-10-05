@@ -33,7 +33,9 @@ async function transformTreatments() {
         title: localeToString(doc.title),
         shortDescription: localeToString(doc.shortDescription),
         description: localeToString(doc.description) || localeToString(doc.fullDescription),
-        benefits: (doc.benefits || []).map((b) => (typeof b === "string" ? b : localeToString(b.title))),
+        benefits: (doc.benefits || []).map((b) =>
+          typeof b === "string" ? b : localeToString(b.title),
+        ),
         protocols: (doc.protocols || []).map((p) => ({
           _key: p._key,
           _type: "protocolStep",
@@ -102,7 +104,11 @@ async function transformSiteSettings() {
           instagram: doc.socialMedia?.instagram,
           zalo: doc.socialMedia?.zalo,
         },
-        seo: doc.seo || (doc.defaultSeo ? { _type: "seo", title: doc.defaultSeo.title, description: doc.defaultSeo.description } : undefined),
+        seo:
+          doc.seo ||
+          (doc.defaultSeo
+            ? { _type: "seo", title: doc.defaultSeo.title, description: doc.defaultSeo.description }
+            : undefined),
       })
       .commit();
     console.log("siteSettings patched:", doc._id);

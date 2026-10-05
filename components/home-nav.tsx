@@ -17,9 +17,18 @@ export function HomeNav() {
   return (
     <div className={styles.nav}>
       <Link href="/" aria-label="HolisticVN trang chủ">
-        <Image src="/assets/wordmark-tight-dark.svg" alt="holistic — rehab & performance" width={1224} height={309} style={{ display: "block", width: "auto", height: 26 }} />
+        <Image
+          src="/assets/wordmark-tight-dark.svg"
+          alt="holistic — rehab & performance"
+          width={1224}
+          height={309}
+          style={{ display: "block", width: "auto", height: 26 }}
+        />
       </Link>
-      <nav className={open ? `${styles.navLinks} ${styles.navLinksOpen}` : styles.navLinks} aria-label="Điều hướng chính">
+      <nav
+        className={open ? `${styles.navLinks} ${styles.navLinksOpen}` : styles.navLinks}
+        aria-label="Điều hướng chính"
+      >
         {links.map(([label, href]) => (
           <Link key={href} href={href} onClick={() => setOpen(false)}>
             {label}

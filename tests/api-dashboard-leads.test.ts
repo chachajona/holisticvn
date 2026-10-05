@@ -7,12 +7,24 @@ import { getDashboardUser } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { GET, PATCH } from "@/app/api/dashboard/leads/route";
 
-const admin = { id: "admin-1", email: "admin@holisticvn.com", fullName: "Admin", role: "admin" as const };
-const staff = { id: "staff-1", email: "staff@holisticvn.com", fullName: "Staff", role: "staff" as const };
+const admin = {
+  id: "admin-1",
+  email: "admin@holisticvn.com",
+  fullName: "Admin",
+  role: "admin" as const,
+};
+const staff = {
+  id: "staff-1",
+  email: "staff@holisticvn.com",
+  fullName: "Staff",
+  role: "staff" as const,
+};
 
 function chainable(result: { data: unknown; error: unknown }) {
   const query: Record<string, unknown> = {};
-  ["select", "order", "limit", "eq", "or"].forEach(method => { query[method] = vi.fn().mockReturnValue(query); });
+  ["select", "order", "limit", "eq", "or"].forEach((method) => {
+    query[method] = vi.fn().mockReturnValue(query);
+  });
   query.then = (resolve: (value: typeof result) => unknown) => resolve(result);
   return query;
 }
@@ -21,7 +33,10 @@ function getReq(url = "http://localhost/api/dashboard/leads") {
   return new Request(url);
 }
 function patchReq(body: unknown) {
-  return new Request("http://localhost/api/dashboard/leads", { method: "PATCH", body: JSON.stringify(body) });
+  return new Request("http://localhost/api/dashboard/leads", {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
 }
 
 describe("GET /api/dashboard/leads", () => {

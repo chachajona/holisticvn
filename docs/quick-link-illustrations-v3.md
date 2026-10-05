@@ -4,11 +4,11 @@ Created on 2026-10-04 using the imagegen skill and OpenAI's built-in image gener
 
 ## Active set and destinations
 
-| Link | Destination | Illustration |
-| --- | --- | --- |
-| Dịch vụ | `/services` | Adult supported mobility exercise with a specialist |
-| Phương pháp | `/treatments` | Hands applying manual shoulder therapy |
-| Về Holistic | `/about` | Three symbolic adults representing the people behind the clinic |
+| Link        | Destination   | Illustration                                                    |
+| ----------- | ------------- | --------------------------------------------------------------- |
+| Dịch vụ     | `/services`   | Adult supported mobility exercise with a specialist             |
+| Phương pháp | `/treatments` | Hands applying manual shoulder therapy                          |
+| Về Holistic | `/about`      | Three symbolic adults representing the people behind the clinic |
 
 The group illustration is conceptual, not a portrait or claim about actual staff. The about page remains a story/philosophy page, reflected in its link label and description.
 

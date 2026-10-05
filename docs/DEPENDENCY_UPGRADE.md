@@ -4,31 +4,31 @@ Direct dependencies were resolved from npm’s stable `latest` tags on this date
 `npm update` also refreshed transitive dependencies within their declared ranges.
 Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 
-| Package | Before | Baseline |
-| --- | --- | --- |
-| `@react-email/components` | `^1.0.12` | `1.0.12` |
-| `@react-email/render` | `^2.1.0` | `2.1.0` |
-| `@sanity/client` | `^6.29.0` | `8.9.0` |
-| `@sanity/vision` | `^3.61.0` | `6.17.0` |
-| `@supabase/ssr` | `^0.7.0` | `0.12.7` |
-| `@supabase/supabase-js` | `^2.75.0` | `2.117.2` |
-| `next` | `15.5.9` | `16.3.8` |
-| `next-sanity` | `^9.5.5` | `13.3.4` |
-| `react` | `^19.1.1` | `19.3.0` |
-| `react-dom` | `^19.1.1` | `19.3.0` |
-| `resend` | `^4.0.0` | `6.32.0` |
-| `sanity` | `^3.61.0` | `6.17.0` |
-| `zod` | `^3.23.8` | `4.6.5` |
-| `styled-components` | `added` | `6.5.3` |
-| `@types/node` | `^22.10.2` | `26.6.4` |
-| `@types/react` | `^19.0.2` | `19.3.0` |
-| `@types/react-dom` | `^19.0.2` | `19.3.0` |
-| `eslint` | `^9.17.0` | `10.12.0` |
-| `eslint-config-next` | `15.5.9` | `16.3.8` |
-| `typescript` | `^5.7.2` | `npm:@typescript/typescript6@6.0.2` |
-| `vitest` | `^3.0.5` | `5.0.3` |
-| `@typescript/native` | `added` | `npm:typescript@7.0.2` |
-| `@eslint/compat` | `added` | `2.1.1` |
+| Package                   | Before     | Baseline                            |
+| ------------------------- | ---------- | ----------------------------------- |
+| `@react-email/components` | `^1.0.12`  | `1.0.12`                            |
+| `@react-email/render`     | `^2.1.0`   | `2.1.0`                             |
+| `@sanity/client`          | `^6.29.0`  | `8.9.0`                             |
+| `@sanity/vision`          | `^3.61.0`  | `6.17.0`                            |
+| `@supabase/ssr`           | `^0.7.0`   | `0.12.7`                            |
+| `@supabase/supabase-js`   | `^2.75.0`  | `2.117.2`                           |
+| `next`                    | `15.5.9`   | `16.3.8`                            |
+| `next-sanity`             | `^9.5.5`   | `13.3.4`                            |
+| `react`                   | `^19.1.1`  | `19.3.0`                            |
+| `react-dom`               | `^19.1.1`  | `19.3.0`                            |
+| `resend`                  | `^4.0.0`   | `6.32.0`                            |
+| `sanity`                  | `^3.61.0`  | `6.17.0`                            |
+| `zod`                     | `^3.23.8`  | `4.6.5`                             |
+| `styled-components`       | `added`    | `6.5.3`                             |
+| `@types/node`             | `^22.10.2` | `26.6.4`                            |
+| `@types/react`            | `^19.0.2`  | `19.3.0`                            |
+| `@types/react-dom`        | `^19.0.2`  | `19.3.0`                            |
+| `eslint`                  | `^9.17.0`  | `10.12.0`                           |
+| `eslint-config-next`      | `15.5.9`   | `16.3.8`                            |
+| `typescript`              | `^5.7.2`   | `npm:@typescript/typescript6@6.0.2` |
+| `vitest`                  | `^3.0.5`   | `5.0.3`                             |
+| `@typescript/native`      | `added`    | `npm:typescript@7.0.2`              |
+| `@eslint/compat`          | `added`    | `2.1.1`                             |
 
 ## Compatibility and code changes
 

@@ -10,18 +10,18 @@ from the committed baseline. No `.env.local`, credentials, or installed packages
 were copied from the development workspace. The public pages used local fallback
 content. Node.js 24 is required by `.nvmrc`, package engines, and CI.
 
-| Command | Result |
-| --- | --- |
-| `npm ci` | Passed from the clean checkout; upstream package deprecation notices remain |
-| `npm run lint` | Passed, zero warnings |
-| `npm run typecheck` | Passed: `next typegen`, then the explicit TypeScript 7 compiler |
-| `npm test` | Passed: 6 files, all 24 existing tests |
-| `npm run build` | Passed: Next.js 16.3.8 / Turbopack, 29 static pages generated |
-| `npm run start -- --hostname 127.0.0.1 --port 3102` | Production fallback server started |
-| `npm run smoke` | Four public pages returned 200; 14 local image URLs returned 200; invalid lead input returned 400 |
-| `npm outdated --json` | Empty result for the declared direct dependencies |
-| `npm ls --depth=0` | Passed, no invalid direct dependencies |
-| `git diff --check origin/main...HEAD` | Passed |
+| Command                                             | Result                                                                                            |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm ci`                                            | Passed from the clean checkout; upstream package deprecation notices remain                       |
+| `npm run lint`                                      | Passed, zero warnings                                                                             |
+| `npm run typecheck`                                 | Passed: `next typegen`, then the explicit TypeScript 7 compiler                                   |
+| `npm test`                                          | Passed: 6 files, all 24 existing tests                                                            |
+| `npm run build`                                     | Passed: Next.js 16.3.8 / Turbopack, 29 static pages generated                                     |
+| `npm run start -- --hostname 127.0.0.1 --port 3102` | Production fallback server started                                                                |
+| `npm run smoke`                                     | Four public pages returned 200; 14 local image URLs returned 200; invalid lead input returned 400 |
+| `npm outdated --json`                               | Empty result for the declared direct dependencies                                                 |
+| `npm ls --depth=0`                                  | Passed, no invalid direct dependencies                                                            |
+| `git diff --check origin/main...HEAD`               | Passed                                                                                            |
 
 The final tooling correction was checked in the separate worktree again: route
 types are generated before explicitly invoking TypeScript 7. Next.js also runs
@@ -68,12 +68,12 @@ The user-requested [Frontend Checklist MCP](https://mcp.frontendchecklist.io)
 provided its launch workflow and `review_code` checks for rendered HTML, filtered
 to high/critical priority. Each page received 105 checks:
 
-| Page | Raw findings | Critical / high |
-| --- | --- | --- |
-| Home | 10 | 1 / 9 |
-| Services | 9 | 0 / 9 |
-| Treatments | 10 | 1 / 9 |
-| Booking | 12 | 1 / 11 |
+| Page       | Raw findings | Critical / high |
+| ---------- | ------------ | --------------- |
+| Home       | 10           | 1 / 9           |
+| Services   | 9            | 0 / 9           |
+| Treatments | 10           | 1 / 9           |
+| Booking    | 12           | 1 / 11          |
 
 Home exceeded the service's 100 KB request limit; its inline hydration scripts
 were removed for the semantic HTML review. Production scripts were independently

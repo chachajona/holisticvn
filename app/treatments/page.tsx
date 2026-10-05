@@ -23,13 +23,30 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
 
-const robotoSlab = Roboto_Slab({ subsets: ["vietnamese", "latin"], weight: ["200", "300", "400", "500"], variable: "--font-display", display: "swap" });
-const robotoSerif = Roboto_Serif({ subsets: ["vietnamese", "latin"], weight: ["300", "400", "500"], style: ["italic", "normal"], variable: "--font-accent", display: "swap" });
-const robotoMono = Roboto_Mono({ subsets: ["vietnamese", "latin"], weight: ["300", "400", "500"], variable: "--font-mono", display: "swap" });
+const robotoSlab = Roboto_Slab({
+  subsets: ["vietnamese", "latin"],
+  weight: ["200", "300", "400", "500"],
+  variable: "--font-display",
+  display: "swap",
+});
+const robotoSerif = Roboto_Serif({
+  subsets: ["vietnamese", "latin"],
+  weight: ["300", "400", "500"],
+  style: ["italic", "normal"],
+  variable: "--font-accent",
+  display: "swap",
+});
+const robotoMono = Roboto_Mono({
+  subsets: ["vietnamese", "latin"],
+  weight: ["300", "400", "500"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata = createMetadata({
   title: "Phương pháp",
-  description: "Bốn nhóm kỹ thuật Holistic phối hợp theo tình trạng cụ thể của bạn: trị liệu thủ công, điện trị liệu, tập luyện phục hồi, ngâm lạnh & hồng ngoại.",
+  description:
+    "Bốn nhóm kỹ thuật Holistic phối hợp theo tình trạng cụ thể của bạn: trị liệu thủ công, điện trị liệu, tập luyện phục hồi, ngâm lạnh & hồng ngoại.",
   path: "/treatments",
 });
 
@@ -78,23 +95,41 @@ const methods = [
 
 export default function TreatmentsPage() {
   return (
-    <main id="main" className={`${styles.root} ${robotoSlab.variable} ${robotoSerif.variable} ${robotoMono.variable}`}>
+    <main
+      id="main"
+      className={`${styles.root} ${robotoSlab.variable} ${robotoSerif.variable} ${robotoMono.variable}`}
+    >
       <section className={styles.hero}>
         <div className={styles.heroCard}>
-          <Image src="/images/acupuncture.jpg" alt="Chuyên viên thực hiện kỹ thuật trị liệu tay tại Holistic" fill priority sizes="100vw" style={{ objectFit: "cover" }} />
+          <Image
+            src="/images/acupuncture.jpg"
+            alt="Chuyên viên thực hiện kỹ thuật trị liệu tay tại Holistic"
+            fill
+            priority
+            sizes="100vw"
+            style={{ objectFit: "cover" }}
+          />
           <div className={styles.heroScrim} />
           <div className={styles.heroContent}>
-            <div className={styles.breadcrumb}><Link href="/">Trang chủ</Link> &nbsp;/&nbsp; Phương pháp</div>
+            <div className={styles.breadcrumb}>
+              <Link href="/">Trang chủ</Link> &nbsp;/&nbsp; Phương pháp
+            </div>
             <h1>Phương pháp</h1>
-            <p className={styles.heroBody}>Mỗi kỹ thuật giải quyết một vấn đề khác nhau. Chuyên viên chọn và phối hợp phương pháp dựa trên tình trạng cụ thể của bạn, không áp một công thức chung cho tất cả.</p>
+            <p className={styles.heroBody}>
+              Mỗi kỹ thuật giải quyết một vấn đề khác nhau. Chuyên viên chọn và phối hợp phương pháp
+              dựa trên tình trạng cụ thể của bạn, không áp một công thức chung cho tất cả.
+            </p>
           </div>
         </div>
       </section>
 
       <nav className={styles.index} aria-label="Bốn nhóm kỹ thuật">
-        <div className={styles.indexHead}><span>Bốn nhóm kỹ thuật</span><i /></div>
+        <div className={styles.indexHead}>
+          <span>Bốn nhóm kỹ thuật</span>
+          <i />
+        </div>
         <div className={styles.indexGrid}>
-          {methods.map(method => (
+          {methods.map((method) => (
             <a href={`#${method.id}`} key={method.id} className={styles.indexCard}>
               <span className={styles.indexNumeral}>{method.numeral}</span>
               <strong>{method.title}</strong>
@@ -115,10 +150,19 @@ export default function TreatmentsPage() {
               <div className={styles.methodCopy} style={{ order: method.imageLeft ? 2 : 1 }}>
                 <h3>{method.title}</h3>
                 <p>{method.body}</p>
-                <div className={styles.methodTags}>{method.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+                <div className={styles.methodTags}>
+                  {method.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
               </div>
               <div className={styles.methodMedia} style={{ order: method.imageLeft ? 1 : 2 }}>
-                <Image src={method.image} alt={method.title} fill sizes="(max-width: 980px) 100vw, 45vw" />
+                <Image
+                  src={method.image}
+                  alt={method.title}
+                  fill
+                  sizes="(max-width: 980px) 100vw, 45vw"
+                />
               </div>
             </div>
           </div>
@@ -130,7 +174,9 @@ export default function TreatmentsPage() {
           <div className={styles.noteCopy}>
             <h2>Phần lớn lộ trình kết hợp 2–3 phương pháp trong cùng một buổi.</h2>
           </div>
-          <Link href="/booking" className={styles.primaryButton}>Đặt buổi đánh giá</Link>
+          <Link href="/booking" className={styles.primaryButton}>
+            Đặt buổi đánh giá
+          </Link>
         </div>
       </section>
 
@@ -141,15 +187,19 @@ export default function TreatmentsPage() {
             <p>Buổi đánh giá đầu tiên sẽ xác định đúng kỹ thuật cho tình trạng của bạn.</p>
           </div>
           <div className={styles.ctaActions}>
-            <Link href="/booking" className={styles.lightButton}>Đặt lịch hẹn</Link>
-            <Link href="/contact" className={styles.darkOutlineButton}>Liên hệ</Link>
+            <Link href="/booking" className={styles.lightButton}>
+              Đặt lịch hẹn
+            </Link>
+            <Link href="/contact" className={styles.darkOutlineButton}>
+              Liên hệ
+            </Link>
           </div>
         </div>
       </section>
 
       <HolisticFooter
         column2Label="PHƯƠNG PHÁP"
-        column2Links={methods.map(m => [m.title, `/treatments#${m.id}`] as [string, string])}
+        column2Links={methods.map((m) => [m.title, `/treatments#${m.id}`] as [string, string])}
       />
     </main>
   );
