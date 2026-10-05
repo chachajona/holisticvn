@@ -1,9 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { createMetadata } from "@/lib/seo";
-import { treatments } from "@/lib/content";
-import { HolisticFooter } from "@/components/holistic-footer";
+import { serviceAnchor, treatments } from "@/lib/content";
 import styles from "./services.module.css";
 
 /*
@@ -24,26 +22,6 @@ FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
-
-const robotoSlab = Roboto_Slab({
-  subsets: ["vietnamese", "latin"],
-  weight: ["200", "300", "400", "500"],
-  variable: "--font-display",
-  display: "swap",
-});
-const robotoSerif = Roboto_Serif({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  style: ["italic", "normal"],
-  variable: "--font-accent",
-  display: "swap",
-});
-const robotoMono = Roboto_Mono({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata = createMetadata({
   title: "Dịch vụ",
@@ -82,19 +60,19 @@ function CategoryIcon({ type }: { type: "therapy" | "training" | "recovery" }) {
 
 const categories = [
   {
-    id: "svc-therapy",
+    id: serviceAnchor.therapy,
     icon: "therapy" as const,
     title: "Trị liệu",
     copy: "Giảm đau và điều chỉnh cấu trúc bằng tay và thiết bị hỗ trợ chuyên sâu.",
   },
   {
-    id: "svc-training",
+    id: serviceAnchor.training,
     icon: "training" as const,
     title: "Tập luyện",
     copy: "Bài tập điều chỉnh tư thế và tăng sức mạnh, cá nhân hoá theo cơ thể bạn.",
   },
   {
-    id: "svc-recovery",
+    id: serviceAnchor.recovery,
     icon: "recovery" as const,
     title: "Thư giãn & hồi phục",
     copy: "Ngâm lạnh, hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
@@ -109,7 +87,7 @@ function treatmentLinks(slugs: string[]) {
 
 const dives = [
   {
-    id: "svc-therapy",
+    id: serviceAnchor.therapy,
     title: "Trị liệu bằng tay",
     body: "Kỹ thuật manual therapy chuyên sâu giúp giảm đau vai gáy, cột sống và khớp — kết hợp đánh giá tư thế và vận động trước khi can thiệp.",
     bullets: [
@@ -123,7 +101,7 @@ const dives = [
     related: treatmentLinks(["dry-needling", "cupping", "iastm"]),
   },
   {
-    id: "svc-training",
+    id: serviceAnchor.training,
     title: "Corrective exercise 1-1",
     body: "Chương trình tập cá nhân hoá, tăng dần cường độ theo tuần — điều chỉnh tư thế, ổn định lõi và xây dựng sức mạnh bền vững.",
     bullets: [
@@ -137,7 +115,7 @@ const dives = [
     related: [],
   },
   {
-    id: "svc-recovery",
+    id: serviceAnchor.recovery,
     title: "Ngâm lạnh & hồng ngoại",
     body: "Giảm sưng, giảm đau nhức cơ và tăng tốc hồi phục sau các buổi tập nặng hoặc thi đấu — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
     bullets: [
@@ -154,10 +132,7 @@ const dives = [
 
 export default function ServicesPage() {
   return (
-    <main
-      id="main"
-      className={`${styles.root} ${robotoSlab.variable} ${robotoSerif.variable} ${robotoMono.variable}`}
-    >
+    <main id="main" className={styles.root}>
       <section className={styles.hero}>
         <div className={styles.heroCard}>
           <Image
@@ -272,11 +247,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
-
-      <HolisticFooter
-        column2Label="DỊCH VỤ"
-        column2Links={dives.map((d) => [d.title, `/services#${d.id}`] as [string, string])}
-      />
     </main>
   );
 }

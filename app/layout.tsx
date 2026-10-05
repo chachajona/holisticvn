@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Roboto_Mono, Roboto_Serif } from "next/font/google";
+import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import "@/app/globals.css";
-import { ChatWidgets } from "@/components/chat-widgets";
-import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleTagManager } from "@/components/gtm";
+import { HolisticFooter } from "@/components/holistic-footer";
 import { SiteChrome } from "@/components/site-chrome";
 import { SiteDataProvider } from "@/components/site-data";
 import { getPublicSiteData } from "@/lib/sanity";
 
+const navDisplay = Roboto_Slab({
+  subsets: ["vietnamese", "latin"],
+  weight: ["200", "300", "400", "500"],
+  variable: "--font-display",
+  display: "swap",
+});
 const navSerif = Roboto_Serif({
   subsets: ["vietnamese", "latin"],
   weight: ["300", "400", "500"],
@@ -36,15 +41,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const data = await getPublicSiteData();
   return (
     <html lang="vi">
-      <body className={`${navSerif.variable} ${navMono.variable}`}>
+      <body className={`${navDisplay.variable} ${navSerif.variable} ${navMono.variable}`}>
         <a className="skip" href="#main">
           Bỏ qua điều hướng
         </a>
         <SiteDataProvider data={data}>
           <GoogleTagManager />
-          <SiteChrome>{children}</SiteChrome>
-          <ChatWidgets />
-          <CookieConsent />
+          <SiteChrome footer={<HolisticFooter />}>{children}</SiteChrome>
         </SiteDataProvider>
       </body>
     </html>

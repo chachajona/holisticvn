@@ -1,11 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
-import { HolisticFooter } from "@/components/holistic-footer";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
 import {
@@ -44,26 +42,6 @@ craft-floor's unconditional ban, even though the comp used them throughout.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
-
-const robotoSlab = Roboto_Slab({
-  subsets: ["vietnamese", "latin"],
-  weight: ["200", "300", "400", "500"],
-  variable: "--font-display",
-  display: "swap",
-});
-const robotoSerif = Roboto_Serif({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  style: ["italic", "normal"],
-  variable: "--font-accent",
-  display: "swap",
-});
-const robotoMono = Roboto_Mono({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata = createMetadata({
   title: "Trị liệu, tập luyện & thư giãn toàn diện",
@@ -344,10 +322,7 @@ function Stars({ count }: { count: number }) {
 export default async function HomePage() {
   const { site } = await getPublicSiteData();
   return (
-    <main
-      id="main"
-      className={`${styles.root} ${robotoSlab.variable} ${robotoSerif.variable} ${robotoMono.variable}`}
-    >
+    <main id="main" className={styles.root}>
       <section className={styles.hero}>
         <div className={styles.heroCard}>
           <HeroMobileStage steps={heroPath} />
@@ -676,16 +651,6 @@ export default async function HomePage() {
           </span>
         </div>
       </div>
-
-      <HolisticFooter
-        column2Label="DỊCH VỤ"
-        column2Links={[
-          ["Trị liệu bằng tay", "/services#svc-therapy"],
-          ["Corrective exercise", "/services#svc-training"],
-          ["Ngâm lạnh & hồng ngoại", "/services#svc-recovery"],
-          ["Xem tất cả phương pháp", "/treatments"],
-        ]}
-      />
     </main>
   );
 }

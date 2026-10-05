@@ -173,7 +173,7 @@ export function HolisticNav() {
                   key={branch.name}
                   href={mapsHref(branch.address)}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   <strong>{branch.name}</strong>
                   <span>{noBreakAddress(branch.address)}</span>

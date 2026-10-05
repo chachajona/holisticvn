@@ -1,23 +1,27 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { ChatWidgets } from "@/components/chat-widgets";
+import { CookieConsent } from "@/components/cookie-consent";
 import { HolisticNav } from "@/components/holistic-nav";
-import { SiteFooter } from "@/components/site-footer";
 
-export function SiteChrome({ children }: { children: React.ReactNode }) {
+export function SiteChrome({
+  children,
+  footer,
+}: {
+  children: React.ReactNode;
+  footer: React.ReactNode;
+}) {
   const pathname = usePathname();
-  const editorialPage = pathname === "/" || pathname === "/services" || pathname === "/treatments";
+  // Studio is an internal tool: no marketing nav, footer, chat or consent banner around it.
+  if (pathname.startsWith("/studio")) return children;
   return (
     <>
       <HolisticNav />
-      {editorialPage ? (
-        children
-      ) : (
-        <>
-          <div className="page">{children}</div>
-          <SiteFooter />
-        </>
-      )}
+      <div className="page">{children}</div>
+      {footer}
+      <ChatWidgets />
+      <CookieConsent />
     </>
   );
 }
