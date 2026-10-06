@@ -65,6 +65,30 @@ export const branches = [
   { name: "Chi nhánh Xóm Chiếu", address: site.addressSecondary },
 ];
 
+// Section ids shared by the footer links and the /services and /treatments pages, so they cannot drift apart.
+export const serviceAnchor = {
+  therapy: "svc-therapy",
+  training: "svc-training",
+  recovery: "svc-recovery",
+} as const;
+export const methodAnchor = {
+  manual: "mtd-manual",
+  electro: "mtd-electro",
+  rehab: "mtd-rehab",
+  cold: "mtd-cold",
+} as const;
+export const footerServices: Array<[string, string]> = [
+  ["Trị liệu bằng tay", `/services#${serviceAnchor.therapy}`],
+  ["Corrective exercise 1-1", `/services#${serviceAnchor.training}`],
+  ["Ngâm lạnh & hồng ngoại", `/services#${serviceAnchor.recovery}`],
+];
+export const footerMethods: Array<[string, string]> = [
+  ["Trị liệu thủ công", `/treatments#${methodAnchor.manual}`],
+  ["Điện trị liệu", `/treatments#${methodAnchor.electro}`],
+  ["Tập luyện phục hồi", `/treatments#${methodAnchor.rehab}`],
+  ["Ngâm lạnh & hồng ngoại", `/treatments#${methodAnchor.cold}`],
+];
+
 export const reviewSummary = { average: 5, count: 41 };
 
 export const services: Service[] = [

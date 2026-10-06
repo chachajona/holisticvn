@@ -78,7 +78,7 @@ export function ChatWidgets() {
         <a
           href={`https://zalo.me/${zalo}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className={`${styles.button} ${styles.zalo}`}
           aria-label="Mở chat Zalo"
           title="Chat Zalo"
@@ -93,7 +93,7 @@ export function ChatWidgets() {
         <a
           href={`https://m.me/${messenger}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className={`${styles.button} ${styles.messenger}`}
           aria-label="Mở chat Messenger"
           title="Chat Messenger"

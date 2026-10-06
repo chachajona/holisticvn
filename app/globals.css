@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&display=swap");
-
 :root {
   --ink: #1b2520;
   --moss: #314d3c;
@@ -20,7 +18,8 @@ body {
   margin: 0;
   background: var(--milk);
   color: var(--ink);
-  font-family: Manrope, sans-serif;
+  font-family: var(--font-accent), Georgia, serif;
+  font-weight: 300;
 }
 a {
   color: inherit;
@@ -42,15 +41,15 @@ textarea {
 .eyebrow {
   color: var(--coral);
   font:
-    500 0.72rem/1.2 "DM Mono",
+    500 0.72rem/1.2 var(--font-mono),
     monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .display {
-  font-family: "Playfair Display", Georgia, serif;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.015em;
 }
 .button {
   display: inline-flex;
@@ -92,7 +91,7 @@ textarea {
 .section-heading h2 {
   font-size: clamp(2.4rem, 5vw, 5rem);
   margin: 0.7rem 0 1rem;
-  line-height: 0.96;
+  line-height: 1.1;
 }
 .section-heading p {
   max-width: 560px;
@@ -135,110 +134,6 @@ textarea {
   }
 }
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  backdrop-filter: blur(16px);
-  background: color-mix(in srgb, var(--milk) 88%, transparent);
-  border-bottom: 1px solid rgba(27, 37, 32, 0.08);
-}
-.site-header__inner {
-  min-height: 74px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-.brand {
-  line-height: 0;
-}
-.brand img {
-  height: 42px;
-  width: auto;
-  object-fit: contain;
-}
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-.nav a {
-  transition: color 0.2s;
-}
-.nav a:hover {
-  color: var(--coral);
-}
-.header-cta {
-  padding: 9px 0 9px 16px;
-  border-left: 1px solid var(--line);
-  font-size: 0.79rem;
-  font-weight: 700;
-}
-.header-cta span {
-  color: var(--coral);
-  font-size: 1.1rem;
-}
-.nav__mobile-cta,
-.menu-button {
-  display: none;
-}
-.site-footer {
-  background: var(--ink);
-  color: var(--milk);
-  padding: 78px 0 26px;
-}
-.site-footer__grid {
-  display: grid;
-  grid-template-columns: 1.35fr 0.8fr 0.9fr 1fr;
-  gap: 35px;
-}
-.site-footer__grid > div {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 11px;
-  font-size: 0.87rem;
-  line-height: 1.6;
-}
-.site-footer__grid .eyebrow {
-  color: #b5c3a8;
-  margin: 0 0 5px;
-}
-.site-footer__intro {
-  max-width: 280px;
-  color: #c2c8bd;
-  line-height: 1.7;
-}
-.site-footer .button {
-  border-color: #dce6d5;
-  background: transparent;
-  color: white;
-  margin-top: 6px;
-}
-.site-footer .button:hover {
-  background: var(--coral);
-  border-color: var(--coral);
-}
-.site-footer__bottom {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  border-top: 1px solid rgba(244, 242, 235, 0.18);
-  margin-top: 60px;
-  padding-top: 20px;
-  color: #9ca99d;
-  font:
-    0.7rem "DM Mono",
-    monospace;
-}
-.site-footer__bottom div {
-  display: flex;
-  gap: 18px;
-}
-
 .cookie {
   position: fixed;
   z-index: 60;
@@ -249,6 +144,10 @@ textarea {
   color: var(--milk);
   padding: 20px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+}
+/* keep the footer's last links and CTA scrollable above the fixed banner until a choice is made */
+body:has(.cookie) footer {
+  padding-bottom: calc(var(--cookie-h, 134px) + 56px);
 }
 .cookie p {
   margin: 0 0 14px;
@@ -284,7 +183,7 @@ textarea {
   gap: 7px;
   color: var(--ink);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 .lead-form small {
   color: var(--muted);
@@ -299,6 +198,7 @@ textarea {
   padding: 13px;
   outline: none;
   color: var(--ink);
+  font-weight: 300;
 }
 .lead-form input:focus,
 .lead-form textarea:focus,
@@ -309,7 +209,7 @@ textarea {
 .lead-form__details summary {
   color: var(--ink);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
 }
 .lead-form__details summary:focus-visible {
@@ -338,58 +238,6 @@ textarea {
 }
 .form-message--success {
   color: var(--moss);
-}
-@media (max-width: 760px) {
-  .nav {
-    position: absolute;
-    top: 74px;
-    left: 0;
-    width: 100%;
-    padding: 22px;
-    background: var(--milk);
-    display: none;
-    align-items: stretch;
-    flex-direction: column;
-    border-bottom: 1px solid var(--line);
-  }
-  .nav--open {
-    display: flex;
-  }
-  .nav__mobile-cta {
-    display: block;
-    margin-top: 8px;
-    color: var(--coral);
-  }
-  .header-cta {
-    display: none;
-  }
-  .menu-button {
-    display: grid;
-    width: 40px;
-    height: 40px;
-    place-content: center;
-    gap: 5px;
-    padding: 0;
-    border: 1px solid var(--line);
-    background: transparent;
-  }
-  .menu-button i {
-    width: 16px;
-    height: 1px;
-    background: var(--ink);
-  }
-  .site-footer__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .site-footer__grid > div:first-child {
-    grid-column: 1 / -1;
-  }
-  .site-footer__bottom {
-    flex-direction: column;
-  }
-  .site-footer__bottom div {
-    flex-wrap: wrap;
-  }
 }
 
 .hero {
@@ -434,7 +282,7 @@ textarea {
   gap: 8px;
   align-items: center;
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 500;
   border-bottom: 1px solid var(--ink);
   padding-bottom: 4px;
 }
@@ -476,7 +324,7 @@ textarea {
   bottom: 8%;
   color: var(--coral);
   font:
-    500 1.05rem/1.05 "DM Mono",
+    500 1.05rem/1.05 var(--font-mono),
     monospace;
   text-transform: uppercase;
   letter-spacing: -0.08em;
@@ -491,7 +339,7 @@ textarea {
   color: #edf2e9;
   padding: 16px;
   font:
-    500 0.65rem "DM Mono",
+    500 0.65rem var(--font-mono),
     monospace;
   letter-spacing: 0.12em;
 }
@@ -505,7 +353,7 @@ textarea {
 }
 .split-intro h2 {
   font-size: clamp(2.7rem, 5.4vw, 5.9rem);
-  line-height: 0.95;
+  line-height: 1.1;
   margin: 0 0 24px;
 }
 .split-intro p:not(.eyebrow) {
@@ -535,7 +383,7 @@ textarea {
 .service-row > span {
   color: var(--coral);
   font:
-    0.72rem "DM Mono",
+    0.72rem var(--font-mono),
     monospace;
 }
 .service-row h3 {
@@ -584,13 +432,13 @@ textarea {
   background: var(--milk);
   padding: 7px 8px;
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .treatment-card h3 {
   margin: 17px 0 7px;
   font:
-    600 1.5rem "Playfair Display",
+    400 1.5rem var(--font-display),
     serif;
 }
 .treatment-card p {
@@ -622,7 +470,7 @@ textarea {
 }
 .statement .display {
   font-size: clamp(3rem, 6.1vw, 6.7rem);
-  line-height: 0.9;
+  line-height: 1.1;
   margin: 18px 0 38px;
 }
 .statement .button--light {
@@ -649,7 +497,7 @@ textarea {
 }
 .quote > span {
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
   color: var(--coral);
 }
@@ -660,7 +508,7 @@ textarea {
 }
 .quote figcaption {
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 .quote figcaption small {
   display: block;
@@ -697,7 +545,7 @@ textarea {
 }
 .journal__list span {
   font:
-    0.64rem "DM Mono",
+    0.64rem var(--font-mono),
     monospace;
   color: var(--coral);
 }
@@ -788,7 +636,7 @@ textarea {
 }
 .page-hero h1 {
   font-size: clamp(3.4rem, 6.3vw, 6.8rem);
-  line-height: 0.9;
+  line-height: 1.1;
   margin: 13px 0 24px;
 }
 .page-hero p:not(.eyebrow) {
@@ -820,7 +668,7 @@ textarea {
 .service-detail > span {
   color: var(--coral);
   font:
-    0.7rem "DM Mono",
+    0.7rem var(--font-mono),
     monospace;
 }
 .service-detail h2 {
@@ -846,7 +694,7 @@ textarea {
   border: 1px solid var(--line);
   padding: 8px 10px;
   font:
-    0.7rem "DM Mono",
+    0.7rem var(--font-mono),
     monospace;
 }
 .service-detail__tags b {
@@ -878,7 +726,7 @@ textarea {
 .treatment-index__item > span {
   color: var(--coral);
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .treatment-index h2 {
@@ -909,7 +757,7 @@ textarea {
 }
 .back-link {
   font:
-    0.7rem "DM Mono",
+    0.7rem var(--font-mono),
     monospace;
   color: #cdd9c6;
 }
@@ -919,7 +767,7 @@ textarea {
 }
 .treatment-detail-hero h1 {
   font-size: clamp(3.7rem, 6vw, 6.8rem);
-  line-height: 0.9;
+  line-height: 1.1;
   margin: 15px 0 22px;
 }
 .treatment-detail-hero p:not(.eyebrow) {
@@ -933,7 +781,7 @@ textarea {
   margin-top: 25px;
   padding-top: 12px;
   font:
-    0.7rem "DM Mono",
+    0.7rem var(--font-mono),
     monospace;
 }
 .treatment-detail-hero__image {
@@ -952,7 +800,7 @@ textarea {
 }
 .treatment-detail-grid h2 {
   font-size: clamp(2.5rem, 4.5vw, 5rem);
-  line-height: 0.95;
+  line-height: 1.1;
   margin: 13px 0 20px;
 }
 .treatment-detail-grid p:not(.eyebrow) {
@@ -972,13 +820,13 @@ textarea {
   display: grid;
   grid-template-columns: 48px 1fr;
   font:
-    500 1.2rem "Playfair Display",
+    400 1.2rem var(--font-display),
     serif;
 }
 .treatment-detail-grid li span {
   color: var(--coral);
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .booking-split {
@@ -988,7 +836,7 @@ textarea {
 }
 .booking-split h2 {
   font-size: clamp(2.8rem, 4.3vw, 5.2rem);
-  line-height: 0.94;
+  line-height: 1.1;
   margin: 14px 0 20px;
 }
 .booking-split p:not(.eyebrow) {
@@ -1012,7 +860,7 @@ textarea {
 }
 .about-story h2 {
   font-size: clamp(2.7rem, 4.8vw, 5.4rem);
-  line-height: 0.94;
+  line-height: 1.1;
   margin: 13px 0 24px;
 }
 .about-story p:not(.eyebrow) {
@@ -1040,7 +888,7 @@ textarea {
 .principles span {
   color: #b9d1a4;
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .principles h3 {
@@ -1134,12 +982,12 @@ textarea {
 .post-card > span {
   color: var(--coral);
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .post-card h2 {
   font-size: clamp(2.2rem, 3.5vw, 4rem);
-  line-height: 0.96;
+  line-height: 1.1;
   margin: 23px 0 15px;
 }
 .post-card p {
@@ -1182,7 +1030,7 @@ textarea {
   display: block;
   margin-top: 32px;
   font:
-    0.7rem "DM Mono",
+    0.7rem var(--font-mono),
     monospace;
   color: var(--coral);
 }
@@ -1216,7 +1064,7 @@ textarea {
 }
 .booking-page h1 {
   font-size: clamp(3.4rem, 5.8vw, 6.5rem);
-  line-height: 0.9;
+  line-height: 1.1;
   margin: 15px 0 25px;
 }
 .booking-page > div > div > p:not(.eyebrow) {
@@ -1243,7 +1091,7 @@ textarea {
 .booking-page__steps b {
   color: var(--coral);
   font:
-    0.65rem "DM Mono",
+    0.65rem var(--font-mono),
     monospace;
 }
 .contact-details {
@@ -1253,7 +1101,7 @@ textarea {
   font-size: 1rem;
 }
 .contact-details a {
-  font-weight: 700;
+  font-weight: 500;
 }
 .policy {
   padding: 110px 0;
@@ -1263,12 +1111,12 @@ textarea {
 }
 .policy h1 {
   font-size: clamp(3.3rem, 6vw, 6.4rem);
-  line-height: 0.9;
+  line-height: 1.1;
   margin: 13px 0 23px;
 }
 .policy__intro {
   font:
-    1.45rem/1.45 "Playfair Display",
+    300 1.45rem/1.45 var(--font-display),
     serif;
   max-width: 660px;
 }

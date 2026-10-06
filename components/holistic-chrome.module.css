@@ -434,12 +434,15 @@
 
 /* ---------- Footer ---------- */
 .footer {
+  --ink: #3a2a24;
+  --clay-deep: #744d40;
+  --sage: #48614c;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   padding: 56px max(24px, calc((100vw - 1240px) / 2)) 28px;
   background: var(--sage);
-  color: rgba(247, 243, 240, 0.78);
+  color: rgba(247, 243, 240, 0.8);
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -475,6 +478,16 @@
   height: 44px;
   display: block;
   align-self: flex-start;
+}
+.footerTagline {
+  max-width: 34ch;
+  font: 300 14.5px/1.55 var(--font-accent);
+  color: rgba(247, 243, 240, 0.8);
+}
+.footerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 .footerContact {
   display: flex;
@@ -545,7 +558,7 @@
 .footerColLabel {
   font: 500 11.5px var(--font-mono);
   letter-spacing: 0.16em;
-  color: rgba(247, 243, 240, 0.5);
+  color: rgba(247, 243, 240, 0.8);
 }
 .footerHours {
   display: flex;
@@ -603,7 +616,7 @@
   margin: 0 auto;
   width: 100%;
   font: 400 11.5px var(--font-mono);
-  color: rgba(247, 243, 240, 0.5);
+  color: rgba(247, 243, 240, 0.8);
 }
 .footerBottom div {
   display: flex;

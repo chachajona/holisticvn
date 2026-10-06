@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 const key = "holisticvn-cookie-consent-v1";
 const getVisible = () =>
@@ -19,15 +19,28 @@ const subscribe = (onChange: () => void) => {
   };
 };
 
-export function CookieConsent() {
-  const visible = useSyncExternalStore(subscribe, getVisible, getServerVisible);
-  if (!visible) return null;
+function CookieBanner() {
+  const ref = useRef<HTMLElement>(null);
+  // Publish the banner height so the footer can reserve exactly that much room, even when text is enlarged.
+  useEffect(() => {
+    const banner = ref.current;
+    if (!banner) return;
+    const root = document.documentElement.style;
+    const update = () => root.setProperty("--cookie-h", `${banner.offsetHeight}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(banner);
+    return () => {
+      observer.disconnect();
+      root.removeProperty("--cookie-h");
+    };
+  }, []);
   const setConsent = (value: "accepted" | "rejected") => {
     document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Lax`;
     window.location.reload();
   };
   return (
-    <aside className="cookie" aria-label="Tùy chọn cookie">
+    <aside ref={ref} className="cookie" aria-label="Tùy chọn cookie">
       <p>Chúng tôi chỉ dùng analytics khi bạn đồng ý, để hiểu các trang và CTA hữu ích hơn.</p>
       <div>
         <button className="cookie__text" onClick={() => setConsent("rejected")}>
@@ -39,4 +52,9 @@ export function CookieConsent() {
       </div>
     </aside>
   );
+}
+
+export function CookieConsent() {
+  const visible = useSyncExternalStore(subscribe, getVisible, getServerVisible);
+  return visible ? <CookieBanner /> : null;
 }

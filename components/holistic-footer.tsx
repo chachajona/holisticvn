@@ -1,19 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { mapsHref, noBreakAddress } from "@/lib/content";
+import { footerMethods, footerServices, mapsHref, noBreakAddress } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
 import { FacebookIcon, InstagramIcon, ZaloIcon } from "@/components/brand-icons";
 import styles from "./holistic-chrome.module.css";
 
 const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
 
-export async function HolisticFooter({
-  column2Label,
-  column2Links,
-}: {
-  column2Label: string;
-  column2Links: Array<[string, string]>;
-}) {
+export async function HolisticFooter() {
   const { site, branches } = await getPublicSiteData();
   const phoneDigits = site.phone.replace(/\s+/g, "");
   return (
@@ -27,9 +21,18 @@ export async function HolisticFooter({
             height={470}
             className={styles.footerLogo}
           />
+          <p className={styles.footerTagline}>
+            Dịch vụ trị liệu &amp; huấn luyện thể chất. Cải thiện sức khoẻ vận động một cách khoa
+            học &amp; bền vững.
+          </p>
           <address className={styles.footerContact}>
             {branches.map((branch) => (
-              <a key={branch.name} href={mapsHref(branch.address)} target="_blank" rel="noreferrer">
+              <a
+                key={branch.name}
+                href={mapsHref(branch.address)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span className={styles.footerBranchName}>{branch.name}</span>
                 {noBreakAddress(branch.address)}
               </a>
@@ -41,7 +44,7 @@ export async function HolisticFooter({
             <a
               href={site.facebookUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               aria-label="Facebook Holistic"
             >
               <FacebookIcon />
@@ -49,7 +52,7 @@ export async function HolisticFooter({
             <a
               href={site.instagramUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               aria-label="Instagram Holistic"
             >
               <InstagramIcon />
@@ -58,7 +61,7 @@ export async function HolisticFooter({
               <a
                 href={`https://zalo.me/${site.zaloId}`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 aria-label="Zalo Holistic"
                 data-brand="zalo"
               >
@@ -67,12 +70,21 @@ export async function HolisticFooter({
             ) : null}
           </div>
         </div>
-        <div className={styles.footerCol}>
-          <span className={styles.footerColLabel}>{column2Label}</span>
-          {column2Links.map(([label, href]) => (
-            <Link key={href} href={href}>
-              {label}
-            </Link>
+        <div className={styles.footerGroup}>
+          {(
+            [
+              ["DỊCH VỤ", footerServices],
+              ["PHƯƠNG PHÁP", footerMethods],
+            ] as const
+          ).map(([label, links]) => (
+            <div key={label} className={styles.footerCol}>
+              <span className={styles.footerColLabel}>{label}</span>
+              {links.map(([text, href]) => (
+                <Link key={href} href={href}>
+                  {text}
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
         <div className={styles.footerCol}>
@@ -106,6 +118,7 @@ export async function HolisticFooter({
         <div>
           <Link href="/privacy-policy">Chính sách bảo mật</Link>
           <Link href="/terms-conditions">Điều khoản</Link>
+          <Link href="/cookie-policy">Cookie</Link>
         </div>
       </div>
     </footer>

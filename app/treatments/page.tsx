@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
+import { methodAnchor } from "@/lib/content";
 import { createMetadata } from "@/lib/seo";
-import { HolisticFooter } from "@/components/holistic-footer";
 import styles from "./treatments.module.css";
 
 /*
@@ -23,26 +22,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
 
-const robotoSlab = Roboto_Slab({
-  subsets: ["vietnamese", "latin"],
-  weight: ["200", "300", "400", "500"],
-  variable: "--font-display",
-  display: "swap",
-});
-const robotoSerif = Roboto_Serif({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  style: ["italic", "normal"],
-  variable: "--font-accent",
-  display: "swap",
-});
-const robotoMono = Roboto_Mono({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
 export const metadata = createMetadata({
   title: "Phương pháp",
   description:
@@ -52,7 +31,7 @@ export const metadata = createMetadata({
 
 const methods = [
   {
-    id: "mtd-manual",
+    id: methodAnchor.manual,
     numeral: "01",
     title: "Trị liệu thủ công",
     indexSubtitle: "Đau khớp, đau cơ, lệch tư thế",
@@ -62,7 +41,7 @@ const methods = [
     imageLeft: true,
   },
   {
-    id: "mtd-electro",
+    id: methodAnchor.electro,
     numeral: "02",
     title: "Điện trị liệu",
     indexSubtitle: "Viêm, sưng, đau mạn tính",
@@ -72,7 +51,7 @@ const methods = [
     imageLeft: false,
   },
   {
-    id: "mtd-rehab",
+    id: methodAnchor.rehab,
     numeral: "03",
     title: "Tập luyện phục hồi",
     indexSubtitle: "Yếu cơ, mất ổn định khớp",
@@ -82,7 +61,7 @@ const methods = [
     imageLeft: true,
   },
   {
-    id: "mtd-cold",
+    id: methodAnchor.cold,
     numeral: "04",
     title: "Ngâm lạnh & hồng ngoại",
     indexSubtitle: "Hồi phục sau vận động nặng",
@@ -95,10 +74,7 @@ const methods = [
 
 export default function TreatmentsPage() {
   return (
-    <main
-      id="main"
-      className={`${styles.root} ${robotoSlab.variable} ${robotoSerif.variable} ${robotoMono.variable}`}
-    >
+    <main id="main" className={styles.root}>
       <section className={styles.hero}>
         <div className={styles.heroCard}>
           <Image
@@ -196,11 +172,6 @@ export default function TreatmentsPage() {
           </div>
         </div>
       </section>
-
-      <HolisticFooter
-        column2Label="PHƯƠNG PHÁP"
-        column2Links={methods.map((m) => [m.title, `/treatments#${m.id}`] as [string, string])}
-      />
     </main>
   );
 }
