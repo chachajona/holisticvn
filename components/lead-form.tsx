@@ -26,7 +26,6 @@ export function LeadForm({ kind, treatment }: Props) {
         name: fields.get("name"),
         phone: fields.get("phone"),
         email: fields.get("email") || "",
-        branch: fields.get("branch") || "",
         message: fields.get("message") || "",
         treatment,
         source: window.location.pathname,
@@ -77,25 +76,14 @@ export function LeadForm({ kind, treatment }: Props) {
           placeholder="09xx xxx xxx"
         />
       </label>
-      {kind === "booking" ? (
-        <label>
-          <span>
-            Chi nhánh mong muốn <small>(không bắt buộc)</small>
-          </span>
-          <select name="branch" defaultValue="">
-            <option value="">Trao đổi khi gọi lại</option>
-            <option value="ban-co">Bàn Cờ</option>
-            <option value="xom-chieu">Xóm Chiếu</option>
-          </select>
-        </label>
-      ) : (
+      {kind !== "booking" ? (
         <label>
           <span>
             Email <small>(không bắt buộc)</small>
           </span>
           <input name="email" type="email" autoComplete="email" placeholder="ban@example.com" />
         </label>
-      )}
+      ) : null}
       {kind === "booking" ? (
         <details className="lead-form__details">
           <summary>
@@ -131,7 +119,7 @@ export function LeadForm({ kind, treatment }: Props) {
       >
         {state === "sent"
           ? kind === "booking"
-            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian và chi nhánh; đây chưa phải lịch hẹn."
+            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian tại cơ sở Lê Quốc Hưng; đây chưa phải lịch hẹn."
             : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn."
           : null}
         {state === "error" ? (

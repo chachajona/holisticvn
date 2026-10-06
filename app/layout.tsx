@@ -28,7 +28,7 @@ const navMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.vn"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com"),
   title: {
     default: "HolisticVN | Phục hồi để sống trọn nhịp của bạn",
     template: "%s | HolisticVN",

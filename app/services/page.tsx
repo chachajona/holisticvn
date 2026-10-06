@@ -25,8 +25,7 @@ review, the verdict, DESIGN.md, and every shipping raster carrying its provenanc
 
 export const metadata = createMetadata({
   title: "Dịch vụ",
-  description:
-    "Trị liệu, tập luyện và thư giãn — kết hợp trong cùng một lộ trình, theo sát bởi một chuyên viên.",
+  description: "Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.",
   path: "/services",
 });
 
@@ -105,7 +104,7 @@ const dives = [
     title: "Corrective exercise 1-1",
     body: "Chương trình tập cá nhân hoá, tăng dần cường độ theo tuần — điều chỉnh tư thế, ổn định lõi và xây dựng sức mạnh bền vững.",
     bullets: [
-      "Một chuyên viên theo sát toàn bộ lộ trình",
+      "Đồng hành xuyên suốt từ tư vấn đến tập luyện",
       "Kế hoạch tập điều chỉnh theo tiến độ hồi phục",
       "Phù hợp cả người mới bắt đầu và vận động viên",
     ],
@@ -150,8 +149,7 @@ export default function ServicesPage() {
             </div>
             <h1>Dịch vụ</h1>
             <p className={styles.heroBody}>
-              Trị liệu, tập luyện và thư giãn — kết hợp trong cùng một lộ trình, theo sát bởi một
-              chuyên viên.
+              Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.
             </p>
           </div>
         </div>
@@ -219,9 +217,7 @@ export default function ServicesPage() {
           <div className={styles.processCard}>
             <span className={styles.processNumeral}>02</span>
             <strong>Trị liệu &amp; tập luyện</strong>
-            <span>
-              Kết hợp các dịch vụ phù hợp trong một lộ trình duy nhất, theo sát bởi một chuyên viên.
-            </span>
+            <span>Kết hợp các dịch vụ phù hợp trên một lộ trình xuyên suốt.</span>
           </div>
           <div className={styles.processCard}>
             <span className={styles.processNumeral}>03</span>

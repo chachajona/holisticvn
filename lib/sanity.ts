@@ -136,12 +136,8 @@ export type PublicSiteData = { site: typeof fallbackSite; branches: typeof fallb
 export const getPublicSiteData = cache(async (): Promise<PublicSiteData> => {
   const settings = await getSiteSettings();
   if (!settings) return { site: fallbackSite, branches: fallbackBranches };
-  const locations = [...settings.locations].sort(
-    (a, b) => Number(b.isPrimary) - Number(a.isPrimary),
-  );
-  const branches = locations.length
-    ? locations.map(({ name, address }) => ({ name, address }))
-    : fallbackBranches;
+  // Owner confirmed one clinic on 2026-10-07; stale CMS locations must not restore closed sites.
+  const branches = fallbackBranches;
   return {
     branches,
     site: {
@@ -149,7 +145,6 @@ export const getPublicSiteData = cache(async (): Promise<PublicSiteData> => {
       phone: settings.contactPhone || fallbackSite.phone,
       email: settings.contactEmail || fallbackSite.email,
       address: branches[0]?.address || fallbackSite.address,
-      addressSecondary: branches[1]?.address || "",
       facebookUrl: settings.socialMedia.facebook || fallbackSite.facebookUrl,
       instagramUrl: settings.socialMedia.instagram || fallbackSite.instagramUrl,
       zaloId: settings.socialMedia.zalo || fallbackSite.zaloId,

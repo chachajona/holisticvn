@@ -5,7 +5,7 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, treatments] = await Promise.all([getPosts(), getTreatments()]);
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.vn";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com";
   const paths = [
     "",
     "/services",

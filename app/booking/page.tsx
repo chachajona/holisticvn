@@ -15,8 +15,8 @@ export default function BookingPage() {
             <p className="eyebrow">Đặt lịch tư vấn</p>
             <h1 className="display">Để Holistic gọi lại cho bạn.</h1>
             <p>
-              Để lại tên và số điện thoại. Nhân viên sẽ gọi lại, kiểm tra lịch tại chi nhánh phù hợp
-              rồi xác nhận với bạn. Gửi form chưa tạo lịch hẹn.
+              Để lại tên và số điện thoại. Nhân viên sẽ gọi lại, kiểm tra lịch tại cơ sở Lê Quốc
+              Hưng rồi xác nhận với bạn. Gửi form chưa tạo lịch hẹn.
             </p>
           </div>
           <div className="booking-page__form">

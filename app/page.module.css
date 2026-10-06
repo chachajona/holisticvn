@@ -856,41 +856,6 @@
   color: var(--muted);
 }
 
-/* ---------- Team ---------- */
-.team {
-  padding: 88px max(24px, calc((100vw - 1360px) / 2));
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 72px;
-  align-items: center;
-}
-.teamMedia {
-  height: 460px;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-}
-.teamMedia img {
-  object-fit: cover;
-}
-.teamCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 460px;
-}
-.teamCopy h2 {
-  font-size: clamp(1.6rem, 3vw, 36px);
-  line-height: 1.18;
-  color: var(--sage);
-}
-.teamCopy p {
-  margin: 0;
-  font-size: 16.5px;
-  line-height: 1.75;
-  color: var(--muted);
-}
-
 /* ---------- Testimonials ---------- */
 .testimonials {
   background: var(--warm-band);
@@ -909,10 +874,15 @@
   font-size: clamp(1.5rem, 2.6vw, 34px);
   color: var(--sage);
 }
-.testimonialsHead span {
+.testimonialsHead a {
   font: 500 11.5px var(--font-mono);
   letter-spacing: 0.14em;
-  color: var(--clay);
+  color: var(--clay-deep);
+  text-decoration: none;
+}
+.testimonialsHead a:hover,
+.testimonialsHead a:focus-visible {
+  text-decoration: underline;
 }
 .testimonialGrid {
   display: grid;
@@ -1088,16 +1058,12 @@
     padding: 0 28px 0 36px;
   }
   .introGrid,
-  .pathTop,
-  .team {
+  .pathTop {
     grid-template-columns: 1fr;
     gap: 36px;
   }
   .sketchOrnament {
     display: none;
-  }
-  .teamMedia {
-    order: -1;
   }
   .stepsGrid,
   .testimonialGrid {
@@ -1167,7 +1133,6 @@
   .services,
   .steps,
   .path,
-  .team,
   .testimonials,
   .compare {
     padding-inline: 20px;

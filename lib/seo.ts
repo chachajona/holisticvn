@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.vn";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com";
 
 export function createMetadata({
   title,
