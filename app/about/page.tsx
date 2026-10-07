@@ -54,6 +54,7 @@ export default function AboutPage() {
               src="/images/team.jpg"
               width={1920}
               height={1281}
+              quality={90}
               sizes="(max-width: 1360px) 100vw, 1360px"
               alt="Đội ngũ HolisticVN trong đồng phục xanh, chụp trước bảng hiệu holistic rehab & performance"
             />
