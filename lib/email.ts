@@ -54,7 +54,6 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     rows: [
       ...(input.email ? [["Email", input.email] as [string, string]] : []),
       ...(input.treatment ? [["Liệu pháp", input.treatment] as [string, string]] : []),
-      ["Nguồn", input.source],
     ],
     note: input.message?.trim() || null,
     emptyNote: input.source === "home-hero" ? null : "Không có ghi chú.",
