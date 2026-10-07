@@ -867,6 +867,14 @@ body:has(.cookie) footer {
   color: var(--muted);
   line-height: 1.75;
 }
+.about-team {
+  margin-top: 32px;
+}
+.about-team img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
 .principles {
   background: var(--moss);
   color: var(--milk);

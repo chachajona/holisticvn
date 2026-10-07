@@ -4,7 +4,6 @@ import { Resend } from "resend";
 import { LeadNotificationEmail, type LeadEmailProps } from "@/emails/lead-notification";
 import type { LeadInput } from "@/lib/validation";
 
-const branchNames = { "ban-co": "Bàn Cờ", "xom-chieu": "Xóm Chiếu" } as const;
 const timeZone = "Asia/Ho_Chi_Minh";
 // the hero form has no name field, so it submits this placeholder
 const placeholderName = "Khách tư vấn nhanh";
@@ -25,7 +24,6 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
   const isBooking = input.kind === "booking";
   const hasName = input.name !== placeholderName;
   const phone = formatPhone(input.phone);
-  const branch = input.branch ? branchNames[input.branch] : "";
   const received = new Intl.DateTimeFormat("vi-VN", {
     timeZone,
     hour: "2-digit",
@@ -36,16 +34,11 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
   }).format(now);
 
   // the subject leads with the action and the number so staff know who to call before opening the email
-  const subject = [
-    "Gọi lại",
-    hasName ? input.name : "",
-    phone,
-    isBooking ? `Đặt lịch${branch ? ` · ${branch}` : ""}` : "Tư vấn",
-  ]
+  const subject = ["Gọi lại", hasName ? input.name : "", phone, isBooking ? "Đặt lịch" : "Tư vấn"]
     .filter(Boolean)
     .join(" · ");
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://www.holisticvn.com";
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com";
   const props: LeadEmailProps = {
     eyebrow:
       input.source === "home-hero"
@@ -60,7 +53,6 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     received,
     rows: [
       ...(input.email ? [["Email", input.email] as [string, string]] : []),
-      ...(branch ? [["Chi nhánh", branch] as [string, string]] : []),
       ...(input.treatment ? [["Liệu pháp", input.treatment] as [string, string]] : []),
       ["Nguồn", input.source],
     ],

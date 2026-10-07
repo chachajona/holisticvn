@@ -40,8 +40,24 @@ export default function AboutPage() {
               cùng nó.
             </p>
             <Link href="/booking" className="text-link">
-              Gặp đội ngũ HolisticVN <span>→</span>
+              Đặt buổi tư vấn đầu tiên <span>→</span>
             </Link>
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="shell">
+          <p className="eyebrow">Đội ngũ</p>
+          <h2 className="display">Đội ngũ HolisticVN</h2>
+          <div className="about-team">
+            <Image
+              src="/images/team.jpg"
+              width={1920}
+              height={1281}
+              quality={90}
+              sizes="(max-width: 760px) calc(100vw - 28px), (max-width: 1220px) calc(100vw - 40px), 1180px"
+              alt="Đội ngũ HolisticVN trong đồng phục xanh, chụp trước bảng hiệu holistic rehab & performance"
+            />
           </div>
         </div>
       </section>

@@ -45,13 +45,13 @@ describe("configured Sanity content", () => {
       expect((await getPosts())[0]).toMatchObject({ publishedAt: null, body: ["First", "Second"] });
     },
   );
-  it("exposes saved CMS contact settings to public consumers", async () => {
+  it("exposes CMS contact settings while keeping the owner-confirmed clinic", async () => {
     fetch.mockResolvedValue({
       contactPhone: "0901234567",
       contactEmail: "clinic@example.com",
       locations: [
-        { name: "Secondary", address: "B" },
-        { name: "Primary", address: "A", isPrimary: true },
+        { name: "Cơ sở Xóm Chiếu", address: "109/15 Lê Quốc Hưng, P. Xóm Chiếu, TP. Hồ Chí Minh" },
+        { name: "Chi nhánh Bàn Cờ", address: "205 Nguyễn Đình Chiểu", isPrimary: true },
       ],
       socialMedia: { instagram: "https://www.instagram.com/clinic/" },
     });
@@ -59,7 +59,10 @@ describe("configured Sanity content", () => {
     expect(site.phone).toBe("0901234567");
     expect(site.email).toBe("clinic@example.com");
     expect(site.instagramUrl).toBe("https://www.instagram.com/clinic/");
-    expect(branches[0].address).toBe("A");
+    expect(branches).toEqual([
+      { name: "Cơ sở Xóm Chiếu", address: "109/15 Lê Quốc Hưng, P. Xóm Chiếu, TP. Hồ Chí Minh" },
+    ]);
+    expect(site.address).toBe(branches[0].address);
   });
   it("renders CMS pages with omitted optional fields", async () => {
     fetch.mockResolvedValue([{ slug: "test-post", title: "Post" }]);

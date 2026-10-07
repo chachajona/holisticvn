@@ -18,7 +18,6 @@ export const leadSchema = z.object({
     .or(z.literal("")),
   message: z.string().trim().max(1000).optional().or(z.literal("")),
   treatment: z.string().trim().max(120).optional().or(z.literal("")),
-  branch: z.enum(["ban-co", "xom-chieu"]).optional().or(z.literal("")),
   source: z.string().trim().max(200).optional().default("website"),
   website: z.string().optional().default(""),
 });

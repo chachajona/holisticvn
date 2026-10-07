@@ -19,22 +19,23 @@ const navSerif = Roboto_Serif({
   style: ["italic", "normal"],
   variable: "--font-accent",
   display: "swap",
+  preload: false,
 });
 const navMono = Roboto_Mono({
   subsets: ["vietnamese", "latin"],
   weight: ["300", "400", "500"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.vn"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com"),
   title: {
     default: "HolisticVN | Phục hồi để sống trọn nhịp của bạn",
     template: "%s | HolisticVN",
   },
-  description:
-    "Physical therapy và trị liệu vận động theo lộ trình cá nhân hóa tại TP. Hồ Chí Minh.",
+  description: "Vật lý trị liệu theo lộ trình cá nhân hóa tại TP. Hồ Chí Minh.",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

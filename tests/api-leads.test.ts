@@ -15,7 +15,6 @@ const validLead = {
   kind: "booking",
   name: "Nguyễn An",
   phone: "0901234567",
-  branch: "ban-co",
   source: "/booking",
 };
 

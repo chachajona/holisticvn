@@ -13,7 +13,6 @@ const request = {
   kind: "booking" as const,
   name: "Nguyễn An",
   phone: "0901234567",
-  branch: "xom-chieu" as const,
   message: "Buổi chiều",
   treatment: "Dry Needling",
   source: "/booking",
@@ -34,9 +33,8 @@ describe("sendLeadNotification", () => {
     expect(await sendLeadNotification(request)).toEqual({ ok: true });
     const mail = send.mock.calls[0][0];
     expect(mail.to).toBe("clinic@example.com");
-    expect(mail.subject).toBe("Gọi lại · Nguyễn An · 0901 234 567 · Đặt lịch · Xóm Chiếu");
+    expect(mail.subject).toBe("Gọi lại · Nguyễn An · 0901 234 567 · Đặt lịch");
     expect(mail.replyTo).toBeUndefined();
-    expect(mail.text).toContain("Chi nhánh: Xóm Chiếu");
     expect(mail.text).toContain("Ghi chú của khách: Buổi chiều");
     expect(mail.text).toContain("Nguồn: /booking");
     expect(send.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
@@ -62,7 +60,6 @@ describe("sendLeadNotification", () => {
       ...request,
       kind: "contact",
       name: "Khách tư vấn nhanh",
-      branch: "",
       treatment: "",
       message: "",
       source: "home-hero",

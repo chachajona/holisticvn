@@ -124,7 +124,7 @@ export default function TreatmentsPage() {
             </div>
             <div className={styles.methodBody}>
               <div className={styles.methodCopy} style={{ order: method.imageLeft ? 2 : 1 }}>
-                <h3>{method.title}</h3>
+                <h2>{method.title}</h2>
                 <p>{method.body}</p>
                 <div className={styles.methodTags}>
                   {method.tags.map((tag) => (

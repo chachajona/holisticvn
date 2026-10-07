@@ -44,8 +44,7 @@ export const site = {
   name: "HolisticVN",
   phone: "082 895 9598",
   email: "Holisticrep9@gmail.com",
-  address: "205 Nguyễn Đình Chiểu, P. Bàn Cờ, TP. Hồ Chí Minh",
-  addressSecondary: "109/15 Lê Quốc Hưng, P. Xóm Chiếu, TP. Hồ Chí Minh",
+  address: "109/15 Lê Quốc Hưng, P. Xóm Chiếu, TP. Hồ Chí Minh",
   hours: "09:00 — 21:00",
   hoursNote: "Tất cả các ngày",
   facebookUrl: "https://www.facebook.com/holisticrep/",
@@ -60,10 +59,7 @@ export const mapsHref = (address: string) =>
 // keeps "P." / "TP." attached to the word that follows so a line never ends on the abbreviation
 export const noBreakAddress = (address: string) => address.replace(/\b(P|TP)\. /g, "$1.\u00A0");
 
-export const branches = [
-  { name: "Chi nhánh Bàn Cờ", address: site.address },
-  { name: "Chi nhánh Xóm Chiếu", address: site.addressSecondary },
-];
+export const branches = [{ name: "Cơ sở Xóm Chiếu", address: site.address }];
 
 // Section ids shared by the footer links and the /services and /treatments pages, so they cannot drift apart.
 export const serviceAnchor = {
@@ -89,7 +85,12 @@ export const footerMethods: Array<[string, string]> = [
   ["Ngâm lạnh & hồng ngoại", `/treatments#${methodAnchor.cold}`],
 ];
 
-export const reviewSummary = { average: 5, count: 41 };
+// Google Maps listing "Holistic Rehab & Performance", read 2026-10-06: 5.0 stars, 644 reviews.
+export const reviewSummary = {
+  average: 5,
+  count: 644,
+  url: "https://maps.app.goo.gl/9RmecBoycrAkhBE39",
+};
 
 export const services: Service[] = [
   {
@@ -212,19 +213,16 @@ export const testimonials: Testimonial[] = [
     quote:
       "Mình chọn Holistic ở đây có tất cả những thứ mình cần, không cần tốn công tốn tiền đi nhiều chỗ khác nhau. Mình được tư vấn kĩ lưỡng từ đầu, và theo sát trong cả quá trình trị liệu lẫn tập luyện lâu dài nên thấy rất an tâm.",
     context: "Nhân viên văn phòng, 26 tuổi",
-    rating: 5,
   },
   {
     quote:
       "Mình chọn Holistic vì sự uy tín. Toàn bộ quá trình tư vấn, trị liệu và tập rất rõ ràng, chặt chẽ, giúp mình lạc quan hơn về việc hồi phục. Mình thấy sự cải thiện rõ rệt chỉ sau vài tuần rehab.",
     context: "Vận động viên phong trào, 30 tuổi",
-    rating: 5,
   },
   {
     quote:
       "Mình thấy rất tiện vì Holistic ở ngay trung tâm, có nhiều phương pháp trị liệu chuyên sâu hiệu quả, giá cả lại hợp lý nữa.",
     context: "Vận động viên chuyên nghiệp",
-    rating: 5,
   },
 ];
 

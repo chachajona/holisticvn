@@ -394,10 +394,7 @@ export default async function HomePage() {
             <h2>
               Không chỉ hết&nbsp;đau, mà còn <em>vận động tự do trở lại</em>.
             </h2>
-            <p>
-              Holistic bắt đầu từ một phòng trị liệu nhỏ, do những người từng chấn thương lập nên.
-              Với Holistic, hết đau lâu dài cần cả trị liệu lẫn tập luyện.
-            </p>
+            <p>Với Holistic, hết đau lâu dài cần cả trị liệu lẫn tập luyện.</p>
             <ul className={styles.introList}>
               <li>
                 <IntroTick />
@@ -405,7 +402,7 @@ export default async function HomePage() {
               </li>
               <li>
                 <IntroTick />
-                Một chuyên viên theo sát từ đầu đến cuối
+                Đồng hành xuyên suốt từ tư vấn đến tập luyện
               </li>
               <li>
                 <IntroTick />
@@ -550,9 +547,8 @@ export default async function HomePage() {
             <div className={styles.pathCopy}>
               <h2>Ba bước, một chương trình duy nhất.</h2>
               <p>
-                Từ buổi đánh giá đầu tiên đến giai đoạn tập luyện nâng cao, bạn đi cùng một chuyên
-                viên và một hồ sơ theo dõi duy nhất — không phải kể lại tình trạng của mình ở nhiều
-                nơi khác nhau.
+                Từ buổi đánh giá đầu tiên đến giai đoạn tập luyện nâng cao, bạn đi trên một lộ trình
+                xuyên suốt — không phải kể lại tình trạng của mình ở nhiều nơi khác nhau.
               </p>
               <p>
                 Mục tiêu không chỉ là hết đau, mà là giữ được sức khoẻ vận động trong nhiều năm sau
@@ -586,12 +582,14 @@ export default async function HomePage() {
       <section className={styles.testimonials}>
         <div className={styles.testimonialsHead}>
           <h2>Khách hàng nói gì</h2>
-          <span>03 / {reviewSummary.count} ĐÁNH GIÁ</span>
+          <a href={reviewSummary.url} target="_blank" rel="noopener noreferrer">
+            {reviewSummary.average.toFixed(1)} ★ · {reviewSummary.count} ĐÁNH GIÁ GOOGLE
+          </a>
         </div>
         <div className={styles.testimonialGrid}>
           {testimonials.map((item) => (
             <figure key={item.context} className={styles.testimonial}>
-              <Stars count={item.rating ?? reviewSummary.average} />
+              {item.rating ? <Stars count={item.rating} /> : null}
               <blockquote>&ldquo;{item.quote}&rdquo;</blockquote>
               <figcaption>{item.context}</figcaption>
             </figure>
@@ -609,7 +607,7 @@ export default async function HomePage() {
         </div>
         <div className={`${styles.offer} ${styles.offerLight}`}>
           <strong>Lộ trình 12 buổi</strong>
-          <span>Trị liệu kết hợp tập luyện, theo sát bởi cùng một chuyên viên.</span>
+          <span>Trị liệu kết hợp tập luyện trên một lộ trình xuyên suốt.</span>
           <Link href="/services" className={styles.primaryButton}>
             Khám phá dịch vụ
           </Link>
