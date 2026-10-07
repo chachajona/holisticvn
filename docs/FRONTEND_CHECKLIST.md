@@ -116,6 +116,9 @@ bản sao toàn bộ checklist nguồn.
       trả về stack trace, secrets hay dữ liệu cá nhân vượt nhu cầu.
 - [ ] **Bắt buộc** Sanity revalidation endpoint yêu cầu secret hợp lệ; mọi secret chỉ nằm
       ở server env và `.env.local` không được commit.
+- [ ] **Bắt buộc** Origin bên thứ ba mới (script, ảnh, API, iframe) phải được thêm vào CSP
+      trong `next.config.ts`; kiểm tra console không có lỗi "violates the following Content
+      Security Policy". `/studio` được loại khỏi CSP.
 - [ ] **Nên có** Nội dung từ CMS được render như text/structured content an toàn; không
       dùng `dangerouslySetInnerHTML` với dữ liệu không được sanitize.
 

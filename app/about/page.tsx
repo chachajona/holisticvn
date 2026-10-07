@@ -55,7 +55,7 @@ export default function AboutPage() {
               width={1920}
               height={1281}
               quality={90}
-              sizes="(max-width: 1360px) 100vw, 1360px"
+              sizes="(max-width: 760px) calc(100vw - 28px), (max-width: 1220px) calc(100vw - 40px), 1180px"
               alt="Đội ngũ HolisticVN trong đồng phục xanh, chụp trước bảng hiệu holistic rehab & performance"
             />
           </div>
