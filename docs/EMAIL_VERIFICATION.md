@@ -9,6 +9,7 @@ GitHub issue #1 và các issue con vẫn là nguồn trạng thái công việc.
 - **Lịch hẹn đã xác nhận:** chỉ xảy ra sau khi nhân viên gọi khách, nhập lịch vào hệ thống cửa hàng và xác nhận trực tiếp.
 - Website không lưu dữ liệu khách (không còn Supabase hay CRM), không gửi Zalo OA tự động và không tạo lịch hẹn.
 - Cơ sở duy nhất là Lê Quốc Hưng nên email không có trường chi nhánh (#4).
+- Owner đã duyệt bỏ dòng "Nguồn" khỏi email thông báo. Loại yêu cầu (tiêu đề đầu thư) và dòng **Liệu pháp** vẫn phân biệt các form; nhân viên không còn thấy đường dẫn trang của yêu cầu.
 
 ## Failure paths — đã kiểm tra
 
