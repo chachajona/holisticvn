@@ -48,9 +48,11 @@ Kết quả cần xử lý:
 
 - **Email trang liệu pháp đã tới hộp thư nhân viên, không phải hộp thư thử.** Lúc gửi, Production đã chuyển `LEAD_NOTIFICATION_EMAIL` sang hộp thư nhân viên (owner xác nhận), nên người kiểm tra không lấy được cột To và Status. Resend nhận và nội dung đúng, gồm dòng "Liệu pháp: Giác hơi". Lưu ý: nhân viên đã nhận một email thử mang tên "Test Nghiem Thu 5" và cần được báo đó không phải khách thật. Provider acceptance vẫn không bảo đảm thư vào Inbox.
 - **Email hero vào Spam.** Nội dung chỉ có số điện thoại nên dễ bị coi là thư rác. Gmail cũng chặn ảnh trong Spam nên logo không hiện. Nhân viên cần kiểm tra cả thư mục Spam.
-- **DMARC:** đã thêm bản ghi TXT `_dmarc.holisticvn.com` = `v=DMARC1; p=none;` (Vercel DNS, ngày 09/10/2026). Chưa có `rua`, nên chưa nhận báo cáo; thêm `rua=mailto:<hộp thư theo dõi>` khi cần theo dõi. Chưa kiểm tra lại xem thư hero có còn vào Spam không.
+- **DMARC:** đã thêm bản ghi TXT `_dmarc.holisticvn.com` = `v=DMARC1; p=none;` (Vercel DNS, ngày 09/10/2026). Chưa có `rua`, nên chưa nhận báo cáo; thêm `rua=mailto:<hộp thư theo dõi>` khi cần theo dõi. Gửi lại lúc 03:35 ngày 09/10/2026 (giờ Việt Nam), thư hero vào **Inbox** và logo hiện. Đây là một lượt thử, chưa đủ để kết luận DMARC là nguyên nhân; nhân viên vẫn cần kiểm tra Spam.
 - **Logo** hiện ở các email vào Inbox (đầu và chân thư).
-- **Chân thư:** Gmail tự gắn liên kết xanh dương lên tên miền, khó đọc trên nền xanh lá. Đã bọc tên miền bằng liên kết có màu khai báo; chưa kiểm chứng lại trong Gmail.
+- **Chân thư:** Gmail tự gắn liên kết xanh dương lên tên miền, khó đọc trên nền xanh lá. Bản sửa (bọc tên miền bằng liên kết có màu khai báo) nằm trong PR nhưng **chưa chạy trên Production**: Production đang chạy bản build cũ (`66cd4e5`, branch production là `main`), nên lượt gửi lại ngày 09/10/2026 vẫn còn chữ xanh. Cần kiểm tra lại sau khi bản sửa được deploy lên Production.
+
+Lượt gửi lại ngày 09/10/2026 03:35 (giờ Việt Nam), sau khi thêm DMARC, từ `www.holisticvn.com` tới hộp thư của người kiểm tra: hero, `/booking` và `/contact` đều vào Inbox, logo hiện. Email trang liệu pháp (`/treatments/cupping`) chưa có xác nhận.
 
 Ngày 2026-10-07, form cũng được thử từ dev server cục bộ với dữ liệu giả: cả 4 nguồn trả `200`. Trang liệu pháp khi đó dùng nội dung dự phòng vì chưa có dữ liệu Sanity.
 
