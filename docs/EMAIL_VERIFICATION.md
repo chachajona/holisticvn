@@ -33,22 +33,22 @@ Lượt gửi ngày 2026-10-08 từ `https://www.holisticvn.com` (production, ch
 
 | Điều kiện                                   | Kết quả                                                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Domain gửi **Verified** trên Resend         | Đạt: Resend nhận gửi từ `noreply@holisticvn.com`; DNS có DKIM và SPF. **Chưa có DMARC**                        |
+| Domain gửi **Verified** trên Resend         | Đạt: Resend nhận gửi từ `noreply@holisticvn.com`; DNS có DKIM và SPF. DMARC `p=none` đã thêm ngày 09/10/2026   |
 | API key giới hạn quyền gửi; from, to đã đặt | Đạt: key chỉ gửi được (đọc log qua API bị từ chối `restricted_api_key`); from và to đã đặt ở Production        |
 | Redis (`UPSTASH_REDIS_REST_*`)              | Đã đặt ở Production; Preview chưa đặt nên form ở bản preview trả 503. Chưa xác nhận database riêng cho staging |
 
-| Nguồn           | Giờ gửi (VN)     | Resend message id                      | Inbox / Spam                          | Subject đúng | Có loại yêu cầu và liệu pháp (nếu có)        |
-| --------------- | ---------------- | -------------------------------------- | ------------------------------------- | ------------ | -------------------------------------------- |
-| Hero            | 08/10/2026 16:23 | Chưa ghi                               | **Spam** (Gmail: giống thư rác trước) | Chưa ghi     | Có: "Tư vấn nhanh"                           |
-| `/booking`      | 08/10/2026 16:23 | `01a11ad3-3623-7ee5-b55b-945d06a33504` | Inbox                                 | Có           | Có: "Yêu cầu đặt lịch"                       |
-| `/contact`      | 08/10/2026 16:23 | `01a11ad3-3c00-77e7-9f39-80fc46511709` | Inbox                                 | Có           | Có: "Yêu cầu tư vấn"                         |
-| Trang liệu pháp | 08/10/2026 16:52 | `01a11aed-d97e-7b79-872d-ef343a5685c2` | **Không nhận được ở hộp thư thử**     | Chưa ghi     | Có: "Liệu pháp: Giác hơi" (xem trong Resend) |
+| Nguồn           | Giờ gửi (VN)     | Resend message id                      | Inbox / Spam                                  | Subject đúng | Có loại yêu cầu và liệu pháp (nếu có)        |
+| --------------- | ---------------- | -------------------------------------- | --------------------------------------------- | ------------ | -------------------------------------------- |
+| Hero            | 08/10/2026 16:23 | Chưa ghi                               | **Spam** (Gmail: giống thư rác trước)         | Chưa ghi     | Có: "Tư vấn nhanh"                           |
+| `/booking`      | 08/10/2026 16:23 | `01a11ad3-3623-7ee5-b55b-945d06a33504` | Inbox                                         | Có           | Có: "Yêu cầu đặt lịch"                       |
+| `/contact`      | 08/10/2026 16:23 | `01a11ad3-3c00-77e7-9f39-80fc46511709` | Inbox                                         | Có           | Có: "Yêu cầu tư vấn"                         |
+| Trang liệu pháp | 08/10/2026 16:52 | `01a11aed-d97e-7b79-872d-ef343a5685c2` | **Hộp thư nhân viên** (không tới hộp thư thử) | Chưa ghi     | Có: "Liệu pháp: Giác hơi" (xem trong Resend) |
 
 Kết quả cần xử lý:
 
-- **Provider acceptance không bảo đảm đã nhận thư.** Email trang liệu pháp được Resend nhận và có đúng nội dung nhưng không tới hộp thư thử. Có thể đã gửi tới hộp thư khác do cấu hình `LEAD_NOTIFICATION_EMAIL` đổi gần thời điểm gửi; chưa xác nhận. Cần xem cột To và Status của email này trong Resend.
+- **Email trang liệu pháp đã tới hộp thư nhân viên, không phải hộp thư thử.** Lúc gửi, Production đã chuyển `LEAD_NOTIFICATION_EMAIL` sang hộp thư nhân viên (owner xác nhận), nên người kiểm tra không lấy được cột To và Status. Resend nhận và nội dung đúng, gồm dòng "Liệu pháp: Giác hơi". Lưu ý: nhân viên đã nhận một email thử mang tên "Test Nghiem Thu 5" và cần được báo đó không phải khách thật. Provider acceptance vẫn không bảo đảm thư vào Inbox.
 - **Email hero vào Spam.** Nội dung chỉ có số điện thoại nên dễ bị coi là thư rác. Gmail cũng chặn ảnh trong Spam nên logo không hiện. Nhân viên cần kiểm tra cả thư mục Spam.
-- **Chưa có bản ghi DMARC** cho `holisticvn.com` (`_dmarc`). Nên thêm, bắt đầu bằng `v=DMARC1; p=none; rua=mailto:<hộp thư theo dõi>`, rồi quan sát trước khi siết chính sách.
+- **DMARC:** đã thêm bản ghi TXT `_dmarc.holisticvn.com` = `v=DMARC1; p=none;` (Vercel DNS, ngày 09/10/2026). Chưa có `rua`, nên chưa nhận báo cáo; thêm `rua=mailto:<hộp thư theo dõi>` khi cần theo dõi. Chưa kiểm tra lại xem thư hero có còn vào Spam không.
 - **Logo** hiện ở các email vào Inbox (đầu và chân thư).
 - **Chân thư:** Gmail tự gắn liên kết xanh dương lên tên miền, khó đọc trên nền xanh lá. Đã bọc tên miền bằng liên kết có màu khai báo; chưa kiểm chứng lại trong Gmail.
 
