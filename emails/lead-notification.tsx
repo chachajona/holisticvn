@@ -54,6 +54,7 @@ export type LeadEmailProps = {
   emptyNote: string | null;
   logoUrl: string;
   logoOnDarkUrl: string;
+  siteUrl: string;
 };
 
 export function LeadNotificationEmail({
@@ -68,6 +69,7 @@ export function LeadNotificationEmail({
   emptyNote,
   logoUrl,
   logoOnDarkUrl,
+  siteUrl,
 }: LeadEmailProps) {
   const button = {
     display: "inline-block",
@@ -236,7 +238,12 @@ export function LeadNotificationEmail({
                 />
               </Column>
               <Column align="right">
-                <Text style={{ ...label, color: color.paleOnSage }}>holisticvn.com</Text>
+                {/* explicit link: Gmail otherwise auto-links the bare domain in its default blue */}
+                <Text style={{ ...label, color: color.paleOnSage }}>
+                  <Link href={siteUrl} style={{ color: color.paleOnSage, textDecoration: "none" }}>
+                    holisticvn.com
+                  </Link>
+                </Text>
               </Column>
             </Row>
           </Section>

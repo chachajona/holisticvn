@@ -60,6 +60,7 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     // PNG, not the SVG used on the site: Gmail does not render SVG images
     logoUrl: `${site}/assets/logo/email-lockup.png`,
     logoOnDarkUrl: `${site}/assets/logo/email-lockup-on-dark.png`,
+    siteUrl: site,
   };
   const email = createElement(LeadNotificationEmail, props);
   // hand-written: the auto-converted text runs the call and Zalo links together

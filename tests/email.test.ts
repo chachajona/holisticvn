@@ -40,6 +40,7 @@ describe("sendLeadNotification", () => {
     expect(mail.html).not.toContain("Nguồn");
     expect(send.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
     expect(mail.html).toContain('href="tel:0901234567"');
+    expect(mail.html).toContain('href="https://holisticvn.com"');
     expect(mail.html).toContain('href="https://zalo.me/84901234567"');
   });
 
