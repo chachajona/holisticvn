@@ -60,9 +60,9 @@ Ngày 2026-10-07, form cũng được thử từ dev server cục bộ với d�
 
 Một lượt gọi lại mô phỏng, do nhân viên thực hiện:
 
-- [ ] Có người theo dõi hộp thư `LEAD_NOTIFICATION_EMAIL` (kể cả Spam) trong giờ làm việc.
-- [ ] Gọi lại khách thử từ link `tel:` hoặc số trong email.
-- [ ] Kiểm tra lịch trong hệ thống cửa hàng và nhập lịch ở đó.
-- [ ] Xác nhận trực tiếp với khách. Khách chưa có lịch hẹn cho đến bước này.
+- [x] Có người theo dõi hộp thư `LEAD_NOTIFICATION_EMAIL` (kể cả Spam) trong giờ làm việc.
+- [x] Gọi lại khách thử từ link `tel:` hoặc số trong email.
+- [x] Kiểm tra lịch trong hệ thống cửa hàng và nhập lịch ở đó.
+- [x] Xác nhận trực tiếp với khách. Khách chưa có lịch hẹn cho đến bước này.
 
-Người xác nhận và ngày: ______
+Người xác nhận và ngày: owner báo đã hoàn tất ngày 09/10/2026 (không kèm ảnh hoặc ghi chú từ nhân viên).
