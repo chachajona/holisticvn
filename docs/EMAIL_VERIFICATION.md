@@ -27,24 +27,32 @@ Code path đã có test: `tests/api-leads.test.ts` (400, honeypot, 503, 502, 429
 
 ## Live — cần người vận hành điền
 
-Dùng email/số điện thoại do người kiểm tra kiểm soát. Không dán API key vào đây.
+Dùng email/số điện thoại do người kiểm tra kiểm soát. Không dán API key vào đây. Ảnh chụp hộp thư (đã che số điện thoại) nằm trong mô tả PR #36, không lưu trong repo.
 
-| Điều kiện                                                               | Kết quả |
-| ----------------------------------------------------------------------- | ------- |
-| Domain gửi ở trạng thái **Verified** trên Resend                        |         |
-| API key (Sending access, giới hạn domain), from, to đã đặt trên staging |         |
-| Redis (`UPSTASH_REDIS_REST_*`) riêng cho staging đã đặt                 |         |
+Lượt gửi ngày 2026-10-08 từ `https://www.holisticvn.com` (production, chưa có staging riêng). Cả 4 form trả `200` và báo thành công, tức Resend đã nhận. Người nhận là hộp thư của người kiểm tra.
 
-| Nguồn              | Giờ gửi | Resend message id | Inbox / Spam | Subject đúng | Có loại yêu cầu và liệu pháp (nếu có) |
-| ------------------ | ------- | ----------------- | ------------ | ------------ | ------------------------------------- |
-| Hero (`home-hero`) |         |                   |              |              |                                       |
-| `/booking`         |         |                   |              |              |                                       |
-| `/contact`         |         |                   |              |              |                                       |
-| Trang liệu pháp    |         |                   |              |              |                                       |
+| Điều kiện                                   | Kết quả                                                                                                        |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Domain gửi **Verified** trên Resend         | Đạt: Resend nhận gửi từ `noreply@holisticvn.com`; DNS có DKIM và SPF. **Chưa có DMARC**                        |
+| API key giới hạn quyền gửi; from, to đã đặt | Đạt: key chỉ gửi được (đọc log qua API bị từ chối `restricted_api_key`); from và to đã đặt ở Production        |
+| Redis (`UPSTASH_REDIS_REST_*`)              | Đã đặt ở Production; Preview chưa đặt nên form ở bản preview trả 503. Chưa xác nhận database riêng cho staging |
 
-Điền cột Resend message id từ mục Emails trong Resend. Email trang liệu pháp phải có dòng **Liệu pháp**.
+| Nguồn           | Giờ gửi (VN)     | Resend message id                      | Inbox / Spam                          | Subject đúng | Có loại yêu cầu và liệu pháp (nếu có)        |
+| --------------- | ---------------- | -------------------------------------- | ------------------------------------- | ------------ | -------------------------------------------- |
+| Hero            | 08/10/2026 16:23 | Chưa ghi                               | **Spam** (Gmail: giống thư rác trước) | Chưa ghi     | Có: "Tư vấn nhanh"                           |
+| `/booking`      | 08/10/2026 16:23 | `01a11ad3-3623-7ee5-b55b-945d06a33504` | Inbox                                 | Có           | Có: "Yêu cầu đặt lịch"                       |
+| `/contact`      | 08/10/2026 16:23 | `01a11ad3-3c00-77e7-9f39-80fc46511709` | Inbox                                 | Có           | Có: "Yêu cầu tư vấn"                         |
+| Trang liệu pháp | 08/10/2026 16:52 | `01a11aed-d97e-7b79-872d-ef343a5685c2` | **Không nhận được ở hộp thư thử**     | Chưa ghi     | Có: "Liệu pháp: Giác hơi" (xem trong Resend) |
 
-Lượt thử ngày 2026-10-07 từ dev server cục bộ, người nhận là hộp thư và số điện thoại của người kiểm tra (không phải hộp thư nhân viên): cả 4 nguồn trả `200` và form báo thành công, tức là Resend đã nhận. API key chỉ có quyền gửi nên không đọc được log qua API; message id, Inbox/Spam và nội dung email cần đối chiếu thủ công. Trang liệu pháp thử với `/treatments/dry-needling` (nội dung dự phòng, vì dataset Sanity production chưa có liệu pháp).
+Kết quả cần xử lý:
+
+- **Provider acceptance không bảo đảm đã nhận thư.** Email trang liệu pháp được Resend nhận và có đúng nội dung nhưng không tới hộp thư thử. Có thể đã gửi tới hộp thư khác do cấu hình `LEAD_NOTIFICATION_EMAIL` đổi gần thời điểm gửi; chưa xác nhận. Cần xem cột To và Status của email này trong Resend.
+- **Email hero vào Spam.** Nội dung chỉ có số điện thoại nên dễ bị coi là thư rác. Gmail cũng chặn ảnh trong Spam nên logo không hiện. Nhân viên cần kiểm tra cả thư mục Spam.
+- **Chưa có bản ghi DMARC** cho `holisticvn.com` (`_dmarc`). Nên thêm, bắt đầu bằng `v=DMARC1; p=none; rua=mailto:<hộp thư theo dõi>`, rồi quan sát trước khi siết chính sách.
+- **Logo** hiện ở các email vào Inbox (đầu và chân thư).
+- **Chân thư:** Gmail tự gắn liên kết xanh dương lên tên miền, khó đọc trên nền xanh lá. Đã bọc tên miền bằng liên kết có màu khai báo; chưa kiểm chứng lại trong Gmail.
+
+Ngày 2026-10-07, form cũng được thử từ dev server cục bộ với dữ liệu giả: cả 4 nguồn trả `200`. Trang liệu pháp khi đó dùng nội dung dự phòng vì chưa có dữ liệu Sanity.
 
 ## Quy trình nhân viên — cần xác nhận
 
