@@ -265,6 +265,12 @@ Three round icon-only buttons fixed bottom-right (`components/chat-widgets.tsx`)
 - **Timeline row (Methods):** no card shell — a numbered rail plus a two-column copy/media row; the rail's vertical connector line is a `1px` hairline, not a border.
 - **Dive section (Services):** no card shell — a full two-column copy/media row per category, differentiated only by alternating image side.
 
+### Homepage comparison table
+
+The same native table stays visible at every viewport. The criteria and Holistic columns stay fixed during horizontal scrolling, with opaque backgrounds. Desktop uses a 26% criteria column and 14% Holistic column; mobile uses 136px and 88px (112px and 80px below 360px). Each mobile comparison column fills the remaining visible width, so a complete provider column is readable at either end of the scroll area. Header/body text stays at 16px/15.5px on mobile.
+
+Use the native horizontal scroll area with visible keyboard focus. At narrow widths, the line “Vuốt ngang để xem các giải pháp khác.” explains the gesture. Scrollbar visibility follows browser and OS behavior. The owner preferred this to a separate range control on 2026-10-09. Keep the same rows, headers, caption and state labels on desktop and mobile.
+
 ### Navigation
 
 The nav starts as a full-width white bar with straight sides, no border, and no shadow. On screens wider than 700px, past 48px of scroll it contracts into an inset white pill with rounded ends, a hairline border, and a soft shadow; its vertical padding also decreases. Width, padding, radius, border, and shadow transition over 320ms, with transitions disabled for reduced motion. On mobile (700px and below), the sticky nav stays full-width and square-edged after scrolling so its logo, booking CTA, and 44px menu button have room; a bottom hairline separates it from the page. The static `VI` label is hidden on mobile because it does not switch languages. Ink-colored links shift to `clay-deep` on hover, and the active route uses `sage` at weight `500` (`.navLinks a[data-active="true"]`). At 1000px and below, links collapse into a shadowed drawer toggled by a circular hamburger button; the nav CTA remains available beside it.

@@ -717,16 +717,44 @@
   font-size: clamp(1.6rem, 3vw, 36px);
   color: var(--sage);
 }
-.compareScroll {
+.compareViewport {
+  min-width: 0;
+}
+.compareFrame {
+  container-type: inline-size;
   min-width: 0;
   border: 1px solid rgba(58, 42, 36, 0.14);
   border-radius: 16px;
-  overflow: auto;
+  overflow: hidden;
+}
+.compareScroll {
+  position: relative;
+  overflow-x: auto;
+}
+.compareScroll:focus-visible {
+  outline: 2px solid var(--clay-deep);
+  outline-offset: -3px;
 }
 .compareTable {
   width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
+  min-width: 800px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.compareCaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.compareLabelColumn {
+  width: 26%;
+}
+.compareHolisticColumn {
+  width: 14%;
 }
 .compareTable th,
 .compareTable td {
@@ -737,8 +765,20 @@
 }
 .compareTable th:first-child,
 .compareTable td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
   text-align: left;
   padding-left: 26px;
+  background: var(--card);
+}
+.compareTable th:nth-child(2),
+.compareTable td:nth-child(2) {
+  position: sticky;
+  left: max(208px, 26cqw);
+  z-index: 2;
+  background: var(--card);
+  border-right: 1px solid rgba(58, 42, 36, 0.14);
 }
 .compareTable thead th {
   background: var(--warm-band);
@@ -763,20 +803,23 @@
   color: var(--sage);
   font-family: var(--font-mono);
 }
-.compareYesCell {
-  background: rgba(72, 97, 76, 0.07);
+.compareTable td.compareYesCell {
+  background: color-mix(in srgb, var(--sage) 7%, var(--card));
 }
 .compareNo {
-  color: #c9bdb6;
+  color: var(--clay-deep);
   font-family: var(--font-mono);
 }
 .compareLegend {
   font: 500 11px var(--font-mono);
   letter-spacing: 0.14em;
-  color: var(--clay);
+  color: var(--muted);
 }
-.compareMobileList {
+.compareHint {
   display: none;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font: 300 14px/1.5 var(--font-accent);
 }
 
 /* ---------- Path/story panel + pillars ---------- */
@@ -1089,6 +1132,12 @@
   }
 }
 
+@media (max-width: 850px) {
+  .compareHint {
+    display: block;
+  }
+}
+
 @media (max-width: 700px) {
   .hero {
     padding: 0 16px;
@@ -1137,29 +1186,44 @@
   .compare {
     padding-inline: 20px;
   }
-  .compareScroll {
-    display: none;
+  .compareViewport {
+    --compare-label-width: 136px;
+    --compare-holistic-width: 88px;
+    --compare-option-width: calc(
+      100cqw - var(--compare-label-width) - var(--compare-holistic-width)
+    );
   }
-  .compareMobileList {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .compareTable {
+    width: calc(
+      var(--compare-label-width) + var(--compare-holistic-width) + 3 * var(--compare-option-width)
+    );
+    min-width: 0;
   }
-  .compareMobileList li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    background: var(--warm-band);
-    font-size: 14.5px;
-    color: var(--ink);
+  .compareLabelColumn {
+    width: var(--compare-label-width);
   }
-  .compareMobileList .compareYes {
-    font-family: var(--font-mono);
+  .compareHolisticColumn {
+    width: var(--compare-holistic-width);
+  }
+  .compareClinicColumn,
+  .compareSpaColumn,
+  .compareGymColumn {
+    width: var(--compare-option-width);
+  }
+  .compareTable th,
+  .compareTable td {
+    padding: 18px 12px;
+  }
+  .compareTable th:first-child {
+    padding-left: 12px;
+  }
+  .compareTable th:nth-child(2),
+  .compareTable td:nth-child(2) {
+    left: var(--compare-label-width);
+    padding-inline: 8px;
+  }
+  .compareTable thead th {
+    font-size: 16px;
   }
   .serviceCard {
     flex-basis: 78vw;
@@ -1190,5 +1254,12 @@
   }
   .igGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 359px) {
+  .compareViewport {
+    --compare-label-width: 112px;
+    --compare-holistic-width: 80px;
   }
 }

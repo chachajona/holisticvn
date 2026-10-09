@@ -482,62 +482,78 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className={styles.compare}>
-        <h2>Holistic khác với những giải pháp khác ra sao?</h2>
-        <div className={styles.compareScroll}>
-          <table className={styles.compareTable}>
-            <thead>
-              <tr>
-                <th></th>
-                {compareColumns.map((col, i) => (
-                  <th
-                    key={col}
-                    className={i === 0 ? styles.compareHolistic : undefined}
-                    scope="col"
-                  >
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {compareRows.map((row) => (
-                <tr key={row.label}>
-                  <th scope="row">{row.label}</th>
-                  {row.values.map((yes, i) => (
-                    <td key={i} className={i === 0 && yes ? styles.compareYesCell : undefined}>
-                      <span className={yes ? styles.compareYes : styles.compareNo}>
-                        {yes ? "●" : "—"}
-                      </span>
-                      <span
-                        className="sr-only"
-                        style={{
-                          position: "absolute",
-                          width: 1,
-                          height: 1,
-                          overflow: "hidden",
-                          clip: "rect(0 0 0 0)",
-                        }}
+      <section className={styles.compare} aria-labelledby="comparison-heading">
+        <h2 id="comparison-heading">Holistic khác với những giải pháp khác ra sao?</h2>
+        <div className={styles.compareViewport}>
+          <div className={styles.compareFrame}>
+            <div
+              className={styles.compareScroll}
+              role="region"
+              aria-labelledby="comparison-heading"
+              aria-describedby="comparison-scroll-hint"
+              tabIndex={0}
+            >
+              <table className={styles.compareTable}>
+                <caption className={styles.compareCaption}>
+                  So sánh dịch vụ của Holistic và các giải pháp khác
+                </caption>
+                <colgroup>
+                  <col className={styles.compareLabelColumn} />
+                  <col className={styles.compareHolisticColumn} />
+                  <col className={styles.compareClinicColumn} />
+                  <col className={styles.compareSpaColumn} />
+                  <col className={styles.compareGymColumn} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Tiêu chí</th>
+                    {compareColumns.map((col, i) => (
+                      <th
+                        key={col}
+                        className={i === 0 ? styles.compareHolistic : undefined}
+                        scope="col"
                       >
-                        {yes ? "Có" : "Không"}
-                      </span>
-                    </td>
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {compareRows.map((row) => (
+                    <tr key={row.label}>
+                      <th scope="row">{row.label}</th>
+                      {row.values.map((yes, i) => (
+                        <td key={i} className={i === 0 && yes ? styles.compareYesCell : undefined}>
+                          <span
+                            className={yes ? styles.compareYes : styles.compareNo}
+                            aria-hidden="true"
+                          >
+                            {yes ? "●" : "—"}
+                          </span>
+                          <span
+                            className="sr-only"
+                            style={{
+                              position: "absolute",
+                              width: 1,
+                              height: 1,
+                              overflow: "hidden",
+                              clip: "rect(0 0 0 0)",
+                            }}
+                          >
+                            {yes ? "Có" : "Không"}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p id="comparison-scroll-hint" className={styles.compareHint}>
+            Vuốt ngang để xem các giải pháp khác.
+          </p>
         </div>
-        <ul className={styles.compareMobileList}>
-          {compareRows
-            .filter((row) => row.values[0])
-            .map((row) => (
-              <li key={row.label}>
-                <span className={styles.compareYes}>●</span>
-                {row.label}
-              </li>
-            ))}
-        </ul>
         <span className={styles.compareLegend}>● CÓ &nbsp;·&nbsp; — KHÔNG</span>
       </section>
 
