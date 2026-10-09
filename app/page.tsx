@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
@@ -10,6 +10,8 @@ import {
   QuickLinkIllustration,
   type QuickLinkIllustrationType,
 } from "@/components/quick-link-illustrations";
+import { BranchSway } from "@/components/branch-sway";
+import { Reveal } from "@/components/reveal";
 import { ServicesCarousel } from "@/components/services-carousel";
 import styles from "./page.module.css";
 
@@ -279,31 +281,60 @@ function IntroSketch() {
             yChannelSelector="G"
           />
         </filter>
+        <mask id="introSageDraw">
+          <path
+            className={styles.sketchMaskDraw}
+            pathLength={1}
+            d="M-9 50Q-9 -9 50 -10L448 -9Q508 -8 509 50L510 560Q509 618 450 619L50 620Q-8 619 -9 560Z"
+          />
+        </mask>
       </defs>
       <g filter="url(#introPen)">
         <path
-          className={styles.sketchClay}
+          className={`${styles.sketchClay} ${styles.sketchDraw}`}
+          pathLength={1}
           d="M-16 44Q-16 -16 44 -16L456 -16Q516 -16 516 44L516 566Q516 626 456 626L44 626Q-16 626 -16 566Z"
         />
         <path
           className={styles.sketchSage}
+          mask="url(#introSageDraw)"
           d="M-9 50Q-9 -9 50 -10L448 -9Q508 -8 509 50L510 560Q509 618 450 619L50 620Q-8 619 -9 560Z"
           strokeDasharray="340 14 180 10 260 12"
         />
         <g className={styles.sketchOrnament}>
           <g transform="translate(0 14)">
             {sketchRays.map((d, i) => (
-              <path key={d} className={i % 2 ? styles.sketchSage : styles.sketchClay} d={d} />
+              <path
+                key={d}
+                className={`${i % 2 ? styles.sketchSage : styles.sketchClay} ${styles.sketchDraw} ${styles.sketchRay}`}
+                pathLength={1}
+                style={{ "--i": i } as CSSProperties}
+                d={d}
+              />
             ))}
           </g>
           <g transform="translate(-26 0)">
-            <path className={styles.sketchSage} d="M-10 640Q-52 570 -34 460" />
-            {sketchLeaves.map(([leaf, vein]) => (
-              <g key={leaf}>
-                <path className={styles.sketchSage} d={leaf} />
-                <path className={styles.sketchClay} d={vein} />
-              </g>
-            ))}
+            <BranchSway className={styles.sketchBranch}>
+              <path
+                className={`${styles.sketchSage} ${styles.sketchDraw} ${styles.sketchStem}`}
+                pathLength={1}
+                d="M-10 640Q-52 570 -34 460"
+              />
+              {sketchLeaves.map(([leaf, vein], i) => (
+                <g key={leaf} style={{ "--i": i } as CSSProperties}>
+                  <path
+                    className={`${styles.sketchSage} ${styles.sketchDraw} ${styles.sketchLeaf}`}
+                    pathLength={1}
+                    d={leaf}
+                  />
+                  <path
+                    className={`${styles.sketchClay} ${styles.sketchDraw} ${styles.sketchLeaf}`}
+                    pathLength={1}
+                    d={vein}
+                  />
+                </g>
+              ))}
+            </BranchSway>
           </g>
         </g>
       </g>
@@ -427,7 +458,7 @@ export default async function HomePage() {
               </svg>
             </Link>
           </div>
-          <div className={styles.introMedia}>
+          <Reveal className={styles.introMedia}>
             <IntroSketch />
             <div className={styles.introPhoto}>
               <Image
@@ -438,7 +469,7 @@ export default async function HomePage() {
                 style={{ objectPosition: "50% 25%" }}
               />
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
