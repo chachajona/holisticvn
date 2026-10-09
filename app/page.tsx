@@ -11,6 +11,7 @@ import {
   type QuickLinkIllustrationType,
 } from "@/components/quick-link-illustrations";
 import { BranchSway } from "@/components/branch-sway";
+import { HighlightStage } from "@/components/highlight-stage";
 import { Reveal } from "@/components/reveal";
 import { ServicesCarousel } from "@/components/services-carousel";
 import styles from "./page.module.css";
@@ -342,9 +343,21 @@ function IntroSketch() {
   );
 }
 
+function QuoteText({ quote, highlight }: { quote: string; highlight?: string }) {
+  const at = highlight ? quote.indexOf(highlight) : -1;
+  if (!highlight || at < 0) return <>{quote}</>;
+  return (
+    <>
+      {quote.slice(0, at)}
+      <mark>{highlight}</mark>
+      {quote.slice(at + highlight.length)}
+    </>
+  );
+}
+
 function Stars({ count }: { count: number }) {
   return (
-    <span className={styles.testimonialStars} aria-label={`${count} trên 5 sao`}>
+    <span className={styles.testimonialStars} role="img" aria-label={`${count} trên 5 sao`}>
       {"★".repeat(count)}
     </span>
   );
@@ -630,18 +643,44 @@ export default async function HomePage() {
         <div className={styles.testimonialsHead}>
           <h2>Khách hàng nói gì</h2>
           <a href={reviewSummary.url} target="_blank" rel="noopener noreferrer">
-            {reviewSummary.average.toFixed(1)} ★ · {reviewSummary.count} ĐÁNH GIÁ GOOGLE
+            <span className={styles.ratingTop}>
+              <strong>{reviewSummary.average.toFixed(1)}</strong>
+              <Stars count={reviewSummary.average} />
+            </span>
+            <span className={styles.ratingSub}>{reviewSummary.count} đánh giá Google</span>
           </a>
         </div>
-        <div className={styles.testimonialGrid}>
-          {testimonials.map((item) => (
-            <figure key={item.context} className={styles.testimonial}>
-              {item.rating ? <Stars count={item.rating} /> : null}
-              <blockquote>&ldquo;{item.quote}&rdquo;</blockquote>
-              <figcaption>{item.context}</figcaption>
+        <HighlightStage className={styles.quotes}>
+          {testimonials.map((item, i) => (
+            <figure
+              key={item.context}
+              className={i === 0 ? `${styles.testimonial} ${styles.testimonialLead}` : styles.testimonial}
+            >
+              {i === 0 ? (
+                <div className={styles.leadMedia}>
+                  <Image src="/images/Studio.jpg" alt="" fill sizes="(max-width: 980px) 100vw, 300px" />
+                </div>
+              ) : null}
+              <span className={styles.quoteMark} aria-hidden="true">
+                &ldquo;
+              </span>
+              <blockquote>
+                <QuoteText quote={item.quote} highlight={item.highlight} />
+              </blockquote>
+              <figcaption>
+                <span className={styles.captionAvatar} aria-hidden="true">
+                  {item.context.charAt(0)}
+                </span>
+                {item.context.split(", ").map((part, n) => (
+                  <span key={part} className={n === 0 ? styles.captionRole : styles.captionDetail}>
+                    {part}
+                  </span>
+                ))}
+                {item.rating ? <Stars count={item.rating} /> : null}
+              </figcaption>
             </figure>
           ))}
-        </div>
+        </HighlightStage>
       </section>
 
       <section className={styles.offers} aria-label="Bắt đầu cùng Holistic">

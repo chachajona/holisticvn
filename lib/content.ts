@@ -35,6 +35,8 @@ export type Post = {
 
 export type Testimonial = {
   quote: string;
+  // Verbatim substring of `quote` to emphasise on the homepage.
+  highlight?: string;
   context: string;
   avatar?: string;
   rating?: number;
@@ -85,10 +87,10 @@ export const footerMethods: Array<[string, string]> = [
   ["Ngâm lạnh & hồng ngoại", `/treatments#${methodAnchor.cold}`],
 ];
 
-// Google Maps listing "Holistic Rehab & Performance", read 2026-10-06: 5.0 stars, 644 reviews.
+// Google Maps listing "Holistic Rehab & Performance", re-read 2026-10-09: 5.0 stars, 645 reviews (644 on 2026-10-06).
 export const reviewSummary = {
   average: 5,
-  count: 644,
+  count: 645,
   url: "https://maps.app.goo.gl/9RmecBoycrAkhBE39",
 };
 
@@ -208,21 +210,44 @@ export const posts: Post[] = [
   },
 ];
 
+// Verbatim excerpts from Google Maps reviews of "Holistic Rehab & Performance", read 2026-10-09
+// (Vietnamese view). "…" marks where the review continues. Reviewers are shown as given name + last
+// initial; Google only shows relative ages, so dates are tracked in docs/CONTENT_INVENTORY.md.
+// Rule: the shown excerpt says nothing about treatment outcomes (pain, recovery, improvement);
+// staff, space and process are fine. Thanh X.'s full review does claim an outcome, in the part
+// cut at "…". The only edit to review text is dropping the space before commas in Giang H.'s
+// excerpt. Earlier quotes are in git history.
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Mình chọn Holistic ở đây có tất cả những thứ mình cần, không cần tốn công tốn tiền đi nhiều chỗ khác nhau. Mình được tư vấn kĩ lưỡng từ đầu, và theo sát trong cả quá trình trị liệu lẫn tập luyện lâu dài nên thấy rất an tâm.",
-    context: "Nhân viên văn phòng, 26 tuổi",
+      "… Không gian phòng trị liệu sạch sẽ, yên tĩnh và tạo cảm giác thư giãn ngay từ khi bước vào. Chuyên viên làm việc rất chuyên nghiệp, hỏi kỹ tình trạng cơ thể trước khi bắt đầu và giải thích rõ từng bước trị liệu. Trong quá trình trị liệu cảm thấy dễ chịu, không bị đau hay khó chịu. …",
+    highlight: "hỏi kỹ tình trạng cơ thể trước khi bắt đầu và giải thích rõ từng bước trị liệu",
+    context: "Thanh X., Google",
+    rating: 5,
   },
   {
-    quote:
-      "Mình chọn Holistic vì sự uy tín. Toàn bộ quá trình tư vấn, trị liệu và tập rất rõ ràng, chặt chẽ, giúp mình lạc quan hơn về việc hồi phục. Mình thấy sự cải thiện rõ rệt chỉ sau vài tuần rehab.",
-    context: "Vận động viên phong trào, 30 tuổi",
+    quote: "… Ai cần giãn cơ sau khi tập thể dục thể thao thì nên đến đây …",
+    highlight: "giãn cơ sau khi tập thể dục thể thao",
+    context: "Thảo V., Google",
+    rating: 5,
   },
   {
-    quote:
-      "Mình thấy rất tiện vì Holistic ở ngay trung tâm, có nhiều phương pháp trị liệu chuyên sâu hiệu quả, giá cả lại hợp lý nữa.",
-    context: "Vận động viên chuyên nghiệp",
+    quote: "… kỹ thuật tay nghề tốt, cơ sở vật chất hiện đại, mọi người nên tới trải nghiệm",
+    highlight: "kỹ thuật tay nghề tốt, cơ sở vật chất hiện đại",
+    context: "Giang H., Google",
+    rating: 5,
+  },
+  {
+    quote: "Đội ngũ làm việc rất chuyên nghiệp, tiệm sạch sẽ và tiện nghi đầy đủ, trải nghiệm 10/10",
+    highlight: "tiệm sạch sẽ và tiện nghi đầy đủ",
+    context: "Dong L., Google",
+    rating: 5,
+  },
+  {
+    quote: "Nhân viên nhiệt tình, cơ sở sạch sẽ mát mẻ",
+    highlight: "cơ sở sạch sẽ mát mẻ",
+    context: "Phi H., Google",
+    rating: 5,
   },
 ];
 
