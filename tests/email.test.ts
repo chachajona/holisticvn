@@ -36,9 +36,11 @@ describe("sendLeadNotification", () => {
     expect(mail.subject).toBe("Gọi lại · Nguyễn An · 0901 234 567 · Đặt lịch");
     expect(mail.replyTo).toBeUndefined();
     expect(mail.text).toContain("Ghi chú của khách: Buổi chiều");
-    expect(mail.text).toContain("Nguồn: /booking");
+    expect(mail.text).not.toContain("Nguồn");
+    expect(mail.html).not.toContain("Nguồn");
     expect(send.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
     expect(mail.html).toContain('href="tel:0901234567"');
+    expect(mail.html).toContain('href="https://holisticvn.com"');
     expect(mail.html).toContain('href="https://zalo.me/84901234567"');
   });
 

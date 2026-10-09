@@ -8,6 +8,8 @@ Tạo tài khoản tại [Resend](https://resend.com/), vào [Domains](https://r
 
 Trong nơi quản lý DNS của `holisticvn.com`, thêm **đúng các bản ghi Resend cung cấp** ở tab Records. Tên, loại và giá trị bản ghi phụ thuộc tài khoản/domain nên không tự đoán. Chờ trạng thái domain thành **Verified** trước khi thử form. [Hướng dẫn domain của Resend](https://resend.com/docs/add-a-domain).
 
+Nên thêm bản ghi TXT `_dmarc` cho domain gửi mail, ví dụ `v=DMARC1; p=none; rua=mailto:<hộp thư theo dõi>`. Bắt đầu bằng `p=none` để chỉ theo dõi báo cáo, rồi siết chính sách sau khi thấy mail hợp lệ vượt qua. Thiếu DMARC làm Gmail dễ đưa thư vào Spam hơn; lượt nghiệm thu đầu tiên ghi nhận một thư hero vào Spam khi domain chưa có bản ghi này.
+
 ## 2. Tạo API key
 
 Vào [API Keys](https://resend.com/api-keys), tạo key mới với quyền **Sending access**; nếu có lựa chọn, giới hạn key vào domain vừa xác minh. Resend chỉ hiển thị giá trị key lúc tạo. Không dán key vào chat, không commit và không đặt tên biến bắt đầu bằng `NEXT_PUBLIC_`. [Hướng dẫn API key của Resend](https://resend.com/docs/create-an-api-key).
@@ -33,7 +35,7 @@ Vượt hạn mức trả `429` với `Retry-After`; thiếu cấu hình hoặc 
 ## 4. Kiểm tra trước khi dùng thật
 
 1. Gửi một yêu cầu thử từ ô **Tư vấn ngay** và một yêu cầu từ `/booking`. Dùng số điện thoại thử mà bạn kiểm soát.
-2. Kiểm tra hộp thư `Holisticrep9@gmail.com`, cả thư mục Spam, và mục Emails trong Resend. Email đặt lịch phải có tên, số, ghi chú nếu có và nguồn trang. Chỉ có cơ sở Lê Quốc Hưng nên form và email không còn lựa chọn chi nhánh.
+2. Kiểm tra hộp thư `Holisticrep9@gmail.com`, cả thư mục Spam, và mục Emails trong Resend. Email đặt lịch phải có tên, số và ghi chú nếu có. Chỉ có cơ sở Lê Quốc Hưng nên form và email không còn lựa chọn chi nhánh.
 3. Xác nhận website báo thành công chỉ khi Resend nhận email. Nếu email hoặc limiter thiếu cấu hình, API trả `503`; nếu Resend từ chối gửi, API trả `502` và form giữ thông tin khách để thử lại hoặc gọi trực tiếp.
 4. Cho nhân viên thử quy trình: gọi khách, kiểm tra hệ thống lịch của cửa hàng, nhập lịch rồi xác nhận trực tiếp với khách. Nhân viên cần theo dõi hộp thư để không bỏ sót yêu cầu.
 

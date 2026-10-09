@@ -54,13 +54,13 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     rows: [
       ...(input.email ? [["Email", input.email] as [string, string]] : []),
       ...(input.treatment ? [["Liệu pháp", input.treatment] as [string, string]] : []),
-      ["Nguồn", input.source],
     ],
     note: input.message?.trim() || null,
     emptyNote: input.source === "home-hero" ? null : "Không có ghi chú.",
     // PNG, not the SVG used on the site: Gmail does not render SVG images
     logoUrl: `${site}/assets/logo/email-lockup.png`,
     logoOnDarkUrl: `${site}/assets/logo/email-lockup-on-dark.png`,
+    siteUrl: site,
   };
   const email = createElement(LeadNotificationEmail, props);
   // hand-written: the auto-converted text runs the call and Zalo links together
