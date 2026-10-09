@@ -252,6 +252,12 @@ Radii cluster into four bands rather than one strict scale: `10px` (Instagram-gr
 - **Dark outline** (`.darkOutlineButton`, used on dark hero/CTA grounds): transparent, semi-transparent off-white border and text; hover brightens the border to pure white.
 - **Nav CTA:** small pill, `clay-deep` fill, hover `clay-hover` — no lift.
 
+### Homepage closing CTAs
+
+The two closing cards each contain a short `h2` and one native link; their repeated descriptive sentences are removed. The clay-deep card says “Bắt đầu từ tư vấn” with a light “Đặt lịch tư vấn” button to `/booking`. The linen card says “Trị liệu & tập luyện” with an outline “Xem dịch vụ” button to `/services`, giving consultation the stronger action treatment. On desktop, each card places its heading on the left and its button on the right, vertically centered, with 28px × 32px padding and a 140px minimum height. Below 980px the cards occupy separate rows. Below 700px, the heading and button stack with 28px × 20px padding; buttons span the card and height follows content. The consultation button has no hover transition or lift.
+
+The brown card carries the actual paper/plaster texture extracted from the owner's `HoliBrandBrief_9.pdf`, converted to `public/assets/textures/brand-paper.webp` (626×417, about 21 KB). It is a static decorative background with soft-light blending at 60% opacity. Text and controls sit above it; the light button keeps a light hover surface and a visible off-white focus outline. The guideline supplies a material texture, not a repeating logo pattern. Sources and review: `docs/homepage-closing-cta-research.md`.
+
 ### Floating contact buttons
 
 Three round icon-only buttons fixed bottom-right (`components/chat-widgets.tsx`), carried over from the previous holisticvn.com: Call (sage `#48614c`, outline phone), Zalo (`widget-clay`) and Messenger (`widget-clay-soft`), each with the brand glyph in white. Size steps 48px (mobile) / 56px (≥768) / 64px (≥1024), gap 12–16px, 150ms `scale(1.1)` on hover. They carry a soft drop shadow so they separate from the page; this is a third shadow in the build, scoped to this component only, alongside the nav pill and mobile drawer. On the homepage at ≤700px they stay hidden until the user scrolls ~240px so they never cover the hero's quick-consult button.

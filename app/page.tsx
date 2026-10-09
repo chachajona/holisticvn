@@ -644,19 +644,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className={styles.offers}>
+      <section className={styles.offers} aria-label="Bắt đầu cùng Holistic">
         <div className={`${styles.offer} ${styles.offerDark}`}>
-          <strong>Buổi tư vấn &amp; đánh giá</strong>
-          <span>60 phút đánh giá cơ thể và đề xuất lộ trình cá nhân hoá.</span>
+          <h2>Bắt đầu từ tư vấn</h2>
           <Link href="/booking" className={styles.lightButton}>
-            Đặt buổi đầu tiên
+            Đặt lịch tư vấn
           </Link>
         </div>
         <div className={`${styles.offer} ${styles.offerLight}`}>
-          <strong>Lộ trình 12 buổi</strong>
-          <span>Trị liệu kết hợp tập luyện trên một lộ trình xuyên suốt.</span>
-          <Link href="/services" className={styles.primaryButton}>
-            Khám phá dịch vụ
+          <h2>Trị liệu &amp; tập luyện</h2>
+          <Link href="/services" className={styles.outlineButton}>
+            Xem dịch vụ
           </Link>
         </div>
       </section>
