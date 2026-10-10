@@ -79,7 +79,7 @@
   color: #f7f3f0;
   transition: flex-grow 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.heroPanel[data-default] {
+.heroPanel[data-active] {
   flex-grow: 2.4;
 }
 .heroPanels:is(:hover, :focus-within) .heroPanel {
@@ -96,10 +96,10 @@
     transform 0.8s ease;
 }
 .heroPanel:is(:hover, :focus-visible) img,
-.heroPanel[data-default] img {
+.heroPanel[data-active] img {
   filter: sepia(0.12) saturate(0.95);
 }
-.heroPanels:is(:hover, :focus-within) .heroPanel[data-default]:not(:hover, :focus-visible) img {
+.heroPanels:is(:hover, :focus-within) .heroPanel[data-active]:not(:hover, :focus-visible) img {
   filter: sepia(0.35) saturate(0.8);
 }
 .heroPanelTint {
@@ -170,14 +170,14 @@
     opacity 0.35s ease,
     transform 0.35s ease;
 }
-.heroPanel[data-default] .heroPanelCopy,
+.heroPanel[data-active] .heroPanelCopy,
 .heroPanels .heroPanel:is(:hover, :focus-visible) .heroPanelCopy {
   opacity: 1;
   transform: none;
   transition-delay: 0.15s;
 }
 .heroPanels:is(:hover, :focus-within)
-  .heroPanel[data-default]:not(:hover, :focus-visible)
+  .heroPanel[data-active]:not(:hover, :focus-visible)
   .heroPanelCopy {
   opacity: 0;
   transform: translateY(6px);

@@ -6,6 +6,7 @@ import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
 import { getInstagramPosts } from "@/lib/instagram";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
+import { HeroPanels } from "@/components/hero-panels";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
 import {
   QuickLinkIllustration,
@@ -21,9 +22,9 @@ import styles from "./page.module.css";
 DIRECTION CONTRACT (impeccable, brief-pinned — comp supplied as full desktop 1440 /
 mobile 390 mock, no concept roll).
 THESIS: Homepage v2 — the same Warm Clay Editorial world, restructured into a fuller
-editorial rhythm: quick links, story, a services carousel, a symptom CTA, a
-comparison table, a three-step path + pillars, founders, testimonials, two offers,
-a social strip and a ticker.
+editorial rhythm: a hero triptych with quick consult, quick links, story, a services
+carousel, a symptom CTA, a comparison table, a three-step path + pillars, testimonials,
+two offers, a social strip and a ticker.
 OWN-WORLD: card #FDFAF6 ground, ink #3A2A24, clay #90776E/#744D40 for actions,
 sage #48614C for the one green band + footer, warm bands #F6EFE6/#EDE6DC, a
 dark #181F1A CTA reserved for the deepest close. Roboto Slab (200-400) carries
@@ -31,18 +32,15 @@ headings, Roboto Serif (300-400) carries body/buttons/nav, Roboto Mono marks
 small caption labels only.
 STORY: office workers, weekend athletes and pros see the full continuous path
 (tư vấn → trị liệu → tập luyện → thư giãn) end to end and book a consult.
-FIRST VIEWPORT: full-bleed 600px hero card, warm photo with a left-reading
-scrim, headline + dual CTA at left:64px; a three-item discovery navigation strip
-sits below the hero.
+FIRST VIEWPORT: full-bleed hero card — a three-panel triptych on desktop (Trị liệu open
+by default) and a swipeable photo stage with chip indicator on mobile, each panel linking
+to its destination — with a quick-consult phone form. Three discovery quick links
+(services, methods, about) sit below the hero.
 FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
-ADAPTATIONS (fix round, cited per finish review): hero ships as a single real
-photo with no slide arrows — the comp's ‹ › hero controls implied a second
-slide with no second image to show, and a control with nothing to slide to
-is a worse defect than its absence. Quick links now lead to the three existing
-overview pages: services, methods and the Holistic story. Kickers directly
-tagging a single heading below them (hero eyebrow, intro/path/team eyebrows,
-per-section numerals on parallel Services categories) were removed per
-craft-floor's unconditional ban, even though the comp used them throughout.
+ADAPTATIONS: hero carousels autoplay but pause on hover, focus, touch, hidden tab and
+prefers-reduced-motion (owner decision 2026-10-09). Kickers directly tagging a single
+heading below them were removed per craft-floor's unconditional ban, even though the
+comp used them throughout.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
@@ -54,14 +52,14 @@ export const metadata = createMetadata({
 });
 
 // Hero triptych: the continuous pathway tư vấn → trị liệu → tập luyện. Trị liệu opens by default.
-// Consultation.jpg, Therapy.jpg, Coaching.jpg: cropped from Holistic fanpage posts (facebook.com/vatlytrilieuganday.phuchoichucnangganday), supplied by the owner; headline text and watermark strips cropped off.
+// Intake.jpg, Iastm.jpg, Coaching.jpg: cropped from Holistic fanpage posts (facebook.com/vatlytrilieuganday.phuchoichucnangganday), supplied by the owner; headline text and watermark strips cropped off.
 const heroPath = [
   {
     num: "01",
     title: "Tư vấn",
     copy: "Đánh giá tư thế và nguyên nhân gây đau.",
     href: "/booking",
-    image: "/images/Consultation.jpg",
+    image: "/images/Intake.jpg",
     alt: "Chuyên viên trao đổi và đánh giá cùng khách hàng trên máy tính bảng tại Holistic",
     position: "45% 50%",
     isDefault: false,
@@ -71,7 +69,7 @@ const heroPath = [
     title: "Trị liệu",
     copy: "Đa phương pháp, không thuốc, không phẫu thuật.",
     href: "/treatments",
-    image: "/images/Therapy.jpg",
+    image: "/images/Iastm.jpg",
     alt: "Chuyên viên trị liệu mô mềm vùng cổ cho khách hàng tại Holistic",
     position: "50% 50%",
     isDefault: true,
@@ -79,7 +77,7 @@ const heroPath = [
   {
     num: "03",
     title: "Tập luyện",
-    copy: "Corrective exercise và return-to-sport.",
+    copy: "Tập luyện tăng cường và phục hồi.",
     href: "/services#svc-training",
     image: "/images/Coaching.jpg",
     alt: "Chuyên viên Holistic hướng dẫn khách tập hạ tạ đơn đúng tư thế",
@@ -410,31 +408,7 @@ export default async function HomePage() {
             </h1>
             <HeroQuickConsult hours={site.hours.replace(" — ", "–")} phone={site.phone} />
           </div>
-          <div className={styles.heroPanels}>
-            {heroPath.map((step) => (
-              <Link
-                href={step.href}
-                key={step.title}
-                className={styles.heroPanel}
-                data-default={step.isDefault || undefined}
-              >
-                <Image
-                  src={step.image}
-                  alt={step.alt}
-                  fill
-                  priority={step.isDefault}
-                  sizes="(max-width: 700px) 100vw, 40vw"
-                  style={{ objectPosition: step.position }}
-                />
-                <span className={styles.heroPanelTint} aria-hidden="true" />
-                <span className={styles.heroPanelNum}>{step.num}</span>
-                <span className={styles.heroPanelText}>
-                  <span className={styles.heroPanelTitle}>{step.title}</span>
-                  <span className={styles.heroPanelCopy}>{step.copy}</span>
-                </span>
-              </Link>
-            ))}
-          </div>
+          <HeroPanels steps={heroPath} />
         </div>
       </section>
 
