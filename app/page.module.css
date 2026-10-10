@@ -566,7 +566,7 @@
   font-size: clamp(1.6rem, 3vw, 38px);
   color: var(--sage);
 }
-.servicesHead > div {
+.servicesHead > div:first-child {
   max-width: 620px;
   display: flex;
   flex-direction: column;
@@ -577,60 +577,98 @@
   font-size: 16px;
   color: var(--muted);
 }
-.servicesControls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.servicesAllMobile {
+  display: none;
+}
+.servicesSlider {
+  --card-gap: 24px;
+  --card-w: calc((100cqw - 3 * var(--card-gap)) / 3.3);
+  container-type: inline-size;
+  position: relative;
 }
 .carouselArrow {
-  width: 36px;
-  height: 36px;
+  position: absolute;
+  top: calc(var(--card-w) / 2 - 20px);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(58, 42, 36, 0.25);
-  background: transparent;
-  color: var(--clay);
+  border: 0;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 2px 10px rgba(58, 42, 36, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
   transition:
     background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+    opacity 0.2s ease;
+}
+.carouselArrowPrev {
+  left: 12px;
+}
+.carouselArrowNext {
+  right: 12px;
 }
 .carouselArrow:hover {
-  border-color: var(--clay-deep);
-  color: var(--clay-deep);
+  background: var(--warm-band);
 }
-.carouselArrowActive {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #f7f3f0;
+.carouselArrow[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
 }
-.carouselArrowActive:hover {
-  background: var(--clay-hover);
-  border-color: var(--clay-hover);
-  color: #f7f3f0;
+.carouselArrow[aria-disabled="true"]:hover {
+  background: #fff;
 }
+.servicesFade {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  z-index: 2;
+  width: 108px;
+  background: linear-gradient(270deg, var(--card), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.servicesFade[data-visible="true"] {
+  opacity: 1;
+}
+.servicesViewport {
+  overflow: hidden;
+}
+/* Embla measures slides, so the gap lives in each slide's padding and the container is pulled back by one gap */
 .servicesGrid {
   display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding-bottom: 4px;
+  margin-left: calc(-1 * var(--card-gap));
+  touch-action: pan-y pinch-zoom;
 }
-.servicesGrid::-webkit-scrollbar {
-  display: none;
+.serviceSlide {
+  flex: 0 0 calc(var(--card-w) + var(--card-gap));
+  min-width: 0;
+  padding-left: var(--card-gap);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .serviceReveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .serviceReveal[data-in-view="true"] {
+    opacity: 1;
+    transform: none;
+  }
 }
 .serviceCard {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  flex: 0 0 340px;
-  scroll-snap-align: start;
+  gap: 12px;
 }
 .serviceCardImage {
-  height: 280px;
+  aspect-ratio: 1 / 1;
   border-radius: 14px;
   overflow: hidden;
   position: relative;
@@ -642,13 +680,54 @@
 .serviceCard:hover .serviceCardImage img {
   transform: scale(1.04);
 }
-.serviceCard strong {
-  font: 400 21px var(--font-display);
+.serviceCardTag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(24, 31, 26, 0.55);
+  backdrop-filter: blur(6px);
+  color: #f7f3f0;
+  font: 400 12.5px var(--font-accent);
+  letter-spacing: 0.02em;
 }
-.serviceCard span {
+.serviceCard strong {
+  font: 400 22px var(--font-display);
+}
+.serviceCard > span {
   font-size: 14.5px;
   line-height: 1.65;
   color: var(--muted);
+}
+.serviceCardCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-top: 2px;
+  font: 400 14px var(--font-accent);
+  font-style: normal;
+  color: var(--clay-deep);
+  border-bottom: 1px solid transparent;
+  transition:
+    gap 0.2s ease,
+    border-color 0.2s ease;
+}
+.serviceCard:hover .serviceCardCta,
+.serviceCard:focus-visible .serviceCardCta {
+  gap: 12px;
+  border-color: currentColor;
+}
+@media (prefers-reduced-motion: reduce) {
+  .serviceCardImage img,
+  .serviceCardCta {
+    transition: none;
+  }
+  .serviceCard:hover .serviceCardImage img {
+    transform: none;
+  }
 }
 
 /* ---------- Concern band ---------- */
@@ -1418,26 +1497,34 @@
   .compareTable thead th {
     font-size: 16px;
   }
-  .serviceCard {
-    flex-basis: 78vw;
+  .servicesSlider {
+    --card-w: 78cqw;
   }
-  .serviceCardImage {
-    height: 200px;
+  .carouselArrow {
+    display: none;
+  }
+  .servicesFade {
+    width: 48px;
   }
   .servicesHead {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  .servicesControls {
+  .servicesAllDesktop {
+    display: none;
+  }
+  .servicesAllMobile {
+    display: inline-flex;
     align-self: stretch;
-    justify-content: space-between;
   }
   .concern {
     margin-inline: 16px;
-    padding: 36px 26px;
+    padding: 46px 28px 40px;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 30px;
     text-align: center;
-    flex-direction: column;
   }
   .concernRight {
     flex-direction: column;

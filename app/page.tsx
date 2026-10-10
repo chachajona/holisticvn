@@ -109,30 +109,63 @@ const quickLinks: {
   { title: "Về Holistic", detail: "Tìm hiểu về Holistic", href: "/about", illustration: "about" },
 ];
 
+// Image sources for these cards: see "Image Provenance" in PRODUCT.md.
 const carouselServices = [
   {
-    title: "Trị liệu bằng tay",
-    copy: "Giảm đau vai gáy, cột sống, khớp bằng kỹ thuật manual therapy chuyên sâu.",
-    image: "/images/acupuncture.jpg",
+    title: "Massage trị liệu",
+    copy: "Giảm căng cơ, cải thiện lưu thông máu và hỗ trợ phục hồi sau vận động hoặc stress kéo dài.",
+    image: "/images/TreatmentBeds.jpg",
+    tag: "Trị liệu",
     href: "/services#svc-therapy",
   },
   {
-    title: "Corrective exercise 1-1",
-    copy: "Bài tập điều chỉnh tư thế, ổn định lõi và tăng dần sức mạnh theo tuần.",
-    image: "/images/Stretching.jpg",
+    title: "IASTM – cạo mạc",
+    copy: "Dụng cụ chuyên dụng giải phóng mô mềm, tăng lưu thông máu và độ đàn hồi của cơ – fascia.",
+    image: "/images/Iastm.jpg",
+    tag: "Trị liệu",
+    href: "/treatments#mtd-manual",
+  },
+  {
+    title: "Giác hơi",
+    copy: "Áp lực âm tại chỗ giúp thư giãn mô mềm và hỗ trợ tuần hoàn.",
+    image: "/images/Cupping.jpg",
+    tag: "Trị liệu",
+    href: "/treatments#mtd-manual",
+  },
+  {
+    title: "Điện xung",
+    copy: "Xung điện nhẹ kích thích thần kinh – cơ, giúp giảm đau và hỗ trợ kiểm soát vận động.",
+    image: "/images/ElectroPulse.jpg",
+    tag: "Điện trị liệu",
+    href: "/treatments#mtd-electro",
+  },
+  {
+    title: "Đèn hồng ngoại",
+    copy: "Thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể.",
+    image: "/images/Infrared.jpg",
+    tag: "Hồi phục",
+    href: "/treatments#mtd-infrared",
+  },
+  {
+    title: "Ngâm lạnh",
+    copy: "Giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao.",
+    image: "/images/ColdPlungeTub.jpg",
+    tag: "Hồi phục",
+    href: "/treatments#mtd-cold",
+  },
+  {
+    title: "Tập luyện phục hồi",
+    copy: "Chương trình cá nhân hoá cho chấn thương, đau mỏi hoặc hạn chế vận động — giảm nguy cơ tái phát.",
+    image: "/images/Coaching.jpg",
+    tag: "Tập luyện",
     href: "/services#svc-training",
   },
   {
-    title: "Ngâm lạnh & hồng ngoại",
-    copy: "Giảm sưng, giảm đau nhức cơ và tăng cường hồi phục sau tập luyện nặng.",
-    image: "/images/Exercise.jpg",
-    href: "/services#svc-recovery",
-  },
-  {
-    title: "Return-to-sport",
-    copy: "Lộ trình trở lại thể thao cho VĐV sau chấn thương, hạn chế tái phát.",
-    image: "/images/Massage.jpg",
-    href: "/treatments#mtd-rehab",
+    title: "Tập luyện tăng cường",
+    copy: "Phát triển sức mạnh, kiểm soát và hiệu quả chuyển động để nâng cao thể lực và tư thế bền vững.",
+    image: "/images/Studio.jpg",
+    tag: "Tập luyện",
+    href: "/services#svc-training",
   },
 ];
 
