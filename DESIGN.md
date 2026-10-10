@@ -221,7 +221,7 @@ Two container frames coexist and haven't been reconciled: the shared chrome (nav
 - **Section rhythm:** vertical section padding runs roughly 56–96px on desktop, collapsing at the 980px and 700px breakpoints (e.g. 36–44px at mobile).
 - **Repeating 3-up grids:** pillars, offers, categories, and process cards use three- or four-column grids, collapsing to 1–2 columns at 980px and 700px. Homepage quick links form a three-column navigation strip, becoming three horizontal rows at 980px.
 - **Two-column story/dive rows:** intro, path, team (homepage), method rows (Methods), and dive sections (Services) all use `1fr 1fr` with `order` flipping which side carries the image; all collapse to one column under 980px, image-first.
-- **Breakpoints:** 1080px (pillars-only), 980px (grid-to-stack for most two-column rows and 3-up grids), 700px (nav collapses to drawer, mobile type/padding steps down).
+- **Breakpoints:** 980px (grid-to-stack for most two-column rows and 3-up grids), 700px (nav collapses to drawer, mobile type/padding steps down; homepage core values become three compact rows).
 - There is no small-step spacing token scale (4px/8px grid) in this build; treat the section-rhythm band and the two container frames above as the real, repeated system.
 
 ## Elevation & Depth
@@ -261,6 +261,14 @@ The sage panel pairs the question heading with a single off-white pill linking t
 The two closing cards each contain a short `h2` and one native link; their repeated descriptive sentences are removed. The clay-deep card says “Bắt đầu từ tư vấn” with a light “Đặt lịch tư vấn” button to `/booking`. The linen card says “Trị liệu & tập luyện” with an outline “Xem dịch vụ” button to `/services`, giving consultation the stronger action treatment. On desktop, each card places its heading on the left and its button on the right, vertically centered, with 28px × 32px padding and a 140px minimum height. Below 980px the cards occupy separate rows. Below 700px, the heading and button stack with 28px × 20px padding; buttons span the card and height follows content. The consultation button has no hover transition or lift.
 
 The brown card carries the actual paper/plaster texture extracted from the owner's `HoliBrandBrief_9.pdf`, converted to `public/assets/textures/brand-paper.webp` (626×417, about 21 KB). It is a static decorative background with soft-light blending at 60% opacity. Text and controls sit above it; the light button keeps a light hover surface and a visible off-white focus outline. The guideline supplies a material texture, not a repeating logo pattern. Sources and review: `docs/homepage-closing-cta-research.md`.
+
+### Homepage integrated care and core values
+
+The section after the comparison table explains the benefit of combining therapy and training, with the heading “Trị liệu và tập luyện, cùng một lộ trình.” The earlier numbered pathway explains the stages. This section uses one short paragraph and three core values — Toàn diện / Xuyên suốt / Bền vững — each with its own concise benefit, avoiding guaranteed recovery or reinjury-prevention claims.
+
+Keep the linen panel (`warm-band`, 18px radius), a sage heading, and the real `ManualTherapy.jpg` photo of a specialist using a manual-therapy tool on a client's back. This photo comes from the clinic's fanpage post of 31 May 2025; its source and original dimensions are documented in PRODUCT.md. It does not show an identifiable face. The image is 300px tall on desktop/tablet and 220–260px on mobile, with a cover crop at `50% 40%` on desktop/tablet and centered on mobile to retain the hands and treatment while keeping the poster's title and bottom wordmark outside the visible frame.
+
+Panel padding is 48px on desktop/tablet and 28px × 20px on mobile. The top copy/photo row stacks at 980px. Core values use a native unordered list: three columns above 700px, three rows below. Original transparent sage/clay icon illustrations replace the tiny circled glyphs: supportive hands (Toàn diện), three interlocking chain links (Xuyên suốt), and a rooted plant (Bền vững). Each icon is 56px on desktop and 48px below 980px, beside its `h3`; the paragraph spans the item's full width below. No individual card shell or outer icon circle. Artwork is decorative with empty alt text; generation provenance and prompts are in `docs/core-value-icons.md`. A single hairline separates the values from the story; the former visible “Giá trị cốt lõi” label is replaced by the list's accessible name. No new client JavaScript or motion is needed. Review and references: `.impeccable/critique/2026-10-09T10-08-03Z__app-page-tsx.md`.
 
 ### Floating contact buttons
 

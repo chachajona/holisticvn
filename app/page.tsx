@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
@@ -186,20 +186,32 @@ const compareColumns = [
 const pillars = [
   {
     title: "Toàn diện",
-    copy: "Kết hợp kiến thức & thực nghiệm, xây dựng chương trình vận động cùng chế độ nghỉ ngơi hợp lý.",
+    copy: "Kết hợp trị liệu, vận động và nghỉ ngơi theo nhu cầu của cơ thể bạn.",
     icon: "whole",
   },
   {
     title: "Xuyên suốt",
-    copy: "Một lộ trình duy nhất từ tư vấn đến tập luyện lâu dài — không cần chạy nhiều nơi khác nhau.",
-    icon: "thread",
+    copy: "Từ đánh giá đến trị liệu và tập luyện tại một nơi, thuận tiện để tiếp tục chương trình.",
+    icon: "thread-linked-v2",
   },
   {
     title: "Bền vững",
-    copy: "Không dùng thuốc, không phẫu thuật. Sức khoẻ tăng tiến bền vững, tránh tái chấn thương.",
+    copy: "Hướng đến sức mạnh và khả năng vận động lâu dài, không thuốc, không phẫu thuật.",
     icon: "root",
   },
 ];
+
+function PillarIcon({ type }: { type: string }) {
+  return (
+    <Image
+      src={`/images/pillars/${type}.webp`}
+      alt=""
+      width={56}
+      height={56}
+      sizes="(max-width: 980px) 48px, 56px"
+    />
+  );
+}
 
 const igImages = [
   "/images/Facade.jpg",
@@ -215,41 +227,6 @@ const tickerWords = [
   "XUYÊN SUỐT",
   "BỀN VỮNG",
 ];
-
-function PillarIcon({ type }: { type: string }) {
-  const paths: Record<string, ReactNode> = {
-    whole: (
-      <>
-        <circle cx="9" cy="12" r="6.5" />
-        <circle cx="15" cy="12" r="6.5" />
-      </>
-    ),
-    thread: <path d="M3 12c3-5 6 5 9 0s6-5 9 0" />,
-    root: (
-      <>
-        <path d="M12 3v8" />
-        <path d="M12 11c-3 0-5 2-5 5v4" />
-        <path d="M12 11c3 0 5 2 5 5v4" />
-        <path d="M12 11c0 2-1.5 3.5-3.5 4" />
-      </>
-    ),
-  };
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {paths[type]}
-    </svg>
-  );
-}
 
 // Hand-drawn pen sketch around the intro photo frame: broken double outline, glow rays, leaf sprig.
 // Drawn in the quick-link illustration palette (clay + sage contour lines) with a turbulence wobble so strokes read as pen, not vector.
@@ -650,41 +627,38 @@ export default async function HomePage() {
         <span className={styles.compareLegend}>● CÓ &nbsp;·&nbsp; — KHÔNG</span>
       </section>
 
-      <section className={styles.path}>
+      <section className={styles.path} aria-labelledby="path-heading">
         <div className={styles.pathPanel}>
           <div className={styles.pathTop}>
             <div className={styles.pathCopy}>
-              <h2>Ba bước, một chương trình duy nhất.</h2>
+              <h2 id="path-heading">Trị liệu và tập luyện, cùng một lộ trình.</h2>
               <p>
-                Từ buổi đánh giá đầu tiên đến giai đoạn tập luyện nâng cao, bạn đi trên một lộ trình
-                xuyên suốt — không phải kể lại tình trạng của mình ở nhiều nơi khác nhau.
-              </p>
-              <p>
-                Mục tiêu không chỉ là hết đau, mà là giữ được sức khoẻ vận động trong nhiều năm sau
-                đó.
+                Chương trình được xây dựng theo tình trạng và mục tiêu của bạn — từ vận động hằng
+                ngày đến tập luyện thể thao.
               </p>
             </div>
             <div className={styles.pathMedia}>
               <Image
-                src="/images/Massage.jpg"
-                alt="Chuyên viên đang trị liệu cho khách tại Holistic"
+                src="/images/ManualTherapy.jpg"
+                alt="Chuyên viên dùng dụng cụ trị liệu mô mềm vùng lưng tại Holistic"
                 fill
-                sizes="(max-width: 980px) 100vw, 45vw"
+                sizes="(max-width: 700px) calc(100vw - 80px), (max-width: 980px) calc(100vw - 144px), (max-width: 1408px) calc((100vw - 200px) / 2), 604px"
               />
             </div>
           </div>
-          <div className={styles.pillars}>
-            <strong>Giá trị cốt lõi</strong>
+          <ul className={styles.pillars} aria-label="Giá trị cốt lõi của Holistic" role="list">
             {pillars.map((p) => (
-              <div className={styles.pillar} key={p.title}>
-                <span className={styles.pillarIcon}>
+              <li className={styles.pillar} key={p.title}>
+                <span className={styles.pillarIcon} aria-hidden="true">
                   <PillarIcon type={p.icon} />
                 </span>
-                <strong>{p.title}</strong>
-                <span>{p.copy}</span>
-              </div>
+                <div className={styles.pillarCopy}>
+                  <h3>{p.title}</h3>
+                  <p>{p.copy}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
