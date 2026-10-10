@@ -532,30 +532,47 @@ export default async function HomePage() {
         </Link>
       </section>
 
-      <section className={styles.steps}>
+      <section className={styles.steps} aria-labelledby="continuity-heading">
         <div className={styles.stepsHead}>
-          <span>Xuyên suốt</span>
-          <i />
+          <h2 id="continuity-heading">Một lộ trình xuyên suốt.</h2>
+          <i aria-hidden="true" />
         </div>
-        <div className={styles.stepsGrid}>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>01</span>
-            <strong>Hiểu rõ cơ thể</strong>
-            <span>Xác định phương pháp trị liệu và tập luyện phù hợp với tình trạng của bạn.</span>
-          </div>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>02</span>
-            <strong>Giảm đau mỏi</strong>
-            <span>Giảm căng thẳng và tăng cường hoạt động miễn dịch tức thời.</span>
-          </div>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>03</span>
-            <strong>Tăng cường lâu dài</strong>
-            <span>
-              Sức khoẻ, độ linh hoạt và độ dẻo dai của cơ &amp; khớp, duy trì qua nhiều năm.
+        <p className={styles.stepsIntro}>
+          Holistic kết hợp tư vấn, trị liệu và tập luyện trong một lộ trình xuyên suốt, phù hợp với
+          bạn, hướng đến cơ thể khỏe hơn cho sinh hoạt và thể thao.
+        </p>
+        <ol className={styles.stepsGrid} role="list">
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              01
             </span>
-          </div>
-        </div>
+            <h3>Hiểu cách bạn vận động</h3>
+            <p>
+              Tư vấn và đánh giá thói quen sinh hoạt, những hạn chế vận động để lựa chọn hướng trị
+              liệu, tập luyện phù hợp.
+            </p>
+          </li>
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              02
+            </span>
+            <h3>Giảm đau, cải thiện vận động</h3>
+            <p>
+              Trị liệu theo tình trạng của bạn, hướng đến giảm đau mỏi và cải thiện khả năng vận
+              động.
+            </p>
+          </li>
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              03
+            </span>
+            <h3>Xây nền tảng vận động bền vững</h3>
+            <p>
+              Tập luyện để tăng sức mạnh, kiểm soát chuyển động tốt hơn và đáp ứng mục tiêu sinh
+              hoạt, thể thao của bạn.
+            </p>
+          </li>
+        </ol>
       </section>
 
       <section className={styles.compare} aria-labelledby="comparison-heading">

@@ -853,11 +853,11 @@
   align-items: baseline;
   gap: 20px;
 }
-.stepsHead span {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--clay);
+.stepsHead h2 {
+  max-width: 760px;
+  font-size: clamp(1.6rem, 3vw, 36px);
+  color: var(--sage);
+  text-wrap: balance;
 }
 .stepsHead i {
   flex: 1;
@@ -865,10 +865,20 @@
   background: rgba(58, 42, 36, 0.16);
   font-style: normal;
 }
+.stepsIntro {
+  max-width: 760px;
+  margin: -14px 0 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--muted);
+}
 .stepsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .stepCard {
   display: flex;
@@ -880,13 +890,14 @@
 }
 .stepNumeral {
   font: 200 36px/1 var(--font-display);
-  color: var(--numeral);
+  color: var(--clay-deep);
 }
-.stepCard strong {
+.stepCard h3 {
   font: 400 21px var(--font-display);
   color: var(--ink);
 }
-.stepCard span {
+.stepCard p {
+  margin: 0;
   font-size: 15px;
   line-height: 1.7;
   color: var(--muted);
