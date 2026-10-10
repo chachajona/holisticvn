@@ -55,7 +55,6 @@ export function HeroPanels({ steps }: { steps: Step[] }) {
             alt={step.alt}
             fill
             sizes={PANEL_SIZES}
-            loading={step.isDefault ? "eager" : undefined}
             style={{ objectPosition: step.position }}
           />
           <span className={styles.heroPanelTint} aria-hidden="true" />

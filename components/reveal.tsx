@@ -16,7 +16,7 @@ export function Reveal({
 
   useEffect(() => {
     const node = ref.current;
-    if (!node) return;
+    if (!node || !("IntersectionObserver" in window)) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -26,8 +26,12 @@ export function Reveal({
       },
       { threshold: 0.1 },
     );
+    node.dataset.revealEnhanced = "true";
     observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      delete node.dataset.revealEnhanced;
+    };
   }, []);
 
   return (

@@ -6,7 +6,7 @@ const STAGGER_MS = 450;
 
 // Draws each <mark> inside once it scrolls into view. Marks that become visible together are drawn
 // one after another in DOM order instead of all at once. The CSS owns the animation and only hides
-// marks when prefers-reduced-motion allows it, so reduced-motion users always see them drawn.
+// marks when enhanced and motion is allowed; without JavaScript the base highlight stays visible.
 export function HighlightStage({
   children,
   className,
@@ -41,8 +41,12 @@ export function HighlightStage({
       },
       { threshold: 0.6, rootMargin: "0px 0px -12% 0px" },
     );
+    root.dataset.highlightStage = "enhanced";
     marks.forEach((mark) => observer.observe(mark));
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      delete root.dataset.highlightStage;
+    };
   }, []);
 
   return (

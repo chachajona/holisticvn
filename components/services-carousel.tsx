@@ -108,6 +108,7 @@ export function ServicesCarousel({ items }: { items: Item[] }) {
         )}
         <div
           className={styles.servicesViewport}
+          data-carousel-enhanced={embla ? true : undefined}
           ref={viewportRef}
           role="region"
           aria-roledescription="carousel"

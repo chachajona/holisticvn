@@ -635,21 +635,33 @@
   opacity: 1;
 }
 .servicesViewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+}
+.servicesViewport[data-carousel-enhanced] {
   overflow: hidden;
+  scroll-snap-type: none;
 }
 /* Embla measures slides, so the gap lives in each slide's padding and the container is pulled back by one gap */
 .servicesGrid {
   display: flex;
   margin-left: calc(-1 * var(--card-gap));
+}
+.servicesViewport[data-carousel-enhanced] .servicesGrid {
   touch-action: pan-y pinch-zoom;
 }
 .serviceSlide {
   flex: 0 0 calc(var(--card-w) + var(--card-gap));
   min-width: 0;
   padding-left: var(--card-gap);
+  scroll-snap-align: start;
+}
+.servicesViewport[data-carousel-enhanced] .serviceSlide {
+  scroll-snap-align: none;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .serviceReveal {
+  .serviceReveal[data-reveal-enhanced="true"] {
     opacity: 0;
     transform: translateY(16px);
     transition:
@@ -1224,11 +1236,11 @@
 }
 /* Drawn from the first word to the last, line by line (default box-decoration-break: slice), once. */
 @media (prefers-reduced-motion: no-preference) {
-  .testimonial mark {
+  [data-highlight-stage="enhanced"] .testimonial mark {
     background-size: 0% 38%;
     transition: background-size 750ms cubic-bezier(0.2, 0.6, 0.25, 1);
   }
-  .testimonial mark[data-draw="drawn"] {
+  [data-highlight-stage="enhanced"] .testimonial mark[data-draw="drawn"] {
     background-size: 100% 38%;
   }
 }
