@@ -17,7 +17,7 @@ export default async function BlogPage() {
         eyebrow="Góc nhìn"
         title="Khi bạn hiểu cơ thể, mọi lựa chọn đều rõ hơn."
         description="Những bài viết ngắn, thực tế về vận động, phục hồi và cách sống cùng một cơ thể khỏe mạnh."
-        image="/images/Exercise.jpg"
+        image="/images/HeroBlog.jpg"
       />
       <section className="section">
         <div className="shell blog-grid">

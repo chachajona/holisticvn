@@ -74,17 +74,19 @@ export const methodAnchor = {
   electro: "mtd-electro",
   rehab: "mtd-rehab",
   cold: "mtd-cold",
+  infrared: "mtd-infrared",
 } as const;
 export const footerServices: Array<[string, string]> = [
   ["Trị liệu bằng tay", `/services#${serviceAnchor.therapy}`],
-  ["Corrective exercise 1-1", `/services#${serviceAnchor.training}`],
-  ["Ngâm lạnh & hồng ngoại", `/services#${serviceAnchor.recovery}`],
+  ["Tập luyện phục hồi & tăng cường", `/services#${serviceAnchor.training}`],
+  ["Ngâm lạnh & đèn hồng ngoại", `/services#${serviceAnchor.recovery}`],
 ];
 export const footerMethods: Array<[string, string]> = [
   ["Trị liệu thủ công", `/treatments#${methodAnchor.manual}`],
   ["Điện trị liệu", `/treatments#${methodAnchor.electro}`],
   ["Tập luyện phục hồi", `/treatments#${methodAnchor.rehab}`],
-  ["Ngâm lạnh & hồng ngoại", `/treatments#${methodAnchor.cold}`],
+  ["Ngâm lạnh", `/treatments#${methodAnchor.cold}`],
+  ["Đèn hồng ngoại", `/treatments#${methodAnchor.infrared}`],
 ];
 
 // Google Maps listing "Holistic Rehab & Performance", re-read 2026-10-09: 5.0 stars, 645 reviews (644 on 2026-10-06).
@@ -126,7 +128,7 @@ export const treatments: Treatment[] = [
     description:
       "Kỹ thuật can thiệp vào mô cơ chuyên sâu, kết hợp đánh giá vận động để xử lý căng cứng kéo dài và đau cơ xương khớp.",
     duration: "45–60 phút",
-    image: "/images/acupuncture.jpg",
+    image: "/images/TreatmentBeds.jpg",
     benefits: ["Giảm căng cơ", "Hỗ trợ phục hồi", "Tăng biên độ vận động"],
   },
   {
@@ -136,7 +138,7 @@ export const treatments: Treatment[] = [
     description:
       "Liệu pháp áp lực âm được sử dụng có mục tiêu, phù hợp trong lộ trình hồi phục và chăm sóc cơ thể sau vận động.",
     duration: "30–45 phút",
-    image: "/images/Massage.jpg",
+    image: "/images/Cupping.jpg",
     benefits: ["Thư giãn mô mềm", "Hỗ trợ tuần hoàn", "Cảm nhận cơ thể tốt hơn"],
   },
   {
@@ -147,7 +149,7 @@ export const treatments: Treatment[] = [
     description:
       "Kỹ thuật hỗ trợ xử lý vùng mô hạn chế vận động, luôn được kết hợp cùng bài tập và hướng dẫn tự chăm sóc.",
     duration: "45 phút",
-    image: "/images/Stretching.jpg",
+    image: "/images/Iastm.jpg",
     benefits: ["Cải thiện mô mềm", "Tối ưu chuyển động", "Kết hợp bài tập phục hồi"],
   },
   {
@@ -158,7 +160,7 @@ export const treatments: Treatment[] = [
     description:
       "Phương pháp bổ trợ nhẹ nhàng được điều chỉnh theo tình trạng và mục tiêu phục hồi của từng khách hàng.",
     duration: "30 phút",
-    image: "/images/Exercise.jpg",
+    image: "/images/Infrared.jpg",
     benefits: ["Thư giãn", "Hỗ trợ giảm khó chịu", "Phục hồi có kiểm soát"],
   },
   {
@@ -168,7 +170,7 @@ export const treatments: Treatment[] = [
     description:
       "Phiên trị liệu lạnh được thiết kế với thời lượng phù hợp, ưu tiên an toàn và đáp ứng thực tế của cơ thể.",
     duration: "15–20 phút",
-    image: "/images/Athlete.png",
+    image: "/images/ColdPlungeTub.jpg",
     benefits: ["Hồi phục sau vận động", "Tăng tỉnh táo", "Xây dựng thói quen phục hồi"],
   },
 ];

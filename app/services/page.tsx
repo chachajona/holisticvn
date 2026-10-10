@@ -62,19 +62,19 @@ const categories = [
     id: serviceAnchor.therapy,
     icon: "therapy" as const,
     title: "Trị liệu",
-    copy: "Giảm đau và điều chỉnh cấu trúc bằng tay và thiết bị hỗ trợ chuyên sâu.",
+    copy: "Massage trị liệu, nắn chỉnh và các phương pháp hỗ trợ giảm đau, thư giãn cơ.",
   },
   {
     id: serviceAnchor.training,
     icon: "training" as const,
     title: "Tập luyện",
-    copy: "Bài tập điều chỉnh tư thế và tăng sức mạnh, cá nhân hoá theo cơ thể bạn.",
+    copy: "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
   },
   {
     id: serviceAnchor.recovery,
     icon: "recovery" as const,
     title: "Thư giãn & hồi phục",
-    copy: "Ngâm lạnh, hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
+    copy: "Ngâm lạnh, đèn hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
   },
 ];
 
@@ -88,42 +88,42 @@ const dives = [
   {
     id: serviceAnchor.therapy,
     title: "Trị liệu bằng tay",
-    body: "Kỹ thuật manual therapy chuyên sâu giúp giảm đau vai gáy, cột sống và khớp — kết hợp đánh giá tư thế và vận động trước khi can thiệp.",
+    body: "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
     bullets: [
-      "Đánh giá tư thế và biên độ vận động",
-      "Nắn chỉnh và giải phóng mô mềm",
-      "Hướng dẫn bài tập duy trì tại nhà",
+      "Massage trị liệu toàn thân hoặc cục bộ",
+      "Nắn chỉnh cột sống và IASTM – cạo mạc",
+      "Giác hơi, tapping và các phương pháp bổ trợ",
     ],
     cta: "Đặt lịch trị liệu",
-    image: "/images/acupuncture.jpg",
+    image: "/images/Iastm.jpg",
     imageLeft: false,
     related: treatmentLinks(["dry-needling", "cupping", "iastm"]),
   },
   {
     id: serviceAnchor.training,
-    title: "Corrective exercise 1-1",
-    body: "Chương trình tập cá nhân hoá, tăng dần cường độ theo tuần — điều chỉnh tư thế, ổn định lõi và xây dựng sức mạnh bền vững.",
+    title: "Tập luyện phục hồi & tăng cường",
+    body: "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
     bullets: [
       "Đồng hành xuyên suốt từ tư vấn đến tập luyện",
-      "Kế hoạch tập điều chỉnh theo tiến độ hồi phục",
+      "Chương trình cá nhân hoá theo tình trạng của bạn",
       "Phù hợp cả người mới bắt đầu và vận động viên",
     ],
     cta: "Đặt lịch tập",
-    image: "/images/Stretching.jpg",
+    image: "/images/Coaching.jpg",
     imageLeft: true,
     related: [],
   },
   {
     id: serviceAnchor.recovery,
-    title: "Ngâm lạnh & hồng ngoại",
-    body: "Giảm sưng, giảm đau nhức cơ và tăng tốc hồi phục sau các buổi tập nặng hoặc thi đấu — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
+    title: "Ngâm lạnh & đèn hồng ngoại",
+    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và phục hồi sau vận động cường độ cao; đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
     bullets: [
-      "Ngâm lạnh toàn thân hoặc cục bộ",
-      "Liệu pháp hồng ngoại giảm căng cơ",
+      "Ngâm lạnh phục hồi sau vận động cường độ cao",
+      "Đèn hồng ngoại thư giãn cơ, giảm căng thẳng",
       "Kết hợp linh hoạt trong lộ trình cá nhân",
     ],
     cta: "Đặt lịch thư giãn",
-    image: "/images/Exercise.jpg",
+    image: "/images/Infrared.jpg",
     imageLeft: false,
     related: treatmentLinks(["heat-light", "cold-plunge"]),
   },
@@ -135,8 +135,8 @@ export default function ServicesPage() {
       <section className={styles.hero}>
         <div className={styles.heroCard}>
           <Image
-            src="/images/Massage.jpg"
-            alt="Chuyên viên đang thực hiện trị liệu tại Holistic"
+            src="/images/HeroBeds.jpg"
+            alt="Chuyên viên chuẩn bị giường trị liệu tại phòng trị liệu Holistic"
             fill
             priority
             sizes="100vw"
@@ -155,7 +155,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <nav className={styles.categories} aria-label="Ba nhóm dịch vụ">
+      <nav className={styles.categories} aria-label="Các nhóm dịch vụ">
         <div className={styles.categoriesHead}>
           <h2>Chọn điểm bắt đầu phù hợp với bạn</h2>
         </div>

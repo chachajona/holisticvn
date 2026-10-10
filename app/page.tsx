@@ -101,7 +101,7 @@ const quickLinks: {
   },
   {
     title: "Phương pháp",
-    detail: "Khám phá 6 phương pháp",
+    detail: "Khám phá các phương pháp",
     href: "/treatments",
     illustration: "methods",
   },
@@ -169,17 +169,17 @@ const pillars = [
 ];
 
 const igImages = [
-  "/images/acupuncture.jpg",
-  "/images/Massage.jpg",
-  "/images/Stretching.jpg",
-  "/images/Exercise.jpg",
+  "/images/Facade.jpg",
+  "/images/TreatmentBeds.jpg",
+  "/images/Lobby.jpg",
+  "/images/Studio.jpg",
 ];
 const tickerWords = [
+  "TƯ VẤN",
   "TRỊ LIỆU",
   "TẬP LUYỆN",
-  "THƯ GIÃN",
-  "KHÔNG THUỐC",
-  "KHÔNG PHẪU THUẬT",
+  "TOÀN DIỆN",
+  "XUYÊN SUỐT",
   "BỀN VỮNG",
 ];
 
