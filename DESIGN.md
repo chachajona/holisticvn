@@ -252,6 +252,10 @@ Radii cluster into four bands rather than one strict scale: `10px` (Instagram-gr
 - **Dark outline** (`.darkOutlineButton`, used on dark hero/CTA grounds): transparent, semi-transparent off-white border and text; hover brightens the border to pure white.
 - **Nav CTA:** small pill, `clay-deep` fill, hover `clay-hover` — no lift.
 
+### Homepage concern CTA
+
+The sage panel pairs the question heading with a single off-white pill linking to `/treatments`. The symptom subtext is removed by owner decision. Three original broad SVG curves add a tonal background; a hand-drawn arrow connects heading and action on desktop. At 1050px and below the decorative arrow disappears; at 700px and below the content stacks centrally and the button spans the available width. When half the panel is visible, `ConcernPattern` uses IntersectionObserver to reveal three brush strokes over 2.45 seconds. This runs once per mount using ordinary CSS animations, without scroll timelines. Reduced motion or unavailable JavaScript leaves the completed pattern visible. The heading and native link remain server-rendered. Pattern, layout and motion were approved through the standalone preview; research: `docs/homepage-concern-cta-proposals.md`.
+
 ### Homepage closing CTAs
 
 The two closing cards each contain a short `h2` and one native link; their repeated descriptive sentences are removed. The clay-deep card says “Bắt đầu từ tư vấn” with a light “Đặt lịch tư vấn” button to `/booking`. The linen card says “Trị liệu & tập luyện” with an outline “Xem dịch vụ” button to `/services`, giving consultation the stronger action treatment. On desktop, each card places its heading on the left and its button on the right, vertically centered, with 28px × 32px padding and a 140px minimum height. Below 980px the cards occupy separate rows. Below 700px, the heading and button stack with 28px × 20px padding; buttons span the card and height follows content. The consultation button has no hover transition or lift.

@@ -8,13 +8,14 @@ import { getInstagramPosts } from "@/lib/instagram";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
 import { HeroPanels } from "@/components/hero-panels";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
+import { ConcernPattern } from "@/components/concern-pattern";
+import { HighlightStage } from "@/components/highlight-stage";
+import { BranchSway } from "@/components/branch-sway";
+import { Reveal } from "@/components/reveal";
 import {
   QuickLinkIllustration,
   type QuickLinkIllustrationType,
 } from "@/components/quick-link-illustrations";
-import { BranchSway } from "@/components/branch-sway";
-import { HighlightStage } from "@/components/highlight-stage";
-import { Reveal } from "@/components/reveal";
 import { ServicesCarousel } from "@/components/services-carousel";
 import styles from "./page.module.css";
 
@@ -498,14 +499,37 @@ export default async function HomePage() {
         <ServicesCarousel items={carouselServices} />
       </section>
 
-      <section className={styles.concern}>
-        <h2>Bạn đang gặp một vấn đề cụ thể?</h2>
-        <div className={styles.concernRight}>
-          <span className={styles.concernTag}>ĐAU VAI GÁY · LỆCH CHẬU · THOÁT VỊ</span>
-          <Link href="/treatments" className={styles.lightButton}>
-            Tìm theo triệu chứng
-          </Link>
-        </div>
+      <section className={styles.concern} aria-labelledby="concern-heading">
+        <ConcernPattern className={styles.concernPattern} />
+        <h2 id="concern-heading">Bạn đang gặp một vấn đề cụ thể?</h2>
+        <svg
+          className={styles.concernArrow}
+          viewBox="0 0 120 80"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M5 58C16 35 54 27 72 42C83 52 60 58 58 39C55 18 88 24 108 41M93 23L109 41L86 44"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <Link href="/treatments" className={styles.concernButton}>
+          Xem các phương pháp
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M4 12h16M14 6l6 6-6 6" />
+          </svg>
+        </Link>
       </section>
 
       <section className={styles.steps}>
