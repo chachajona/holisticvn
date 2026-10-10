@@ -23,7 +23,7 @@ Có thể bỏ qua bước tạo `.env.local` khi chỉ review fallback UI. Khô
 4. Theo [legacy migration runbook](docs/MIGRATION.md), xác minh import và redirect 301 trước cutover.
 
 Form ở hero, `/booking`, `/contact` và trang liệu pháp gửi email cho nhân viên Holistic. Website không lưu dữ liệu khách hàng, không có CRM/dashboard và không có đăng ký newsletter. Nhân viên gọi lại, nhập lịch trên hệ thống của phòng khám rồi xác nhận với khách.
-Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắn. Thông báo form hiện chỉ gửi qua email. Xem [thiết lập email](docs/EMAIL_SETUP.md) trước khi dùng form thật. Redis chỉ giữ bộ đếm giới hạn gửi tự hết hạn sau một giờ, không giữ nội dung form.
+Nút Zalo trên website mở chat trực tiếp để khách chủ động nhắn. Thông báo form hiện chỉ gửi qua email. Xem [thiết lập email](docs/EMAIL_SETUP.md) trước khi dùng form thật. Redis giữ bộ đếm giới hạn gửi tự hết hạn sau một giờ, không giữ nội dung form. Feed Instagram tuỳ chọn dùng namespace riêng để giữ token máy chủ và cache metadata bài công khai, với hạn lưu 90 ngày sau mỗi lần đồng bộ; xem [thiết lập Instagram](docs/INSTAGRAM_SETUP.md).
 
 ## Quy ước editor
 

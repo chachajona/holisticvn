@@ -35,6 +35,8 @@ export type Post = {
 
 export type Testimonial = {
   quote: string;
+  // Verbatim substring of `quote` to emphasise on the homepage.
+  highlight?: string;
   context: string;
   avatar?: string;
   rating?: number;
@@ -72,23 +74,25 @@ export const methodAnchor = {
   electro: "mtd-electro",
   rehab: "mtd-rehab",
   cold: "mtd-cold",
+  infrared: "mtd-infrared",
 } as const;
 export const footerServices: Array<[string, string]> = [
   ["Trị liệu bằng tay", `/services#${serviceAnchor.therapy}`],
-  ["Corrective exercise 1-1", `/services#${serviceAnchor.training}`],
-  ["Ngâm lạnh & hồng ngoại", `/services#${serviceAnchor.recovery}`],
+  ["Tập luyện phục hồi & tăng cường", `/services#${serviceAnchor.training}`],
+  ["Ngâm lạnh & đèn hồng ngoại", `/services#${serviceAnchor.recovery}`],
 ];
 export const footerMethods: Array<[string, string]> = [
   ["Trị liệu thủ công", `/treatments#${methodAnchor.manual}`],
   ["Điện trị liệu", `/treatments#${methodAnchor.electro}`],
   ["Tập luyện phục hồi", `/treatments#${methodAnchor.rehab}`],
-  ["Ngâm lạnh & hồng ngoại", `/treatments#${methodAnchor.cold}`],
+  ["Ngâm lạnh", `/treatments#${methodAnchor.cold}`],
+  ["Đèn hồng ngoại", `/treatments#${methodAnchor.infrared}`],
 ];
 
-// Google Maps listing "Holistic Rehab & Performance", read 2026-10-06: 5.0 stars, 644 reviews.
+// Google Maps listing "Holistic Rehab & Performance", re-read 2026-10-09: 5.0 stars, 645 reviews (644 on 2026-10-06).
 export const reviewSummary = {
   average: 5,
-  count: 644,
+  count: 645,
   url: "https://maps.app.goo.gl/9RmecBoycrAkhBE39",
 };
 
@@ -124,7 +128,7 @@ export const treatments: Treatment[] = [
     description:
       "Kỹ thuật can thiệp vào mô cơ chuyên sâu, kết hợp đánh giá vận động để xử lý căng cứng kéo dài và đau cơ xương khớp.",
     duration: "45–60 phút",
-    image: "/images/acupuncture.jpg",
+    image: "/images/TreatmentBeds.jpg",
     benefits: ["Giảm căng cơ", "Hỗ trợ phục hồi", "Tăng biên độ vận động"],
   },
   {
@@ -134,7 +138,7 @@ export const treatments: Treatment[] = [
     description:
       "Liệu pháp áp lực âm được sử dụng có mục tiêu, phù hợp trong lộ trình hồi phục và chăm sóc cơ thể sau vận động.",
     duration: "30–45 phút",
-    image: "/images/Massage.jpg",
+    image: "/images/Cupping.jpg",
     benefits: ["Thư giãn mô mềm", "Hỗ trợ tuần hoàn", "Cảm nhận cơ thể tốt hơn"],
   },
   {
@@ -145,7 +149,7 @@ export const treatments: Treatment[] = [
     description:
       "Kỹ thuật hỗ trợ xử lý vùng mô hạn chế vận động, luôn được kết hợp cùng bài tập và hướng dẫn tự chăm sóc.",
     duration: "45 phút",
-    image: "/images/Stretching.jpg",
+    image: "/images/Iastm.jpg",
     benefits: ["Cải thiện mô mềm", "Tối ưu chuyển động", "Kết hợp bài tập phục hồi"],
   },
   {
@@ -156,7 +160,7 @@ export const treatments: Treatment[] = [
     description:
       "Phương pháp bổ trợ nhẹ nhàng được điều chỉnh theo tình trạng và mục tiêu phục hồi của từng khách hàng.",
     duration: "30 phút",
-    image: "/images/Exercise.jpg",
+    image: "/images/Infrared.jpg",
     benefits: ["Thư giãn", "Hỗ trợ giảm khó chịu", "Phục hồi có kiểm soát"],
   },
   {
@@ -166,7 +170,7 @@ export const treatments: Treatment[] = [
     description:
       "Phiên trị liệu lạnh được thiết kế với thời lượng phù hợp, ưu tiên an toàn và đáp ứng thực tế của cơ thể.",
     duration: "15–20 phút",
-    image: "/images/Athlete.png",
+    image: "/images/ColdPlungeTub.jpg",
     benefits: ["Hồi phục sau vận động", "Tăng tỉnh táo", "Xây dựng thói quen phục hồi"],
   },
 ];
@@ -208,21 +212,45 @@ export const posts: Post[] = [
   },
 ];
 
+// Verbatim excerpts from Google Maps reviews of "Holistic Rehab & Performance", read 2026-10-09
+// (Vietnamese view). "…" marks where the review continues. Reviewers are shown as given name + last
+// initial; Google only shows relative ages, so dates are tracked in docs/CONTENT_INVENTORY.md.
+// Rule: the shown excerpt says nothing about treatment outcomes (pain, recovery, improvement);
+// staff, space and process are fine. Thanh X.'s full review does claim an outcome, in the part
+// cut at "…". The only edit to review text is dropping the space before commas in Giang H.'s
+// excerpt. Earlier quotes are in git history.
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Mình chọn Holistic ở đây có tất cả những thứ mình cần, không cần tốn công tốn tiền đi nhiều chỗ khác nhau. Mình được tư vấn kĩ lưỡng từ đầu, và theo sát trong cả quá trình trị liệu lẫn tập luyện lâu dài nên thấy rất an tâm.",
-    context: "Nhân viên văn phòng, 26 tuổi",
+      "… Không gian phòng trị liệu sạch sẽ, yên tĩnh và tạo cảm giác thư giãn ngay từ khi bước vào. Chuyên viên làm việc rất chuyên nghiệp, hỏi kỹ tình trạng cơ thể trước khi bắt đầu và giải thích rõ từng bước trị liệu. Trong quá trình trị liệu cảm thấy dễ chịu, không bị đau hay khó chịu. …",
+    highlight: "hỏi kỹ tình trạng cơ thể trước khi bắt đầu và giải thích rõ từng bước trị liệu",
+    context: "Thanh X., Google",
+    rating: 5,
+  },
+  {
+    quote: "… Ai cần giãn cơ sau khi tập thể dục thể thao thì nên đến đây …",
+    highlight: "giãn cơ sau khi tập thể dục thể thao",
+    context: "Thảo V., Google",
+    rating: 5,
+  },
+  {
+    quote: "… kỹ thuật tay nghề tốt, cơ sở vật chất hiện đại, mọi người nên tới trải nghiệm",
+    highlight: "kỹ thuật tay nghề tốt, cơ sở vật chất hiện đại",
+    context: "Giang H., Google",
+    rating: 5,
   },
   {
     quote:
-      "Mình chọn Holistic vì sự uy tín. Toàn bộ quá trình tư vấn, trị liệu và tập rất rõ ràng, chặt chẽ, giúp mình lạc quan hơn về việc hồi phục. Mình thấy sự cải thiện rõ rệt chỉ sau vài tuần rehab.",
-    context: "Vận động viên phong trào, 30 tuổi",
+      "Đội ngũ làm việc rất chuyên nghiệp, tiệm sạch sẽ và tiện nghi đầy đủ, trải nghiệm 10/10",
+    highlight: "tiệm sạch sẽ và tiện nghi đầy đủ",
+    context: "Dong L., Google",
+    rating: 5,
   },
   {
-    quote:
-      "Mình thấy rất tiện vì Holistic ở ngay trung tâm, có nhiều phương pháp trị liệu chuyên sâu hiệu quả, giá cả lại hợp lý nữa.",
-    context: "Vận động viên chuyên nghiệp",
+    quote: "Nhân viên nhiệt tình, cơ sở sạch sẽ mát mẻ",
+    highlight: "cơ sở sạch sẽ mát mẻ",
+    context: "Phi H., Google",
+    rating: 5,
   },
 ];
 

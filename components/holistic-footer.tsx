@@ -27,12 +27,7 @@ export async function HolisticFooter() {
           </p>
           <address className={styles.footerContact}>
             {branches.map((branch) => (
-              <a
-                key={branch.name}
-                href={mapsHref(branch.address)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a key={branch.name} href={mapsHref(branch.address)}>
                 <span className={styles.footerBranchName}>{branch.name}</span>
                 {noBreakAddress(branch.address)}
               </a>
@@ -41,20 +36,10 @@ export async function HolisticFooter() {
             <a href={`mailto:${site.email}`}>{site.email}</a>
           </address>
           <div className={styles.footerSocial}>
-            <a
-              href={site.facebookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook Holistic"
-            >
+            <a href={site.facebookUrl} aria-label="Facebook Holistic">
               <FacebookIcon />
             </a>
-            <a
-              href={site.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram Holistic"
-            >
+            <a href={site.instagramUrl} aria-label="Instagram Holistic">
               <InstagramIcon />
             </a>
             {site.zaloId ? (

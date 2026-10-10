@@ -36,7 +36,7 @@ const treatmentSchema = z.object({
   image: z
     .string()
     .regex(/^https:\/\/cdn\.sanity\.io\//)
-    .catch("/images/Therapy.jpg"),
+    .catch("/images/Iastm.jpg"),
   benefits: strings,
   price: z.number().nonnegative().optional().catch(undefined),
   isPopular: z.boolean().catch(false),
