@@ -124,6 +124,39 @@
   border-radius: 999px;
   box-shadow: 0 6px 24px -16px rgba(58, 42, 36, 0.4);
 }
+/* Desktop: the row keeps a fixed height and the pill morphs inside it. A row that changes height
+   shifts the page, which moves scrollY back across the 48px threshold and makes the nav flicker.
+   The morph is scrubbed by scroll: --nav-p (0 bar → 1 pill) is set from scrollY in holistic-nav.tsx. */
+@media (min-width: 1001px) {
+  .navRow,
+  .navRow[data-scrolled="true"] {
+    --nav-p: 0;
+    --nav-edge: max(24px, calc((100vw - 1240px) / 2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 98px;
+    padding: 0;
+    pointer-events: none;
+  }
+  .navPill,
+  .navRow[data-scrolled="true"] .navPill {
+    width: calc(100% - var(--nav-p) * (100% - min(1240px, calc(100% - 48px))));
+    max-width: none;
+    height: calc(98px - var(--nav-p) * 32px);
+    padding: 0 calc(var(--nav-edge) + var(--nav-p) * (12px - var(--nav-edge))) 0
+      calc(var(--nav-edge) + var(--nav-p) * (24px - var(--nav-edge)));
+    /* 40px, not 999px: radius stops mattering past half the height, so the pill is reached at p=1 */
+    border-radius: calc(var(--nav-p) * 40px);
+    border-color: rgba(58, 42, 36, calc(var(--nav-p) * 0.1));
+    box-shadow: 0 6px 24px -16px rgba(58, 42, 36, calc(var(--nav-p) * 0.4));
+    pointer-events: auto;
+    transition: none;
+  }
+  .navRow .navLogoFull {
+    height: calc(30px - var(--nav-p) * 4px);
+  }
+}
 .navLogoFull {
   display: block;
   width: auto;
@@ -360,6 +393,8 @@
 @media (prefers-reduced-motion: reduce) {
   .navRow,
   .navPill,
+  .navRow[data-scrolled="true"] .navPill,
+  .navLogoFull,
   .menuButton,
   .menuButton span,
   .mobileDrawer {

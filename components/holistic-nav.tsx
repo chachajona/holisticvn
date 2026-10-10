@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { mapsHref, noBreakAddress } from "@/lib/content";
 import { useSiteData } from "@/components/site-data";
+import { navMorphProgress } from "@/lib/nav-morph";
 import styles from "./holistic-chrome.module.css";
 
 const links: Array<[string, string]> = [
@@ -14,6 +15,9 @@ const links: Array<[string, string]> = [
   ["Về chúng tôi", "/about"],
   ["Góc nhìn", "/blog"],
 ];
+
+// Scroll distance (px) over which the desktop bar morphs into the pill.
+const MORPH_RANGE = 120;
 
 function ClockIcon() {
   return (
@@ -86,16 +90,32 @@ export function HolisticNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const utilityRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const directionsRef = useRef<HTMLDetailsElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const phoneDigits = site.phone.replace(/\s+/g, "");
 
   useEffect(() => {
-    const updateScroll = () => setScrolled(window.scrollY > 48);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    const updateScroll = () => {
+      setScrolled(window.scrollY > 48);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        // --nav-p drives the desktop pill morph (see holistic-chrome.module.css); it starts once the
+        // utility bar has scrolled away and the nav sticks.
+        const start = utilityRef.current?.offsetHeight ?? 0;
+        const p = navMorphProgress(window.scrollY, start, MORPH_RANGE, reduceMotion.matches);
+        navRef.current?.style.setProperty("--nav-p", p.toFixed(3));
+      });
+    };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
-    return () => window.removeEventListener("scroll", updateScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -147,7 +167,7 @@ export function HolisticNav() {
 
   return (
     <>
-      <div className={styles.utility}>
+      <div ref={utilityRef} className={styles.utility}>
         <span className={styles.utilityItem}>
           <ClockIcon />
           MỞ CỬA {site.hours}
