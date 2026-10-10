@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { useHeroAutoplay } from "./use-hero-autoplay";
 import { ViewportPreload } from "./viewport-preload";
@@ -11,7 +10,6 @@ type Step = {
   num: string;
   title: string;
   href: string;
-  linkLabel: string;
   image: string;
   alt: string;
   position: string;
@@ -84,10 +82,6 @@ export function HeroMobileStage({ steps }: { steps: Step[] }) {
             </button>
           ))}
         </div>
-        <Link href={steps[active].href} className={styles.destination}>
-          {steps[active].linkLabel}
-          <span aria-hidden="true">→</span>
-        </Link>
       </div>
     </div>
   );
