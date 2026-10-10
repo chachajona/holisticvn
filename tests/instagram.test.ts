@@ -86,11 +86,17 @@ describe("Instagram feed", () => {
   it("caches posts across requests and returns no token to the page", async () => {
     const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ data: [media()] })));
     vi.stubGlobal("fetch", fetch);
+    await syncInstagramFeed();
+    vi.mocked(redisCommand).mockClear();
     const posts = await getInstagramPosts();
     expect(posts).toHaveLength(1);
     expect(JSON.stringify(posts)).not.toContain("private-bootstrap-token");
     expect(await getInstagramPosts()).toEqual(posts);
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(redisCommand).mock.calls.map(([command]) => command[0])).toEqual([
+      "GET",
+      "GET",
+    ]);
     expect(fetch.mock.calls[0][0].searchParams.has("access_token")).toBe(false);
   });
 
@@ -112,17 +118,35 @@ describe("Instagram feed", () => {
     expect(JSON.parse(state!).tokenExpiresAt).toBe(now + 68 * 24 * hour);
   });
 
-  it("keeps a recent feed on failure and hides it after 48 hours", async () => {
+  it("reads a recent feed without an hourly sync and hides it after 48 hours", async () => {
     const fetch = vi.fn().mockResolvedValue(Response.json({ data: [media()] }));
     vi.stubGlobal("fetch", fetch);
+    await syncInstagramFeed();
     const posts = await getInstagramPosts();
     fetch.mockRejectedValue(new Error("provider failure with private details"));
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.setSystemTime(now + 2 * hour);
     expect(await getInstagramPosts()).toEqual(posts);
     vi.setSystemTime(now + 49 * hour);
     expect(await getInstagramPosts()).toEqual([]);
-    expect(warn.mock.calls.flat().join(" ")).not.toContain("private details");
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not bootstrap or write to Redis during a page read", async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal("fetch", fetch);
+    expect(await getInstagramPosts()).toEqual([]);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(vi.mocked(redisCommand).mock.calls.map(([command]) => command[0])).toEqual(["GET"]);
+  });
+
+  it("returns an empty feed on Redis failure without leaking provider details", async () => {
+    vi.mocked(redisCommand).mockRejectedValue(new Error("private Redis credentials"));
+    const fetch = vi.fn();
+    vi.stubGlobal("fetch", fetch);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect(await getInstagramPosts()).toEqual([]);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(warn.mock.calls.flat().join(" ")).not.toContain("private Redis credentials");
   });
 
   it("keeps the refreshed token when the following media request fails", async () => {
@@ -144,9 +168,12 @@ describe("Instagram feed", () => {
   it("does not reuse the previous account connection after replacing the bootstrap token", async () => {
     const fetch = vi.fn().mockResolvedValue(Response.json({ data: [media("old")] }));
     vi.stubGlobal("fetch", fetch);
+    await syncInstagramFeed();
     await getInstagramPosts();
     vi.stubEnv("INSTAGRAM_ACCESS_TOKEN", "replacement-token");
     fetch.mockResolvedValue(Response.json({ data: [media("new")] }));
+    expect(await getInstagramPosts()).toEqual([]);
+    await syncInstagramFeed();
     expect((await getInstagramPosts())?.[0].id).toBe("new");
     expect(fetch).toHaveBeenCalledTimes(2);
   });
@@ -154,9 +181,11 @@ describe("Instagram feed", () => {
   it("removes old posts when Instagram reports an empty account", async () => {
     const fetch = vi.fn().mockResolvedValue(Response.json({ data: [media()] }));
     vi.stubGlobal("fetch", fetch);
+    await syncInstagramFeed();
     await getInstagramPosts();
     fetch.mockResolvedValue(Response.json({ data: [] }));
     vi.setSystemTime(now + 2 * hour);
+    await syncInstagramFeed();
     expect(await getInstagramPosts()).toEqual([]);
   });
 

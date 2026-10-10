@@ -180,10 +180,7 @@ export async function getInstagramPosts(): Promise<InstagramPost[] | null> {
     const config = configuration();
     if (!config) return null;
     previous = await readState(config.key);
-    if (!previous || Date.now() - previous.syncedAt >= HOUR) {
-      await syncInstagramFeed();
-      previous = (await readState(config.key)) || previous;
-    }
+    // Refresh only through the scheduled route; homepage reads never call Meta.
     // Signed CDN URLs are temporary; don't render an indefinitely stale feed.
     return previous && Date.now() - previous.syncedAt < 48 * HOUR ? previous.posts : [];
   } catch {

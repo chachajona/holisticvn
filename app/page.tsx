@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { Suspense, type CSSProperties } from "react";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
-import { getInstagramPosts } from "@/lib/instagram";
+import { InstagramFeed, InstagramFallback } from "@/components/instagram-feed";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
 import { HeroPanels } from "@/components/hero-panels";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
@@ -367,7 +367,7 @@ function Stars({ count }: { count: number }) {
 }
 
 export default async function HomePage() {
-  const [{ site }, instagramPosts] = await Promise.all([getPublicSiteData(), getInstagramPosts()]);
+  const { site } = await getPublicSiteData();
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero}>
@@ -725,24 +725,9 @@ export default async function HomePage() {
         <h2>
           <a href={site.instagramUrl}>Theo dõi hành trình hồi phục trên Instagram</a>
         </h2>
-        <div className={styles.igGrid}>
-          {instagramPosts === null
-            ? igImages.map((src, i) => (
-                <div className={styles.igItem} key={src + i}>
-                  <Image src={src} alt="" fill sizes="25vw" />
-                </div>
-              ))
-            : instagramPosts.map((post) => (
-                <a
-                  className={styles.igItem}
-                  key={post.id}
-                  href={post.href}
-                  aria-label={`Xem bài Instagram ngày ${new Date(post.timestamp).toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}`}
-                >
-                  <Image src={post.image} alt="" fill sizes="(max-width: 700px) 45vw, 250px" />
-                </a>
-              ))}
-        </div>
+        <Suspense fallback={<InstagramFallback images={igImages} />}>
+          <InstagramFeed fallbackImages={igImages} />
+        </Suspense>
       </section>
 
       <div className={styles.ticker} aria-hidden="true">

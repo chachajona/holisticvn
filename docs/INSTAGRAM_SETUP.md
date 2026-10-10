@@ -66,8 +66,9 @@ khởi tạo; namespace cũ tự hết hạn sau 90 ngày nếu không còn đ�
 
 ## 3. Cập nhật tự động
 
-- Khi có người mở homepage, website kiểm tra Redis. Nếu dữ liệu đã cũ hơn một giờ,
-  website lấy bài mới; các lượt xem trong cùng giờ dùng dữ liệu cache.
+- Homepage chỉ đọc cache Redis, không đồng bộ hoặc gọi Meta khi người dùng mở trang.
+  Feed có vùng streaming riêng; Redis chậm không chặn phần hero và nội dung chính.
+  Trong lúc chờ, lưới dùng ảnh clinic hiện có, không gắn link bài Instagram giả.
 - `vercel.json` gọi `GET /api/instagram/sync` mỗi ngày lúc **03:00 UTC** (10:00 giờ
   Việt Nam), kể cả khi website không có người xem. Vercel truyền
   `Authorization: Bearer <CRON_SECRET>`; endpoint chỉ chấp nhận secret hợp lệ.
@@ -89,7 +90,9 @@ thanh/bản quyền. [Các trường media của Meta](https://developers.facebo
 
 ## 4. Nghiệm thu kết nối thật
 
-1. Cấu hình biến và mở homepage: ảnh phải khớp bài từ tài khoản đã kết nối, bấm mỗi
+1. Sau khi cấu hình biến hoặc đổi bootstrap token, chạy job đồng bộ thủ công lần đầu
+   để tạo cache; việc mở homepage không khởi tạo feed. Sau đó mở homepage: ảnh phải
+   khớp bài từ tài khoản đã kết nối, bấm mỗi
    ảnh phải mở đúng bài gốc. Kiểm tra ảnh/Reel/album và keyboard ở 320, 768, 1440 px.
 2. Trong Vercel → Cron Jobs, chạy job thủ công và kiểm tra response `{ "synced": true }`.
    Nếu dùng scheduler khác, kiểm tra cùng endpoint với header Authorization.
