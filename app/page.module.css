@@ -1218,8 +1218,8 @@
   color: var(--ink);
 }
 .testimonial mark {
-  background: linear-gradient(rgba(144, 119, 110, 0.28), rgba(144, 119, 110, 0.28)) no-repeat 0 100% /
-    100% 38%;
+  background: linear-gradient(rgba(144, 119, 110, 0.28), rgba(144, 119, 110, 0.28)) no-repeat 0
+    100% / 100% 38%;
   color: inherit;
 }
 /* Drawn from the first word to the last, line by line (default box-decoration-break: slice), once. */

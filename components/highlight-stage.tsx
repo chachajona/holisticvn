@@ -7,7 +7,13 @@ const STAGGER_MS = 450;
 // Draws each <mark> inside once it scrolls into view. Marks that become visible together are drawn
 // one after another in DOM order instead of all at once. The CSS owns the animation and only hides
 // marks when prefers-reduced-motion allows it, so reduced-motion users always see them drawn.
-export function HighlightStage({ children, className }: { children: ReactNode; className?: string }) {
+export function HighlightStage({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

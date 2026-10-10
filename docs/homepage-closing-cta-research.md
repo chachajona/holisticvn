@@ -6,11 +6,11 @@ Yêu cầu owner ngày 2026-10-10: giảm chữ, research recommended screens, t
 
 Đã dùng Inspo `recommend`, `search_screens` và xem hồ sơ của ba màn hình dưới đây. Các capture là tài liệu tham khảo về bố cục; trang nguồn được mở lại để đối chiếu nội dung. Đây là lựa chọn thiết kế cho Holistic, chưa phải kết quả đo chuyển đổi.
 
-| Nguồn | Chi tiết tham khảo | Áp dụng |
-| --- | --- | --- |
+| Nguồn                                                    | Chi tiết tham khảo                                                                                                           | Áp dụng                                           |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | [Frequency Breathwork](https://frequencybreathwork.com/) | Phần chốt “Take your practice with you” đi cùng một link tải app; hai hành động ở hero có cách trình bày sáng/tối khác nhau. | Thẻ cuối trang chỉ cần tiêu đề ngắn và hành động. |
-| [Allia Health](https://alliahealth.co/) | Tiêu đề serif nhẹ, khoảng trống thoáng; phần liên hệ cuối trang có lời mời ngắn và hành động rõ. | Giữ typography và nhịp thoáng của Holistic. |
-| [Menkind](https://menkind.co/haarverlies) | Capture ngày 2026-09-10 có nền kem, typography editorial và CTA viền “STARTEN”. | Dùng nút viền cho hướng xem dịch vụ. |
+| [Allia Health](https://alliahealth.co/)                  | Tiêu đề serif nhẹ, khoảng trống thoáng; phần liên hệ cuối trang có lời mời ngắn và hành động rõ.                             | Giữ typography và nhịp thoáng của Holistic.       |
+| [Menkind](https://menkind.co/haarverlies)                | Capture ngày 2026-09-10 có nền kem, typography editorial và CTA viền “STARTEN”.                                              | Dùng nút viền cho hướng xem dịch vụ.              |
 
 Không sao chép palette, font, hình ảnh hoặc tuyên bố y tế của các trang tham khảo.
 

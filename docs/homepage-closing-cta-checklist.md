@@ -36,14 +36,14 @@ Các mục bắt buộc liên quan trực tiếp đến cụm CTA đã đạt tr
 
 Đo màu computed trong browser cho màu phẳng, và lấy mẫu nền texture từ screenshot production 1440px khi ẩn chữ/control bằng stylesheet chỉ dùng để chụp. Đây là đo trên vùng texture lấy mẫu, không phải một audit từng pixel của toàn trang.
 
-| Thành phần | Tỷ lệ | Ngưỡng | Kết quả |
-| --- | --- | --- | --- |
-| Heading 28px và focus off-white trên vùng texture nâu được lấy mẫu | tối thiểu 4.13:1 | 3:1 | Đạt |
-| Chữ nút tư vấn mặc định | 13.13:1 | 4.5:1 | Đạt |
-| Chữ nút tư vấn khi hover | 11.03:1 | 4.5:1 | Đạt |
-| Heading sage trên nền kem | 5.49:1 | 3:1 | Đạt |
-| Chữ nút dịch vụ trên nền kem | 11.03:1 | 4.5:1 | Đạt |
-| Focus clay-deep trên nền kem | 5.89:1 | 3:1 | Đạt |
+| Thành phần                                                         | Tỷ lệ            | Ngưỡng | Kết quả |
+| ------------------------------------------------------------------ | ---------------- | ------ | ------- |
+| Heading 28px và focus off-white trên vùng texture nâu được lấy mẫu | tối thiểu 4.13:1 | 3:1    | Đạt     |
+| Chữ nút tư vấn mặc định                                            | 13.13:1          | 4.5:1  | Đạt     |
+| Chữ nút tư vấn khi hover                                           | 11.03:1          | 4.5:1  | Đạt     |
+| Heading sage trên nền kem                                          | 5.49:1           | 3:1    | Đạt     |
+| Chữ nút dịch vụ trên nền kem                                       | 11.03:1          | 4.5:1  | Đạt     |
+| Focus clay-deep trên nền kem                                       | 5.89:1           | 3:1    | Đạt     |
 
 ## Hình ảnh, nội dung, SEO và tải trang
 

@@ -219,14 +219,7 @@ const igImages = [
   "/images/Lobby.jpg",
   "/images/Studio.jpg",
 ];
-const tickerWords = [
-  "TƯ VẤN",
-  "TRỊ LIỆU",
-  "TẬP LUYỆN",
-  "TOÀN DIỆN",
-  "XUYÊN SUỐT",
-  "BỀN VỮNG",
-];
+const tickerWords = ["TƯ VẤN", "TRỊ LIỆU", "TẬP LUYỆN", "TOÀN DIỆN", "XUYÊN SUỐT", "BỀN VỮNG"];
 
 // Hand-drawn pen sketch around the intro photo frame: broken double outline, glow rays, leaf sprig.
 // Drawn in the quick-link illustration palette (clay + sage contour lines) with a turbulence wobble so strokes read as pen, not vector.
@@ -677,11 +670,18 @@ export default async function HomePage() {
           {testimonials.map((item, i) => (
             <figure
               key={item.context}
-              className={i === 0 ? `${styles.testimonial} ${styles.testimonialLead}` : styles.testimonial}
+              className={
+                i === 0 ? `${styles.testimonial} ${styles.testimonialLead}` : styles.testimonial
+              }
             >
               {i === 0 ? (
                 <div className={styles.leadMedia}>
-                  <Image src="/images/Studio.jpg" alt="" fill sizes="(max-width: 980px) 100vw, 300px" />
+                  <Image
+                    src="/images/Studio.jpg"
+                    alt=""
+                    fill
+                    sizes="(max-width: 980px) 100vw, 300px"
+                  />
                 </div>
               ) : null}
               <span className={styles.quoteMark} aria-hidden="true">
@@ -723,9 +723,7 @@ export default async function HomePage() {
 
       <section className={styles.social}>
         <h2>
-          <a href={site.instagramUrl}>
-            Theo dõi hành trình hồi phục trên Instagram
-          </a>
+          <a href={site.instagramUrl}>Theo dõi hành trình hồi phục trên Instagram</a>
         </h2>
         <div className={styles.igGrid}>
           {instagramPosts === null

@@ -16,21 +16,21 @@ Tại 320px, giữ kích thước chữ và cho cuộn ngang một đoạn ngắ
 
 ## Các nguồn nghiên cứu và giới hạn
 
-| Nguồn | Điều nguồn hỗ trợ | Cách áp dụng |
-| --- | --- | --- |
-| [NNGroup — Comparison Tables](https://www.nngroup.com/articles/comparison-tables/) | Tiêu chí có ý nghĩa, nội dung nhất quán, bố cục dễ quét; số lựa chọn nhỏ phù hợp bảng tĩnh. | Giữ bốn nhóm và một thứ tự hàng/cột. Rút gọn tên cột trước khi thu chữ. |
-| [NNGroup — Mobile Tables](https://www.nngroup.com/articles/mobile-tables/) | Bảng ký hiệu/số có thể dùng cột hẹp hơn bảng nhiều chữ; bảng cần cuộn phải có dấu hiệu và mốc nhận diện. | Mẫu A thu gọn; khi thiếu chỗ, giữ tiêu chí/Holistic và thêm gợi ý vuốt. Nguồn không quy định mốc 360px hoặc kích thước 12px. |
+| Nguồn                                                                                                                                                                                                                                         | Điều nguồn hỗ trợ                                                                                                                   | Cách áp dụng                                                                                                                                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [NNGroup — Comparison Tables](https://www.nngroup.com/articles/comparison-tables/)                                                                                                                                                            | Tiêu chí có ý nghĩa, nội dung nhất quán, bố cục dễ quét; số lựa chọn nhỏ phù hợp bảng tĩnh.                                         | Giữ bốn nhóm và một thứ tự hàng/cột. Rút gọn tên cột trước khi thu chữ.                                                                               |
+| [NNGroup — Mobile Tables](https://www.nngroup.com/articles/mobile-tables/)                                                                                                                                                                    | Bảng ký hiệu/số có thể dùng cột hẹp hơn bảng nhiều chữ; bảng cần cuộn phải có dấu hiệu và mốc nhận diện.                            | Mẫu A thu gọn; khi thiếu chỗ, giữ tiêu chí/Holistic và thêm gợi ý vuốt. Nguồn không quy định mốc 360px hoặc kích thước 12px.                          |
 | [Tensmeyer et al., WWW 2023 — Web Table Formatting Affects Readability on Mobile Devices](https://thereadabilityconsortium.org/wp-content/uploads/2023/10/Tensmeyer_etal_2023_Web-Table-Formatting-Affects-Readability-on-Mobile-Devices.pdf) | Trong nghiên cứu của tác giả, giảm padding giúp hoàn thành tác vụ nhanh hơn trung bình; frozen headers hữu ích ở tập bảng cần cuộn. | Ưu tiên giảm khoảng đệm trước khi giảm chữ. Giữ mốc khi cuộn. Không suy rộng thành tăng conversion của homepage hoặc font-size tối ưu cho tiếng Việt. |
-| [W3C WAI — Tables with Two Headers](https://www.w3.org/WAI/tutorials/tables/two-headers/) | `th` và `scope` liên kết hàng/cột với dữ liệu. | Giữ native table và scope trên cả desktop/mobile. |
-| [W3C WAI — Caption & Summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/) | Caption nhận diện bảng, summary giải thích khi cần. | Thêm caption/tên truy cập; tên vùng cuộn và hướng dẫn đọc rõ. |
+| [W3C WAI — Tables with Two Headers](https://www.w3.org/WAI/tutorials/tables/two-headers/)                                                                                                                                                     | `th` và `scope` liên kết hàng/cột với dữ liệu.                                                                                      | Giữ native table và scope trên cả desktop/mobile.                                                                                                     |
+| [W3C WAI — Caption & Summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/)                                                                                                                                                       | Caption nhận diện bảng, summary giải thích khi cần.                                                                                 | Thêm caption/tên truy cập; tên vùng cuộn và hướng dẫn đọc rõ.                                                                                         |
 
 ## Ba phương án đã dựng
 
-| Phương án | Desktop | Mobile | Lợi ích | Đánh đổi |
-| --- | --- | --- | --- | --- |
-| **A — Ma trận thu gọn, đề xuất ưu tiên** | Đủ năm cột, gần bố cục hiện tại. | Đủ bốn giải pháp ở 360–390px; tại 320px cuộn khoảng 34px. | Đồng nhất hình thức và dữ liệu; không cần thao tác chọn để xem đầy đủ. | Header 12px, tên tiêu chí 13px; tên cột dài xuống nhiều dòng. Cần kiểm tra đọc hiểu thực tế. |
-| **B — Hai cột cố định và cuộn ngang** | Đủ năm cột. | Tiêu chí và Holistic cố định; ba cột đối chiếu cuộn. | Có thể dùng header 13px, nhãn 14px trong mẫu; đọc rõ hơn. | Không thấy đủ bốn nhóm cùng lúc; người đọc phải vuốt. Hai cột cố định chiếm phần lớn bề ngang. |
-| **C — Holistic và một cột do khách chọn** | Đủ năm cột. | Ba cột: tiêu chí / Holistic / nhóm được chọn. | Có thể dùng chữ 14px; bảng gọn, dễ đọc. | Muốn xem đủ phải đổi lựa chọn; việc so giữa các nhóm khác nhau cần nhớ hoặc đổi qua lại. Thêm control. |
+| Phương án                                 | Desktop                          | Mobile                                                    | Lợi ích                                                                | Đánh đổi                                                                                               |
+| ----------------------------------------- | -------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **A — Ma trận thu gọn, đề xuất ưu tiên**  | Đủ năm cột, gần bố cục hiện tại. | Đủ bốn giải pháp ở 360–390px; tại 320px cuộn khoảng 34px. | Đồng nhất hình thức và dữ liệu; không cần thao tác chọn để xem đầy đủ. | Header 12px, tên tiêu chí 13px; tên cột dài xuống nhiều dòng. Cần kiểm tra đọc hiểu thực tế.           |
+| **B — Hai cột cố định và cuộn ngang**     | Đủ năm cột.                      | Tiêu chí và Holistic cố định; ba cột đối chiếu cuộn.      | Có thể dùng header 13px, nhãn 14px trong mẫu; đọc rõ hơn.              | Không thấy đủ bốn nhóm cùng lúc; người đọc phải vuốt. Hai cột cố định chiếm phần lớn bề ngang.         |
+| **C — Holistic và một cột do khách chọn** | Đủ năm cột.                      | Ba cột: tiêu chí / Holistic / nhóm được chọn.             | Có thể dùng chữ 14px; bảng gọn, dễ đọc.                                | Muốn xem đủ phải đổi lựa chọn; việc so giữa các nhóm khác nhau cần nhớ hoặc đổi qua lại. Thêm control. |
 
 Không chọn phương án chuyển mỗi cơ sở thành một card dài: nó đổi hướng đọc và khiến việc đối chiếu cùng tiêu chí khó hơn. Hiện sáu tiêu chí và các ô ngắn đủ đơn giản để giữ bảng.
 
@@ -84,13 +84,13 @@ Các dấu trong mẫu dùng dữ liệu hiện có để so hình thức. Chún
 
 Đo bằng browser sau khi font Roboto Slab/Roboto Serif hiện có tải xong. Mẫu độc lập chưa có nav, widget hoặc cookie banner của homepage.
 
-| Viewport | Vùng bảng / table | Cuộn ngang | Header / nhãn hàng |
-| --- | --- | --- | --- |
-| 1440px | 1310 / 1310px | 0px | 16 / 15px |
-| 768px | 718 / 718px | 0px | 16 / 15px |
-| 390px | 348 / 348px | 0px | 12 / 13px |
-| 360px | 318 / 318px | 0px | 12 / 13px |
-| 320px | 278 / 312px | 34px trong bảng | 12 / 13px |
+| Viewport | Vùng bảng / table | Cuộn ngang      | Header / nhãn hàng |
+| -------- | ----------------- | --------------- | ------------------ |
+| 1440px   | 1310 / 1310px     | 0px             | 16 / 15px          |
+| 768px    | 718 / 718px       | 0px             | 16 / 15px          |
+| 390px    | 348 / 348px       | 0px             | 12 / 13px          |
+| 360px    | 318 / 318px       | 0px             | 12 / 13px          |
+| 320px    | 278 / 312px       | 34px trong bảng | 12 / 13px          |
 
 Document không tràn ngang ở các viewport đã xem. Đây là chứng cứ bố cục cho copy/symbol của mẫu, không phải chứng nhận dễ đọc, browser compatibility hay accessibility của implementation cuối.
 
@@ -106,15 +106,15 @@ Document không tràn ngang ở các viewport đã xem. Đây là chứng cứ b
 >
 > So sánh các dịch vụ và hướng tiếp cận để bạn cân nhắc theo nhu cầu của mình.
 
-| Hiện tại | Đề xuất | Lý do |
-| --- | --- | --- |
-| Tư vấn chuyên sâu | Tư vấn & đánh giá | Cụ thể hơn, gần từ vựng fanpage; tránh để “chuyên sâu” là nhãn không giải thích. |
-| Trị liệu đa phương pháp | Giữ nguyên | Rõ phạm vi; vẫn có thể xuống dòng tự nhiên trên mobile. |
-| Phẫu thuật | Thực hiện phẫu thuật | Phân biệt việc cơ sở cung cấp phẫu thuật với khách tập phục hồi sau phẫu thuật. |
-| Dùng thuốc | Điều trị bằng thuốc | Mô tả hướng điều trị thay vì suy rằng khách không được dùng thuốc đã kê từ nơi khác. |
-| Thư giãn | Giữ nguyên | Ngắn, dễ hiểu; không bổ sung hiệu quả y khoa. |
-| Tập luyện tăng cường | Tập sức mạnh | Gọn, cụ thể; phù hợp mục tiêu tập luyện đã có trong PRODUCT.md. Cần owner chốt nếu dịch vụ muốn bao phủ rộng hơn sức mạnh. |
-| Phòng tập với PT thông thường | Phòng tập / PT | Ngắn hơn và trung tính; giải thích PT ở dưới bảng nếu cần. |
+| Hiện tại                      | Đề xuất              | Lý do                                                                                                                      |
+| ----------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Tư vấn chuyên sâu             | Tư vấn & đánh giá    | Cụ thể hơn, gần từ vựng fanpage; tránh để “chuyên sâu” là nhãn không giải thích.                                           |
+| Trị liệu đa phương pháp       | Giữ nguyên           | Rõ phạm vi; vẫn có thể xuống dòng tự nhiên trên mobile.                                                                    |
+| Phẫu thuật                    | Thực hiện phẫu thuật | Phân biệt việc cơ sở cung cấp phẫu thuật với khách tập phục hồi sau phẫu thuật.                                            |
+| Dùng thuốc                    | Điều trị bằng thuốc  | Mô tả hướng điều trị thay vì suy rằng khách không được dùng thuốc đã kê từ nơi khác.                                       |
+| Thư giãn                      | Giữ nguyên           | Ngắn, dễ hiểu; không bổ sung hiệu quả y khoa.                                                                              |
+| Tập luyện tăng cường          | Tập sức mạnh         | Gọn, cụ thể; phù hợp mục tiêu tập luyện đã có trong PRODUCT.md. Cần owner chốt nếu dịch vụ muốn bao phủ rộng hơn sức mạnh. |
+| Phòng tập với PT thông thường | Phòng tập / PT       | Ngắn hơn và trung tính; giải thích PT ở dưới bảng nếu cần.                                                                 |
 
 Nếu muốn đưa “Xuyên suốt” vào bảng, có thể thử thêm hàng “Tư vấn → trị liệu → tập luyện”, nhưng cần xem lại nhịp trang và chiều cao bảng. Đây không phải thay đổi bắt buộc để sửa responsive.
 

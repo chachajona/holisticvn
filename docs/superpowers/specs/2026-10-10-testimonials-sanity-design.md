@@ -7,12 +7,12 @@ Issue: #38. Liên quan: #1 (tracking), #4 (xác nhận nội dung), #7 (nghiệm
 
 Section "Khách hàng nói gì" trên homepage hiện đọc dữ liệu cố định trong code:
 
-| Thành phần                         | Nguồn hiện tại                                                          |
-| ---------------------------------- | ----------------------------------------------------------------------- |
-| 5 thẻ review (quote, tên, sao)     | mảng `testimonials` trong `lib/content.ts`, import thẳng vào `app/page.tsx` |
-| Điểm 5.0, số review, link Google   | `reviewSummary` trong `lib/content.ts` (đọc tay ngày 2026-10-09: 645)   |
-| Ảnh thẻ lớn                        | `/images/Studio.jpg` viết cứng trong `app/page.tsx`                     |
-| Cụm nhấn mạnh trong quote          | trường `highlight` trong `lib/content.ts`, test kiểm tra là chuỗi con   |
+| Thành phần                       | Nguồn hiện tại                                                              |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| 5 thẻ review (quote, tên, sao)   | mảng `testimonials` trong `lib/content.ts`, import thẳng vào `app/page.tsx` |
+| Điểm 5.0, số review, link Google | `reviewSummary` trong `lib/content.ts` (đọc tay ngày 2026-10-09: 645)       |
+| Ảnh thẻ lớn                      | `/images/Studio.jpg` viết cứng trong `app/page.tsx`                         |
+| Cụm nhấn mạnh trong quote        | trường `highlight` trong `lib/content.ts`, test kiểm tra là chuỗi con       |
 
 Sanity đã có document `testimonial` (`quote`, `context`, `avatar`, `rating`) và `getTestimonials()` trong `lib/sanity.ts`, nhưng **trang chủ không gọi hàm này**: chỉnh testimonial trong Studio hiện không đổi gì trên site.
 
@@ -50,18 +50,18 @@ Chọn **A**.
 
 Mở rộng `testimonial` (`sanity/schemaTypes/index.ts`):
 
-| Trường                | Kiểu                         | Ghi chú                                                                                                                    |
-| --------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `quote`               | text (có sẵn)                | Trích đoạn nguyên văn, kể cả "…". Bắt buộc.                                                                                |
-| `highlight`           | string                       | Tuỳ chọn. Validation: phải là chuỗi con của `quote` (Studio custom rule và zod refine).                                    |
-| `displayName`         | string                       | Dạng "Tên H." (tên + chữ cái cuối), tối đa 24 ký tự. Bắt buộc khi `source.type = google`.                                   |
-| `rating`              | number, nguyên 1–5 (có sẵn)  | Bắt buộc khi `source.type = google`; lấy từ chính review, không suy ra từ điểm tổng.                                       |
-| `source`              | object                       | `type`: `google`, `owner-collected`, `legacy`. `url` (link listing hoặc review), `readAt` (ngày đọc, bắt buộc với `google`). |
-| `containsOutcomeClaim`| boolean (bắt buộc, mặc định `false`) | Editor xác nhận về **phần trích hiển thị** (`quote`). `true` thì không bao giờ hiện trên homepage. Thêm `note` (text) để ghi nếu review gốc có nói về kết quả ở phần bị cắt. |
-| `showOnHome`          | boolean (mặc định `false`)   | Opt-in. Chỉ document bật mới được homepage đọc.                                                                            |
-| `homeOrder`           | number, nguyên ≥ 1           | Bắt buộc khi `showOnHome`; không trùng giữa các document đang bật. Số nhỏ nhất là thẻ lớn.                                 |
-| `photo` (tuỳ chọn)    | image + `consent` + `credit` | Chừa chỗ, tắt mặc định. `consent` (`grantedBy`, `grantedAt`, `note`) và `credit` dùng cùng cấu trúc `image.credit` của #37. Cần `alt`. |
-| `context`, `avatar`   | giữ nguyên                   | Đánh dấu deprecated; homepage không đọc. Code hiện tại đang nhét "Tên, Google" vào `context` để tách ra khi hiển thị; sau khi nối Sanity, tên và nguồn lấy từ `displayName` và `source.type`. |
+| Trường                 | Kiểu                                 | Ghi chú                                                                                                                                                                                       |
+| ---------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `quote`                | text (có sẵn)                        | Trích đoạn nguyên văn, kể cả "…". Bắt buộc.                                                                                                                                                   |
+| `highlight`            | string                               | Tuỳ chọn. Validation: phải là chuỗi con của `quote` (Studio custom rule và zod refine).                                                                                                       |
+| `displayName`          | string                               | Dạng "Tên H." (tên + chữ cái cuối), tối đa 24 ký tự. Bắt buộc khi `source.type = google`.                                                                                                     |
+| `rating`               | number, nguyên 1–5 (có sẵn)          | Bắt buộc khi `source.type = google`; lấy từ chính review, không suy ra từ điểm tổng.                                                                                                          |
+| `source`               | object                               | `type`: `google`, `owner-collected`, `legacy`. `url` (link listing hoặc review), `readAt` (ngày đọc, bắt buộc với `google`).                                                                  |
+| `containsOutcomeClaim` | boolean (bắt buộc, mặc định `false`) | Editor xác nhận về **phần trích hiển thị** (`quote`). `true` thì không bao giờ hiện trên homepage. Thêm `note` (text) để ghi nếu review gốc có nói về kết quả ở phần bị cắt.                  |
+| `showOnHome`           | boolean (mặc định `false`)           | Opt-in. Chỉ document bật mới được homepage đọc.                                                                                                                                               |
+| `homeOrder`            | number, nguyên ≥ 1                   | Bắt buộc khi `showOnHome`; không trùng giữa các document đang bật. Số nhỏ nhất là thẻ lớn.                                                                                                    |
+| `photo` (tuỳ chọn)     | image + `consent` + `credit`         | Chừa chỗ, tắt mặc định. `consent` (`grantedBy`, `grantedAt`, `note`) và `credit` dùng cùng cấu trúc `image.credit` của #37. Cần `alt`.                                                        |
+| `context`, `avatar`    | giữ nguyên                           | Đánh dấu deprecated; homepage không đọc. Code hiện tại đang nhét "Tên, Google" vào `context` để tách ra khi hiển thị; sau khi nối Sanity, tên và nguồn lấy từ `displayName` và `source.type`. |
 
 Validation khi publish một review `showOnHome`: có `source.type`, `quote`, `displayName`, `rating` (nếu `google`), `homeOrder`; `containsOutcomeClaim = false`; `highlight` hợp lệ; nếu có `photo` thì bắt buộc có `consent` và `alt`.
 
@@ -87,12 +87,12 @@ Giới hạn 5 phần tử vì bố cục là một thẻ lớn và bốn thẻ 
 
 Hành vi theo trạng thái dữ liệu (theo quy ước của `fetchRecords`: dataset đã cấu hình là nguồn chuẩn):
 
-| Trạng thái                                   | Kết quả                                                                                  |
-| -------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Sanity chưa cấu hình (dev local)             | Dùng mảng fallback trong `lib/content.ts` (5 review đã duyệt).                           |
-| Dataset có đủ 1–5 review hợp lệ              | Thẻ đầu là thẻ lớn; số thẻ nhỏ theo số review (0–4); lưới tự co.                         |
-| Dataset cấu hình nhưng **không có** review hợp lệ | Ẩn lưới thẻ; giữ tiêu đề và badge điểm Google. Không rơi về fallback, không hiện legacy. |
-| Lỗi mạng hoặc phản hồi sai định dạng         | Giữ hành vi hiện tại của `fetchRecords` (lỗi rõ ràng); ISR giữ bản trang cũ đến lần revalidate kế. |
+| Trạng thái                                        | Kết quả                                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Sanity chưa cấu hình (dev local)                  | Dùng mảng fallback trong `lib/content.ts` (5 review đã duyệt).                                     |
+| Dataset có đủ 1–5 review hợp lệ                   | Thẻ đầu là thẻ lớn; số thẻ nhỏ theo số review (0–4); lưới tự co.                                   |
+| Dataset cấu hình nhưng **không có** review hợp lệ | Ẩn lưới thẻ; giữ tiêu đề và badge điểm Google. Không rơi về fallback, không hiện legacy.           |
+| Lỗi mạng hoặc phản hồi sai định dạng              | Giữ hành vi hiện tại của `fetchRecords` (lỗi rõ ràng); ISR giữ bản trang cũ đến lần revalidate kế. |
 
 Ảnh thẻ lớn: dùng `photo` nếu có và hợp lệ, không thì `/images/Studio.jpg` (ảnh của clinic).
 

@@ -26,13 +26,13 @@ Nên cải thiện. Khối hiện tại dễ đọc và hợp màu/font của we
 
 ## Cơ sở nghiên cứu
 
-| Nguồn gốc | Điều nguồn hỗ trợ | Áp dụng đề xuất |
-| --- | --- | --- |
-| [NNGroup — Homepage Design: 5 Fundamental Principles](https://www.nngroup.com/articles/homepage-design-principles/) | Homepage cần nói rõ giá trị khác biệt, có ví dụ cụ thể và hướng hành động dễ hiểu. | Giải thích chương trình của Holistic bằng những gì khách sẽ trải qua. |
-| [NNGroup — Layer-Cake Pattern](https://www.nngroup.com/articles/layer-cake-pattern-scanning/) | Nghiên cứu eye tracking ghi nhận vai trò của tiêu đề nổi bật, mô tả đúng nội dung khi người dùng đọc lướt. | Tên bước cần nói rõ Tư vấn / Trị liệu / Tập luyện; headline cần đủ nổi bật để nhận ra thông điệp. |
-| [W3C WAI — Headings](https://www.w3.org/WAI/tutorials/page-structure/headings/) | Heading truyền đạt cấu trúc và hỗ trợ điều hướng bằng công nghệ trợ giúp. | Dùng `h2` cho phần, `h3` cho tên giai đoạn. |
-| [W3C WAI — Content Structure](https://www.w3.org/WAI/tutorials/page-structure/content/) | Danh sách có thứ tự phù hợp với thông tin tuần tự. | Dùng `ol/li` nếu ba giai đoạn đúng là thứ tự chương trình muốn giới thiệu; dấu nối chỉ bổ trợ thị giác. |
-| [GOV.UK — Step by step navigation](https://design-system.service.gov.uk/patterns/step-by-step-navigation/) | Cần giới thiệu mục đích và thứ tự hành trình; pattern tương tác này không dành cho nội dung chỉ để đọc. | Học nguyên tắc giải thích quá trình; để cả ba bước hiển thị ngay trên Homepage. |
+| Nguồn gốc                                                                                                           | Điều nguồn hỗ trợ                                                                                          | Áp dụng đề xuất                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [NNGroup — Homepage Design: 5 Fundamental Principles](https://www.nngroup.com/articles/homepage-design-principles/) | Homepage cần nói rõ giá trị khác biệt, có ví dụ cụ thể và hướng hành động dễ hiểu.                         | Giải thích chương trình của Holistic bằng những gì khách sẽ trải qua.                                   |
+| [NNGroup — Layer-Cake Pattern](https://www.nngroup.com/articles/layer-cake-pattern-scanning/)                       | Nghiên cứu eye tracking ghi nhận vai trò của tiêu đề nổi bật, mô tả đúng nội dung khi người dùng đọc lướt. | Tên bước cần nói rõ Tư vấn / Trị liệu / Tập luyện; headline cần đủ nổi bật để nhận ra thông điệp.       |
+| [W3C WAI — Headings](https://www.w3.org/WAI/tutorials/page-structure/headings/)                                     | Heading truyền đạt cấu trúc và hỗ trợ điều hướng bằng công nghệ trợ giúp.                                  | Dùng `h2` cho phần, `h3` cho tên giai đoạn.                                                             |
+| [W3C WAI — Content Structure](https://www.w3.org/WAI/tutorials/page-structure/content/)                             | Danh sách có thứ tự phù hợp với thông tin tuần tự.                                                         | Dùng `ol/li` nếu ba giai đoạn đúng là thứ tự chương trình muốn giới thiệu; dấu nối chỉ bổ trợ thị giác. |
+| [GOV.UK — Step by step navigation](https://design-system.service.gov.uk/patterns/step-by-step-navigation/)          | Cần giới thiệu mục đích và thứ tự hành trình; pattern tương tác này không dành cho nội dung chỉ để đọc.    | Học nguyên tắc giải thích quá trình; để cả ba bước hiển thị ngay trên Homepage.                         |
 
 Ba benchmark từ chính đơn vị cung cấp dịch vụ:
 
@@ -54,11 +54,11 @@ Dòng mô tả: “Tư vấn, trị liệu và tập luyện tại Holistic, tro
 
 Bản nháp nội dung để review:
 
-| Bước | Tiêu đề | Nội dung |
-| --- | --- | --- |
-| 01 | Tư vấn — Hiểu rõ cơ thể | Trao đổi về tình trạng và mục tiêu vận động để xác định hướng trị liệu, tập luyện phù hợp. |
-| 02 | Trị liệu — Hỗ trợ vận động | Trị liệu bằng tay và các phương pháp phù hợp với tình trạng của bạn. |
-| 03 | Tập luyện — Hướng đến lâu dài | Tập luyện phù hợp với mục tiêu vận động hằng ngày hoặc trở lại thể thao. |
+| Bước | Tiêu đề                       | Nội dung                                                                                   |
+| ---- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| 01   | Tư vấn — Hiểu rõ cơ thể       | Trao đổi về tình trạng và mục tiêu vận động để xác định hướng trị liệu, tập luyện phù hợp. |
+| 02   | Trị liệu — Hỗ trợ vận động    | Trị liệu bằng tay và các phương pháp phù hợp với tình trạng của bạn.                       |
+| 03   | Tập luyện — Hướng đến lâu dài | Tập luyện phù hợp với mục tiêu vận động hằng ngày hoặc trở lại thể thao.                   |
 
 Đây là bản nháp dựa trên mô hình đã có nguồn, không bổ sung số buổi, thời gian hồi phục hoặc quy trình theo dõi chưa được xác nhận. Tên giai đoạn nên nổi bật; lợi ích có thể là dòng giải thích phụ để tiêu đề ngắn hơn.
 
@@ -82,19 +82,19 @@ CTA riêng là tùy chọn sau khi gộp: một nút **“Đặt lịch tư vấ
 
 Assessment A nhận thấy ưu điểm: nội dung ngắn, nhịp đọc bình tĩnh, đúng bản sắc editorial. Hạn chế: lời hứa còn chung, thứ bậc yếu, quan hệ giữa các bước chưa rõ. Với cả ba nhóm khách hàng, phần này nên giúp trả lời “Tôi sẽ trải qua gì?” và “Tập luyện nối tiếp trị liệu như thế nào?”.
 
-| Nielsen heuristic | Điểm cho riêng phần tĩnh | Nhận xét |
-| --- | --- | --- |
-| Visibility of system status | n/a | Không có trạng thái xử lý. |
-| Match between system and real world | 2/4 | Gọi lợi ích thay vì giai đoạn thực tế. |
-| User control and freedom | n/a | Không có tương tác trong phần. |
-| Consistency and standards | 2/4 | Tên giai đoạn khác hero; numeral bị ghi đè. |
-| Error prevention | n/a | Không có nhập liệu hoặc thao tác. |
-| Recognition rather than recall | 2/4 | Chưa gọi trực tiếp tư vấn, trị liệu, tập luyện. |
-| Flexibility and efficiency | n/a | Phần nội dung giới thiệu tĩnh. |
-| Aesthetic and minimalist design | 3/4 | Gọn, đúng thương hiệu; có lặp với phần sau. |
-| Error recovery | n/a | Không có lỗi tương tác. |
-| Help and documentation | n/a | Không phải luồng tác vụ cần trợ giúp. |
-| Tổng | 9/16 | Đánh giá chủ quan của reviewer, không phải điểm conversion hoặc audit WCAG. |
+| Nielsen heuristic                   | Điểm cho riêng phần tĩnh | Nhận xét                                                                    |
+| ----------------------------------- | ------------------------ | --------------------------------------------------------------------------- |
+| Visibility of system status         | n/a                      | Không có trạng thái xử lý.                                                  |
+| Match between system and real world | 2/4                      | Gọi lợi ích thay vì giai đoạn thực tế.                                      |
+| User control and freedom            | n/a                      | Không có tương tác trong phần.                                              |
+| Consistency and standards           | 2/4                      | Tên giai đoạn khác hero; numeral bị ghi đè.                                 |
+| Error prevention                    | n/a                      | Không có nhập liệu hoặc thao tác.                                           |
+| Recognition rather than recall      | 2/4                      | Chưa gọi trực tiếp tư vấn, trị liệu, tập luyện.                             |
+| Flexibility and efficiency          | n/a                      | Phần nội dung giới thiệu tĩnh.                                              |
+| Aesthetic and minimalist design     | 3/4                      | Gọn, đúng thương hiệu; có lặp với phần sau.                                 |
+| Error recovery                      | n/a                      | Không có lỗi tương tác.                                                     |
+| Help and documentation              | n/a                      | Không phải luồng tác vụ cần trợ giúp.                                       |
+| Tổng                                | 9/16                     | Đánh giá chủ quan của reviewer, không phải điểm conversion hoặc audit WCAG. |
 
 Cognitive load: chỉ ba mục, không có điểm quyết định vượt bốn lựa chọn. Vấn đề là quan hệ giữa các ý và khả năng nhận ra chương trình. Emotion: tạo cảm giác bình tĩnh; giải thích trải nghiệm cụ thể có thể tăng sự an tâm. Persona: người làm văn phòng cần biết bắt đầu thế nào; người chơi thể thao và vận động viên cần thấy bước tập luyện gắn với mục tiêu trở lại hoạt động.
 

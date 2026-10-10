@@ -10,13 +10,13 @@ Không phát hiện lỗi chức năng hoặc layout trong phần bảng vừa s
 
 ## Automated checks
 
-| Lệnh | Kết quả |
-| --- | --- |
-| `npm run lint` | PASS, exit 0 |
-| `npm run typecheck` | PASS, exit 0 |
-| `npm test` | PASS, 14 files / 61 tests |
-| `npm run build` | PASS, 26 static pages; không có warning trong output |
-| `git diff --check` | PASS |
+| Lệnh                | Kết quả                                              |
+| ------------------- | ---------------------------------------------------- |
+| `npm run lint`      | PASS, exit 0                                         |
+| `npm run typecheck` | PASS, exit 0                                         |
+| `npm test`          | PASS, 14 files / 61 tests                            |
+| `npm run build`     | PASS, 26 static pages; không có warning trong output |
+| `git diff --check`  | PASS                                                 |
 
 Build lần đầu bị từ chối vì một build khác đang giữ khóa. Sau khi tiến trình đó kết thúc, chạy lại thành công; không xóa khóa hay dừng tiến trình của workspace khác.
 
@@ -25,12 +25,12 @@ Build lần đầu bị từ chối vì một build khác đang giữ khóa. Sau
 Đã kiểm tra ở dev `localhost:3111` và production local `localhost:3112` bằng Chromium, chiều cao viewport 1000 px. Số đo dưới đây lấy từ production. `document.scrollWidth` luôn bằng viewport, nên không có scroll ngang toàn trang. Scroll ngang chỉ nằm trong bảng theo yêu cầu của owner.
 
 | Viewport | Document width | Scroll tối đa của bảng | X cột Tiêu chí / Holistic, đầu → cuối |
-| --- | --- | --- | --- |
-| 1440 | 1440 | 0 | 41 / 394.08 → 41 / 394.08 |
-| 768 | 768 | 82 | 25 / 233 → 25 / 233 |
-| 640 | 640 | 748 | 21 / 157 → 21 / 157 |
-| 390 | 390 | 248 | 21 / 157 → 21 / 157 |
-| 320 | 320 | 172 | 21 / 133 → 21 / 133 |
+| -------- | -------------- | ---------------------- | ------------------------------------- |
+| 1440     | 1440           | 0                      | 41 / 394.08 → 41 / 394.08             |
+| 768      | 768            | 82                     | 25 / 233 → 25 / 233                   |
+| 640      | 640            | 748                    | 21 / 157 → 21 / 157                   |
+| 390      | 390            | 248                    | 21 / 157 → 21 / 157                   |
+| 320      | 320            | 172                    | 21 / 133 → 21 / 133                   |
 
 - [x] Cuộn đến cả hai đầu bằng ArrowLeft/ArrowRight.
 - [x] Hai cột đầu cố định, không đổi tọa độ khi cuộn.
@@ -55,14 +55,14 @@ Build lần đầu bị từ chối vì một build khác đang giữ khóa. Sau
 
 Tương phản tính từ màu computed trong trình duyệt theo công thức relative luminance sRGB:
 
-| Thành phần | Tỉ lệ |
-| --- | --- |
-| Header thường | 7.23:1 |
-| Header Holistic | 6.16:1 |
-| Nhãn hàng | 13.13:1 |
-| Ký hiệu Có trên nền Holistic | 5.92:1 |
-| Ký hiệu Không / outline trên nền card | 7.01:1 |
-| Hint / legend | 7.93:1 |
+| Thành phần                            | Tỉ lệ   |
+| ------------------------------------- | ------- |
+| Header thường                         | 7.23:1  |
+| Header Holistic                       | 6.16:1  |
+| Nhãn hàng                             | 13.13:1 |
+| Ký hiệu Có trên nền Holistic          | 5.92:1  |
+| Ký hiệu Không / outline trên nền card | 7.01:1  |
+| Hint / legend                         | 7.93:1  |
 
 Các mẫu trên đều vượt ngưỡng 4.5:1. Chưa chạy VoiceOver trên thiết bị thật; snapshot accessibility không thay thế trải nghiệm screen reader.
 
@@ -75,14 +75,14 @@ Các mẫu trên đều vượt ngưỡng 4.5:1. Chưa chạy VoiceOver trên th
 
 ## Đánh giá kỹ thuật có phạm vi
 
-| Dimension | Điểm / 4 | Ghi chú |
-| --- | --- | --- |
-| Accessibility | 3 | Keyboard, semantics, contrast đạt; chưa VoiceOver thật |
-| Performance | 4 | Bảng native HTML/CSS, không thêm client JS |
-| Responsive | 3 | Các viewport đạt; Safari và zoom thật còn thiếu |
-| Theming | 3 | Dùng brand tokens; còn màu literal cho border/header |
-| Integrity | 3 | Một bảng nhất quán; claims đối thủ là nội dung kế thừa cần theo dõi |
-| Tổng | 16 / 20 | Good; điểm chỉ áp dụng phần bảng đã kiểm tra |
+| Dimension     | Điểm / 4 | Ghi chú                                                             |
+| ------------- | -------- | ------------------------------------------------------------------- |
+| Accessibility | 3        | Keyboard, semantics, contrast đạt; chưa VoiceOver thật              |
+| Performance   | 4        | Bảng native HTML/CSS, không thêm client JS                          |
+| Responsive    | 3        | Các viewport đạt; Safari và zoom thật còn thiếu                     |
+| Theming       | 3        | Dùng brand tokens; còn màu literal cho border/header                |
+| Integrity     | 3        | Một bảng nhất quán; claims đối thủ là nội dung kế thừa cần theo dõi |
+| Tổng          | 16 / 20  | Good; điểm chỉ áp dụng phần bảng đã kiểm tra                        |
 
 Implementation integrity: PASS cho cấu trúc responsive — cùng dữ liệu và markup giữa desktop/mobile, hai cột neo theo quyết định owner, không có UI điều khiển dư thừa. Điểm số không phải chứng nhận accessibility hoặc release gate cho toàn site.
 

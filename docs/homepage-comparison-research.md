@@ -66,10 +66,10 @@ Các tiêu chí chưa giúp nhân viên văn phòng, người chơi thể thao v
 >
 > Holistic kết hợp tư vấn, trị liệu và tập luyện tại một nơi, trong một lộ trình phù hợp với tình trạng và mục tiêu vận động của bạn.
 
-| Điều khách cần hiểu | Nội dung dự thảo |
-| --- | --- |
-| Một nơi cho cả lộ trình | Từ tư vấn đến trị liệu và tập luyện tại Holistic, giúp bạn thuận tiện hơn khi tiếp tục chương trình. |
-| Chương trình phù hợp với bạn | Hướng trị liệu và tập luyện được lựa chọn theo tình trạng, những hạn chế vận động và mục tiêu của bạn. |
+| Điều khách cần hiểu                | Nội dung dự thảo                                                                                                                         |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Một nơi cho cả lộ trình            | Từ tư vấn đến trị liệu và tập luyện tại Holistic, giúp bạn thuận tiện hơn khi tiếp tục chương trình.                                     |
+| Chương trình phù hợp với bạn       | Hướng trị liệu và tập luyện được lựa chọn theo tình trạng, những hạn chế vận động và mục tiêu của bạn.                                   |
 | Mục tiêu cho sinh hoạt và thể thao | Trị liệu hướng đến giảm đau mỏi, cải thiện vận động; tập luyện hướng đến tăng sức mạnh và kiểm soát chuyển động cho sinh hoạt, thể thao. |
 
 Đây là bản nháp để thảo luận, chưa đưa lên UI. Không bổ sung cam kết cùng chuyên viên/cùng hồ sơ, lịch đánh giá lại, tiết kiệm chi phí, số buổi, thời gian hồi phục hoặc bảo đảm kết quả. Các chi tiết đó chưa được xác nhận.
@@ -80,19 +80,19 @@ Một phương án khác là giữ bảng, nhưng chuyển thành “nhu cầu c
 
 Điểm của Assessment A cho riêng section tĩnh, dựa trên source. Đây là đánh giá chủ quan, không phải điểm conversion hoặc chứng nhận accessibility.
 
-| Nielsen heuristic | Điểm /4 | Cơ sở |
-| --- | --- | --- |
-| 1. Hiển thị trạng thái | n/a | Không có trạng thái xử lý. |
-| 2. Ngôn ngữ gần thực tế | 2 | Nhóm so sánh quá rộng; “PT” chưa giải thích. |
-| 3. Quyền kiểm soát | n/a | Không có luồng thao tác. |
-| 4. Nhất quán | 2 | Desktop/mobile khác ý nghĩa. |
-| 5. Ngăn hiểu nhầm | 1 | Có/Không khiến người đọc suy rộng. |
-| 6. Nhận biết thay vì nhớ | 3 | Desktop dễ tra; mobile mất đối chiếu. |
-| 7. Linh hoạt/hiệu quả | n/a | Nội dung marketing tĩnh. |
-| 8. Tối giản | 3 | Khối gọn; còn lặp với phần kế cận. |
-| 9. Khôi phục lỗi | n/a | Không có lỗi tương tác. |
-| 10. Trợ giúp | n/a | Không có nhiệm vụ cần hướng dẫn. |
-| **Tổng** | **11/20** | **Ưu tiên sửa nội dung.** |
+| Nielsen heuristic        | Điểm /4   | Cơ sở                                        |
+| ------------------------ | --------- | -------------------------------------------- |
+| 1. Hiển thị trạng thái   | n/a       | Không có trạng thái xử lý.                   |
+| 2. Ngôn ngữ gần thực tế  | 2         | Nhóm so sánh quá rộng; “PT” chưa giải thích. |
+| 3. Quyền kiểm soát       | n/a       | Không có luồng thao tác.                     |
+| 4. Nhất quán             | 2         | Desktop/mobile khác ý nghĩa.                 |
+| 5. Ngăn hiểu nhầm        | 1         | Có/Không khiến người đọc suy rộng.           |
+| 6. Nhận biết thay vì nhớ | 3         | Desktop dễ tra; mobile mất đối chiếu.        |
+| 7. Linh hoạt/hiệu quả    | n/a       | Nội dung marketing tĩnh.                     |
+| 8. Tối giản              | 3         | Khối gọn; còn lặp với phần kế cận.           |
+| 9. Khôi phục lỗi         | n/a       | Không có lỗi tương tác.                      |
+| 10. Trợ giúp             | n/a       | Không có nhiệm vụ cần hướng dẫn.             |
+| **Tổng**                 | **11/20** | **Ưu tiên sửa nội dung.**                    |
 
 Tải nhận thức: bốn cột không phải bốn hành động phải chọn; vấn đề là tự diễn giải các nhóm cơ sở và dấu chấm. Cảm xúc: section lộ trình tạo cảm giác được hướng dẫn; bảng chuyển sang tuyên bố ưu thế; phần sau quay lại đồng hành. Khả năng giảm niềm tin ở đoạn giữa là giả thuyết thiết kế, chưa đo bằng hành vi.
 

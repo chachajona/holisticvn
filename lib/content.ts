@@ -240,7 +240,8 @@ export const testimonials: Testimonial[] = [
     rating: 5,
   },
   {
-    quote: "Đội ngũ làm việc rất chuyên nghiệp, tiệm sạch sẽ và tiện nghi đầy đủ, trải nghiệm 10/10",
+    quote:
+      "Đội ngũ làm việc rất chuyên nghiệp, tiệm sạch sẽ và tiện nghi đầy đủ, trải nghiệm 10/10",
     highlight: "tiệm sạch sẽ và tiện nghi đầy đủ",
     context: "Dong L., Google",
     rating: 5,
