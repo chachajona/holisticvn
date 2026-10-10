@@ -1,4 +1,4 @@
-// Only short-lived rate counters belong here, never form contents.
+// Rate counters and the server-only Instagram connection/cache; never form contents.
 export async function redisCommand(command: string[]): Promise<unknown> {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;

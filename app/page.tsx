@@ -4,6 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
+import { getInstagramPosts } from "@/lib/instagram";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
 import {
@@ -364,7 +365,7 @@ function Stars({ count }: { count: number }) {
 }
 
 export default async function HomePage() {
-  const { site } = await getPublicSiteData();
+  const [{ site }, instagramPosts] = await Promise.all([getPublicSiteData(), getInstagramPosts()]);
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero}>
@@ -705,11 +706,24 @@ export default async function HomePage() {
           </a>
         </h2>
         <div className={styles.igGrid}>
-          {igImages.map((src, i) => (
-            <div className={styles.igItem} key={src + i}>
-              <Image src={src} alt="" fill sizes="25vw" />
-            </div>
-          ))}
+          {instagramPosts === null
+            ? igImages.map((src, i) => (
+                <div className={styles.igItem} key={src + i}>
+                  <Image src={src} alt="" fill sizes="25vw" />
+                </div>
+              ))
+            : instagramPosts.map((post) => (
+                <a
+                  className={styles.igItem}
+                  key={post.id}
+                  href={post.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Xem bài Instagram ngày ${new Date(post.timestamp).toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })} (mở tab mới)`}
+                >
+                  <Image src={post.image} alt="" fill sizes="(max-width: 700px) 45vw, 250px" />
+                </a>
+              ))}
         </div>
       </section>
 
