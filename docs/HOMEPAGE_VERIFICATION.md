@@ -48,6 +48,49 @@ Cookie evidence is in `.context/deployment-review/mobile-fixes-results.json` and
 `fixed-cookie-*.png`. Hero link checks and screenshots from the earlier revision
 are historical evidence and do not describe the final mobile hero.
 
+## Review fixes — 2026-10-10
+
+PR #39 review findings were reproduced against `687e7e3` and fixed locally:
+
+- The homepage reads only the Instagram Redis cache. Meta synchronization and
+  token refresh remain in the authenticated scheduled route. A separate server
+  component and Suspense boundary prevent a slow feed read from holding the hero.
+- Services default to visible cards and native horizontal scrolling. Reveal and
+  Embla styles activate after client initialization. Quote highlights likewise
+  remain visible before JavaScript enhancement.
+- Desktop hero images use lazy loading and retain the desktop-only default-image
+  preload. No additional mobile destination button was introduced.
+- Testimonial seed planning retains the approved Thanh X. excerpt; omitted reviews
+  are Thái Đ., Nhi L. and Giang T., with outcome-claim flags matching their content.
+  Maps documentation now matches the deliberate same-tab links. Legacy testimonial
+  history and the inventory status column were corrected.
+
+Verification against local production builds:
+
+- **67 tests across 16 files**, zero-warning lint, typecheck, production build and
+  HTTP smoke passed. The new regression tests produced five failures against the
+  previous source: synchronous feed refresh/bootstrap, token replacement, blocked
+  streaming and eager desktop hero loading.
+- Chrome passed at **320, 390, 700, 701, 768, 1024 and 1440 px**, with JavaScript
+  enabled and disabled: eight service cards, native scrolling and keyboard access
+  without JavaScript, initialized carousel swipe/arrows with JavaScript, visible
+  quote highlights, no page overflow and no browser errors. Reduced motion passed.
+- With JavaScript enabled, hidden desktop hero images were not requested on mobile;
+  the active desktop hero image loaded at widths above 700 px. Chrome disables native
+  lazy loading when JavaScript is disabled, so that mode still downloads hidden
+  images. The service and highlight fallbacks remain usable in that mode.
+- A configured-feed production build used a local Redis fixture without Meta calls.
+  With a **3,000 ms** Redis response, hero HTML arrived after **123 ms** and the feed
+  completed after **3,129 ms**. With a **6,000 ms** response, hero HTML arrived after
+  **21 ms** and the feed failed safely at the **5,039 ms** timeout. Both requests made
+  only a Redis `GET`; no sync or cache write ran during page rendering. These are
+  local timings, not production latency or LCP measurements.
+
+Evidence stays in `.context/review-fixes/`: `before.json`,
+`before-regression.log`, `browser-results.json`, `streaming-results.json` and
+`after-services-*.png`. The real Instagram account, Safari, physical devices and
+protected Vercel preview remain unverified.
+
 ## Not covered
 
 - Real device touch and screen reader passes.

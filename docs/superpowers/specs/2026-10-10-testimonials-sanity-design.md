@@ -104,7 +104,8 @@ Script `scripts/seed-testimonials.mjs`, idempotent, chỉ chạy trên staging:
 
 - `_id` cố định `testimonial.google.<slug>` (ví dụ `testimonial.google.giang-t`), `createIfNotExists` rồi patch các trường do script sở hữu; không ghi đè trường editor đã sửa (kiểm tra revision như script hiện có).
 - Dữ liệu gốc: bảng "Google review excerpts" trong `docs/CONTENT_INVENTORY.md`, kèm `source.url`, `source.readAt = 2026-10-09`, `rating`, `homeOrder`, `containsOutcomeClaim = false`.
-- Ba review đã gỡ (Thái Đ., Thanh X., Nhi L.) được nạp với `showOnHome = false` và `containsOutcomeClaim = true` để editor thấy lý do, không để mất.
+- Thanh X. là thẻ đầu đã duyệt: seed trích đoạn hiển thị với `showOnHome = true`, `homeOrder = 1` và `containsOutcomeClaim = false`; ghi outcome claim trong phần review gốc bị cắt vào `note`.
+- Ba review đã gỡ (Thái Đ., Nhi L., Giang T.) được nạp với `showOnHome = false`. Chỉ Thái Đ. và Nhi L. có `containsOutcomeClaim = true`; Giang T. có `containsOutcomeClaim = false` và `note` ghi lý do owner không chọn, để editor thấy lý do mà không mất dữ liệu.
 - Cần token ghi Sanity do owner cấp (HITL); không đưa token vào repo. Production chờ #20 và #27.
 
 ## 7. Xử lý lỗi và kiểm thử
