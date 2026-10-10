@@ -189,12 +189,7 @@ export function HolisticNav() {
             </summary>
             <div className={styles.directionsMenu}>
               {branches.map((branch) => (
-                <a
-                  key={branch.name}
-                  href={mapsHref(branch.address)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a key={branch.name} href={mapsHref(branch.address)}>
                   <strong>{branch.name}</strong>
                   <span>{noBreakAddress(branch.address)}</span>
                 </a>

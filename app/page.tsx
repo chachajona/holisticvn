@@ -665,7 +665,7 @@ export default async function HomePage() {
       <section className={styles.testimonials}>
         <div className={styles.testimonialsHead}>
           <h2>Khách hàng nói gì</h2>
-          <a href={reviewSummary.url} target="_blank" rel="noopener noreferrer">
+          <a href={reviewSummary.url}>
             <span className={styles.ratingTop}>
               <strong>{reviewSummary.average.toFixed(1)}</strong>
               <Stars count={reviewSummary.average} />
@@ -723,7 +723,7 @@ export default async function HomePage() {
 
       <section className={styles.social}>
         <h2>
-          <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
+          <a href={site.instagramUrl}>
             Theo dõi hành trình hồi phục trên Instagram
           </a>
         </h2>
@@ -739,9 +739,7 @@ export default async function HomePage() {
                   className={styles.igItem}
                   key={post.id}
                   href={post.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Xem bài Instagram ngày ${new Date(post.timestamp).toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })} (mở tab mới)`}
+                  aria-label={`Xem bài Instagram ngày ${new Date(post.timestamp).toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}`}
                 >
                   <Image src={post.image} alt="" fill sizes="(max-width: 700px) 45vw, 250px" />
                 </a>
