@@ -1176,6 +1176,7 @@ body:has(.cookie) footer {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
   }
   .cookie p {
     flex: 1;
@@ -1186,6 +1187,9 @@ body:has(.cookie) footer {
   .cookie div {
     flex: none;
     gap: 6px;
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-left: auto;
   }
   .cookie .button {
     min-height: 34px;
