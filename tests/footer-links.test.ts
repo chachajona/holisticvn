@@ -13,8 +13,12 @@ describe("footer links", () => {
     const hrefs = links.map(([, href]) => href);
     for (const [key, id] of Object.entries(anchors)) {
       expect(hrefs, id).toContain(`${path}#${id}`);
-      expect(source, `${file} uses ${name}.${key}`).toContain(`id: ${name}.${key},`);
+      // Services sections are keyed by CMS group (see tests/services-fallback.test.ts for ids).
+      if (name === "methodAnchor") {
+        expect(source, `${file} uses ${name}.${key}`).toContain(`id: ${name}.${key},`);
+      }
     }
+    if (name === "serviceAnchor") expect(source).toContain("serviceAnchor[service.group]");
     expect(hrefs).toHaveLength(Object.keys(anchors).length);
   });
 });

@@ -3,6 +3,8 @@ import { cache } from "react";
 import { z } from "zod";
 import {
   posts as fallbackPosts,
+  serviceFallbackImage,
+  serviceGroups,
   services as fallbackServices,
   testimonials as fallbackTestimonials,
   treatments as fallbackTreatments,
@@ -27,7 +29,29 @@ const client = createClient({
 const text = z.string().catch("");
 const strings = z.array(z.string()).catch([]);
 const record = { slug: z.string().min(1), title: z.string().min(1) };
-const serviceSchema = z.object({ ...record, description: text, treatments: strings });
+const cdnImage = z.string().regex(/^https:\/\/cdn\.sanity\.io\//);
+const serviceSchema = z
+  .object({
+    title: z.string().min(1),
+    group: z.enum(serviceGroups),
+    shortTitle: text,
+    summary: text,
+    body: text,
+    bullets: strings,
+    image: cdnImage.optional().catch(undefined),
+    imageAlt: text,
+    // A deleted or unpublished reference resolves to null; drop it so no link points nowhere.
+    treatments: z
+      .array(z.object(record).nullable().catch(null))
+      .catch([])
+      .transform((items) => items.filter((item) => item !== null)),
+  })
+  .transform((service) => ({
+    ...service,
+    shortTitle: service.shortTitle || service.title,
+    image: service.image ?? serviceFallbackImage[service.group],
+    imageAlt: service.imageAlt || service.title,
+  }));
 const treatmentSchema = z.object({
   ...record,
   shortDescription: text,
@@ -63,6 +87,8 @@ const testimonialSchema = z.object({
 async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]> {
   // A configured dataset (including an empty one) is authoritative; samples are local-only.
   const value: unknown = await client.fetch(query, {}, { next: { revalidate: 3600 } });
+  // A singleton query returns null until the document is first published: no records, not an outage.
+  if (value === null) return [];
   if (!Array.isArray(value)) throw new Error("Invalid Sanity response");
   return value.flatMap((item) => {
     const parsed = schema.safeParse(item);
@@ -71,10 +97,13 @@ async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]
 }
 export const getServices = cache(async (): Promise<Service[]> => {
   if (!enabled) return fallbackServices;
-  return fetchRecords(
-    `*[_type == "service"] | order(title asc){"slug":slug.current,title,description,"treatments":treatments[]->slug.current}`,
+  // groups[] order is the editor's drag-and-drop order; defined(group) skips half-filled items.
+  const services = await fetchRecords(
+    `*[_id == "servicesPage"][0].groups[defined(group)]{group,title,shortTitle,summary,body,bullets,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
     serviceSchema,
   );
+  // One section per group: anchors and booking context are keyed by group.
+  return services.filter((s, i) => services.findIndex((o) => o.group === s.group) === i);
 });
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
