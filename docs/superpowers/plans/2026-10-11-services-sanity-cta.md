@@ -788,7 +788,7 @@ git commit -m "feat(services): drive services page and booking context from Sani
 - [ ] **Step 4: Push và mở PR**
 
 ```bash
-git push -u origin issue-8
+git push -u origin feat/8-services-sanity-cta
 gh pr create --base main --title "feat(services): drive services page and booking context from Sanity #8" --body-file .context/pr-body.md
 ```
 
@@ -802,7 +802,7 @@ gh pr create --base main --title "feat(services): drive services page and bookin
 - [ ] **Step 4: Validation trong Studio.** Thử đổi `group` (phải khoá), để trống `summary`, thêm ảnh không alt, chọn cùng treatment hai lần: Studio phải chặn Publish với thông báo tiếng Việt đúng.
 - [ ] **Step 5: Lối thoát khi tài liệu hỏng.** Ghi qua API một bản có trùng `group` vào draft; xác nhận Discard changes khôi phục bản đã publish và zod vẫn giữ trang hiển thị đúng.
 - [ ] **Step 6: Query và webhook.** Trong Vision chạy câu GROQ của `getServices()` và xác nhận `treatments[]->{...}` trả `null` cho mục trỏ tới document không còn (và `array::compact` nếu muốn bỏ ở phía query); xác nhận webhook Sanity gọi `/api/revalidate` với `SANITY_REVALIDATE_SECRET` để thay đổi hiện ngay thay vì trễ tới 3600 giây.
-- [ ] **Step 7: CTA, bàn phím, responsive.** Bấm "Đặt lịch →" ở từng nhóm: `/booking?service=<group>` hiện "Dịch vụ: …", gửi form và kiểm tra email nhân viên có dòng "Liệu pháp: <tên dịch vụ>". Tab qua thẻ nhóm và CTA ở 320 / 768 / desktop.
+- [ ] **Step 7: CTA, bàn phím, responsive.** Bấm "Đặt lịch →" ở từng nhóm: `/booking?service=<group>` hiện "Dịch vụ: …", gửi form và kiểm tra email nhân viên có dòng "Dịch vụ: <tên dịch vụ>". Tab qua thẻ nhóm và CTA ở 320 / 768 / desktop.
 - [ ] **Step 8: Gắn kết quả vào PR.** Đính kèm screenshot và liệt kê tiêu chí đã có evidence. Chỉ khi đủ evidence mới đề nghị đóng #8.
 
 ### Task 10: Việc tách ra (không làm trong PR này)
