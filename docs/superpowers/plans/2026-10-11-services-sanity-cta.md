@@ -747,7 +747,7 @@ Expected: PASS (4 test).
 Run: `npx sanity documents create --help` và xác nhận có `--missing` ("không sửa document đã tồn tại"), `--dataset`. Sau đó:
 
 Run: `npx sanity documents create --missing -p <projectId> --dataset <staging> scripts/seed/services-page.json`
-Expected: tạo `servicesPage` đã publish nếu chưa có; chạy lại không ghi đè nội dung editor đã sửa. Repo không có file `sanity.cli` nên phải truyền project id bằng `-p`. Nếu CLI đòi định dạng khác (NDJSON, hoặc mảng), chuyển file cho khớp rồi chỉnh lại bước đọc ở test cho cùng định dạng. Các document cũ `_type == "service"` còn lại trong dataset vẫn giữ strong reference tới treatment (Studio không còn hiển thị chúng), nên owner cần xoá chúng sau khi seed xong.
+Expected: tạo `servicesPage` đã publish nếu chưa có; chạy lại không ghi đè nội dung editor đã sửa. Repo có `sanity.cli.ts` dùng cấu hình project/dataset chung với Studio; CLI cần file này ngay cả khi truyền `-p`. Định dạng object JSON và `--missing` đã chạy thành công trên staging bằng CLI 8.13.1. Các document cũ `_type == "service"` còn lại trong dataset vẫn giữ strong reference tới treatment (Studio không còn hiển thị chúng); kiểm kê và xin quyết định cleanup riêng trước khi xoá.
 
 ### Task 7: Đồng bộ tài liệu
 
@@ -795,6 +795,11 @@ gh pr create --base main --title "feat(services): drive services page and bookin
 `.context/pr-body.md` (không có dòng "Generated with Claude Code") gồm: phạm vi PR; `Refs #8`; singleton `servicesPage` thay document `service` (document `service` cũ trong dataset không còn được dùng); `/booking` chuyển từ static sang dynamic; hai devDependency mới và lý do; tiêu chí đã kiểm chứng local; tiêu chí còn chờ staging (Task 9).
 
 ### Task 9: Nghiệm thu trên staging (HITL, cần quyền Sanity staging)
+
+Kết quả thực tế ngày 2026-10-12: xem [`docs/SERVICES_VERIFICATION.md`](../../SERVICES_VERIFICATION.md).
+Đã seed staging, thử mutation bản published và khôi phục, kiểm tra responsive/keyboard/CTA,
+reference và schema qua SDK, cùng revalidate thủ công. Studio/Vision, webhook tự động và
+email thật còn chờ; không tick các bước ghép này chỉ dựa trên SDK hoặc response giả lập.
 
 - [ ] **Step 1: Nạp nội dung.** Chạy Task 6 bước 5, hoặc mở Studio → "Trang Dịch vụ", Studio tự điền ba nhóm từ `initialValue`; điền `title`, `summary`, `body` rồi Publish. Xác nhận Studio hiện đủ ba nhóm, không có nút thêm/xoá/nhân bản, và không có Unpublish/Delete.
 - [ ] **Step 2: Hiển thị.** Chạy dev trỏ tới staging: `/services` hiện đúng ba nhóm theo thứ tự mảng.

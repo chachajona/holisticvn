@@ -1,136 +1,151 @@
 # Services acceptance — issue #8 / PR #40
 
-Recorded on 2026-10-12 (Asia/Ho_Chi_Minh). Application revision: `4387714`.
-The subsequent acceptance commit adds tests and this record; application code is unchanged.
+Recorded on 2026-10-12 (Asia/Ho_Chi_Minh). Application revision: `4387714`;
+staging deployment source: `e730f47`. The follow-up adds CLI configuration and evidence,
+without changing public application behavior.
 
 ## Environment and owner decisions
 
 - Vercel project: `chachajonas-projects/holisticvn`.
-- Tested deployment: `https://holisticvn-qqruj85op-chachajonas-projects.vercel.app`.
+- Tested staging deployment: `https://holisticvn-dcox0jho6-chachajonas-projects.vercel.app`.
 - Branch alias: `https://holisticvn-git-feat-8-services-sanity-cta-chachajonas-projects.vercel.app`.
-- Sanity project: `yjzexxml`. At inspection, the only dataset was public `production`.
-- The owner chose a separate `staging` dataset and branch-specific Preview settings.
-  No production content was changed during this verification.
-- The owner chose mocked form responses rather than real email sends. Mailbox delivery
-  and staff confirmation remain pending; no acceptance email was sent.
-- Downloaded Preview credentials and protection cookies are kept only in ignored
-  `.context/acceptance/` files and are not included in evidence or commits.
+- Sanity project: `yjzexxml`. The owner created public `staging` for this acceptance.
+- Only Preview branch `feat/8-services-sanity-cta` uses `staging` through
+  `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_DATASET` and `SANITY_STUDIO_DATASET`.
+  Pulling another branch's Preview environment confirmed it still uses `production`.
+- The owner deferred live email sends. Browser submissions were intercepted before
+  reaching `/api/leads`; no provider or staff message was sent.
+- Credentials, protection cookies, raw SDK results and screenshots are kept in ignored
+  `.context/acceptance/` files. Secret values are excluded from evidence and commits.
 
-## Completed checks
+## Completed staging checks
 
-### Deployed empty state and booking UI
+### Seed, photos and references
 
-The actual GROQ response contains no `servicesPage` document. The deployed `/services`
-page returns its heading, pathway and general CTAs, with **zero service sections**.
-`/booking?service=training` remains usable but has no selected-service context.
-This verifies the missing-singleton behavior, not a completed catalogue rollout.
+Seeded the published `servicesPage` singleton with the checked-in three-group copy.
+Uploaded existing approved clinic photos (`Iastm.jpg`, `Coaching.jpg`, `Infrared.jpg`,
+`Cupping.jpg`, `ColdPlungeTub.jpg`; provenance in `PRODUCT.md`) to staging.
+Copied the three real published treatments into staging with staging image assets:
 
-At **320 × 900, 768 × 900 and 1440 × 900**, `/services` and
-`/booking?service=training` each have one `h1`, one `main#main`, no horizontal overflow
-and no observed broken images. These checks cover the current empty catalogue only.
+| Group      | Linked treatment slugs      |
+| ---------- | --------------------------- |
+| `therapy`  | `cupping`                   |
+| `training` | None                        |
+| `recovery` | `heat-light`, `cold-plunge` |
 
-At 320 px, booking name, phone and submit controls are keyboard reachable. Input focus
-uses the existing coral border and box shadow; the submit button has a browser outline.
-Group cards, group CTAs and real treatment navigation still need a populated dataset.
+References are strong. No missing `dry-needling` or `iastm` treatment was invented.
+Rendered CMS image URLs point to `/images/yjzexxml/staging/`.
 
-### Mocked booking responses
-
-Playwright intercepted both `/api/leads` requests before they reached the server.
-Synthetic input was used, with no live provider or staff message:
-
-- Mocked 503: error is shown, entered phone is retained and a call link is available.
-- Mocked 200: fields reset and success explains the staff callback and that the request
-  is not a confirmed appointment.
-- Both captured payloads have `kind: booking` and `source: /booking`; neither has
-  treatment context because the singleton is absent.
-
-The intercepted 503 produces the expected browser resource error. Otherwise public
-pages showed existing unused route-CSS preload warnings, rather than application errors.
-Studio errors are recorded separately below.
-
-### Email context regression
-
-Five new tests render HTML and plain text without sending email:
-
-- Every one of the three service-group bookings uses `Dịch vụ` and its service title.
-- A `/treatments/cupping` request retains `Liệu pháp: Giác hơi`.
-- A plain booking omits both context labels.
-
-Running these tests with `lib/email.ts` from `0de7dac` produces the three expected
-service-label failures. All five pass with the current email renderer. This verifies
-rendering, not Resend delivery or how Gmail displays received messages.
-
-The existing real Sanity-validator, mocked CMS, singleton-configuration and seed tests
-also pass. They are automated schema evidence, not authenticated Studio acceptance.
-
-### Seed input format
-
-The installed CLI (`@sanity/cli` 8.13.1) accepts a single JSON object or an array.
-Its `documents create` implementation wraps an object in an array and maps `--missing`
-to `createIfNotExists`; the checked-in seed format is valid and repeat imports preserve
-an existing document. CLI help confirms both project and dataset override flags.
-
-After staging exists and its treatment documents are available:
+Installed CLI 8.13.1 accepts the single-object JSON seed but refused to run without a
+CLI config even with project/dataset flags. Added `sanity.cli.ts` using the same settings
+as Studio. With a private `SANITY_AUTH_TOKEN` environment value, this actual command passed:
 
 ```bash
 npx sanity documents create scripts/seed/services-page.json --missing \
   --project-id yjzexxml --dataset staging
 ```
 
-The seed contains copy only. Resolve real published treatment IDs by slug before adding
-strong references; upload approved clinic photos to staging before selecting assets.
-Production currently has `cupping`, `heat-light` and `cold-plunge` treatments. Do not
-invent missing `dry-needling` or `iastm` records to match the local fallback.
+Repeating it reported `Skipped (already exists): servicesPage`. Enriched copy, images
+and references were preserved; this checks content preservation, not revision-ID stability.
 
-### Legacy service inventory
+### Published content and cache
 
-Read-only inspection found four legacy `service` documents:
+On staging only, temporarily changed training title/summary/image, reordered the groups
+to recovery/training/therapy, removed the therapy treatment reference and removed its CMS
+image. After an authenticated manual `POST /api/revalidate`, the deployed page showed the
+changed copy/order/image, omitted the cupping link and loaded local `Iastm.jpg` for the
+missing image. Booking and its intercepted payload used the changed training title
+without a code deployment.
 
-| Title              | Treatment slug | Reference |
-| ------------------ | -------------- | --------- |
-| Giác hơi           | `cupping`      | Strong    |
-| Đèn hồng ngoại     | `heat-light`   | Strong    |
-| Bể ngâm lạnh       | `cold-plunge`  | Strong    |
-| Tập luyện trị liệu | None           | None      |
+Restored the original groups using a revision guard and revalidated again. Confirmed
+therapy/training/recovery order, original titles/images and the cupping link returned.
+All three treatment links were clicked and reached their actual detail routes with the
+expected heading and booking form. No acceptance markers or probe documents remain.
 
-All three references resolve to existing treatments. No legacy document was deleted.
-These references remain relevant to future treatment deletion even though the new
-Studio schema no longer exposes the old service type. Full IDs are retained in the
-ignored local inventory file.
+The endpoint returned **200** with the branch secret and `{"revalidated":true}`;
+omitting the secret returned **401**. This proves manual authenticated invalidation,
+**not automatic Sanity webhook delivery**.
 
-## Access and configuration blockers
+### Responsive, keyboard and mocked booking
 
-1. Creating `staging` was rejected with HTTP 401: the current write token lacks
-   `sanity.project.datasets/create`. It can read production content and list datasets.
-   The owner must create public `staging` or supply suitable Preview credentials before
-   dataset population and branch configuration can proceed.
-2. Webhook inspection was rejected with HTTP 401: the token lacks
-   `sanity.project.webhooks/read`. Webhook setup and delivery cannot be claimed verified.
-3. Preview has no configured `SANITY_REVALIDATE_SECRET`. Configure a branch-specific
-   secret and a staging webhook that calls `/api/revalidate` with `x-sanity-secret`.
-   The webhook must also pass Vercel deployment protection; browser access alone does
-   not establish that a Sanity webhook can reach the endpoint.
-4. The deployed Studio shows **“Connect this Studio to your project”**. Its requests
-   to Sanity are blocked by CORS. Add the branch alias as a credentialed CORS origin,
-   then use an authenticated Sanity session for Studio and Vision checks. A deployment
-   URL used directly also requires its own origin entry.
-5. Preview has no `RESEND_API_KEY` and an empty `RESEND_FROM_EMAIL`. Live delivery is
-   deferred by owner decision, regardless of the passing mocked UI and render tests.
+At **320 × 900, 768 × 900 and 1440 × 900**, populated `/services` had one `h1`, one
+`main#main`, no horizontal overflow and no broken images after scrolling through lazy
+images. Screenshots were inspected at all three widths.
 
-## Remaining acceptance
+Tab reached all three group cards and three booking CTAs in order at each width.
+Each showed a visible browser focus outline. After scrolling the focused control into
+view, its center was unobstructed. CTA accessible names distinguish the three groups.
 
-- [ ] Populate public `staging`, seed/publish `servicesPage`, add real references and
-      optional approved images, and point only this branch's Preview variables to it.
-- [ ] Publish changed copy/order/image/references and verify deployed services,
-      treatment navigation and all three booking contexts.
-- [ ] Verify authenticated Studio validation, locked group controls, reference removal
-      and draft recovery; run the exact query in Vision.
-- [ ] Verify an actual staging webhook updates cached public content promptly.
-- [ ] Verify group cards/CTAs with keyboard and at 320/768/1440 px after seeding.
+Clicked every group CTA and checked the matching booking context. At 320/768/1440 px,
+respectively, therapy/training/recovery forms were submitted with intercepted responses:
+
+- **503:** error shown, entered phone retained, clinic call link available.
+- **200:** fields reset; success explains the staff callback and that this is not a
+  confirmed appointment.
+- Each payload contained `kind: booking`, `source: /booking` and the correct full
+  service title in `treatment`. No live request reached the lead endpoint.
+
+A separately intercepted cupping-page submission carried `source: /treatments/cupping`
+and `treatment: Giác hơi`, preserving treatment context.
+
+Public pages showed existing unused route-CSS preload warnings. Intercepted 503s produce
+the expected resource error; no additional public application error was observed.
+
+### Schema and Content Lake
+
+Six temporary credentialed SDK tests ran the real Sanity validator against the seeded
+staging document and real targets. All passed: valid published content; missing group;
+duplicate group; missing summary; asset without alt (Vietnamese error); duplicate
+reference. These do not establish that Studio's UI blocks Publish.
+
+Created a malformed `drafts.servicesPage` with duplicate groups. The published-perspective
+query continued returning the valid page. Removed the test draft and confirmed published
+content unchanged. This verifies API cleanup, not Studio's Discard action.
+
+Ran the exact `getServices()` projection against Content Lake and confirmed copy,
+staging image URLs and resolved slugs. With isolated temporary reference probes, deleting
+a strongly referenced target was rejected with **409**. After making the probe reference
+weak and deleting its target, `treatments[]->{...}` returned **[null]** and
+`array::compact(...)` returned **[]**. Both probes were removed. Vision and Studio
+Unpublish behavior remain untested.
+
+### Email regression and legacy inventory
+
+Five email-render tests cover all three service-booking labels (`Dịch vụ`), treatment-page
+labels (`Liệu pháp`) and plain booking without context. The three service assertions fail
+against renderer `0de7dac` and pass with the current one. Rendering does not prove delivery
+or mailbox appearance. Repository suite: **120 tests / 25 files**.
+
+Read-only production inspection found four legacy `service` records: Giác hơi,
+Đèn hồng ngoại and Bể ngâm lạnh have resolving strong references; Tập luyện trị liệu
+has none. No production content was changed or deleted. Production `servicesPage`
+is still absent.
+
+## Remaining acceptance and rollout
+
+- [x] Create isolated staging; seed the singleton, photos and real references; configure
+      only this branch's Preview and verify its deployed dataset.
+- [x] Verify CLI `--missing` preserves enriched content.
+- [x] Verify published copy/order/image/reference changes and restore original content.
+- [x] Verify treatment destinations, all three booking contexts, responsive and keyboard
+      behavior on populated staging.
+- [x] Verify manual authenticated revalidation, SDK validation, draft isolation and
+      reference dereferencing.
+- [x] Review legacy references before cleanup.
+- [ ] Add the branch alias as a **credentialed CORS origin**, then use an authenticated
+      Sanity session to verify Studio validation, locked controls, Discard and Vision.
+      The staging Studio currently shows “Connect this Studio to your project” with CORS
+      errors. Direct deployment URLs require their own CORS entry if used for Studio.
+- [ ] Configure and verify an actual staging webhook calling `/api/revalidate` with
+      `x-sanity-secret`. It must also pass Vercel deployment protection. The current token
+      lacks `sanity.project.cors/read` and `sanity.project.webhooks/read`; management
+      access is needed. Manual invalidation must not be counted as this check.
 - [ ] Send a controlled booking and confirm received email with staff when the owner
-      enables live sends.
-- [x] Review retained legacy service documents and strong references before cleanup.
+      enables live sends. Preview has no `RESEND_API_KEY` and an empty `RESEND_FROM_EMAIL`;
+      delivery is deferred by owner decision.
+- [ ] Seed/publish production before merging/deploying this catalogue change.
+      Staging acceptance does not seed production.
 
-Production also needs its own published `servicesPage` before merging/deploying the
-catalogue change. Staging acceptance must not be mistaken for production seeding.
-Keep issue #8 open until the outstanding checks have evidence.
+Keep PR #40 as a draft and issue #8 open until outstanding checks have evidence.
+Screenshots: `.context/acceptance/services-staging-{320,768,1440}.png`,
+`services-staging-mutation.png` and `booking-staging-{320,768,1440}.png`.

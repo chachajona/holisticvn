@@ -159,6 +159,24 @@ Căn cứ: [Deciding on fields and relationships](https://www.sanity.io/docs/dev
 11. **Studio chặn Publish khi validator mảng lỗi** đã được tài liệu mô tả ("these will block the draft from being published"), nhưng thông điệp lỗi theo `path: [{_key}]` trên item trong mảng chưa nhìn thấy trong giao diện.
 12. **Seed bằng `--missing` ở ID đã publish:** chưa chạy; kiểm tra Studio hiển thị đúng trạng thái "published, không có draft" và Publish tiếp theo hoạt động.
 
+### Kiểm chứng Content Lake ngày 2026-10-12
+
+Trên dataset public `staging` của project `yjzexxml`, CLI 8.13.1 đã chạy seed object JSON
+với `--missing` và giữ nguyên copy/ảnh/reference của singleton đã có. CLI cần
+`sanity.cli.ts` dù lệnh truyền project/dataset. Không khẳng định `_rev` giữ nguyên.
+
+Query thực tế của `getServices()` trả đúng ba nhóm, ảnh staging và các slug đã publish.
+Với hai document probe tạm, API từ chối xoá đích có strong reference (409). Sau khi chuyển
+reference của probe sang weak và xoá đích, phép chiếu `treatments[]->{...}` trả `[null]`,
+`array::compact(...)` trả `[]`. Đã xoá cả hai probe. Chưa thử Unpublish trong Studio,
+Vision hoặc các biến thể query khác ở mục 4.
+
+Draft có nhóm trùng không ảnh hưởng query perspective `published`; xoá draft thử nghiệm
+giữ bản published nguyên vẹn. Đây là kiểm tra qua API, chưa xác minh nút Discard của Studio.
+Endpoint revalidate đã trả 200 với secret đúng và cập nhật trang sau mutation published,
+nhưng webhook tự động chưa được cấu hình/kiểm chứng. Chi tiết:
+[`SERVICES_VERIFICATION.md`](./SERVICES_VERIFICATION.md).
+
 ## 5. Hệ quả cho repo
 
 ### 5.1 Schema đề xuất
