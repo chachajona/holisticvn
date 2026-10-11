@@ -120,8 +120,9 @@ export const services: Service[] = [
     body: "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
     bullets: [
       "Massage trị liệu toàn thân hoặc cục bộ",
-      "Nắn chỉnh cột sống và IASTM – cạo mạc",
-      "Giác hơi, tapping và các phương pháp bổ trợ",
+      "Nắn chỉnh cột sống, châm khô, điện châm (chỉ chuyên viên có chứng nhận thực hiện)",
+      "IASTM – cạo mạc, tapping, giác hơi",
+      "Xung kích, điện xung, sóng siêu âm hỗ trợ giảm đau và phục hồi mô mềm",
     ],
     image: serviceFallbackImage.therapy,
     imageAlt: "Trị liệu bằng tay",
@@ -138,9 +139,9 @@ export const services: Service[] = [
     summary: "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
     body: "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
     bullets: [
+      "Tập luyện phục hồi: cho chấn thương, đau mỏi hoặc hạn chế vận động",
+      "Tập luyện tăng cường: phát triển sức mạnh, kiểm soát và hiệu quả chuyển động",
       "Đồng hành xuyên suốt từ tư vấn đến tập luyện",
-      "Chương trình cá nhân hoá theo tình trạng của bạn",
-      "Phù hợp cả người mới bắt đầu và vận động viên",
     ],
     image: serviceFallbackImage.training,
     imageAlt: "Tập luyện phục hồi & tăng cường",

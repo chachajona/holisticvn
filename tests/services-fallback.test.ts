@@ -31,6 +31,34 @@ describe("services fallback (Sanity not configured)", () => {
     }
   });
 
+  it("names the owner's price-list services in the group bullets", () => {
+    const bullets = (group: string) =>
+      services
+        .find((s) => s.group === group)!
+        .bullets.join(" | ")
+        .toLowerCase();
+    const expected: Record<string, string[]> = {
+      therapy: [
+        "massage trị liệu",
+        "nắn chỉnh cột sống",
+        "châm khô",
+        "điện châm",
+        "chỉ chuyên viên có chứng nhận",
+        "iastm",
+        "tapping",
+        "giác hơi",
+        "xung kích",
+        "điện xung",
+        "sóng siêu âm",
+      ],
+      training: ["tập luyện phục hồi", "tập luyện tăng cường"],
+      recovery: ["ngâm lạnh", "đèn hồng ngoại"],
+    };
+    for (const [group, names] of Object.entries(expected)) {
+      for (const name of names) expect(bullets(group), `${group}: ${name}`).toContain(name);
+    }
+  });
+
   it("gives each booking CTA a distinct accessible name", async () => {
     const html = renderToStaticMarkup(await ServicesPage());
     const labels = services.map((s) => `Đặt lịch ${s.shortTitle}`);
