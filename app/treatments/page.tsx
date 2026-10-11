@@ -25,7 +25,7 @@ review, the verdict, DESIGN.md, and every shipping raster carrying its provenanc
 export const metadata = createMetadata({
   title: "Phương pháp",
   description:
-    "Bốn nhóm kỹ thuật Holistic phối hợp theo tình trạng cụ thể của bạn: trị liệu thủ công, điện trị liệu, tập luyện phục hồi, ngâm lạnh & hồng ngoại.",
+    "Các phương pháp Holistic phối hợp theo tình trạng cụ thể của bạn: trị liệu thủ công, điện trị liệu, tập luyện phục hồi, ngâm lạnh, đèn hồng ngoại.",
   path: "/treatments",
 });
 
@@ -37,7 +37,7 @@ const methods = [
     indexSubtitle: "Đau khớp, đau cơ, lệch tư thế",
     body: "Chuyên viên dùng tay để đánh giá và can thiệp trực tiếp lên khớp, cơ và mô mềm — giải phóng điểm co cứng, nắn chỉnh tư thế lệch, tăng biên độ vận động.",
     tags: ["Đau vai gáy", "Đau lưng dưới", "Lệch chậu"],
-    image: "/images/Massage.jpg",
+    image: "/images/Iastm.jpg",
     imageLeft: true,
   },
   {
@@ -47,7 +47,7 @@ const methods = [
     indexSubtitle: "Viêm, sưng, đau mạn tính",
     body: "Dòng điện tần số thấp kích thích thần kinh và cơ, giảm viêm và giảm đau mà không cần can thiệp bằng tay — thường dùng trước khi vận động để giảm co cứng.",
     tags: ["Viêm gân", "Đau mạn tính", "Co cứng cơ"],
-    image: "/images/acupuncture.jpg",
+    image: "/images/ElectroPulse.jpg",
     imageLeft: false,
   },
   {
@@ -57,18 +57,28 @@ const methods = [
     indexSubtitle: "Yếu cơ, mất ổn định khớp",
     body: "Bài tập có kiểm soát để lấy lại sức mạnh và sự ổn định ở vùng bị ảnh hưởng, tăng dần cường độ theo tiến độ hồi phục — nền tảng để tránh tái chấn thương.",
     tags: ["Yếu cơ", "Mất ổn định khớp", "Hậu chấn thương"],
-    image: "/images/Exercise.jpg",
+    image: "/images/Coaching.jpg",
     imageLeft: true,
   },
   {
     id: methodAnchor.cold,
     numeral: "04",
-    title: "Ngâm lạnh & hồng ngoại",
+    title: "Ngâm lạnh",
     indexSubtitle: "Hồi phục sau vận động nặng",
-    body: "Nhiệt lạnh giảm sưng ngay sau vận động nặng; hồng ngoại làm giãn mô và tăng tuần hoàn máu sau đó — thường kết hợp làm bước cuối của một buổi trị liệu.",
-    tags: ["Sưng cơ", "Sau thi đấu", "Giãn mô"],
-    image: "/images/Stretching.jpg",
+    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao, đồng thời cải thiện khả năng chịu đựng của hệ thần kinh.",
+    tags: ["Sưng cơ", "Sau thi đấu", "Mỏi cơ"],
+    image: "/images/ColdPlungeTub.jpg",
     imageLeft: false,
+  },
+  {
+    id: methodAnchor.infrared,
+    numeral: "05",
+    title: "Đèn hồng ngoại",
+    indexSubtitle: "Giãn cơ, giảm căng thẳng",
+    body: "Đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể — thường kết hợp làm bước cuối của một buổi trị liệu.",
+    tags: ["Căng cơ", "Mệt mỏi", "Giãn mô"],
+    image: "/images/Infrared.jpg",
+    imageLeft: true,
   },
 ];
 
@@ -78,8 +88,8 @@ export default function TreatmentsPage() {
       <section className={styles.hero}>
         <div className={styles.heroCard}>
           <Image
-            src="/images/acupuncture.jpg"
-            alt="Chuyên viên thực hiện kỹ thuật trị liệu tay tại Holistic"
+            src="/images/HeroTreatments.jpg"
+            alt="Dấu giác hơi trên vai sau buổi trị liệu"
             fill
             priority
             sizes="100vw"
@@ -92,16 +102,17 @@ export default function TreatmentsPage() {
             </div>
             <h1>Phương pháp</h1>
             <p className={styles.heroBody}>
-              Mỗi kỹ thuật giải quyết một vấn đề khác nhau. Chuyên viên chọn và phối hợp phương pháp
-              dựa trên tình trạng cụ thể của bạn, không áp một công thức chung cho tất cả.
+              Mỗi phương pháp giải quyết một vấn đề khác nhau. Chuyên viên chọn và phối hợp các
+              phương pháp dựa trên tình trạng cụ thể của bạn, không áp một công thức chung cho tất
+              cả.
             </p>
           </div>
         </div>
       </section>
 
-      <nav className={styles.index} aria-label="Bốn nhóm kỹ thuật">
+      <nav className={styles.index} aria-label="Các phương pháp">
         <div className={styles.indexHead}>
-          <span>Bốn nhóm kỹ thuật</span>
+          <span>Các phương pháp</span>
           <i />
         </div>
         <div className={styles.indexGrid}>
@@ -160,7 +171,7 @@ export default function TreatmentsPage() {
         <div className={styles.ctaCard}>
           <div className={styles.ctaCopy}>
             <h2>Chưa chắc phương pháp nào phù hợp?</h2>
-            <p>Buổi đánh giá đầu tiên sẽ xác định đúng kỹ thuật cho tình trạng của bạn.</p>
+            <p>Buổi đánh giá đầu tiên sẽ xác định đúng phương pháp cho tình trạng của bạn.</p>
           </div>
           <div className={styles.ctaActions}>
             <Link href="/booking" className={styles.lightButton}>

@@ -15,7 +15,7 @@ export default function AboutPage() {
         eyebrow="Về HolisticVN"
         title="Sống trọn nhịp của mình, bằng một cơ thể khỏe hơn."
         description="HolisticVN tin rằng phục hồi là một hành trình mang tính cá nhân — không chỉ là giảm đau, mà là mở rộng điều bạn có thể làm."
-        image="/images/Stretching.jpg"
+        image="/images/HeroAbout.jpg"
       />
       <section className="section">
         <div className="shell about-story">

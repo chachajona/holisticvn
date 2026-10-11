@@ -20,7 +20,7 @@ export function SiteChrome({
       <HolisticNav />
       <div className="page">{children}</div>
       {footer}
-      <ChatWidgets />
+      <ChatWidgets key={pathname} />
       <CookieConsent />
     </>
   );

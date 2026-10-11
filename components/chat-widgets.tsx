@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { track } from "@/components/gtm";
 import { useSiteData } from "@/components/site-data";
@@ -10,6 +10,25 @@ import styles from "./chat-widgets.module.css";
 // Messenger glyph reused from the previous holisticvn.com site; phone is a Lucide-style outline.
 const MESSENGER_PATH =
   "M256.55 8C116.52 8 8 110.34 8 248.57c0 72.3 29.71 134.78 78.07 177.94 8.35 7.51 6.63 11.86 8.05 58.23A19.92 19.92 0 0 0 122 502.31c52.91-23.3 53.59-25.14 62.56-22.7C337.85 521.8 504 423.7 504 248.57 504 110.34 396.59 8 256.55 8zm149.24 185.13l-73 115.57a37.37 37.37 0 0 1-53.91 9.93l-58.08-43.47a15 15 0 0 0-18 0l-78.37 59.44c-10.46 7.93-24.16-4.6-17.11-15.67l73-115.57a37.36 37.36 0 0 1 53.91-9.93l58.06 43.46a15 15 0 0 0 18 0l78.41-59.38c10.44-7.98 24.14 4.54 17.09 15.62z";
+
+const formSelector = ".lead-form, [data-chat-exclusion]";
+// SiteChrome remounts chat on route changes so these subscriptions observe the new page's forms.
+const subscribeToForms = (onChange: () => void) => {
+  const observer = new IntersectionObserver(onChange);
+  document.querySelectorAll(formSelector).forEach((form) => observer.observe(form));
+  window.addEventListener("resize", onChange);
+  return () => {
+    observer.disconnect();
+    window.removeEventListener("resize", onChange);
+  };
+};
+const getVisibleForm = () =>
+  [...document.querySelectorAll(formSelector)].some((form) => {
+    const rect = form.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < window.innerHeight;
+  });
+// Keep chat out of the way until the browser can measure the current page, including hydration.
+const getServerVisibleForm = () => true;
 
 export function ChatWidgets() {
   const { site } = useSiteData();
@@ -24,8 +43,7 @@ export function ChatWidgets() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const [nearFooter, setNearFooter] = useState(false);
-  const [observedForm, setObservedForm] = useState({ pathname: "", visible: false });
-  const formVisible = observedForm.pathname === pathname && observedForm.visible;
+  const formVisible = useSyncExternalStore(subscribeToForms, getVisibleForm, getServerVisibleForm);
   useEffect(() => {
     const footer = document.querySelector("footer");
     if (!footer) return;
@@ -33,16 +51,6 @@ export function ChatWidgets() {
       threshold: 0.15,
     });
     observer.observe(footer);
-    return () => observer.disconnect();
-  }, [pathname]);
-  useEffect(() => {
-    const form = document.querySelector(".lead-form");
-    if (!form) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setObservedForm({ pathname, visible: entry.isIntersecting }),
-      { threshold: 0.15 },
-    );
-    observer.observe(form);
     return () => observer.disconnect();
   }, [pathname]);
   // on mobile the home hero already has its own CTA, which the floating buttons would cover until the user scrolls;

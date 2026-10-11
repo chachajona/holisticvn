@@ -62,7 +62,7 @@ export function HeroQuickConsult({ hours, phone }: Props) {
 
   return (
     <div className={styles.wrap}>
-      <form className={styles.form} onSubmit={submit}>
+      <form className={styles.form} onSubmit={submit} data-chat-exclusion>
         <input
           name="website"
           tabIndex={-1}

@@ -12,14 +12,19 @@ const securityHeaders = [
 // Sanity Studio (/studio) is excluded: it needs far broader sources and is noindex + auth-gated.
 // ponytail: upgrade to nonce CSP (proxy.ts + dynamic rendering) only if script-src 'unsafe-inline' becomes a compliance need.
 const isDev = process.env.NODE_ENV === "development";
+// The toolbar is injected into preview deployments only. Keep its origins out of production CSP.
+// https://vercel.com/docs/vercel-toolbar/managing-toolbar#using-a-content-security-policy
+const isPreview = process.env.VERCEL_ENV === "preview";
+const toolbar = isPreview ? " https://vercel.live" : "";
 const googleAnalytics = "https://*.google-analytics.com https://*.analytics.google.com";
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: https://images.unsplash.com https://cdn.sanity.io https://www.googletagmanager.com ${googleAnalytics}`,
-  "font-src 'self'",
-  `connect-src 'self' https://www.googletagmanager.com ${googleAnalytics}${isDev ? " ws:" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ""}${toolbar}`,
+  `style-src 'self' 'unsafe-inline'${toolbar}`,
+  `img-src 'self' data: blob: https://images.unsplash.com https://cdn.sanity.io https://www.googletagmanager.com ${googleAnalytics}${toolbar}${isPreview ? " https://vercel.com" : ""}`,
+  `font-src 'self'${toolbar}${isPreview ? " https://assets.vercel.com" : ""}`,
+  `connect-src 'self' https://www.googletagmanager.com ${googleAnalytics}${isDev ? " ws:" : ""}${toolbar}${isPreview ? " wss://ws-us3.pusher.com" : ""}`,
+  ...(isPreview ? [`frame-src 'self'${toolbar}`] : []),
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -46,6 +51,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "cdn.sanity.io" },
+      { protocol: "https", hostname: "**.cdninstagram.com", port: "" },
+      { protocol: "https", hostname: "**.fbcdn.net", port: "" },
     ],
   },
   async redirects() {

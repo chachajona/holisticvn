@@ -70,6 +70,10 @@
   }
 }
 @media (max-width: 700px) {
+  /* Share the measured banner height so chat stays clear when cookie text wraps. */
+  :global(body:has(.cookie)) .widgets {
+    bottom: calc(var(--cookie-h, 134px) + 24px);
+  }
   .widgets[data-hold] {
     visibility: hidden;
     opacity: 0;

@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type CSSProperties } from "react";
 import { createMetadata } from "@/lib/seo";
 import { testimonials, reviewSummary } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
+import { InstagramFeed, InstagramFallback } from "@/components/instagram-feed";
 import { HeroMobileStage } from "@/components/hero-mobile-stage";
+import { HeroPanels } from "@/components/hero-panels";
 import { HeroQuickConsult } from "@/components/hero-quick-consult";
+import { ConcernPattern } from "@/components/concern-pattern";
+import { HighlightStage } from "@/components/highlight-stage";
+import { BranchSway } from "@/components/branch-sway";
+import { Reveal } from "@/components/reveal";
 import {
   QuickLinkIllustration,
   type QuickLinkIllustrationType,
@@ -17,9 +23,9 @@ import styles from "./page.module.css";
 DIRECTION CONTRACT (impeccable, brief-pinned — comp supplied as full desktop 1440 /
 mobile 390 mock, no concept roll).
 THESIS: Homepage v2 — the same Warm Clay Editorial world, restructured into a fuller
-editorial rhythm: quick links, story, a services carousel, a symptom CTA, a
-comparison table, a three-step path + pillars, founders, testimonials, two offers,
-a social strip and a ticker.
+editorial rhythm: a hero triptych with quick consult, quick links, story, a services
+carousel, a symptom CTA, a comparison table, a three-step path + pillars, testimonials,
+two offers, a social strip and a ticker.
 OWN-WORLD: card #FDFAF6 ground, ink #3A2A24, clay #90776E/#744D40 for actions,
 sage #48614C for the one green band + footer, warm bands #F6EFE6/#EDE6DC, a
 dark #181F1A CTA reserved for the deepest close. Roboto Slab (200-400) carries
@@ -27,18 +33,15 @@ headings, Roboto Serif (300-400) carries body/buttons/nav, Roboto Mono marks
 small caption labels only.
 STORY: office workers, weekend athletes and pros see the full continuous path
 (tư vấn → trị liệu → tập luyện → thư giãn) end to end and book a consult.
-FIRST VIEWPORT: full-bleed 600px hero card, warm photo with a left-reading
-scrim, headline + dual CTA at left:64px; a three-item discovery navigation strip
-sits below the hero.
+FIRST VIEWPORT: full-bleed hero card — a three-panel triptych on desktop (Trị liệu open
+by default) and a swipeable photo stage with chip indicator on mobile, each panel linking
+to its destination — with a quick-consult phone form. Three discovery quick links
+(services, methods, about) sit below the hero.
 FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
-ADAPTATIONS (fix round, cited per finish review): hero ships as a single real
-photo with no slide arrows — the comp's ‹ › hero controls implied a second
-slide with no second image to show, and a control with nothing to slide to
-is a worse defect than its absence. Quick links now lead to the three existing
-overview pages: services, methods and the Holistic story. Kickers directly
-tagging a single heading below them (hero eyebrow, intro/path/team eyebrows,
-per-section numerals on parallel Services categories) were removed per
-craft-floor's unconditional ban, even though the comp used them throughout.
+ADAPTATIONS: hero carousels autoplay but pause on hover, focus, touch, hidden tab and
+prefers-reduced-motion (owner decision 2026-10-09). Kickers directly tagging a single
+heading below them were removed per craft-floor's unconditional ban, even though the
+comp used them throughout.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
@@ -50,14 +53,14 @@ export const metadata = createMetadata({
 });
 
 // Hero triptych: the continuous pathway tư vấn → trị liệu → tập luyện. Trị liệu opens by default.
-// Consultation.jpg, Therapy.jpg, Coaching.jpg: cropped from Holistic fanpage posts (facebook.com/vatlytrilieuganday.phuchoichucnangganday), supplied by the owner; headline text and watermark strips cropped off.
+// Intake.jpg, Iastm.jpg, Coaching.jpg: cropped from Holistic fanpage posts (facebook.com/vatlytrilieuganday.phuchoichucnangganday), supplied by the owner; headline text and watermark strips cropped off.
 const heroPath = [
   {
     num: "01",
     title: "Tư vấn",
     copy: "Đánh giá tư thế và nguyên nhân gây đau.",
     href: "/booking",
-    image: "/images/Consultation.jpg",
+    image: "/images/Intake.jpg",
     alt: "Chuyên viên trao đổi và đánh giá cùng khách hàng trên máy tính bảng tại Holistic",
     position: "45% 50%",
     isDefault: false,
@@ -67,7 +70,7 @@ const heroPath = [
     title: "Trị liệu",
     copy: "Đa phương pháp, không thuốc, không phẫu thuật.",
     href: "/treatments",
-    image: "/images/Therapy.jpg",
+    image: "/images/Iastm.jpg",
     alt: "Chuyên viên trị liệu mô mềm vùng cổ cho khách hàng tại Holistic",
     position: "50% 50%",
     isDefault: true,
@@ -75,7 +78,7 @@ const heroPath = [
   {
     num: "03",
     title: "Tập luyện",
-    copy: "Corrective exercise và return-to-sport.",
+    copy: "Tập luyện tăng cường và phục hồi.",
     href: "/services#svc-training",
     image: "/images/Coaching.jpg",
     alt: "Chuyên viên Holistic hướng dẫn khách tập hạ tạ đơn đúng tư thế",
@@ -98,37 +101,70 @@ const quickLinks: {
   },
   {
     title: "Phương pháp",
-    detail: "Khám phá 6 phương pháp",
+    detail: "Khám phá các phương pháp",
     href: "/treatments",
     illustration: "methods",
   },
   { title: "Về Holistic", detail: "Tìm hiểu về Holistic", href: "/about", illustration: "about" },
 ];
 
+// Image sources for these cards: see "Image Provenance" in PRODUCT.md.
 const carouselServices = [
   {
-    title: "Trị liệu bằng tay",
-    copy: "Giảm đau vai gáy, cột sống, khớp bằng kỹ thuật manual therapy chuyên sâu.",
-    image: "/images/acupuncture.jpg",
+    title: "Massage trị liệu",
+    copy: "Giảm căng cơ, cải thiện lưu thông máu và hỗ trợ phục hồi sau vận động hoặc stress kéo dài.",
+    image: "/images/TreatmentBeds.jpg",
+    tag: "Trị liệu",
     href: "/services#svc-therapy",
   },
   {
-    title: "Corrective exercise 1-1",
-    copy: "Bài tập điều chỉnh tư thế, ổn định lõi và tăng dần sức mạnh theo tuần.",
-    image: "/images/Stretching.jpg",
+    title: "IASTM – cạo mạc",
+    copy: "Dụng cụ chuyên dụng giải phóng mô mềm, tăng lưu thông máu và độ đàn hồi của cơ – fascia.",
+    image: "/images/Iastm.jpg",
+    tag: "Trị liệu",
+    href: "/treatments#mtd-manual",
+  },
+  {
+    title: "Giác hơi",
+    copy: "Áp lực âm tại chỗ giúp thư giãn mô mềm và hỗ trợ tuần hoàn.",
+    image: "/images/Cupping.jpg",
+    tag: "Trị liệu",
+    href: "/treatments#mtd-manual",
+  },
+  {
+    title: "Điện xung",
+    copy: "Xung điện nhẹ kích thích thần kinh – cơ, giúp giảm đau và hỗ trợ kiểm soát vận động.",
+    image: "/images/ElectroPulse.jpg",
+    tag: "Điện trị liệu",
+    href: "/treatments#mtd-electro",
+  },
+  {
+    title: "Đèn hồng ngoại",
+    copy: "Thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể.",
+    image: "/images/Infrared.jpg",
+    tag: "Hồi phục",
+    href: "/treatments#mtd-infrared",
+  },
+  {
+    title: "Ngâm lạnh",
+    copy: "Giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao.",
+    image: "/images/ColdPlungeTub.jpg",
+    tag: "Hồi phục",
+    href: "/treatments#mtd-cold",
+  },
+  {
+    title: "Tập luyện phục hồi",
+    copy: "Chương trình cá nhân hoá cho chấn thương, đau mỏi hoặc hạn chế vận động — giảm nguy cơ tái phát.",
+    image: "/images/Coaching.jpg",
+    tag: "Tập luyện",
     href: "/services#svc-training",
   },
   {
-    title: "Ngâm lạnh & hồng ngoại",
-    copy: "Giảm sưng, giảm đau nhức cơ và tăng cường hồi phục sau tập luyện nặng.",
-    image: "/images/Exercise.jpg",
-    href: "/services#svc-recovery",
-  },
-  {
-    title: "Return-to-sport",
-    copy: "Lộ trình trở lại thể thao cho VĐV sau chấn thương, hạn chế tái phát.",
-    image: "/images/Massage.jpg",
-    href: "/treatments#mtd-rehab",
+    title: "Tập luyện tăng cường",
+    copy: "Phát triển sức mạnh, kiểm soát và hiệu quả chuyển động để nâng cao thể lực và tư thế bền vững.",
+    image: "/images/Studio.jpg",
+    tag: "Tập luyện",
+    href: "/services#svc-training",
   },
 ];
 
@@ -150,70 +186,40 @@ const compareColumns = [
 const pillars = [
   {
     title: "Toàn diện",
-    copy: "Kết hợp kiến thức & thực nghiệm, xây dựng chương trình vận động cùng chế độ nghỉ ngơi hợp lý.",
+    copy: "Kết hợp trị liệu, vận động và nghỉ ngơi theo nhu cầu của cơ thể bạn.",
     icon: "whole",
   },
   {
     title: "Xuyên suốt",
-    copy: "Một lộ trình duy nhất từ tư vấn đến tập luyện lâu dài — không cần chạy nhiều nơi khác nhau.",
-    icon: "thread",
+    copy: "Từ đánh giá đến trị liệu và tập luyện tại một nơi, thuận tiện để tiếp tục chương trình.",
+    icon: "thread-linked-v2",
   },
   {
     title: "Bền vững",
-    copy: "Không dùng thuốc, không phẫu thuật. Sức khoẻ tăng tiến bền vững, tránh tái chấn thương.",
+    copy: "Hướng đến sức mạnh và khả năng vận động lâu dài, không thuốc, không phẫu thuật.",
     icon: "root",
   },
 ];
 
-const igImages = [
-  "/images/acupuncture.jpg",
-  "/images/Massage.jpg",
-  "/images/Stretching.jpg",
-  "/images/Exercise.jpg",
-];
-const tickerWords = [
-  "TRỊ LIỆU",
-  "TẬP LUYỆN",
-  "THƯ GIÃN",
-  "KHÔNG THUỐC",
-  "KHÔNG PHẪU THUẬT",
-  "BỀN VỮNG",
-];
-
 function PillarIcon({ type }: { type: string }) {
-  const paths: Record<string, ReactNode> = {
-    whole: (
-      <>
-        <circle cx="9" cy="12" r="6.5" />
-        <circle cx="15" cy="12" r="6.5" />
-      </>
-    ),
-    thread: <path d="M3 12c3-5 6 5 9 0s6-5 9 0" />,
-    root: (
-      <>
-        <path d="M12 3v8" />
-        <path d="M12 11c-3 0-5 2-5 5v4" />
-        <path d="M12 11c3 0 5 2 5 5v4" />
-        <path d="M12 11c0 2-1.5 3.5-3.5 4" />
-      </>
-    ),
-  };
   return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {paths[type]}
-    </svg>
+    <Image
+      src={`/images/pillars/${type}.webp`}
+      alt=""
+      width={56}
+      height={56}
+      sizes="(max-width: 980px) 48px, 56px"
+    />
   );
 }
+
+const igImages = [
+  "/images/Facade.jpg",
+  "/images/TreatmentBeds.jpg",
+  "/images/Lobby.jpg",
+  "/images/Studio.jpg",
+];
+const tickerWords = ["TƯ VẤN", "TRỊ LIỆU", "TẬP LUYỆN", "TOÀN DIỆN", "XUYÊN SUỐT", "BỀN VỮNG"];
 
 // Hand-drawn pen sketch around the intro photo frame: broken double outline, glow rays, leaf sprig.
 // Drawn in the quick-link illustration palette (clay + sage contour lines) with a turbulence wobble so strokes read as pen, not vector.
@@ -279,31 +285,60 @@ function IntroSketch() {
             yChannelSelector="G"
           />
         </filter>
+        <mask id="introSageDraw">
+          <path
+            className={styles.sketchMaskDraw}
+            pathLength={1}
+            d="M-9 50Q-9 -9 50 -10L448 -9Q508 -8 509 50L510 560Q509 618 450 619L50 620Q-8 619 -9 560Z"
+          />
+        </mask>
       </defs>
       <g filter="url(#introPen)">
         <path
-          className={styles.sketchClay}
+          className={`${styles.sketchClay} ${styles.sketchDraw}`}
+          pathLength={1}
           d="M-16 44Q-16 -16 44 -16L456 -16Q516 -16 516 44L516 566Q516 626 456 626L44 626Q-16 626 -16 566Z"
         />
         <path
           className={styles.sketchSage}
+          mask="url(#introSageDraw)"
           d="M-9 50Q-9 -9 50 -10L448 -9Q508 -8 509 50L510 560Q509 618 450 619L50 620Q-8 619 -9 560Z"
           strokeDasharray="340 14 180 10 260 12"
         />
         <g className={styles.sketchOrnament}>
           <g transform="translate(0 14)">
             {sketchRays.map((d, i) => (
-              <path key={d} className={i % 2 ? styles.sketchSage : styles.sketchClay} d={d} />
+              <path
+                key={d}
+                className={`${i % 2 ? styles.sketchSage : styles.sketchClay} ${styles.sketchDraw} ${styles.sketchRay}`}
+                pathLength={1}
+                style={{ "--i": i } as CSSProperties}
+                d={d}
+              />
             ))}
           </g>
           <g transform="translate(-26 0)">
-            <path className={styles.sketchSage} d="M-10 640Q-52 570 -34 460" />
-            {sketchLeaves.map(([leaf, vein]) => (
-              <g key={leaf}>
-                <path className={styles.sketchSage} d={leaf} />
-                <path className={styles.sketchClay} d={vein} />
-              </g>
-            ))}
+            <BranchSway className={styles.sketchBranch}>
+              <path
+                className={`${styles.sketchSage} ${styles.sketchDraw} ${styles.sketchStem}`}
+                pathLength={1}
+                d="M-10 640Q-52 570 -34 460"
+              />
+              {sketchLeaves.map(([leaf, vein], i) => (
+                <g key={leaf} style={{ "--i": i } as CSSProperties}>
+                  <path
+                    className={`${styles.sketchSage} ${styles.sketchDraw} ${styles.sketchLeaf}`}
+                    pathLength={1}
+                    d={leaf}
+                  />
+                  <path
+                    className={`${styles.sketchClay} ${styles.sketchDraw} ${styles.sketchLeaf}`}
+                    pathLength={1}
+                    d={vein}
+                  />
+                </g>
+              ))}
+            </BranchSway>
           </g>
         </g>
       </g>
@@ -311,9 +346,21 @@ function IntroSketch() {
   );
 }
 
+function QuoteText({ quote, highlight }: { quote: string; highlight?: string }) {
+  const at = highlight ? quote.indexOf(highlight) : -1;
+  if (!highlight || at < 0) return <>{quote}</>;
+  return (
+    <>
+      {quote.slice(0, at)}
+      <mark>{highlight}</mark>
+      {quote.slice(at + highlight.length)}
+    </>
+  );
+}
+
 function Stars({ count }: { count: number }) {
   return (
-    <span className={styles.testimonialStars} aria-label={`${count} trên 5 sao`}>
+    <span className={styles.testimonialStars} role="img" aria-label={`${count} trên 5 sao`}>
       {"★".repeat(count)}
     </span>
   );
@@ -332,31 +379,7 @@ export default async function HomePage() {
             </h1>
             <HeroQuickConsult hours={site.hours.replace(" — ", "–")} phone={site.phone} />
           </div>
-          <div className={styles.heroPanels}>
-            {heroPath.map((step) => (
-              <Link
-                href={step.href}
-                key={step.title}
-                className={styles.heroPanel}
-                data-default={step.isDefault || undefined}
-              >
-                <Image
-                  src={step.image}
-                  alt={step.alt}
-                  fill
-                  priority={step.isDefault}
-                  sizes="(max-width: 700px) 100vw, 40vw"
-                  style={{ objectPosition: step.position }}
-                />
-                <span className={styles.heroPanelTint} aria-hidden="true" />
-                <span className={styles.heroPanelNum}>{step.num}</span>
-                <span className={styles.heroPanelText}>
-                  <span className={styles.heroPanelTitle}>{step.title}</span>
-                  <span className={styles.heroPanelCopy}>{step.copy}</span>
-                </span>
-              </Link>
-            ))}
-          </div>
+          <HeroPanels steps={heroPath} />
         </div>
       </section>
 
@@ -427,7 +450,7 @@ export default async function HomePage() {
               </svg>
             </Link>
           </div>
-          <div className={styles.introMedia}>
+          <Reveal className={styles.introMedia}>
             <IntroSketch />
             <div className={styles.introPhoto}>
               <Image
@@ -438,7 +461,7 @@ export default async function HomePage() {
                 style={{ objectPosition: "50% 25%" }}
               />
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -446,187 +469,265 @@ export default async function HomePage() {
         <ServicesCarousel items={carouselServices} />
       </section>
 
-      <section className={styles.concern}>
-        <h2>Bạn đang gặp một vấn đề cụ thể?</h2>
-        <div className={styles.concernRight}>
-          <span className={styles.concernTag}>ĐAU VAI GÁY · LỆCH CHẬU · THOÁT VỊ</span>
-          <Link href="/treatments" className={styles.lightButton}>
-            Tìm theo triệu chứng
-          </Link>
-        </div>
+      <section className={styles.concern} aria-labelledby="concern-heading">
+        <ConcernPattern className={styles.concernPattern} />
+        <h2 id="concern-heading">Bạn đang gặp một vấn đề cụ thể?</h2>
+        <svg
+          className={styles.concernArrow}
+          viewBox="0 0 120 80"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M5 58C16 35 54 27 72 42C83 52 60 58 58 39C55 18 88 24 108 41M93 23L109 41L86 44"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <Link href="/treatments" className={styles.concernButton}>
+          Xem các phương pháp
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M4 12h16M14 6l6 6-6 6" />
+          </svg>
+        </Link>
       </section>
 
-      <section className={styles.steps}>
+      <section className={styles.steps} aria-labelledby="continuity-heading">
         <div className={styles.stepsHead}>
-          <span>Xuyên suốt</span>
-          <i />
+          <h2 id="continuity-heading">Một lộ trình xuyên suốt.</h2>
+          <i aria-hidden="true" />
         </div>
-        <div className={styles.stepsGrid}>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>01</span>
-            <strong>Hiểu rõ cơ thể</strong>
-            <span>Xác định phương pháp trị liệu và tập luyện phù hợp với tình trạng của bạn.</span>
-          </div>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>02</span>
-            <strong>Giảm đau mỏi</strong>
-            <span>Giảm căng thẳng và tăng cường hoạt động miễn dịch tức thời.</span>
-          </div>
-          <div className={styles.stepCard}>
-            <span className={styles.stepNumeral}>03</span>
-            <strong>Tăng cường lâu dài</strong>
-            <span>
-              Sức khoẻ, độ linh hoạt và độ dẻo dai của cơ &amp; khớp, duy trì qua nhiều năm.
+        <p className={styles.stepsIntro}>
+          Holistic kết hợp tư vấn, trị liệu và tập luyện trong một lộ trình xuyên suốt, phù hợp với
+          bạn, hướng đến cơ thể khỏe hơn cho sinh hoạt và thể thao.
+        </p>
+        <ol className={styles.stepsGrid} role="list">
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              01
             </span>
-          </div>
-        </div>
+            <h3>Hiểu cách bạn vận động</h3>
+            <p>
+              Tư vấn và đánh giá thói quen sinh hoạt, những hạn chế vận động để lựa chọn hướng trị
+              liệu, tập luyện phù hợp.
+            </p>
+          </li>
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              02
+            </span>
+            <h3>Giảm đau, cải thiện vận động</h3>
+            <p>
+              Trị liệu theo tình trạng của bạn, hướng đến giảm đau mỏi và cải thiện khả năng vận
+              động.
+            </p>
+          </li>
+          <li className={styles.stepCard}>
+            <span className={styles.stepNumeral} aria-hidden="true">
+              03
+            </span>
+            <h3>Xây nền tảng vận động bền vững</h3>
+            <p>
+              Tập luyện để tăng sức mạnh, kiểm soát chuyển động tốt hơn và đáp ứng mục tiêu sinh
+              hoạt, thể thao của bạn.
+            </p>
+          </li>
+        </ol>
       </section>
 
-      <section className={styles.compare}>
-        <h2>Holistic khác với những giải pháp khác ra sao?</h2>
-        <div className={styles.compareScroll}>
-          <table className={styles.compareTable}>
-            <thead>
-              <tr>
-                <th></th>
-                {compareColumns.map((col, i) => (
-                  <th
-                    key={col}
-                    className={i === 0 ? styles.compareHolistic : undefined}
-                    scope="col"
-                  >
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {compareRows.map((row) => (
-                <tr key={row.label}>
-                  <th scope="row">{row.label}</th>
-                  {row.values.map((yes, i) => (
-                    <td key={i} className={i === 0 && yes ? styles.compareYesCell : undefined}>
-                      <span className={yes ? styles.compareYes : styles.compareNo}>
-                        {yes ? "●" : "—"}
-                      </span>
-                      <span
-                        className="sr-only"
-                        style={{
-                          position: "absolute",
-                          width: 1,
-                          height: 1,
-                          overflow: "hidden",
-                          clip: "rect(0 0 0 0)",
-                        }}
+      <section className={styles.compare} aria-labelledby="comparison-heading">
+        <h2 id="comparison-heading">Holistic khác với những giải pháp khác ra sao?</h2>
+        <div className={styles.compareViewport}>
+          <div className={styles.compareFrame}>
+            <div
+              className={styles.compareScroll}
+              role="region"
+              aria-labelledby="comparison-heading"
+              aria-describedby="comparison-scroll-hint"
+              tabIndex={0}
+            >
+              <table className={styles.compareTable}>
+                <caption className={styles.compareCaption}>
+                  So sánh dịch vụ của Holistic và các giải pháp khác
+                </caption>
+                <colgroup>
+                  <col className={styles.compareLabelColumn} />
+                  <col className={styles.compareHolisticColumn} />
+                  <col className={styles.compareClinicColumn} />
+                  <col className={styles.compareSpaColumn} />
+                  <col className={styles.compareGymColumn} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Tiêu chí</th>
+                    {compareColumns.map((col, i) => (
+                      <th
+                        key={col}
+                        className={i === 0 ? styles.compareHolistic : undefined}
+                        scope="col"
                       >
-                        {yes ? "Có" : "Không"}
-                      </span>
-                    </td>
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {compareRows.map((row) => (
+                    <tr key={row.label}>
+                      <th scope="row">{row.label}</th>
+                      {row.values.map((yes, i) => (
+                        <td key={i} className={i === 0 && yes ? styles.compareYesCell : undefined}>
+                          <span
+                            className={yes ? styles.compareYes : styles.compareNo}
+                            aria-hidden="true"
+                          >
+                            {yes ? "●" : "—"}
+                          </span>
+                          <span
+                            className="sr-only"
+                            style={{
+                              position: "absolute",
+                              width: 1,
+                              height: 1,
+                              overflow: "hidden",
+                              clip: "rect(0 0 0 0)",
+                            }}
+                          >
+                            {yes ? "Có" : "Không"}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p id="comparison-scroll-hint" className={styles.compareHint}>
+            Vuốt ngang để xem các giải pháp khác.
+          </p>
         </div>
-        <ul className={styles.compareMobileList}>
-          {compareRows
-            .filter((row) => row.values[0])
-            .map((row) => (
-              <li key={row.label}>
-                <span className={styles.compareYes}>●</span>
-                {row.label}
-              </li>
-            ))}
-        </ul>
         <span className={styles.compareLegend}>● CÓ &nbsp;·&nbsp; — KHÔNG</span>
       </section>
 
-      <section className={styles.path}>
+      <section className={styles.path} aria-labelledby="path-heading">
         <div className={styles.pathPanel}>
           <div className={styles.pathTop}>
             <div className={styles.pathCopy}>
-              <h2>Ba bước, một chương trình duy nhất.</h2>
+              <h2 id="path-heading">Trị liệu và tập luyện, cùng một lộ trình.</h2>
               <p>
-                Từ buổi đánh giá đầu tiên đến giai đoạn tập luyện nâng cao, bạn đi trên một lộ trình
-                xuyên suốt — không phải kể lại tình trạng của mình ở nhiều nơi khác nhau.
-              </p>
-              <p>
-                Mục tiêu không chỉ là hết đau, mà là giữ được sức khoẻ vận động trong nhiều năm sau
-                đó.
+                Chương trình được xây dựng theo tình trạng và mục tiêu của bạn — từ vận động hằng
+                ngày đến tập luyện thể thao.
               </p>
             </div>
             <div className={styles.pathMedia}>
               <Image
-                src="/images/Massage.jpg"
-                alt="Chuyên viên đang trị liệu cho khách tại Holistic"
+                src="/images/ManualTherapy.jpg"
+                alt="Chuyên viên dùng dụng cụ trị liệu mô mềm vùng lưng tại Holistic"
                 fill
-                sizes="(max-width: 980px) 100vw, 45vw"
+                sizes="(max-width: 700px) calc(100vw - 80px), (max-width: 980px) calc(100vw - 144px), (max-width: 1408px) calc((100vw - 200px) / 2), 604px"
               />
             </div>
           </div>
-          <div className={styles.pillars}>
-            <strong>Giá trị cốt lõi</strong>
+          <ul className={styles.pillars} aria-label="Giá trị cốt lõi của Holistic" role="list">
             {pillars.map((p) => (
-              <div className={styles.pillar} key={p.title}>
-                <span className={styles.pillarIcon}>
+              <li className={styles.pillar} key={p.title}>
+                <span className={styles.pillarIcon} aria-hidden="true">
                   <PillarIcon type={p.icon} />
                 </span>
-                <strong>{p.title}</strong>
-                <span>{p.copy}</span>
-              </div>
+                <div className={styles.pillarCopy}>
+                  <h3>{p.title}</h3>
+                  <p>{p.copy}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
       <section className={styles.testimonials}>
         <div className={styles.testimonialsHead}>
           <h2>Khách hàng nói gì</h2>
-          <a href={reviewSummary.url} target="_blank" rel="noopener noreferrer">
-            {reviewSummary.average.toFixed(1)} ★ · {reviewSummary.count} ĐÁNH GIÁ GOOGLE
+          <a href={reviewSummary.url}>
+            <span className={styles.ratingTop}>
+              <strong>{reviewSummary.average.toFixed(1)}</strong>
+              <Stars count={reviewSummary.average} />
+            </span>
+            <span className={styles.ratingSub}>{reviewSummary.count} đánh giá Google</span>
           </a>
         </div>
-        <div className={styles.testimonialGrid}>
-          {testimonials.map((item) => (
-            <figure key={item.context} className={styles.testimonial}>
-              {item.rating ? <Stars count={item.rating} /> : null}
-              <blockquote>&ldquo;{item.quote}&rdquo;</blockquote>
-              <figcaption>{item.context}</figcaption>
+        <HighlightStage className={styles.quotes}>
+          {testimonials.map((item, i) => (
+            <figure
+              key={item.context}
+              className={
+                i === 0 ? `${styles.testimonial} ${styles.testimonialLead}` : styles.testimonial
+              }
+            >
+              {i === 0 ? (
+                <div className={styles.leadMedia}>
+                  <Image
+                    src="/images/Studio.jpg"
+                    alt=""
+                    fill
+                    sizes="(max-width: 980px) 100vw, 300px"
+                  />
+                </div>
+              ) : null}
+              <span className={styles.quoteMark} aria-hidden="true">
+                &ldquo;
+              </span>
+              <blockquote>
+                <QuoteText quote={item.quote} highlight={item.highlight} />
+              </blockquote>
+              <figcaption>
+                <span className={styles.captionAvatar} aria-hidden="true">
+                  {item.context.charAt(0)}
+                </span>
+                {item.context.split(", ").map((part, n) => (
+                  <span key={part} className={n === 0 ? styles.captionRole : styles.captionDetail}>
+                    {part}
+                  </span>
+                ))}
+                {item.rating ? <Stars count={item.rating} /> : null}
+              </figcaption>
             </figure>
           ))}
-        </div>
+        </HighlightStage>
       </section>
 
-      <section className={styles.offers}>
+      <section className={styles.offers} aria-label="Bắt đầu cùng Holistic">
         <div className={`${styles.offer} ${styles.offerDark}`}>
-          <strong>Buổi tư vấn &amp; đánh giá</strong>
-          <span>60 phút đánh giá cơ thể và đề xuất lộ trình cá nhân hoá.</span>
+          <h2>Bắt đầu từ tư vấn</h2>
           <Link href="/booking" className={styles.lightButton}>
-            Đặt buổi đầu tiên
+            Đặt lịch tư vấn
           </Link>
         </div>
         <div className={`${styles.offer} ${styles.offerLight}`}>
-          <strong>Lộ trình 12 buổi</strong>
-          <span>Trị liệu kết hợp tập luyện trên một lộ trình xuyên suốt.</span>
-          <Link href="/services" className={styles.primaryButton}>
-            Khám phá dịch vụ
+          <h2>Trị liệu &amp; tập luyện</h2>
+          <Link href="/services" className={styles.outlineButton}>
+            Xem dịch vụ
           </Link>
         </div>
       </section>
 
       <section className={styles.social}>
         <h2>
-          <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
-            Theo dõi hành trình hồi phục trên Instagram
-          </a>
+          <a href={site.instagramUrl}>Theo dõi hành trình hồi phục trên Instagram</a>
         </h2>
-        <div className={styles.igGrid}>
-          {igImages.map((src, i) => (
-            <div className={styles.igItem} key={src + i}>
-              <Image src={src} alt="" fill sizes="25vw" />
-            </div>
-          ))}
-        </div>
+        <Suspense fallback={<InstagramFallback images={igImages} />}>
+          <InstagramFeed fallbackImages={igImages} />
+        </Suspense>
       </section>
 
       <div className={styles.ticker} aria-hidden="true">

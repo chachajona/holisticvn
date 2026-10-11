@@ -32,7 +32,7 @@ describe("configured Sanity content", () => {
     ]);
     expect((await getTreatments())[0]).toMatchObject({
       benefits: [],
-      image: "/images/Therapy.jpg",
+      image: "/images/Iastm.jpg",
       duration: "",
     });
   });
