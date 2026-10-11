@@ -1,8 +1,9 @@
 # Services acceptance — issue #8 / PR #40
 
 Recorded on 2026-10-12 (Asia/Ho_Chi_Minh). Application revision: `4387714`;
-staging deployment source: `e730f47`. The follow-up adds CLI configuration and evidence,
-without changing public application behavior.
+staging deployment source: `e730f47`. CLI follow-up: `5227617`. Authenticated Studio/Vision acceptance ran on that
+preview; validation localization follow-up: `d67fd39`. Public application behavior
+is unchanged by these follow-ups.
 
 ## Environment and owner decisions
 
@@ -63,8 +64,8 @@ All three treatment links were clicked and reached their actual detail routes wi
 expected heading and booking form. No acceptance markers or probe documents remain.
 
 The endpoint returned **200** with the branch secret and `{"revalidated":true}`;
-omitting the secret returned **401**. This proves manual authenticated invalidation,
-**not automatic Sanity webhook delivery**.
+omitting the secret returned **401**. These initial requests tested manual invalidation.
+Automatic webhook evidence is recorded separately below.
 
 ### Responsive, keyboard and mocked booking
 
@@ -96,18 +97,64 @@ the expected resource error; no additional public application error was observed
 Six temporary credentialed SDK tests ran the real Sanity validator against the seeded
 staging document and real targets. All passed: valid published content; missing group;
 duplicate group; missing summary; asset without alt (Vietnamese error); duplicate
-reference. These do not establish that Studio's UI blocks Publish.
+reference. Authenticated Studio checks additionally confirmed that Publish is disabled for
+missing summary/alt, duplicate treatment references, and duplicate/missing groups.
 
 Created a malformed `drafts.servicesPage` with duplicate groups. The published-perspective
 query continued returning the valid page. Removed the test draft and confirmed published
-content unchanged. This verifies API cleanup, not Studio's Discard action.
+content unchanged. Repeated this in authenticated Studio: Discard changes removed the malformed draft
+and preserved the published groups exactly. Also discarded the invalid copy/alt and
+duplicate-reference drafts through the actual confirmation dialog.
 
 Ran the exact `getServices()` projection against Content Lake and confirmed copy,
 staging image URLs and resolved slugs. With isolated temporary reference probes, deleting
 a strongly referenced target was rejected with **409**. After making the probe reference
 weak and deleting its target, `treatments[]->{...}` returned **[null]** and
-`array::compact(...)` returned **[]**. Both probes were removed. Vision and Studio
-Unpublish behavior remain untested.
+`array::compact(...)` returned **[]**. Both probes were removed. In authenticated Vision on `staging`, API `v2025-01-01`,
+perspective `published`, the exact `getServices()` projection returned all three
+groups with staging images and real treatment slugs. A read-only literal weak
+reference to an absent target returned `[null]`; its compacted projection returned
+`[]`. Treatment Unpublish behavior remains untested.
+
+Studio has no global Create option for `servicesPage`, no group Add control, and
+only Copy in each group menu (no Remove/Duplicate/Add before/after). Group radios
+are disabled. Singleton document actions expose Discard without Delete/Unpublish.
+
+The deployed schema initially showed English `Required` and duplicate-reference
+messages. `d67fd39` localizes required title/summary/body and duplicate-reference
+errors; real-validator regression assertions failed before the fix and pass after it.
+On the updated preview, missing summary/alt and duplicate references show the
+Vietnamese messages and keep Publish disabled. Discard removed both test drafts.
+
+### Authenticated Publish and automatic webhook
+
+Using the owner-authenticated Sanity Manage session, created enabled webhook
+`PR40 staging revalidation` (`73iQNVV10WENgFmC`) for **staging only**:
+
+- Branch alias `/api/revalidate`, POST, Create/Update/Delete.
+- Filter: `_type in ["servicesPage", "treatment", "sanity.imageAsset"]`;
+  projection `{_id, _type}`; draft/version triggers disabled.
+- Private custom `x-sanity-secret` and `x-vercel-protection-bypass` headers. Reused
+  the existing project automation bypass via authenticated Vercel CLI; no secret
+  values are included in screenshots or this report.
+
+Primed the deployed `/services` page, edited only the training title in Studio and
+clicked **Publish**. The published update at `2026-10-11T19:14:23Z` was followed by
+an actual branch POST `/api/revalidate` **200** at `19:14:24.814Z` (1.814 seconds).
+The deployed HTML and browser then showed the marker without any manual POST or
+code deployment. Restored the title through Studio Publish at `19:16:05Z`; a second
+automatic POST returned **200** at `19:16:07.195Z` (2.195 seconds). The first HTML
+request after restoration still contained the marker; subsequent HTML and browser
+reload showed the original title. Published groups match the baseline exactly and
+no draft remains. This demonstrates automatic refresh, without guaranteeing the
+first post-webhook request is fresh.
+
+The existing production webhook targets `www.holisticvn.com` with **All datasets**;
+its configuration was left untouched. Staging changes may therefore also invalidate
+production cache, although production content was not edited. The staging webhook
+occupies the second included webhook slot and should be removed when this preview
+is retired. Configuration follows [Sanity custom headers and triggers](https://www.sanity.io/docs/content-lake/webhooks)
+and [Vercel automation bypass](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation).
 
 ### Email regression and legacy inventory
 
@@ -123,6 +170,13 @@ is still absent.
 
 ## Remaining acceptance and rollout
 
+CORS follow-up: the owner added the credentialed branch origin. A real preflight to
+Sanity returned **204**, the exact branch `Access-Control-Allow-Origin`,
+`Access-Control-Allow-Credentials: true` and authorization-header permission.
+Opening Studio in a separate test Chrome profile now reaches Sanity's GitHub sign-in
+instead of the connection/CORS screen, with zero observed CORS errors. The owner
+signed into this isolated profile; authenticated Studio and Vision checks passed.
+
 - [x] Create isolated staging; seed the singleton, photos and real references; configure
       only this branch's Preview and verify its deployed dataset.
 - [x] Verify CLI `--missing` preserves enriched content.
@@ -132,14 +186,13 @@ is still absent.
 - [x] Verify manual authenticated revalidation, SDK validation, draft isolation and
       reference dereferencing.
 - [x] Review legacy references before cleanup.
-- [ ] Add the branch alias as a **credentialed CORS origin**, then use an authenticated
-      Sanity session to verify Studio validation, locked controls, Discard and Vision.
-      The staging Studio currently shows “Connect this Studio to your project” with CORS
-      errors. Direct deployment URLs require their own CORS entry if used for Studio.
-- [ ] Configure and verify an actual staging webhook calling `/api/revalidate` with
-      `x-sanity-secret`. It must also pass Vercel deployment protection. The current token
-      lacks `sanity.project.cors/read` and `sanity.project.webhooks/read`; management
-      access is needed. Manual invalidation must not be counted as this check.
+- [x] Add and verify the branch alias as a **credentialed CORS origin**.
+      Direct deployment URLs require their own entry if used for Studio.
+- [x] Sign into the test browser and verify Studio validation, locked controls,
+      Discard and Vision in an authenticated Sanity session.
+- [x] Confirm the localized validation messages on the updated deployed Studio.
+- [x] Configure and verify an actual staging webhook through Vercel deployment
+      protection, with HTTP 200 and an automatically refreshed published page.
 - [ ] Send a controlled booking and confirm received email with staff when the owner
       enables live sends. Preview has no `RESEND_API_KEY` and an empty `RESEND_FROM_EMAIL`;
       delivery is deferred by owner decision.
@@ -148,4 +201,8 @@ is still absent.
 
 Keep PR #40 as a draft and issue #8 open until outstanding checks have evidence.
 Screenshots: `.context/acceptance/services-staging-{320,768,1440}.png`,
-`services-staging-mutation.png` and `booking-staging-{320,768,1440}.png`.
+`services-staging-mutation.png`, `booking-staging-{320,768,1440}.png`,
+`studio-validation-{missing-copy-alt,duplicate-reference,duplicate-group}.png`,
+`studio-vision-services.png`, `studio-vision-dangling-reference.png`,
+`studio-validation-vietnamese.png`, `studio-validation-vietnamese-duplicate.png`,
+`staging-webhook-configured.png` and `services-webhook-published.png`.

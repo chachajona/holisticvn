@@ -168,8 +168,25 @@ với `--missing` và giữ nguyên copy/ảnh/reference của singleton đã c�
 Query thực tế của `getServices()` trả đúng ba nhóm, ảnh staging và các slug đã publish.
 Với hai document probe tạm, API từ chối xoá đích có strong reference (409). Sau khi chuyển
 reference của probe sang weak và xoá đích, phép chiếu `treatments[]->{...}` trả `[null]`,
-`array::compact(...)` trả `[]`. Đã xoá cả hai probe. Chưa thử Unpublish trong Studio,
-Vision hoặc các biến thể query khác ở mục 4.
+`array::compact(...)` trả `[]`. Đã xoá cả hai probe. Chưa thử Unpublish treatment trong Studio
+hoặc các biến thể query khác ở mục 4.
+
+### Kiểm chứng Studio/Vision ngày 2026-10-12
+
+Phiên Chrome riêng đã đăng nhập Sanity trên preview dùng staging. Studio khoá radio
+`group`, không có Add/Remove/Duplicate ở mảng nhóm, và không có Create/Delete/Unpublish
+cho singleton. Thiếu summary/alt, trùng reference và trùng/thiếu nhóm đều chặn Publish.
+Bản sửa `d67fd39` đã được kiểm tra trên preview: lỗi required và duplicate reference
+hiện tiếng Việt. Discard changes qua hộp xác nhận xoá draft thử và giữ nguyên bản published.
+
+Vision (staging, API v2025-01-01, published) chạy đúng projection của `getServices()`
+và trả ba nhóm cùng ảnh/slug thật. Literal weak reference tới ID không có trả `[null]`,
+`array::compact` trả `[]`; query này chỉ đọc, không tạo document.
+
+Sanity Manage đã cấu hình webhook riêng staging với custom secret và Vercel automation
+bypass. Một thay đổi title qua Studio Publish nhận POST revalidate 200 sau 1,814 giây;
+preview hiện nội dung mới mà không revalidate thủ công. Xem evidence và phần khôi phục
+ở [`SERVICES_VERIFICATION.md`](SERVICES_VERIFICATION.md).
 
 Draft có nhóm trùng không ảnh hưởng query perspective `published`; xoá draft thử nghiệm
 giữ bản published nguyên vẹn. Đây là kiểm tra qua API, chưa xác minh nút Discard của Studio.
