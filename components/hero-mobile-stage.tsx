@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useHeroAutoplay } from "./use-hero-autoplay";
-import { ViewportPreload } from "./viewport-preload";
+import { ViewportImage } from "./viewport-image";
 import styles from "./hero-mobile-stage.module.css";
 
 type Step = {
@@ -44,7 +43,6 @@ export function HeroMobileStage({ steps }: { steps: Step[] }) {
 
   return (
     <div className={styles.stage} ref={regionRef}>
-      <ViewportPreload src={steps[0].image} sizes="200vw" media="(max-width: 700px)" />
       <div className={styles.photos}>
         <div className={styles.scroller} ref={scrollerRef} onScroll={onScroll}>
           {steps.map((step, index) => (
@@ -53,11 +51,13 @@ export function HeroMobileStage({ steps }: { steps: Step[] }) {
               className={styles.slide}
               data-active={index === active || undefined}
             >
-              <Image
+              <ViewportImage
                 src={step.image}
                 alt={step.alt}
                 fill
                 sizes="200vw"
+                media="(max-width: 700px)"
+                loading={index === 0 ? "eager" : "lazy"}
                 fetchPriority={index === 0 ? "high" : undefined}
                 className={styles.photo}
                 style={{ objectPosition: step.position }}
