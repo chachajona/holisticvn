@@ -102,7 +102,7 @@ const serviceGroup = defineType({
       name: "title",
       title: "Tên dịch vụ",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().error("Cần tên dịch vụ."),
     }),
     defineField({
       name: "shortTitle",
@@ -115,14 +115,14 @@ const serviceGroup = defineType({
       title: "Mô tả ngắn trên thẻ chọn nhóm",
       type: "text",
       rows: 2,
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().error("Cần mô tả ngắn trên thẻ chọn nhóm."),
     }),
     defineField({
       name: "body",
       title: "Nội dung",
       type: "text",
       rows: 5,
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().error("Cần nội dung dịch vụ."),
     }),
     defineField({
       name: "bullets",
@@ -161,7 +161,7 @@ const serviceGroup = defineType({
           options: { filter: "defined(slug.current)", disableNew: true },
         }),
       ],
-      validation: (rule) => rule.unique(),
+      validation: (rule) => rule.unique().error("Không chọn cùng một liệu pháp nhiều lần."),
     }),
   ],
   preview: {

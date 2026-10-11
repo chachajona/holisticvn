@@ -77,13 +77,20 @@ describe("servicesPage schema", () => {
   });
 
   it("requires title, summary and body for every group", async () => {
+    const messages: Record<string, string> = {
+      title: "Cần tên dịch vụ.",
+      summary: "Cần mô tả ngắn trên thẻ chọn nhóm.",
+      body: "Cần nội dung dịch vụ.",
+    };
     for (const missing of ["title", "summary", "body"]) {
       const groups = [
         group("therapy", { [missing]: undefined }),
         group("training"),
         group("recovery"),
       ];
-      expect((await check(page(groups))).status, missing).toBe("failed");
+      const result = await check(page(groups));
+      expect(result.status, missing).toBe("failed");
+      expect(result.messages, missing).toContain(messages[missing]);
     }
   });
 
@@ -103,6 +110,8 @@ describe("servicesPage schema", () => {
       group("training"),
       group("recovery"),
     ];
-    expect((await check(page(groups))).status).toBe("failed");
+    const result = await check(page(groups));
+    expect(result.status).toBe("failed");
+    expect(result.messages).toContain("Không chọn cùng một liệu pháp nhiều lần.");
   });
 });
