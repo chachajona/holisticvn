@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto_Mono, Roboto_Serif, Roboto_Slab } from "next/font/google";
+import localFont from "next/font/local";
 import "@/app/globals.css";
 import { GoogleTagManager } from "@/components/gtm";
 import { HolisticFooter } from "@/components/holistic-footer";
@@ -7,23 +7,28 @@ import { SiteChrome } from "@/components/site-chrome";
 import { SiteDataProvider } from "@/components/site-data";
 import { getPublicSiteData } from "@/lib/sanity";
 
-const navDisplay = Roboto_Slab({
-  subsets: ["vietnamese", "latin"],
-  weight: ["200", "300", "400", "500"],
+const navDisplay = localFont({
+  src: "./fonts/RobotoSlab.woff2",
+  weight: "200 500",
+  style: "normal",
   variable: "--font-display",
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
-const navSerif = Roboto_Serif({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
-  style: ["italic", "normal"],
+const navSerif = localFont({
+  src: [
+    { path: "./fonts/RobotoSerif.woff2", weight: "300 500", style: "normal" },
+    { path: "./fonts/RobotoSerif-Italic.woff2", weight: "300 500", style: "italic" },
+  ],
   variable: "--font-accent",
   display: "swap",
+  adjustFontFallback: "Times New Roman",
   preload: false,
 });
-const navMono = Roboto_Mono({
-  subsets: ["vietnamese", "latin"],
-  weight: ["300", "400", "500"],
+const navMono = localFont({
+  src: "./fonts/RobotoMono.woff2",
+  weight: "300 500",
+  style: "normal",
   variable: "--font-mono",
   display: "swap",
   preload: false,
