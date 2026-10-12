@@ -13,6 +13,8 @@
 }
 html {
   scroll-behavior: smooth;
+  /* Sticky nav is 98px tall on desktop: keeps /treatments#mtd-* and /services#svc-* targets below it. */
+  scroll-padding-top: 7rem;
 }
 body {
   margin: 0;

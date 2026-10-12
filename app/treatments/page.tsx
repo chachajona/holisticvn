@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { methodAnchor } from "@/lib/content";
+import { getMethods } from "@/lib/sanity";
 import { createMetadata } from "@/lib/seo";
 import styles from "./treatments.module.css";
 
@@ -22,6 +23,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
 
+export const revalidate = 3600;
+
 export const metadata = createMetadata({
   title: "Phương pháp",
   description:
@@ -29,60 +32,8 @@ export const metadata = createMetadata({
   path: "/treatments",
 });
 
-const methods = [
-  {
-    id: methodAnchor.manual,
-    numeral: "01",
-    title: "Trị liệu thủ công",
-    indexSubtitle: "Đau khớp, đau cơ, lệch tư thế",
-    body: "Chuyên viên dùng tay để đánh giá và can thiệp trực tiếp lên khớp, cơ và mô mềm — giải phóng điểm co cứng, nắn chỉnh tư thế lệch, tăng biên độ vận động.",
-    tags: ["Đau vai gáy", "Đau lưng dưới", "Lệch chậu"],
-    image: "/images/Iastm.jpg",
-    imageLeft: true,
-  },
-  {
-    id: methodAnchor.electro,
-    numeral: "02",
-    title: "Điện trị liệu",
-    indexSubtitle: "Viêm, sưng, đau mạn tính",
-    body: "Dòng điện tần số thấp kích thích thần kinh và cơ, giảm viêm và giảm đau mà không cần can thiệp bằng tay — thường dùng trước khi vận động để giảm co cứng.",
-    tags: ["Viêm gân", "Đau mạn tính", "Co cứng cơ"],
-    image: "/images/ElectroPulse.jpg",
-    imageLeft: false,
-  },
-  {
-    id: methodAnchor.rehab,
-    numeral: "03",
-    title: "Tập luyện phục hồi",
-    indexSubtitle: "Yếu cơ, mất ổn định khớp",
-    body: "Bài tập có kiểm soát để lấy lại sức mạnh và sự ổn định ở vùng bị ảnh hưởng, tăng dần cường độ theo tiến độ hồi phục — nền tảng để tránh tái chấn thương.",
-    tags: ["Yếu cơ", "Mất ổn định khớp", "Hậu chấn thương"],
-    image: "/images/Coaching.jpg",
-    imageLeft: true,
-  },
-  {
-    id: methodAnchor.cold,
-    numeral: "04",
-    title: "Ngâm lạnh",
-    indexSubtitle: "Hồi phục sau vận động nặng",
-    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao, đồng thời cải thiện khả năng chịu đựng của hệ thần kinh.",
-    tags: ["Sưng cơ", "Sau thi đấu", "Mỏi cơ"],
-    image: "/images/ColdPlungeTub.jpg",
-    imageLeft: false,
-  },
-  {
-    id: methodAnchor.infrared,
-    numeral: "05",
-    title: "Đèn hồng ngoại",
-    indexSubtitle: "Giãn cơ, giảm căng thẳng",
-    body: "Đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể — thường kết hợp làm bước cuối của một buổi trị liệu.",
-    tags: ["Căng cơ", "Mệt mỏi", "Giãn mô"],
-    image: "/images/Infrared.jpg",
-    imageLeft: true,
-  },
-];
-
-export default function TreatmentsPage() {
+export default async function TreatmentsPage() {
+  const methods = await getMethods();
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero}>
@@ -116,44 +67,63 @@ export default function TreatmentsPage() {
           <i />
         </div>
         <div className={styles.indexGrid}>
-          {methods.map((method) => (
-            <a href={`#${method.id}`} key={method.id} className={styles.indexCard}>
-              <span className={styles.indexNumeral}>{method.numeral}</span>
+          {methods.map((method, i) => (
+            <a
+              href={`#${methodAnchor[method.group]}`}
+              key={method.group}
+              className={styles.indexCard}
+            >
+              <span className={styles.indexNumeral}>{String(i + 1).padStart(2, "0")}</span>
               <strong>{method.title}</strong>
-              <span>{method.indexSubtitle}</span>
+              {method.indexSubtitle ? <span>{method.indexSubtitle}</span> : null}
             </a>
           ))}
         </div>
       </nav>
 
       <div className={styles.timeline}>
-        {methods.map((method, i) => (
-          <div className={styles.method} id={method.id} key={method.id}>
-            <div className={styles.methodRail}>
-              <span className={styles.methodNumeral}>{method.numeral}</span>
-              {i < methods.length - 1 ? <div className={styles.methodLine} /> : null}
-            </div>
-            <div className={styles.methodBody}>
-              <div className={styles.methodCopy} style={{ order: method.imageLeft ? 2 : 1 }}>
-                <h2>{method.title}</h2>
-                <p>{method.body}</p>
-                <div className={styles.methodTags}>
-                  {method.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
+        {methods.map((method, i) => {
+          const imageLeft = i % 2 === 0;
+          return (
+            <div className={styles.method} id={methodAnchor[method.group]} key={method.group}>
+              <div className={styles.methodRail}>
+                <span className={styles.methodNumeral}>{String(i + 1).padStart(2, "0")}</span>
+                {i < methods.length - 1 ? <div className={styles.methodLine} /> : null}
+              </div>
+              <div className={styles.methodBody}>
+                <div className={styles.methodCopy} style={{ order: imageLeft ? 2 : 1 }}>
+                  <h2>{method.title}</h2>
+                  <p>{method.body}</p>
+                  {method.tags.length ? (
+                    <div className={styles.methodTags}>
+                      {method.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </div>
+                  ) : null}
+                  {method.treatments.length ? (
+                    <div className={styles.methodLinks}>
+                      <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
+                      {method.treatments.map((t) => (
+                        <Link key={t.slug} href={`/treatments/${t.slug}`}>
+                          {t.title} ↗
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+                <div className={styles.methodMedia} style={{ order: imageLeft ? 1 : 2 }}>
+                  <Image
+                    src={method.image}
+                    alt={method.imageAlt}
+                    fill
+                    sizes="(max-width: 980px) 100vw, 45vw"
+                  />
                 </div>
               </div>
-              <div className={styles.methodMedia} style={{ order: method.imageLeft ? 1 : 2 }}>
-                <Image
-                  src={method.image}
-                  alt={method.title}
-                  fill
-                  sizes="(max-width: 980px) 100vw, 45vw"
-                />
-              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <section className={styles.note}>
