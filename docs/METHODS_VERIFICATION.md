@@ -14,7 +14,8 @@ Plan: `docs/superpowers/plans/2026-10-12-methods-sanity.md`.
 - This CLI Preview overrides `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_DATASET`,
   `SANITY_STUDIO_DATASET` and the revalidation secret at build and runtime. Shared
   Preview defaults still point at production; branch overrides require a remote Git branch.
-- Production content, production deployment and webhook configuration were unchanged.
+- Production content and deployment were unchanged. After renewed login, staging
+  webhook configuration was updated; production's existing unfiltered hook was verified.
 - Credentials, protection cookies, raw results and screenshots stay in ignored
   `.context/` files. Secret values are excluded from evidence and commits.
 
@@ -29,18 +30,18 @@ Plan: `docs/superpowers/plans/2026-10-12-methods-sanity.md`.
 ## Staging setup
 
 - [x] Seed: `npx sanity documents create scripts/seed/methods-page.json --missing --project-id yjzexxml --dataset staging`; re-run printed `Skipped (already exists): methodsPage`.
-- [x] Approved clinic photos, alt and real references populated through the SDK with a revision guard. Studio editing remains pending.
-- [ ] Webhook filter includes `methodsPage` (staging and production); publish returns `/api/revalidate` 200.
+- [x] Approved clinic photos, alt and real references populated through the SDK with a revision guard; authenticated Studio editing and reference selection also verified.
+- [x] Staging filter includes `methodsPage`; production's unfiltered hook already includes it. Studio Publish triggered automatic staging `/api/revalidate` 200; production endpoint authentication returned 200.
 
 ## Checks
 
-- [x] SDK published a group edit and reference removal; deployed page updated after authenticated manual revalidation. All three detail links were clicked. Studio Publish remains pending.
+- [x] SDK/manual revalidation and authenticated Studio/automatic webhook both updated a group and reference. All three detail links were clicked; original content restored.
 - [x] All five anchors land below sticky nav at 320, 768 and 1440; screenshots inspected.
 - [x] Keyboard: Tab reaches index cards, treatment links and CTAs in order; focus is visible; fragment focus does not hide the heading.
 - [x] Missing image/group and removed reference tested on staging; missing singleton/invalid/unresolved references covered by automated parser/render tests.
 - [x] Unpublish and delete of a strongly referenced temporary treatment both rejected with 409 by the API; probes removed.
 - [x] Real Studio schema validated through the CLI: missing/duplicate groups and repeated references/tags fail; cross-group treatment reuse passes.
-- [ ] Authenticated Studio: verify actual Publish action and validation UI.
+- [x] Authenticated Studio: actual Publish, reference picker, Vietnamese validation errors and disabled Publish verified; test drafts removed.
 - [x] Local gate green: format, lint, typecheck, 175 tests, build and smoke. Hosted CI pending branch publication.
 
 ## Completed staging evidence
@@ -99,8 +100,8 @@ preserved. Six local NDJSON fixtures validated against the real Studio schema:
 - Repeated reference: `Không chọn cùng một liệu pháp nhiều lần.`
 - Repeated/empty tags: `Không lặp nhãn.` and `Mỗi nhãn dài 1 đến 40 ký tự.`
 
-Fixtures were not published. Actual editor interaction and Publish-button behavior
-remain pending.
+CLI fixtures were not published. Actual editor interaction and Publish-button behavior
+were subsequently verified after renewed login, as recorded below.
 
 ### Browser and keyboard
 
@@ -141,14 +142,73 @@ seven routes, 25 local image URLs and invalid lead input rejected. No dependency
 quality-threshold changes. Generated BMad snapshots are excluded from formatting;
 private Vercel metadata is ignored by Git.
 
-## Pending external acceptance
+## Authenticated Studio and webhook follow-up
 
-Automatic webhook delivery, authenticated Studio interaction and the three owner
-confirmations above remain pending. Manual revalidation is not automatic webhook evidence.
+The owner renewed Sanity CLI login on 2026-10-12. Dataset listing and authenticated
+Webhook API access succeeded. Added the exact Preview origin as a credential-enabled
+CORS origin so its embedded Studio can connect. The Chrome-extension browser provider
+was unavailable; the isolated Playwright browser used the renewed CLI user token for
+Studio authentication. Credentials stayed out of tool output and screenshots.
 
-Sanity CLI reports an expired session. The configured content token can seed, query
-and validate staging, but the Webhooks API returned **401** for that token. Run
-`npx sanity login` to continue management/Studio acceptance. Neither webhook was edited.
+PR #40 was already merged, so reused its staging webhook rather than adding another
+webhook slot. Hook `73iQNVV10WENgFmC`, renamed `Methods/services staging revalidation`,
+now targets this tested Preview's `/api/revalidate` and remains **staging only**:
+
+```text
+_type in ["servicesPage", "methodsPage", "treatment", "sanity.imageAsset"]
+```
+
+Preserved Create/Update/Delete triggers, `{_id, _type}` projection, private authentication
+headers and exclusion of draft/version changes. This hook no longer targets the retired
+#8 Preview. The existing production hook `Syff8uI7XZEcKd5Q` has no filter, so it already
+matches `methodsPage`; its configuration was preserved exactly. A request using its
+configured authentication returned **200** from the production endpoint. No production
+content was published or seeded.
+
+In Studio, changed the manual title and removed its cupping reference, then clicked
+**Publish**. Without a manual revalidation request or deployment, the staging webhook
+returned **200** and the public page showed the changed title and omitted the link.
+Then restored the title, selected Giác hơi through Studio's reference picker, restored
+the original internal reference key in the draft, and clicked **Publish** again.
+The second automatic delivery returned **200** and the original title/link returned.
+
+| Studio publish (UTC) | Webhook attempt (UTC) | HTTP | Attempt ID                        |
+| -------------------- | --------------------- | ---- | --------------------------------- |
+| 06:37:42             | 06:37:43.658          | 200  | `atm-3KaE1e748ROUYvJ4sAFo5vh4ASD` |
+| 06:40:14             | 06:40:15.425          | 200  | `atm-3KaEKbmbpKCB0XXgTBXBCAMm2ii` |
+
+An isolated methods probe also produced three successful **200** webhook messages
+for Create, Update and Delete at `06:43:26.002Z`, `06:43:27.381Z` and
+`06:43:28.377Z`; the delete payload retained `_type: methodsPage`. Probe removed.
+Production automatic delivery for a `methodsPage` publish was not tested because its
+production singleton has not been seeded.
+
+An unpublished validation draft showed eight errors in Studio: duplicate manual,
+missing electro/infrared, repeated/empty tags and duplicate treatment references.
+The validation panel used the expected Vietnamese messages and **Publish was disabled**.
+Removed the fixture with a revision guard; it was never published.
+
+Ran the actual `getMethods()` GROQ projection in authenticated Vision with dataset
+`staging`, API `v2025-01-01` and perspective `published`. It returned all five groups,
+staging assets and the three real treatment links.
+
+Final check: groups exactly match the baseline, including reference keys; no draft or
+probe remains. Restored revision: `dJcZuCdFvtR9fvJhrIw5Wc`. Studio emitted project-plan
+release capability probes returning 403 (`active release count exceeds the limit of 0`);
+catalogue editing, validation, publishing and Vision requests succeeded.
+
+Screenshots inspected:
+
+- `.context/methods-studio-before-publish.png`
+- `.context/methods-studio-automatic-refresh.png`
+- `.context/methods-studio-restored-public.png`
+- `.context/methods-studio-validation.png`
+- `.context/methods-studio-vision.png`
+
+## Remaining acceptance
+
+Only the three owner content confirmations above remain for #9 acceptance. Hosted CI
+and production content rollout are deferred while the user keeps the branch local.
 
 Webhook operations are documented in the
 [Sanity Webhooks API reference](https://www.sanity.io/docs/http-reference/webhooks).
