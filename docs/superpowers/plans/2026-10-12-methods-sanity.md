@@ -38,12 +38,14 @@
 ### Task 1: Shared constants, bundled fallback data, group validator
 
 **Files:**
+
 - Modify: `lib/content.ts` (near `serviceGroups` at ~line 20; near the `Service` type; before `export const treatments`)
 - Modify: `sanity/serviceGroups.ts`
 - Create: `tests/method-groups.test.ts`
 - Create: `tests/method-groups-validation.test.ts`
 
 **Interfaces:**
+
 - Produces (`lib/content.ts`): `methodGroups` (`readonly ["manual","electro","rehab","cold","infrared"]`), `type MethodGroup`, `type Method = { group: MethodGroup; title: string; indexSubtitle: string; body: string; tags: string[]; image: string; imageAlt: string; treatments: Array<{ slug: string; title: string }> }`, `methodFallbackImage: Record<MethodGroup, string>`, `methods: Method[]` (canonical order, bundled copy).
 - Produces (`sanity/serviceGroups.ts`): `validateGroupSet(allowed: readonly string[]) => (items) => true | Failure[]`, `validateServiceGroups`, `validateMethodGroups`.
 
@@ -94,7 +96,9 @@ describe("method groups", () => {
   });
 
   it("maps the owner's price list: only treatments with a document are linked", () => {
-    const linked = Object.fromEntries(methods.map((m) => [m.group, m.treatments.map((t) => t.slug)]));
+    const linked = Object.fromEntries(
+      methods.map((m) => [m.group, m.treatments.map((t) => t.slug)]),
+    );
     expect(linked).toEqual({
       manual: ["dry-needling", "cupping", "iastm"],
       electro: [],
@@ -315,12 +319,14 @@ Refs #9"
 ### Task 2: Sanity schema and Studio wiring
 
 **Files:**
+
 - Modify: `sanity/schemaTypes/index.ts` (imports; new `methodGroup` and `methodsPage` types before `const treatment`; `schemaTypes` array)
 - Modify: `sanity.config.ts`
 - Modify: `tests/studio-config.test.ts`
 - Create: `tests/methods-schema.test.ts`
 
 **Interfaces:**
+
 - Consumes: `methodGroups`, `MethodGroup` (Task 1), `validateMethodGroups` (Task 1).
 - Produces: Sanity types `methodGroup` (object) and `methodsPage` (document, `_id` `methodsPage`) with fields `group, title, indexSubtitle, body, tags, image{alt}, treatments[]` per group.
 
@@ -500,6 +506,7 @@ In `sanity/schemaTypes/index.ts` replace the two imports
 ```ts
 import { serviceGroups, type ServiceGroup } from "@/lib/content";
 ```
+
 ```ts
 import { validateServiceGroups } from "@/sanity/serviceGroups";
 ```
@@ -509,6 +516,7 @@ with
 ```ts
 import { methodGroups, serviceGroups, type MethodGroup, type ServiceGroup } from "@/lib/content";
 ```
+
 ```ts
 import { validateMethodGroups, validateServiceGroups } from "@/sanity/serviceGroups";
 ```
@@ -688,10 +696,12 @@ Refs #9"
 ### Task 3: `getMethods()` data layer
 
 **Files:**
+
 - Modify: `lib/sanity.ts`
 - Create: `tests/methods-sanity.test.ts`
 
 **Interfaces:**
+
 - Consumes: `methodGroups`, `methodFallbackImage`, `methods`, `type Method` (Task 1).
 - Produces: `getMethods(): Promise<Method[]>`: always five groups in `methodGroups` order. Unconfigured Sanity returns `methods` unchanged. Configured Sanity returns CMS groups; any missing/invalid group is the bundled one with `treatments: []`.
 
@@ -805,7 +815,9 @@ describe("methods from Sanity", () => {
   });
 
   it("trims, drops empty and dedupes tags", async () => {
-    fetch.mockResolvedValue([method("manual", { tags: ["  Đau vai ", "Đau vai", "", "Lệch chậu"] })]);
+    fetch.mockResolvedValue([
+      method("manual", { tags: ["  Đau vai ", "Đau vai", "", "Lệch chậu"] }),
+    ]);
     const manual = (await getMethods()).find((m) => m.group === "manual")!;
     expect(manual.tags).toEqual(["Đau vai", "Lệch chậu"]);
   });
@@ -920,6 +932,7 @@ Refs #9"
 ### Task 4: `/treatments` page, treatment links, anchor offset
 
 **Files:**
+
 - Modify: `app/treatments/page.tsx`
 - Modify: `app/treatments/treatments.module.css`
 - Modify: `app/globals.css:14-16`
@@ -928,6 +941,7 @@ Refs #9"
 - Create: `tests/methods-fallback.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `getMethods(): Promise<Method[]>` (Task 3), `methodAnchor` (existing).
 - Produces: async `TreatmentsPage`; section `id` = `methodAnchor[method.group]`; links `href="/treatments/<slug>"` inside `.methodLinks`.
 
@@ -1060,8 +1074,20 @@ import { footerMethods, footerServices, methodAnchor, serviceAnchor } from "@/li
 // links are built from them and that each page still uses them as its section ids.
 describe("footer links", () => {
   it.each([
-    ["app/services/page.tsx", "serviceAnchor[service.group]", "/services", serviceAnchor, footerServices],
-    ["app/treatments/page.tsx", "methodAnchor[method.group]", "/treatments", methodAnchor, footerMethods],
+    [
+      "app/services/page.tsx",
+      "serviceAnchor[service.group]",
+      "/services",
+      serviceAnchor,
+      footerServices,
+    ],
+    [
+      "app/treatments/page.tsx",
+      "methodAnchor[method.group]",
+      "/treatments",
+      methodAnchor,
+      footerMethods,
+    ],
   ] as const)("%s sections match the footer links", (file, usage, path, anchors, links) => {
     const hrefs = links.map(([, href]) => href);
     for (const id of Object.values(anchors)) expect(hrefs, id).toContain(`${path}#${id}`);
@@ -1094,7 +1120,6 @@ import { getMethods } from "@/lib/sanity";
 
 ```tsx
 export const revalidate = 3600;
-
 ```
 
 3. Delete the entire hardcoded `const methods = [ ... ];` array (it now lives in `lib/content.ts`).
@@ -1112,64 +1137,64 @@ and remove the original `return (` line that followed it (so there is a single `
 5. Replace the index card map:
 
 ```tsx
-          {methods.map((method, i) => (
-            <a
-              href={`#${methodAnchor[method.group]}`}
-              key={method.group}
-              className={styles.indexCard}
-            >
-              <span className={styles.indexNumeral}>{String(i + 1).padStart(2, "0")}</span>
-              <strong>{method.title}</strong>
-              {method.indexSubtitle ? <span>{method.indexSubtitle}</span> : null}
-            </a>
-          ))}
+{
+  methods.map((method, i) => (
+    <a href={`#${methodAnchor[method.group]}`} key={method.group} className={styles.indexCard}>
+      <span className={styles.indexNumeral}>{String(i + 1).padStart(2, "0")}</span>
+      <strong>{method.title}</strong>
+      {method.indexSubtitle ? <span>{method.indexSubtitle}</span> : null}
+    </a>
+  ));
+}
 ```
 
 6. Replace the whole timeline map (`{methods.map((method, i) => ( <div className={styles.method} ...` through its closing `))}`) with:
 
 ```tsx
-        {methods.map((method, i) => {
-          const imageLeft = i % 2 === 0;
-          return (
-            <div className={styles.method} id={methodAnchor[method.group]} key={method.group}>
-              <div className={styles.methodRail}>
-                <span className={styles.methodNumeral}>{String(i + 1).padStart(2, "0")}</span>
-                {i < methods.length - 1 ? <div className={styles.methodLine} /> : null}
+{
+  methods.map((method, i) => {
+    const imageLeft = i % 2 === 0;
+    return (
+      <div className={styles.method} id={methodAnchor[method.group]} key={method.group}>
+        <div className={styles.methodRail}>
+          <span className={styles.methodNumeral}>{String(i + 1).padStart(2, "0")}</span>
+          {i < methods.length - 1 ? <div className={styles.methodLine} /> : null}
+        </div>
+        <div className={styles.methodBody}>
+          <div className={styles.methodCopy} style={{ order: imageLeft ? 2 : 1 }}>
+            <h2>{method.title}</h2>
+            <p>{method.body}</p>
+            {method.tags.length ? (
+              <div className={styles.methodTags}>
+                {method.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
               </div>
-              <div className={styles.methodBody}>
-                <div className={styles.methodCopy} style={{ order: imageLeft ? 2 : 1 }}>
-                  <h2>{method.title}</h2>
-                  <p>{method.body}</p>
-                  {method.tags.length ? (
-                    <div className={styles.methodTags}>
-                      {method.tags.map((tag) => (
-                        <span key={tag}>{tag}</span>
-                      ))}
-                    </div>
-                  ) : null}
-                  {method.treatments.length ? (
-                    <div className={styles.methodLinks}>
-                      <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
-                      {method.treatments.map((t) => (
-                        <Link key={t.slug} href={`/treatments/${t.slug}`}>
-                          {t.title} ↗
-                        </Link>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-                <div className={styles.methodMedia} style={{ order: imageLeft ? 1 : 2 }}>
-                  <Image
-                    src={method.image}
-                    alt={method.imageAlt}
-                    fill
-                    sizes="(max-width: 980px) 100vw, 45vw"
-                  />
-                </div>
+            ) : null}
+            {method.treatments.length ? (
+              <div className={styles.methodLinks}>
+                <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
+                {method.treatments.map((t) => (
+                  <Link key={t.slug} href={`/treatments/${t.slug}`}>
+                    {t.title} ↗
+                  </Link>
+                ))}
               </div>
-            </div>
-          );
-        })}
+            ) : null}
+          </div>
+          <div className={styles.methodMedia} style={{ order: imageLeft ? 1 : 2 }}>
+            <Image
+              src={method.image}
+              alt={method.imageAlt}
+              fill
+              sizes="(max-width: 980px) 100vw, 45vw"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  });
+}
 ```
 
 The `<nav ... styles.index>` wrapper, hero, `note` and `cta` sections stay unchanged (they already stress practitioner assessment and combining 2–3 methods).
@@ -1253,11 +1278,13 @@ Refs #9"
 ### Task 5: Seed, verification record, full gate
 
 **Files:**
+
 - Create: `scripts/seed/methods-page.json`
 - Create: `tests/methods-seed.test.ts`
 - Create: `docs/METHODS_VERIFICATION.md`
 
 **Interfaces:**
+
 - Consumes: `methods`, `methodGroups` (Task 1), `validateMethodGroups` (Task 1).
 - Produces: published-singleton seed payload for `npx sanity documents create scripts/seed/methods-page.json --missing`.
 
