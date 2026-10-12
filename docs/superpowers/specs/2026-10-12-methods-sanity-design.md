@@ -1,6 +1,6 @@
 # Nhóm phương pháp trong Sanity — thiết kế (#9)
 
-Trạng thái: **đã duyệt thiết kế trong chat (2026-10-12); owner xác nhận 5 nhóm và gửi bảng giá để ánh xạ (mục 10)**. Chưa có code nào được viết theo spec này.
+Trạng thái: **đã duyệt thiết kế trong chat (2026-10-12); owner xác nhận 5 nhóm và gửi bảng giá để ánh xạ (mục 10)**. Code đã triển khai; kết quả kiểm chứng local và staging, cùng các mục còn chờ, nằm trong `docs/METHODS_VERIFICATION.md`.
 Liên quan: #1 (tracking), #8 (mẫu `servicesPage`), #6 (blocker, đã xong). Căn cứ kỹ thuật: `docs/methods-schema-research.md`, `docs/services-schema-research.md`.
 
 ## 1. Bối cảnh và mục tiêu
