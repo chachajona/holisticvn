@@ -23,8 +23,8 @@ Plan: `docs/superpowers/plans/2026-10-12-methods-sanity.md`.
 
 - [x] Five groups are official (owner, 2026-10-12). Updated issue #9 from four to five.
 - [x] Price-list mapping to groups: spec section 10.
-- [ ] Owner confirms the placement of tapping, dry needling, IASTM (manual) and electroacupuncture (electro).
-- [ ] Owner approves the position and label of the "Liệu pháp liên quan" block.
+- [x] Owner approved tapping, dry needling and IASTM in manual, electroacupuncture in electro (2026-10-12).
+- [x] Owner approved the position and label of the "Liệu pháp liên quan" block (2026-10-12).
 - [ ] Owner confirms `tags` and `body` copy is approved.
 
 ## Staging setup
@@ -207,7 +207,7 @@ Screenshots inspected:
 
 ## Remaining acceptance
 
-Only the three owner content confirmations above remain for #9 acceptance. Hosted CI
+Only owner approval of the five groups' `body` and `tags` remains for #9 acceptance. Hosted CI
 and production content rollout are deferred while the user keeps the branch local.
 
 Webhook operations are documented in the

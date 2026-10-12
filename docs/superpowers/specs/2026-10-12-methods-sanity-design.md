@@ -51,7 +51,7 @@ Ngoài phạm vi: thêm phương pháp thứ sáu, tạo document `treatment` m�
 - Server component, `export const revalidate = 3600`.
 - Index và section lấy `id` từ `methodAnchor[group]`; `numeral` `01`–`05` theo vị trí; `imageLeft = index % 2 === 0` (khớp bản hiện tại, khác `/services`).
 - Ảnh qua `next/image`.
-- **Khối "Liệu pháp liên quan" (mới):** dưới mỗi nhóm có liệu pháp, danh sách link `/treatments/<slug>`. Nhóm không có liệu pháp thì không hiện khối. Vị trí và nhãn cần owner duyệt (bản comp hiện tại không có chỗ này).
+- **Khối "Liệu pháp liên quan" (mới):** dưới mỗi nhóm có liệu pháp, danh sách link `/treatments/<slug>`. Nhóm không có liệu pháp thì không hiện khối. Vị trí và nhãn đã được owner duyệt ngày 2026-10-12.
 - CTA: giữ hai khối `note` và `cta` hiện có (nhấn mạnh chuyên viên đánh giá và phối hợp 2–3 phương pháp); đổi copy chỉ khi owner yêu cầu.
 - Anchor: thêm `html { scroll-padding-top: 7rem }` vào `app/globals.css` (tài liệu Next.js khuyên cách này). Sửa luôn anchor của `/services`. Giá trị 7rem tính từ CSS, chốt bằng ảnh chụp ở 320/768/1440.
 
@@ -85,7 +85,7 @@ Vitest, mỗi file sao từ file tương ứng của #8:
 
 1. ~~Xác nhận năm nhóm~~ — đã xác nhận 2026-10-12. Còn lại: sửa mô tả #9 từ "bốn nhóm" thành năm nhóm.
 2. ~~Duyệt ánh xạ liệu pháp theo nhóm~~ — đã gửi bảng giá, ánh xạ ở mục 10. Còn lại: tạo document `treatment` cho các dịch vụ chưa có trang (follow-up, ngoài #9).
-3. Duyệt vị trí và nhãn khối "Liệu pháp liên quan".
+3. ~~Duyệt vị trí và nhãn khối "Liệu pháp liên quan"~~ — đã duyệt 2026-10-12.
 4. Xác nhận `tags` và `body` hiện có là nội dung đã duyệt.
 5. Ai thêm `methodsPage` vào filter webhook staging và production.
 
@@ -102,6 +102,6 @@ Căn cứ: ảnh bảng giá phòng khám (VN và EN). Chỉ dùng để xác đ
 | `infrared`   | Đèn hồng ngoại                                                                                     | `heat-light`                                                      |
 | (không nhóm) | Tư vấn, đánh giá tình trạng sức khoẻ vận động (199k)                                               | trả lời bằng CTA đặt buổi đánh giá                                |
 
-- Bốn dịch vụ ở `manual` không phải thao tác thuần tay (tapping, châm khô, IASTM dùng dụng cụ). Chúng ở đây vì mô tả của nhóm là "chuyên viên can thiệp trực tiếp lên khớp, cơ và mô mềm". Điện châm ở `electro` vì dùng dòng điện. Đây là phán đoán cần owner xác nhận.
+- Tapping, châm khô và IASTM ở `manual` dù dùng dụng cụ, theo cách phân nhóm "chuyên viên can thiệp trực tiếp lên khớp, cơ và mô mềm". Điện châm ở `electro` vì dùng dòng điện. Owner đã duyệt cách phân nhóm này ngày 2026-10-12.
 - Dịch vụ chưa có `treatment` (massage, nắn chỉnh, tapping, xung kích, điện xung, siêu âm, điện châm, hai chương trình tập) không có link chi tiết cho tới khi owner tạo document. Tạo document nằm ngoài phạm vi #9.
 - Liên kết trong seed fallback: `manual` → `dry-needling`, `cupping`, `iastm`; `cold` → `cold-plunge`; `infrared` → `heat-light`; `electro`, `rehab` → không có.
