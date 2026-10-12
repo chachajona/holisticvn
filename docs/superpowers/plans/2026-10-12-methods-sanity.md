@@ -726,7 +726,9 @@ const method = (group: string, extra = {}) => ({
 const bundled = (group: string) => methods.find((m) => m.group === group)!;
 
 describe("methods from Sanity", () => {
-  beforeEach(() => fetch.mockReset());
+  beforeEach(() => {
+    fetch.mockReset();
+  });
 
   it("reads the methodsPage singleton groups without a client-side order()", async () => {
     fetch.mockResolvedValue([]);
@@ -960,7 +962,9 @@ const method = (group: string, extra = {}) => ({
 });
 
 describe("/treatments from Sanity", () => {
-  beforeEach(() => fetch.mockReset());
+  beforeEach(() => {
+    fetch.mockReset();
+  });
 
   it("renders CMS content, derived numerals and anchors, and treatment links", async () => {
     fetch.mockResolvedValue([

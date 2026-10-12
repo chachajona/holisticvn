@@ -2,6 +2,9 @@ import { createClient } from "@sanity/client";
 import { cache } from "react";
 import { z } from "zod";
 import {
+  methodFallbackImage,
+  methodGroups,
+  methods as fallbackMethods,
   posts as fallbackPosts,
   serviceFallbackImage,
   serviceGroups,
@@ -10,6 +13,7 @@ import {
   treatments as fallbackTreatments,
   site as fallbackSite,
   branches as fallbackBranches,
+  type Method,
   type Post,
   type Service,
   type Testimonial,
@@ -30,6 +34,11 @@ const text = z.string().catch("");
 const strings = z.array(z.string()).catch([]);
 const record = { slug: z.string().min(1), title: z.string().min(1) };
 const cdnImage = z.string().regex(/^https:\/\/cdn\.sanity\.io\//);
+// A deleted or unpublished reference resolves to null; drop it so no link points nowhere.
+const treatmentLinks = z
+  .array(z.object(record).nullable().catch(null))
+  .catch([])
+  .transform((items) => items.filter((item) => item !== null));
 const serviceSchema = z
   .object({
     title: z.string().min(1),
@@ -40,17 +49,29 @@ const serviceSchema = z
     bullets: strings,
     image: cdnImage.optional().catch(undefined),
     imageAlt: text,
-    // A deleted or unpublished reference resolves to null; drop it so no link points nowhere.
-    treatments: z
-      .array(z.object(record).nullable().catch(null))
-      .catch([])
-      .transform((items) => items.filter((item) => item !== null)),
+    treatments: treatmentLinks,
   })
   .transform((service) => ({
     ...service,
     shortTitle: service.shortTitle || service.title,
     image: service.image ?? serviceFallbackImage[service.group],
     imageAlt: service.imageAlt || service.title,
+  }));
+const methodSchema = z
+  .object({
+    group: z.enum(methodGroups),
+    title: z.string().min(1),
+    indexSubtitle: text,
+    body: z.string().min(1),
+    tags: strings.transform((tags) => [...new Set(tags.map((t) => t.trim()).filter(Boolean))]),
+    image: cdnImage.optional().catch(undefined),
+    imageAlt: text,
+    treatments: treatmentLinks,
+  })
+  .transform((method) => ({
+    ...method,
+    image: method.image ?? methodFallbackImage[method.group],
+    imageAlt: method.imageAlt || method.title,
   }));
 const treatmentSchema = z.object({
   ...record,
@@ -104,6 +125,22 @@ export const getServices = cache(async (): Promise<Service[]> => {
   );
   // One section per group: anchors and booking context are keyed by group.
   return services.filter((s, i) => services.findIndex((o) => o.group === s.group) === i);
+});
+export const getMethods = cache(async (): Promise<Method[]> => {
+  if (!enabled) return fallbackMethods;
+  const cms = await fetchRecords(
+    `*[_id == "methodsPage"][0].groups[defined(group)]{group,title,indexSubtitle,body,tags,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
+    methodSchema,
+  );
+  // Five fixed groups in canonical order: a missing or invalid group takes the bundled copy so footer
+  // anchors never dangle. Bundled treatment links are dropped: some slugs have no CMS document.
+  return methodGroups.map(
+    (group) =>
+      cms.find((method) => method.group === group) ?? {
+        ...fallbackMethods.find((method) => method.group === group)!,
+        treatments: [],
+      },
+  );
 });
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
