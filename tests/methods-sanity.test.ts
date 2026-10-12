@@ -136,4 +136,18 @@ describe("methods from Sanity", () => {
     fetch.mockRejectedValue(new Error("down"));
     await expect(getMethods()).rejects.toThrow("down");
   });
+
+  it("keeps valid filter IDs when an API write includes unknown IDs", async () => {
+    fetch.mockResolvedValue([
+      method("manual", { filterTags: ["strength", "unknown", "strength", "neck-pain"] }),
+    ]);
+    expect((await getMethods())[0].filterTags).toEqual(["strength", "neck-pain"]);
+  });
+
+  it("derives exact approved legacy labels only when filterTags is absent", async () => {
+    fetch.mockResolvedValue([method("manual", { tags: ["Tăng sức mạnh", "Lệch chậu"] })]);
+    expect((await getMethods())[0].filterTags).toEqual(["strength"]);
+    fetch.mockResolvedValue([method("manual", { tags: ["Tăng sức mạnh"], filterTags: [] })]);
+    expect((await getMethods())[0].filterTags).toEqual([]);
+  });
 });

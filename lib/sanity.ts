@@ -1,6 +1,7 @@
 import { createClient } from "@sanity/client";
 import { cache } from "react";
 import { z } from "zod";
+import { normalizeMethodTags } from "@/lib/method-tags";
 import {
   methodFallbackImage,
   methodGroups,
@@ -64,12 +65,14 @@ const methodSchema = z
     indexSubtitle: text,
     body: z.string().min(1),
     tags: strings.transform((tags) => [...new Set(tags.map((t) => t.trim()).filter(Boolean))]),
+    filterTags: z.array(z.string().catch("")).nullish().catch([]),
     image: cdnImage.optional().catch(undefined),
     imageAlt: text,
     treatments: treatmentLinks,
   })
   .transform((method) => ({
     ...method,
+    filterTags: normalizeMethodTags(method.filterTags ?? method.tags),
     image: method.image ?? methodFallbackImage[method.group],
     imageAlt: method.image
       ? method.imageAlt || method.title
@@ -134,7 +137,7 @@ export const getServices = cache(async (): Promise<Service[]> => {
 export const getMethods = cache(async (): Promise<Method[]> => {
   if (!enabled) return fallbackMethods;
   const cms = await fetchRecords(
-    `*[_id == "methodsPage"][0].groups[defined(group)]{group,title,indexSubtitle,body,tags,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
+    `*[_id == "methodsPage"][0].groups[defined(group)]{group,title,indexSubtitle,body,tags,filterTags,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
     methodSchema,
   );
   // Five fixed groups in canonical order: a missing or invalid group takes the bundled copy so footer

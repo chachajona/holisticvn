@@ -133,7 +133,7 @@ describe("/treatments from Sanity", () => {
   it("keeps assessment-focused CTAs to booking and contact", async () => {
     fetch.mockResolvedValue(null);
     const html = renderToStaticMarkup(await TreatmentsPage());
-    expect(html).toContain("Đặt buổi đánh giá");
+    expect(html).toContain("Đặt lịch đánh giá ban đầu");
     expect(html).toContain('href="/booking"');
     expect(html).toContain('href="/contact"');
   });

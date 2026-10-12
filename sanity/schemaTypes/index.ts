@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { methodGroups, serviceGroups, type MethodGroup, type ServiceGroup } from "@/lib/content";
+import { methodTags } from "@/lib/method-tags";
 import { leadSchema } from "@/lib/validation";
 import { validateMethodGroups, validateServiceGroups } from "@/sanity/serviceGroups";
 
@@ -204,8 +205,8 @@ const servicesPage = defineType({
 });
 const methodGroupTitles: Record<MethodGroup, string> = {
   manual: "Trị liệu thủ công",
-  electro: "Điện trị liệu",
-  rehab: "Tập luyện phục hồi",
+  electro: "Trị liệu bằng thiết bị",
+  rehab: "Tập luyện phục hồi & tăng cường",
   cold: "Ngâm lạnh",
   infrared: "Đèn hồng ngoại",
 };
@@ -247,7 +248,10 @@ const methodGroup = defineType({
     }),
     defineField({
       name: "tags",
-      title: "Nhãn tình trạng",
+      title: "Nhãn tương thích giao diện cũ",
+      description:
+        "Nhãn tại lần chuyển sang bộ lọc, dành cho bản website cũ. Website hiện tại dùng Nhãn bộ lọc bên dưới; chỉnh bộ lọc không thay đổi trường lịch sử này.",
+      readOnly: true,
       type: "array",
       of: [defineArrayMember({ type: "string" })],
       options: { layout: "tags" },
@@ -258,6 +262,24 @@ const methodGroup = defineType({
           (tags ?? []).every((t) => typeof t === "string" && t.trim() && t.trim().length <= 40)
             ? true
             : "Mỗi nhãn dài 1 đến 40 ký tự.",
+        ),
+      ],
+    }),
+    defineField({
+      name: "filterTags",
+      title: "Nhãn bộ lọc",
+      description:
+        "Chọn tình trạng hoặc mục tiêu liên quan đến nội dung nhóm. Không phải chỉ định điều trị. Nhãn chưa gắn vào nhóm nào sẽ chưa xuất hiện trong bộ lọc website.",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      options: { list: methodTags.map((tag) => ({ value: tag.id, title: tag.label })) },
+      validation: (rule) => [
+        rule.unique().error("Không lặp nhãn bộ lọc."),
+        rule.max(methodTags.length).error(`Tối đa ${methodTags.length} nhãn bộ lọc.`),
+        rule.custom(
+          (values) =>
+            (values ?? []).every((value) => methodTags.some((tag) => tag.id === value)) ||
+            "Chọn nhãn từ danh mục bộ lọc.",
         ),
       ],
     }),

@@ -105,3 +105,7 @@ Căn cứ: ảnh bảng giá phòng khám (VN và EN). Chỉ dùng để xác đ
 - Tapping, châm khô và IASTM ở `manual` dù dùng dụng cụ, theo cách phân nhóm "chuyên viên can thiệp trực tiếp lên khớp, cơ và mô mềm". Điện châm ở `electro` vì dùng dòng điện. Owner đã duyệt cách phân nhóm này ngày 2026-10-12.
 - Dịch vụ chưa có `treatment` (massage, nắn chỉnh, tapping, xung kích, điện xung, siêu âm, điện châm, hai chương trình tập) không có link chi tiết cho tới khi owner tạo document. Tạo document nằm ngoài phạm vi #9.
 - Liên kết trong seed fallback: `manual` → `dry-needling`, `cupping`, `iastm`; `cold` → `cold-plunge`; `infrared` → `heat-light`; `electro`, `rehab` → không có.
+
+## 2026-10-12 — approved wording and visitor filters
+
+Owner approved the revised content and requested CMS/website updates. Applied the proposal in `docs/methods-wording-proposal.md`; additive `filterTags` stores controlled IDs while legacy display `tags` remain compatible. See `docs/METHODS_FILTERS_VERIFICATION.md` for mapping, rollout and evidence. Production rollout and branch publication remain deferred by the local-branch preference.

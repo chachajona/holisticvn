@@ -1,3 +1,5 @@
+import type { MethodTagId } from "@/lib/method-tags";
+
 export type ProtocolStep = {
   step: number;
   title: string;
@@ -41,6 +43,7 @@ export type Method = {
   indexSubtitle: string;
   body: string;
   tags: string[];
+  filterTags: MethodTagId[];
   image: string;
   imageAlt: string;
   treatments: Array<{ slug: string; title: string }>;
@@ -105,8 +108,8 @@ export const footerServices: Array<[string, string]> = [
 ];
 export const footerMethods: Array<[string, string]> = [
   ["Trị liệu thủ công", `/treatments#${methodAnchor.manual}`],
-  ["Điện trị liệu", `/treatments#${methodAnchor.electro}`],
-  ["Tập luyện phục hồi", `/treatments#${methodAnchor.rehab}`],
+  ["Trị liệu bằng thiết bị", `/treatments#${methodAnchor.electro}`],
+  ["Tập luyện phục hồi & tăng cường", `/treatments#${methodAnchor.rehab}`],
   ["Ngâm lạnh", `/treatments#${methodAnchor.cold}`],
   ["Đèn hồng ngoại", `/treatments#${methodAnchor.infrared}`],
 ];
@@ -195,9 +198,10 @@ export const methods: Method[] = [
   {
     group: "manual",
     title: "Trị liệu thủ công",
-    indexSubtitle: "Đau khớp, đau cơ, lệch tư thế",
-    body: "Chuyên viên dùng tay để đánh giá và can thiệp trực tiếp lên khớp, cơ và mô mềm — giải phóng điểm co cứng, nắn chỉnh tư thế lệch, tăng biên độ vận động.",
-    tags: ["Đau vai gáy", "Đau lưng dưới", "Lệch chậu"],
+    indexSubtitle: "Massage, khớp và mô mềm",
+    body: "Chuyên viên kết hợp massage, vận động khớp và các kỹ thuật tác động lên mô mềm để hỗ trợ giảm đau mỏi, giảm căng cứng và giúp bạn cử động dễ hơn. Kỹ thuật phù hợp tùy theo tình trạng vận động của bạn.",
+    tags: ["Đau mỏi cổ vai gáy", "Đau lưng", "Căng cứng cơ", "Khó cử động", "Giảm đau mỏi"],
+    filterTags: ["neck-pain", "back-pain", "muscle-stiffness", "limited-movement", "pain-relief"],
     image: methodFallbackImage.manual,
     imageAlt: "Trị liệu thủ công",
     treatments: [
@@ -208,30 +212,39 @@ export const methods: Method[] = [
   },
   {
     group: "electro",
-    title: "Điện trị liệu",
-    indexSubtitle: "Viêm, sưng, đau mạn tính",
-    body: "Dòng điện tần số thấp kích thích thần kinh và cơ, giảm viêm và giảm đau mà không cần can thiệp bằng tay — thường dùng trước khi vận động để giảm co cứng.",
-    tags: ["Viêm gân", "Đau mạn tính", "Co cứng cơ"],
+    title: "Trị liệu bằng thiết bị",
+    indexSubtitle: "Điện xung, siêu âm và xung kích",
+    body: "Holistic kết hợp điện xung, siêu âm hoặc xung kích với trị liệu và bài tập khi phù hợp. Mỗi kỹ thuật có cách tác động riêng, hướng đến giảm đau và giúp bạn vận động dễ dàng hơn.",
+    tags: ["Căng cứng cơ", "Giảm đau mỏi"],
+    filterTags: ["muscle-stiffness", "pain-relief"],
     image: methodFallbackImage.electro,
-    imageAlt: "Điện trị liệu",
+    imageAlt: "Trị liệu bằng thiết bị",
     treatments: [],
   },
   {
     group: "rehab",
-    title: "Tập luyện phục hồi",
-    indexSubtitle: "Yếu cơ, mất ổn định khớp",
-    body: "Bài tập có kiểm soát để lấy lại sức mạnh và sự ổn định ở vùng bị ảnh hưởng, tăng dần cường độ theo tiến độ hồi phục — nền tảng để tránh tái chấn thương.",
-    tags: ["Yếu cơ", "Mất ổn định khớp", "Hậu chấn thương"],
+    title: "Tập luyện phục hồi & tăng cường",
+    indexSubtitle: "Phục hồi, sức mạnh và chuyển động",
+    body: "Bắt đầu từ khả năng vận động hiện tại, chuyên viên hướng dẫn các bài tập giúp bạn từng bước phục hồi sau chấn thương, tăng sức mạnh và kiểm soát chuyển động. Mức độ tập thay đổi theo mục tiêu sinh hoạt, công việc và thể thao của bạn.",
+    tags: [
+      "Khó cử động",
+      "Giảm đau mỏi",
+      "Phục hồi sau chấn thương",
+      "Tăng sức mạnh",
+      "Kiểm soát chuyển động tốt hơn",
+    ],
+    filterTags: ["limited-movement", "pain-relief", "injury-rehab", "strength", "movement-control"],
     image: methodFallbackImage.rehab,
-    imageAlt: "Tập luyện phục hồi",
+    imageAlt: "Tập luyện phục hồi & tăng cường",
     treatments: [],
   },
   {
     group: "cold",
     title: "Ngâm lạnh",
-    indexSubtitle: "Hồi phục sau vận động nặng",
-    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao, đồng thời cải thiện khả năng chịu đựng của hệ thần kinh.",
-    tags: ["Sưng cơ", "Sau thi đấu", "Mỏi cơ"],
+    indexSubtitle: "Hỗ trợ hồi phục sau tập luyện",
+    body: "Ngâm nước lạnh có thể giúp dịu cảm giác đau nhức cơ sau buổi tập hoặc vận động cường độ cao. Chuyên viên đánh giá sự phù hợp và hướng dẫn bạn trong buổi ngâm.",
+    tags: ["Hồi phục sau tập luyện"],
+    filterTags: ["post-workout-recovery"],
     image: methodFallbackImage.cold,
     imageAlt: "Ngâm lạnh",
     treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }],
@@ -239,9 +252,10 @@ export const methods: Method[] = [
   {
     group: "infrared",
     title: "Đèn hồng ngoại",
-    indexSubtitle: "Giãn cơ, giảm căng thẳng",
-    body: "Đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể — thường kết hợp làm bước cuối của một buổi trị liệu.",
-    tags: ["Căng cơ", "Mệt mỏi", "Giãn mô"],
+    indexSubtitle: "Sức ấm trong buổi trị liệu",
+    body: "Đèn hồng ngoại làm ấm vùng được chiếu. Holistic sử dụng sức ấm này để hỗ trợ cảm giác thư giãn, dễ chịu và phối hợp với các phương pháp khác khi phù hợp.",
+    tags: ["Căng cứng cơ"],
+    filterTags: ["muscle-stiffness"],
     image: methodFallbackImage.infrared,
     imageAlt: "Đèn hồng ngoại",
     treatments: [{ slug: "heat-light", title: "Heat & Light" }],

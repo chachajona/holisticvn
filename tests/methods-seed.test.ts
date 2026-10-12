@@ -20,12 +20,13 @@ describe("methodsPage seed", () => {
 
   it("matches the bundled copy so the two cannot drift", () => {
     for (const [i, fallback] of methods.entries()) {
-      const { title, indexSubtitle, body, tags } = seed.groups[i];
-      expect({ title, indexSubtitle, body, tags }).toEqual({
+      const { title, indexSubtitle, body, tags, filterTags } = seed.groups[i];
+      expect({ title, indexSubtitle, body, tags, filterTags }).toEqual({
         title: fallback.title,
         indexSubtitle: fallback.indexSubtitle,
         body: fallback.body,
         tags: fallback.tags,
+        filterTags: fallback.filterTags,
       });
     }
   });

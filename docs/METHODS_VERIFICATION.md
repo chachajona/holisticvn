@@ -25,7 +25,7 @@ Plan: `docs/superpowers/plans/2026-10-12-methods-sanity.md`.
 - [x] Price-list mapping to groups: spec section 10.
 - [x] Owner approved tapping, dry needling and IASTM in manual, electroacupuncture in electro (2026-10-12).
 - [x] Owner approved the position and label of the "Liệu pháp liên quan" block (2026-10-12).
-- [ ] Owner confirms `tags` and `body` copy is approved.
+- [x] Owner approved revised descriptions, titles, intro/CTA and shared filter labels, and requested CMS/website updates (2026-10-12). See `docs/methods-wording-proposal.md` and `docs/METHODS_FILTERS_VERIFICATION.md`.
 
 ## Staging setup
 
@@ -207,8 +207,7 @@ Screenshots inspected:
 
 ## Remaining acceptance
 
-Only owner approval of the five groups' `body` and `tags` remains for #9 acceptance. Hosted CI
-and production content rollout are deferred while the user keeps the branch local.
+Owner copy approval is complete, and approved copy plus interactive filters are now applied to staging and the local website. Updated evidence: `docs/METHODS_FILTERS_VERIFICATION.md`. Hosted CI and production content rollout remain deferred while the user keeps the branch local.
 
 Webhook operations are documented in the
 [Sanity Webhooks API reference](https://www.sanity.io/docs/http-reference/webhooks).

@@ -95,6 +95,147 @@
 }
 
 /* ---------- Method index strip ---------- */
+.filters {
+  padding: 64px max(24px, calc((100vw - 1360px) / 2)) 0;
+}
+.filters h2 {
+  max-width: 760px;
+  font-size: clamp(1.4rem, 2.5vw, 28px);
+  line-height: 1.35;
+}
+.filters > p {
+  max-width: 70ch;
+  margin: 16px 0 0;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.filterCategories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 28px;
+}
+.filterCategory {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.filterCategory legend {
+  padding: 0;
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--sage);
+}
+.filterChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filterChoices button,
+.methodTags button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 9px 13px;
+  border: 1px solid rgba(72, 97, 76, 0.6);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sage);
+  font: 400 14px/1.5 var(--font-accent);
+  text-align: left;
+  cursor: pointer;
+}
+.filterChoices button:hover,
+.methodTags button:hover {
+  background: var(--warm-band);
+}
+.filterChoices button:disabled,
+.methodTags button:disabled {
+  cursor: default;
+}
+.indexHint {
+  margin: -12px 0 0;
+  max-width: 70ch;
+  line-height: 1.6;
+  color: var(--muted);
+  font-size: 14px;
+}
+.filterChoices button[aria-pressed="true"],
+.methodTags button[aria-pressed="true"] {
+  background: var(--sage);
+  color: #fff;
+}
+.selectionMark {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  visibility: hidden;
+}
+button[aria-pressed="true"] .selectionMark {
+  visibility: visible;
+}
+.filterResult {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 24px;
+}
+.filterResult p {
+  margin: 0;
+  color: var(--muted);
+}
+.filterResult button {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--clay-deep);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.filterResult button:disabled {
+  color: var(--muted);
+  text-decoration: none;
+  cursor: default;
+}
+.filters > .selectedFilters {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.filteredMethod[hidden] {
+  display: none;
+}
+.emptyResults {
+  max-width: 70ch;
+  line-height: 1.75;
+}
+.emptyResults h2 {
+  font-size: 24px;
+}
+.emptyResults button {
+  border: 0;
+  cursor: pointer;
+  margin-right: 12px;
+}
+.filterChoices button:focus-visible,
+.methodTags button:focus-visible,
+.filterResult button:focus-visible,
+.filters h2:focus-visible,
+.emptyResults :is(button, a):focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 4px;
+}
+.indexCard:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: -5px;
+}
 .index {
   padding: 64px max(24px, calc((100vw - 1360px) / 2)) 0;
   display: flex;
@@ -208,14 +349,6 @@
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
-}
-.methodTags span {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.06em;
-  color: var(--sage);
-  border: 1px solid rgba(72, 97, 76, 0.35);
-  padding: 6px 12px;
-  border-radius: 999px;
 }
 .methodLinks {
   display: flex;
@@ -368,6 +501,10 @@
 }
 
 @media (max-width: 980px) {
+  .filterCategories {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
   .heroContent {
     left: 32px;
     right: 32px;
@@ -408,6 +545,7 @@
     font-size: 14px;
   }
   .index,
+  .filters,
   .timeline,
   .note,
   .cta {
@@ -427,9 +565,6 @@
   }
   .methodBody {
     padding-bottom: 44px;
-  }
-  .methodTags {
-    display: none;
   }
   .noteCard,
   .ctaCard {

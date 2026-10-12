@@ -122,4 +122,27 @@ describe("methodsPage schema", () => {
       "passed",
     );
   });
+
+  it("allows controlled filter IDs beyond the old five-tag cap", async () => {
+    const filterTags = [
+      "neck-pain",
+      "back-pain",
+      "hip-pain",
+      "muscle-stiffness",
+      "limited-movement",
+      "pain-relief",
+    ];
+    expect((await check(page([group("manual", { filterTags }), ...five().slice(1)]))).status).toBe(
+      "passed",
+    );
+  });
+
+  it.each([[["unknown"]], [["strength", "strength"]]])(
+    "rejects invalid filter selections %j",
+    async (filterTags) => {
+      expect(
+        (await check(page([group("manual", { filterTags }), ...five().slice(1)]))).status,
+      ).toBe("failed");
+    },
+  );
 });
