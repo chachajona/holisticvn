@@ -8,20 +8,21 @@ Ngày: 2026-10-12. Trạng thái: **bản nháp chờ owner duyệt** cho mục 
 - [PRODUCT.md](../PRODUCT.md): tiếng Việt trước, một lộ trình tư vấn → trị liệu → tập luyện; phục vụ cả sinh hoạt, làm việc và thể thao.
 - [Nghiên cứu giọng fanpage](facebook-wording-research.md): ưu tiên tình huống và hoạt động người đọc hình dung được. Báo cáo đã đọc các bài gốc ngày 2026-10-09; lượt này sử dụng lại báo cáo, không tuyên bố đã đọc lại fanpage.
 - [Đối chiếu nguồn chuyên môn](methods-wording-research.md): giải thích phương pháp và giới hạn của các phát biểu về lợi ích.
+- Bản tinh chỉnh owner gửi tại `.context/attachments/sDp3ez/pasted_text_2026-10-12_16-07-06.txt`: đầu vào biên tập về giọng văn, nhãn và ánh xạ. Đã tiếp thu câu chủ động và cảm nhận đời thường; file này không tự xác nhận các cơ chế, quy trình tại phòng khám hay hiệu quả điều trị mới.
 
 Giữ năm nhóm, mã nhóm, anchor, ánh xạ và vị trí “Liệu pháp liên quan” đã duyệt. Hai thay đổi tên hiển thị dưới đây là **đề xuất mới cần duyệt**, không thay đổi phân nhóm kỹ thuật. Giá và thời lượng dịch vụ nằm ngoài bản nháp này.
 
 ## Câu dẫn đề xuất
 
-Tại Holistic, trị liệu và tập luyện được lựa chọn dựa trên tình trạng và mục tiêu vận động của bạn. Buổi đánh giá ban đầu giúp xác định hướng đi phù hợp.
+Mỗi người có thói quen sinh hoạt và khả năng vận động riêng. Holistic bắt đầu từ việc đánh giá cách bạn chuyển động, rồi kết hợp trị liệu và bài tập theo tình trạng và mục tiêu của bạn.
 
-CTA: **Đặt buổi đánh giá**.
+CTA đề xuất: **Đặt lịch đánh giá ban đầu**.
 
 ## 1. Trị liệu thủ công — `manual`
 
 **Mô tả**
 
-Massage, vận động khớp và các kỹ thuật tác động lên mô mềm nhằm giảm đau mỏi, giảm căng cứng và giúp bạn vận động dễ dàng hơn. Chuyên viên lựa chọn cách thực hiện theo tình trạng của bạn.
+Chuyên viên kết hợp massage, vận động khớp và các kỹ thuật tác động lên mô mềm để hỗ trợ giảm đau mỏi, giảm căng cứng và giúp bạn cử động dễ hơn. Kỹ thuật phù hợp tùy theo tình trạng vận động của bạn.
 
 **Tag minh họa cũ:** Đau vai gáy · Đau lưng · Căng cứng cơ. Cần thay bằng nhãn dùng chung khi làm bộ lọc bên dưới.
 
@@ -33,7 +34,7 @@ Căn cứ: bảng dịch vụ mô tả massage và can thiệp mô mềm; [NHS](
 
 **Mô tả**
 
-Điện xung, siêu âm và xung kích là những phương pháp dùng thiết bị, được lựa chọn theo tình trạng của bạn. Chúng có thể được phối hợp cùng trị liệu và tập luyện với mục tiêu giảm đau, cải thiện vận động.
+Holistic kết hợp điện xung, siêu âm hoặc xung kích với trị liệu và bài tập khi phù hợp. Mỗi kỹ thuật có cách tác động riêng, hướng đến giảm đau và giúp bạn vận động dễ dàng hơn.
 
 **Tag minh họa cũ:** Đau khi vận động · Căng cứng cơ · Đau kéo dài. Cần thay bằng nhãn dùng chung khi làm bộ lọc bên dưới.
 
@@ -45,7 +46,7 @@ Căn cứ: [NHS](https://www.nhs.uk/tests-and-treatments/physiotherapy/) phân b
 
 **Mô tả**
 
-Bài tập được thiết kế theo khả năng và mục tiêu của bạn, từ phục hồi sau chấn thương đến tăng sức mạnh và kiểm soát chuyển động. Chuyên viên hướng dẫn và điều chỉnh mức độ tập phù hợp với nhu cầu sinh hoạt, làm việc và thể thao.
+Bắt đầu từ khả năng vận động hiện tại, chuyên viên hướng dẫn các bài tập giúp bạn từng bước phục hồi sau chấn thương, tăng sức mạnh và kiểm soát chuyển động. Mức độ tập thay đổi theo mục tiêu sinh hoạt, công việc và thể thao của bạn.
 
 **Tag minh họa cũ:** Phục hồi vận động · Tăng sức mạnh · Kiểm soát chuyển động. Cần thay bằng nhãn dùng chung khi làm bộ lọc bên dưới.
 
@@ -57,7 +58,7 @@ Căn cứ: bảng dịch vụ xác nhận chương trình cá nhân hóa và t�
 
 **Mô tả**
 
-Ngâm trong nước lạnh có thể hỗ trợ làm dịu cảm giác đau nhức cơ sau buổi tập hoặc vận động cường độ cao. Chuyên viên đánh giá sự phù hợp và hướng dẫn bạn trong buổi ngâm.
+Ngâm nước lạnh có thể giúp dịu cảm giác đau nhức cơ sau buổi tập hoặc vận động cường độ cao. Chuyên viên đánh giá sự phù hợp và hướng dẫn bạn trong buổi ngâm.
 
 **Tag minh họa cũ:** Sau buổi tập · Đau nhức cơ · Hỗ trợ hồi phục. Cần thay bằng nhãn dùng chung khi làm bộ lọc bên dưới.
 
@@ -67,7 +68,7 @@ Căn cứ: bảng dịch vụ xác nhận ngâm lạnh tại Holistic; [Clevelan
 
 **Mô tả**
 
-Đèn hồng ngoại làm ấm vùng được chiếu, với mục tiêu tạo cảm giác thư giãn trong buổi trị liệu. Chuyên viên cân nhắc cách phối hợp phương pháp này theo tình trạng của bạn.
+Đèn hồng ngoại làm ấm vùng được chiếu. Holistic sử dụng sức ấm này để hỗ trợ cảm giác thư giãn, dễ chịu và phối hợp với các phương pháp khác khi phù hợp.
 
 **Tag minh họa cũ:** Làm ấm · Thư giãn · Hỗ trợ trị liệu. Cần thay bằng nhãn dùng chung khi làm bộ lọc bên dưới.
 
@@ -79,14 +80,22 @@ Owner yêu cầu cân nhắc tag như lựa chọn có thể nhấn để lọc 
 
 Bộ nhãn đề xuất ban đầu:
 
-| Nhóm nhãn          | Lựa chọn                                                                         |
-| ------------------ | -------------------------------------------------------------------------------- |
-| Tình trạng của bạn | Đau vai gáy · Đau lưng · Đau nhức, căng cứng cơ · Hạn chế vận động               |
-| Bạn muốn cải thiện | Giảm đau mỏi · Phục hồi sau chấn thương · Hồi phục sau tập luyện · Tăng sức mạnh |
+| Nhóm nhãn          | Lựa chọn                                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Tình trạng của bạn | Đau mỏi cổ vai gáy · Đau lưng · Đau vùng hông/chậu · Căng cứng cơ · Khó cử động                                  |
+| Mục tiêu của bạn   | Giảm đau mỏi · Phục hồi sau chấn thương · Hồi phục sau tập luyện · Tăng sức mạnh · Kiểm soát chuyển động tốt hơn |
 
 Đây là nhãn người dùng tự nhận biết triệu chứng hoặc mục tiêu, không phải chẩn đoán. Danh mục dựa trên nhu cầu trong PRODUCT.md và bảng dịch vụ; chưa xác nhận nhãn nào gắn với từng nhóm phương pháp. Không tự gán mọi nhãn đau cho mọi phương pháp hoặc đồng nhất đau nhức sau tập với đau do chấn thương.
 
-“Làm ấm”, “Hỗ trợ trị liệu”, “Kiểm soát chuyển động” trong bản cũ mô tả thao tác hoặc thuật ngữ chuyên môn; không ưu tiên làm lựa chọn lọc cho khách mới. Không đặt hạn mức ba tag cho mỗi nhóm nếu không có lý do về nội dung.
+“Làm ấm”, “Hỗ trợ trị liệu” mô tả thao tác thay vì nhu cầu; bỏ khỏi danh mục lọc. Giữ “Kiểm soát chuyển động tốt hơn” như một mục tiêu riêng theo bản tinh chỉnh owner gửi, vì đây là chủ đề đã ghi nhận trong nghiên cứu fanpage. Khi triển khai có thể thêm giải thích ngắn “vận động vững vàng, dễ điều khiển hơn” cho khách mới. Không đặt hạn mức ba tag cho mỗi nhóm nếu không có lý do về nội dung.
+
+Tách “Đau lưng” và “Đau vùng hông/chậu” để khách chọn vùng họ muốn tìm hiểu, thay vì gộp các vùng thành một tag. Rút “Khớp cử động khó / không mượt” thành “Khó cử động” để nhãn ngắn và không mặc định khó khăn đó bắt nguồn từ khớp. Giữ “Phục hồi sau chấn thương” thay vì chỉ chấn thương thể thao để bao phủ cả người không chơi thể thao. Giảm đau mỏi có thể là mục tiêu trong sinh hoạt hoặc tập luyện; không dùng hoàn cảnh đó để tự phân loại nguyên nhân đau.
+
+Ánh xạ trong file owner gửi là bản gợi ý, chưa xem là chỉ định điều trị đã được xác nhận. Các điểm cần hiệu chỉnh trước khi gắn nhãn:
+
+- Rà lại nhóm `rehab` cho nhu cầu giảm đau/cải thiện vận động, để bộ lọc không vô tình chỉ đưa khách đang đau tới trị liệu tay hoặc thiết bị. PRODUCT.md mô tả một lộ trình có tập luyện, nhưng không đủ để tự gán mọi tag vùng đau vào nhóm này.
+- Không suy từ “Căng cứng cơ” rằng ngâm lạnh phù hợp; bản mô tả có nguồn hiện giới hạn ở đau nhức cơ sau vận động. Nếu cần lọc theo cảm giác này, dùng một nhãn riêng “Đau nhức cơ sau tập” sau khi xác nhận danh mục, thay vì trộn mọi loại căng cứng.
+- Nhãn cổ vai gáy/hông chậu cho từng thiết bị hoặc đèn hồng ngoại vẫn cần căn cứ dịch vụ thực tế. Ảnh một vùng cơ thể hay một bài về một ca không tự xác nhận phạm vi áp dụng chung.
 
 Luồng đề xuất:
 
@@ -104,6 +113,13 @@ Chưa gắn nhãn vào CMS hoặc đổi schema. Trước triển khai cần xá
 
 ## Nguyên tắc đọc và việc còn chờ
 
+Bản tinh chỉnh owner gửi giúp giọng văn chủ động hơn, nhưng không sử dụng kết luận “100% tuân thủ nguyên tắc y khoa”. Các lựa chọn biên tập cụ thể:
+
+- Bỏ “phù hợp nhất”, “tối ưu hiệu quả”, “trúng đích vào điểm đau sâu”: chưa có căn cứ cho toàn bộ nhóm kỹ thuật hoặc kết quả của Holistic.
+- Giữ “có thể” ở ngâm lạnh để không biến lợi ích tùy trường hợp thành kết quả chắc chắn. Chưa đưa hướng dẫn nhịp thở hay thời gian ngâm vào copy như một quy trình đã xác nhận của phòng khám.
+- Đèn hồng ngoại: chỉ khẳng định làm ấm tại chỗ; thư giãn là mục tiêu thương hiệu. Chưa thêm tăng tuần hoàn, làm mềm cơ hay giúp cơ thể tiếp nhận can thiệp tốt hơn như hiệu quả đã chứng minh.
+- Ba đối tượng trong PRODUCT.md vẫn là người làm văn phòng, người chơi thể thao phong trào và vận động viên chuyên nghiệp. “Cử động không ổn” là cảm nhận có thể gặp ở các nhóm này, không thay thế một nhóm đối tượng đã xác nhận.
+
 Tag dùng chung sẽ giúp người mới lọc và quét nhanh triệu chứng hoặc mục tiêu, không phải danh sách chẩn đoán hay chỉ định tự chọn phương pháp. Câu dẫn và CTA đặt đánh giá trước việc lựa chọn kỹ thuật. Chưa kiểm chứng độ dễ hiểu bằng người dùng thật hoặc đo conversion.
 
 “Tapping” xuất hiện đúng như vậy trong cả hai bảng giá. Nội dung gợi liên tưởng tới taping nhưng chưa xác nhận kỹ thuật; giữ nguyên trong hồ sơ ánh xạ, chưa tự đổi tên thành dán băng/kinesiology taping.
@@ -114,5 +130,6 @@ Các câu “tự chữa lành” và “khả năng chịu đựng của hệ t
 - [ ] Owner duyệt bộ nhãn dùng chung, ánh xạ nhãn vào nhóm và hành vi lọc.
 - [ ] Owner duyệt hai tên hiển thị mới.
 - [ ] Owner duyệt câu dẫn đề xuất nếu thay câu dẫn của trang.
+- [ ] Owner duyệt CTA mới nếu thay “Đặt buổi đánh giá”.
 
 Sau khi duyệt mới cập nhật đồng bộ CMS, fallback và seed; rà lại `indexSubtitle` để không còn câu cũ mâu thuẫn với mô tả mới. Kiểm tra nguồn thật và fallback cùng hiển thị bản đã duyệt. Giữ nhánh local theo yêu cầu của owner.
