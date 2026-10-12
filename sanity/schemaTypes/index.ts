@@ -1,4 +1,7 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { serviceGroups, type ServiceGroup } from "@/lib/content";
+import { leadSchema } from "@/lib/validation";
+import { validateServiceGroups } from "@/sanity/serviceGroups";
 
 const seo = defineType({
   name: "seo",
@@ -74,39 +77,130 @@ const location = defineType({
   ],
   preview: { select: { title: "name", subtitle: "address" } },
 });
-const service = defineType({
-  name: "service",
-  title: "Dịch vụ",
-  type: "document",
+const serviceGroupTitles: Record<ServiceGroup, string> = {
+  therapy: "Trị liệu",
+  training: "Tập luyện",
+  recovery: "Thư giãn & hồi phục",
+};
+const serviceGroup = defineType({
+  name: "serviceGroup",
+  title: "Nhóm dịch vụ",
+  type: "object",
   fields: [
+    defineField({
+      name: "group",
+      title: "Nhóm",
+      description: "Cố định sau khi tạo. Quyết định mục neo và ngữ cảnh khi khách bấm Đặt lịch.",
+      type: "string",
+      options: {
+        list: serviceGroups.map((value) => ({ value, title: serviceGroupTitles[value] })),
+        layout: "radio",
+      },
+      readOnly: ({ value }) => Boolean(value),
+      validation: (rule) => rule.required(),
+    }),
     defineField({
       name: "title",
       title: "Tên dịch vụ",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => [
+        rule.required().error("Cần tên dịch vụ."),
+        // Reuse the booking limit, including its Unicode counting and whitespace trimming.
+        rule.custom((value) =>
+          leadSchema.shape.treatment.safeParse(value).success
+            ? true
+            : "Tên dịch vụ không được dài quá 120 ký tự.",
+        ),
+      ],
     }),
     defineField({
-      name: "slug",
-      title: "URL slug",
-      type: "slug",
-      options: { source: "title" },
-      validation: (rule) => rule.required(),
+      name: "shortTitle",
+      title: "Tên ngắn trên thẻ chọn nhóm",
+      description: "Bỏ trống để dùng tên dịch vụ.",
+      type: "string",
     }),
-    defineField({ name: "description", title: "Mô tả", type: "text", rows: 4 }),
     defineField({
-      name: "isPrimary",
-      title: "Dịch vụ nổi bật",
-      type: "boolean",
-      initialValue: false,
+      name: "summary",
+      title: "Mô tả ngắn trên thẻ chọn nhóm",
+      type: "text",
+      rows: 2,
+      validation: (rule) => rule.required().error("Cần mô tả ngắn trên thẻ chọn nhóm."),
+    }),
+    defineField({
+      name: "body",
+      title: "Nội dung",
+      type: "text",
+      rows: 5,
+      validation: (rule) => rule.required().error("Cần nội dung dịch vụ."),
+    }),
+    defineField({
+      name: "bullets",
+      title: "Ý chính",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+    }),
+    defineField({
+      name: "image",
+      title: "Ảnh",
+      description: "Bỏ trống để dùng ảnh mặc định của nhóm. Ảnh không được lộ mặt người.",
+      type: "image",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          validation: (rule) =>
+            rule.custom((value, context) =>
+              (context.parent as { asset?: unknown } | undefined)?.asset && !value
+                ? "Cần alt text khi có ảnh."
+                : true,
+            ),
+        }),
+      ],
     }),
     defineField({
       name: "treatments",
       title: "Liệu pháp liên quan",
+      description: "Hiện thành liên kết tới trang liệu pháp. Chỉ chọn được liệu pháp có slug.",
       type: "array",
-      of: [defineArrayMember({ type: "reference", to: [{ type: "treatment" }] })],
+      of: [
+        defineArrayMember({
+          type: "reference",
+          to: [{ type: "treatment" }],
+          options: { filter: "defined(slug.current)", disableNew: true },
+        }),
+      ],
+      validation: (rule) => rule.unique().error("Không chọn cùng một liệu pháp nhiều lần."),
     }),
-    defineField({ name: "seo", title: "SEO", type: "seo" }),
   ],
+  preview: {
+    select: { title: "title", group: "group", media: "image" },
+    prepare: ({ title, group, media }) => ({
+      title,
+      subtitle: serviceGroupTitles[group as ServiceGroup],
+      media,
+    }),
+  },
+});
+const servicesPage = defineType({
+  name: "servicesPage",
+  title: "Trang Dịch vụ",
+  type: "document",
+  fields: [
+    defineField({
+      name: "groups",
+      title: "Ba nhóm dịch vụ",
+      description:
+        "Kéo để đổi thứ tự hiển thị. Phải đủ trị liệu, tập luyện, thư giãn, mỗi nhóm một lần.",
+      type: "array",
+      of: [defineArrayMember({ type: "serviceGroup" })],
+      options: { disableActions: ["add", "addBefore", "addAfter", "remove", "duplicate"] },
+      initialValue: serviceGroups.map((group) => ({ _type: "serviceGroup", group })),
+      validation: (rule) =>
+        rule.required().custom<Array<{ _key?: string; group?: string }>>(validateServiceGroups),
+    }),
+  ],
+  preview: { prepare: () => ({ title: "Trang Dịch vụ" }) },
 });
 const treatment = defineType({
   name: "treatment",
@@ -270,7 +364,8 @@ export const schemaTypes = [
   protocolStep,
   location,
   siteSettings,
-  service,
+  serviceGroup,
+  servicesPage,
   treatment,
   post,
   testimonial,

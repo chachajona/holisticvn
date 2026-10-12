@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
-import { serviceAnchor, treatments } from "@/lib/content";
+import { serviceAnchor, type ServiceGroup } from "@/lib/content";
+import { getServices } from "@/lib/sanity";
 import styles from "./services.module.css";
 
 /*
@@ -23,13 +24,15 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 */
 
+export const revalidate = 3600;
+
 export const metadata = createMetadata({
   title: "Dịch vụ",
   description: "Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.",
   path: "/services",
 });
 
-function CategoryIcon({ type }: { type: "therapy" | "training" | "recovery" }) {
+function CategoryIcon({ type }: { type: ServiceGroup }) {
   const paths = {
     therapy: <path d="M12 5v14M5 12h14" />,
     training: <path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" />,
@@ -57,79 +60,8 @@ function CategoryIcon({ type }: { type: "therapy" | "training" | "recovery" }) {
   );
 }
 
-const categories = [
-  {
-    id: serviceAnchor.therapy,
-    icon: "therapy" as const,
-    title: "Trị liệu",
-    copy: "Massage trị liệu, nắn chỉnh và các phương pháp hỗ trợ giảm đau, thư giãn cơ.",
-  },
-  {
-    id: serviceAnchor.training,
-    icon: "training" as const,
-    title: "Tập luyện",
-    copy: "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
-  },
-  {
-    id: serviceAnchor.recovery,
-    icon: "recovery" as const,
-    title: "Thư giãn & hồi phục",
-    copy: "Ngâm lạnh, đèn hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
-  },
-];
-
-function treatmentLinks(slugs: string[]) {
-  return slugs
-    .map((slug) => treatments.find((t) => t.slug === slug))
-    .filter((t): t is NonNullable<typeof t> => Boolean(t));
-}
-
-const dives = [
-  {
-    id: serviceAnchor.therapy,
-    title: "Trị liệu bằng tay",
-    body: "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
-    bullets: [
-      "Massage trị liệu toàn thân hoặc cục bộ",
-      "Nắn chỉnh cột sống và IASTM – cạo mạc",
-      "Giác hơi, tapping và các phương pháp bổ trợ",
-    ],
-    cta: "Đặt lịch trị liệu",
-    image: "/images/Iastm.jpg",
-    imageLeft: false,
-    related: treatmentLinks(["dry-needling", "cupping", "iastm"]),
-  },
-  {
-    id: serviceAnchor.training,
-    title: "Tập luyện phục hồi & tăng cường",
-    body: "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
-    bullets: [
-      "Đồng hành xuyên suốt từ tư vấn đến tập luyện",
-      "Chương trình cá nhân hoá theo tình trạng của bạn",
-      "Phù hợp cả người mới bắt đầu và vận động viên",
-    ],
-    cta: "Đặt lịch tập",
-    image: "/images/Coaching.jpg",
-    imageLeft: true,
-    related: [],
-  },
-  {
-    id: serviceAnchor.recovery,
-    title: "Ngâm lạnh & đèn hồng ngoại",
-    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và phục hồi sau vận động cường độ cao; đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
-    bullets: [
-      "Ngâm lạnh phục hồi sau vận động cường độ cao",
-      "Đèn hồng ngoại thư giãn cơ, giảm căng thẳng",
-      "Kết hợp linh hoạt trong lộ trình cá nhân",
-    ],
-    cta: "Đặt lịch thư giãn",
-    image: "/images/Infrared.jpg",
-    imageLeft: false,
-    related: treatmentLinks(["heat-light", "cold-plunge"]),
-  },
-];
-
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero}>
@@ -155,51 +87,69 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <nav className={styles.categories} aria-label="Các nhóm dịch vụ">
-        <div className={styles.categoriesHead}>
-          <h2>Chọn điểm bắt đầu phù hợp với bạn</h2>
-        </div>
-        <div className={styles.categoryGrid}>
-          {categories.map((cat) => (
-            <a href={`#${cat.id}`} key={cat.id} className={styles.categoryCard}>
-              <span className={styles.categoryIcon}>
-                <CategoryIcon type={cat.icon} />
-              </span>
-              <strong>{cat.title}</strong>
-              <span>{cat.copy}</span>
-            </a>
-          ))}
-        </div>
-      </nav>
+      {services.length ? (
+        <nav className={styles.categories} aria-label="Các nhóm dịch vụ">
+          <div className={styles.categoriesHead}>
+            <h2>Chọn điểm bắt đầu phù hợp với bạn</h2>
+          </div>
+          <div className={styles.categoryGrid}>
+            {services.map((service) => (
+              <a
+                href={`#${serviceAnchor[service.group]}`}
+                key={service.group}
+                className={styles.categoryCard}
+              >
+                <span className={styles.categoryIcon}>
+                  <CategoryIcon type={service.group} />
+                </span>
+                <strong>{service.shortTitle}</strong>
+                <span>{service.summary}</span>
+              </a>
+            ))}
+          </div>
+        </nav>
+      ) : null}
 
-      {dives.map((dive) => (
-        <section className={styles.dive} id={dive.id} key={dive.id}>
-          <div className={styles.diveCopy} style={{ order: dive.imageLeft ? 2 : 1 }}>
-            <h3>{dive.title}</h3>
-            <p>{dive.body}</p>
-            <ul className={styles.diveList}>
-              {dive.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-            <Link href="/booking" className={styles.primaryButton}>
-              {dive.cta}
-            </Link>
-            {dive.related.length ? (
-              <div className={styles.diveLinks}>
-                {dive.related.map((t) => (
-                  <Link key={t.slug} href={`/treatments/${t.slug}`}>
-                    {t.title} ↗
-                  </Link>
+      {services.map((service, index) => {
+        const imageLeft = index % 2 === 1;
+        return (
+          <section className={styles.dive} id={serviceAnchor[service.group]} key={service.group}>
+            <div className={styles.diveCopy} style={{ order: imageLeft ? 2 : 1 }}>
+              <h3>{service.title}</h3>
+              <p>{service.body}</p>
+              <ul className={styles.diveList}>
+                {service.bullets.map((b) => (
+                  <li key={b}>{b}</li>
                 ))}
-              </div>
-            ) : null}
-          </div>
-          <div className={styles.diveMedia} style={{ order: dive.imageLeft ? 1 : 2 }}>
-            <Image src={dive.image} alt={dive.title} fill sizes="(max-width: 980px) 100vw, 45vw" />
-          </div>
-        </section>
-      ))}
+              </ul>
+              <Link
+                href={`/booking?service=${service.group}`}
+                className={styles.primaryButton}
+                aria-label={`Đặt lịch ${service.shortTitle}`}
+              >
+                Đặt lịch <span aria-hidden="true">→</span>
+              </Link>
+              {service.treatments.length ? (
+                <div className={styles.diveLinks}>
+                  {service.treatments.map((t) => (
+                    <Link key={t.slug} href={`/treatments/${t.slug}`}>
+                      {t.title} ↗
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            <div className={styles.diveMedia} style={{ order: imageLeft ? 1 : 2 }}>
+              <Image
+                src={service.image}
+                alt={service.imageAlt}
+                fill
+                sizes="(max-width: 980px) 100vw, 45vw"
+              />
+            </div>
+          </section>
+        );
+      })}
 
       <section className={styles.process}>
         <div className={styles.processHead}>

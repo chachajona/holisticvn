@@ -53,7 +53,16 @@ export async function buildLeadEmail(input: LeadInput, now = new Date()) {
     received,
     rows: [
       ...(input.email ? [["Email", input.email] as [string, string]] : []),
-      ...(input.treatment ? [["Liệu pháp", input.treatment] as [string, string]] : []),
+      // treatment carries a liệu pháp from /treatments/[slug], a nhóm dịch vụ from /booking;
+      // the source path is the only signal of which, so label the row to match.
+      ...(input.treatment
+        ? [
+            [
+              input.source?.startsWith("/treatments") ? "Liệu pháp" : "Dịch vụ",
+              input.treatment,
+            ] as [string, string],
+          ]
+        : []),
     ],
     note: input.message?.trim() || null,
     emptyNote: input.source === "home-hero" ? null : "Không có ghi chú.",

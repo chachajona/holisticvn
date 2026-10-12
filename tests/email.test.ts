@@ -8,6 +8,7 @@ vi.mock("resend", () => ({
 }));
 
 import { buildLeadEmail, sendLeadNotification } from "@/lib/email";
+import { services } from "@/lib/content";
 
 const request = {
   kind: "booking" as const,
@@ -18,6 +19,47 @@ const request = {
   source: "/booking",
   website: "",
 };
+
+describe("lead email context", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it.each(services)("labels a $group booking as a service in HTML and text", async (service) => {
+    const mail = await buildLeadEmail({
+      ...request,
+      source: "/booking",
+      treatment: service.title,
+    });
+    expect(mail.text).toContain(`Dịch vụ: ${service.title}`);
+    expect(mail.text).not.toContain("Liệu pháp:");
+    expect(mail.html).toContain("Dịch vụ");
+    expect(mail.html).toContain(service.title.replaceAll("&", "&amp;"));
+    expect(mail.html).not.toContain("Liệu pháp");
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it("keeps the treatment label for a treatment-page request", async () => {
+    const mail = await buildLeadEmail({
+      ...request,
+      source: "/treatments/cupping",
+      treatment: "Giác hơi",
+    });
+    expect(mail.text).toContain("Liệu pháp: Giác hơi");
+    expect(mail.text).not.toContain("Dịch vụ:");
+    expect(mail.html).toContain("Liệu pháp");
+    expect(mail.html).toContain("Giác hơi");
+    expect(mail.html).not.toContain("Dịch vụ");
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it("omits the context row for a plain booking", async () => {
+    const mail = await buildLeadEmail({ ...request, treatment: "" });
+    for (const body of [mail.html, mail.text]) {
+      expect(body).not.toContain("Liệu pháp");
+      expect(body).not.toContain("Dịch vụ");
+    }
+    expect(send).not.toHaveBeenCalled();
+  });
+});
 
 describe("sendLeadNotification", () => {
   beforeEach(() => {

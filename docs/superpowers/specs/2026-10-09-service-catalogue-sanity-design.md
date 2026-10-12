@@ -57,7 +57,7 @@ Mở rộng `treatment` (`sanity/schemaTypes/index.ts`):
 
 Quy tắc validation: mục nổi bật phải có ảnh, `alt` và `image.credit.sourceType`. `sourceType = stock` hoặc `customer-licensed` bắt buộc có `license`. Không cho publish ảnh chưa ghi nguồn.
 
-`service` (ba nhóm của `/services`) do #8 xử lý; spec này không đổi nó.
+`service` (ba nhóm của `/services`) do #8 xử lý; spec này không đổi nó. Quyết định 2026-10-11: #8 chọn singleton `servicesPage` với mảng `groups` (xem `docs/services-schema-research.md`), không dùng document `service` tự do.
 
 ## 5. Luồng dữ liệu
 
@@ -77,7 +77,7 @@ Sanity treatment ──GROQ──▶ zod (lib/sanity.ts) ──▶ getFeaturedTr
 ## 6. Nạp dữ liệu và ảnh
 
 - Script `scripts/seed-catalogue.mjs`, theo mẫu `transform-legacy-content.mjs`: dry-run mặc định, bắt buộc `--project` và `--dataset`, ghi thật cần `--apply --confirm PROJECT_ID/dataset`.
-- Idempotent: `_id` cố định dạng `treatment.<slug>`, dùng `createOrReplace` chỉ cho các trường do script sở hữu, không ghi đè nội dung biên tập viên đã sửa (kiểm tra revision như script hiện có).
+- Idempotent: `_id` cố định dạng `treatment-<slug>` (không dùng dấu chấm trong `_id`: document có dấu chấm không công khai được), dùng `createOrReplace` chỉ cho các trường do script sở hữu, không ghi đè nội dung biên tập viên đã sửa (kiểm tra revision như script hiện có).
 - Dữ liệu gốc: bảng giá 16 mục (tên, mô tả, nhóm, thời lượng). `price` được nạp nhưng không render.
 - Ảnh: script tải `public/images/<file>` lên Sanity assets, gán `alt` và `image.credit` theo bảng provenance. Chỉ chạy trên staging trước; production chờ #20/#27.
 - Cần token ghi Sanity do owner cấp (HITL); không đưa token vào repo.

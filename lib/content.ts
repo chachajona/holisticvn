@@ -17,11 +17,19 @@ export type Treatment = {
   protocols?: ProtocolStep[];
 };
 
+export const serviceGroups = ["therapy", "training", "recovery"] as const;
+export type ServiceGroup = (typeof serviceGroups)[number];
+
 export type Service = {
-  slug: string;
+  group: ServiceGroup;
   title: string;
-  description: string;
-  treatments: string[];
+  shortTitle: string;
+  summary: string;
+  body: string;
+  bullets: string[];
+  image: string;
+  imageAlt: string;
+  treatments: Array<{ slug: string; title: string }>;
 };
 
 export type Post = {
@@ -96,26 +104,66 @@ export const reviewSummary = {
   url: "https://maps.app.goo.gl/9RmecBoycrAkhBE39",
 };
 
+// Local image per group: fallback when a CMS service has no usable image.
+export const serviceFallbackImage: Record<ServiceGroup, string> = {
+  therapy: "/images/Iastm.jpg",
+  training: "/images/Coaching.jpg",
+  recovery: "/images/Infrared.jpg",
+};
+
 export const services: Service[] = [
   {
-    slug: "phuc-hoi-van-dong",
-    title: "Phục hồi vận động",
-    description:
-      "Lộ trình cá nhân hóa để trở lại nhịp sống, thể thao và công việc một cách tự tin.",
-    treatments: ["dry-needling", "iastm"],
+    group: "therapy",
+    title: "Trị liệu bằng tay",
+    shortTitle: "Trị liệu",
+    summary: "Massage trị liệu, nắn chỉnh và các phương pháp hỗ trợ giảm đau, thư giãn cơ.",
+    body: "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
+    bullets: [
+      "Massage trị liệu toàn thân hoặc cục bộ",
+      "Nắn chỉnh cột sống, châm khô, điện châm (chỉ chuyên viên có chứng nhận thực hiện)",
+      "IASTM – cạo mạc, tapping, giác hơi",
+      "Xung kích, điện xung, sóng siêu âm hỗ trợ giảm đau và phục hồi mô mềm",
+    ],
+    image: serviceFallbackImage.therapy,
+    imageAlt: "Trị liệu bằng tay",
+    treatments: [
+      { slug: "dry-needling", title: "Dry Needling" },
+      { slug: "cupping", title: "Cupping Therapy" },
+      { slug: "iastm", title: "IASTM" },
+    ],
   },
   {
-    slug: "giam-dau-chuyen-sau",
-    title: "Giảm đau chuyên sâu",
-    description:
-      "Tìm nguyên nhân gốc rễ của cơn đau bằng đánh giá chức năng và trị liệu có định hướng.",
-    treatments: ["cupping", "heat-light"],
+    group: "training",
+    title: "Tập luyện phục hồi & tăng cường",
+    shortTitle: "Tập luyện",
+    summary: "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
+    body: "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
+    bullets: [
+      "Tập luyện phục hồi: cho chấn thương, đau mỏi hoặc hạn chế vận động",
+      "Tập luyện tăng cường: phát triển sức mạnh, kiểm soát và hiệu quả chuyển động",
+      "Đồng hành xuyên suốt từ tư vấn đến tập luyện",
+    ],
+    image: serviceFallbackImage.training,
+    imageAlt: "Tập luyện phục hồi & tăng cường",
+    treatments: [],
   },
   {
-    slug: "phong-ngua-chan-thuong",
-    title: "Phòng ngừa chấn thương",
-    description: "Nâng chất lượng chuyển động, tăng sức bền và chủ động bảo vệ cơ thể lâu dài.",
-    treatments: ["cold-plunge", "iastm"],
+    group: "recovery",
+    title: "Ngâm lạnh & đèn hồng ngoại",
+    shortTitle: "Thư giãn & hồi phục",
+    summary: "Ngâm lạnh, đèn hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
+    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và phục hồi sau vận động cường độ cao; đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
+    bullets: [
+      "Ngâm lạnh phục hồi sau vận động cường độ cao",
+      "Đèn hồng ngoại thư giãn cơ, giảm căng thẳng",
+      "Kết hợp linh hoạt trong lộ trình cá nhân",
+    ],
+    image: serviceFallbackImage.recovery,
+    imageAlt: "Ngâm lạnh & đèn hồng ngoại",
+    treatments: [
+      { slug: "heat-light", title: "Heat & Light" },
+      { slug: "cold-plunge", title: "Cold Plunge" },
+    ],
   },
 ];
 

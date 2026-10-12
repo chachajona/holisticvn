@@ -7,7 +7,7 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
-// Public-site CSP. Pages are static/ISR, so no per-request nonce: inline scripts (Next bootstrap,
+// Public-site CSP. Pages are static/ISR (except /booking, which is dynamic: it reads searchParams), so no per-request nonce: inline scripts (Next bootstrap,
 // consent-gated GTM) rely on 'unsafe-inline'. Origins mirror what the site actually loads.
 // Sanity Studio (/studio) is excluded: it needs far broader sources and is noindex + auth-gated.
 // ponytail: upgrade to nonce CSP (proxy.ts + dynamic rendering) only if script-src 'unsafe-inline' becomes a compliance need.
