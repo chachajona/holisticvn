@@ -1,9 +1,9 @@
 ---
-title: 'Shorten the methods hero description'
-type: 'chore'
-created: '2026-10-12'
-status: 'done'
-route: 'one-shot'
+title: "Shorten the methods hero description"
+type: "chore"
+created: "2026-10-12"
+status: "done"
+route: "one-shot"
 ---
 
 # Shorten the methods hero description
