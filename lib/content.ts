@@ -20,6 +20,9 @@ export type Treatment = {
 export const serviceGroups = ["therapy", "training", "recovery"] as const;
 export type ServiceGroup = (typeof serviceGroups)[number];
 
+export const methodGroups = ["manual", "electro", "rehab", "cold", "infrared"] as const;
+export type MethodGroup = (typeof methodGroups)[number];
+
 export type Service = {
   group: ServiceGroup;
   title: string;
@@ -27,6 +30,17 @@ export type Service = {
   summary: string;
   body: string;
   bullets: string[];
+  image: string;
+  imageAlt: string;
+  treatments: Array<{ slug: string; title: string }>;
+};
+
+export type Method = {
+  group: MethodGroup;
+  title: string;
+  indexSubtitle: string;
+  body: string;
+  tags: string[];
   image: string;
   imageAlt: string;
   treatments: Array<{ slug: string; title: string }>;
@@ -164,6 +178,73 @@ export const services: Service[] = [
       { slug: "heat-light", title: "Heat & Light" },
       { slug: "cold-plunge", title: "Cold Plunge" },
     ],
+  },
+];
+
+// Local image per group: fallback when a CMS method has no usable image.
+export const methodFallbackImage: Record<MethodGroup, string> = {
+  manual: "/images/Iastm.jpg",
+  electro: "/images/ElectroPulse.jpg",
+  rehab: "/images/Coaching.jpg",
+  cold: "/images/ColdPlungeTub.jpg",
+  infrared: "/images/Infrared.jpg",
+};
+
+// Bundled copy, used as-is when Sanity is not configured and per group when a CMS group is missing or invalid.
+export const methods: Method[] = [
+  {
+    group: "manual",
+    title: "Trị liệu thủ công",
+    indexSubtitle: "Đau khớp, đau cơ, lệch tư thế",
+    body: "Chuyên viên dùng tay để đánh giá và can thiệp trực tiếp lên khớp, cơ và mô mềm — giải phóng điểm co cứng, nắn chỉnh tư thế lệch, tăng biên độ vận động.",
+    tags: ["Đau vai gáy", "Đau lưng dưới", "Lệch chậu"],
+    image: methodFallbackImage.manual,
+    imageAlt: "Trị liệu thủ công",
+    treatments: [
+      { slug: "dry-needling", title: "Dry Needling" },
+      { slug: "cupping", title: "Cupping Therapy" },
+      { slug: "iastm", title: "IASTM" },
+    ],
+  },
+  {
+    group: "electro",
+    title: "Điện trị liệu",
+    indexSubtitle: "Viêm, sưng, đau mạn tính",
+    body: "Dòng điện tần số thấp kích thích thần kinh và cơ, giảm viêm và giảm đau mà không cần can thiệp bằng tay — thường dùng trước khi vận động để giảm co cứng.",
+    tags: ["Viêm gân", "Đau mạn tính", "Co cứng cơ"],
+    image: methodFallbackImage.electro,
+    imageAlt: "Điện trị liệu",
+    treatments: [],
+  },
+  {
+    group: "rehab",
+    title: "Tập luyện phục hồi",
+    indexSubtitle: "Yếu cơ, mất ổn định khớp",
+    body: "Bài tập có kiểm soát để lấy lại sức mạnh và sự ổn định ở vùng bị ảnh hưởng, tăng dần cường độ theo tiến độ hồi phục — nền tảng để tránh tái chấn thương.",
+    tags: ["Yếu cơ", "Mất ổn định khớp", "Hậu chấn thương"],
+    image: methodFallbackImage.rehab,
+    imageAlt: "Tập luyện phục hồi",
+    treatments: [],
+  },
+  {
+    group: "cold",
+    title: "Ngâm lạnh",
+    indexSubtitle: "Hồi phục sau vận động nặng",
+    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và hỗ trợ phục hồi sau vận động cường độ cao, đồng thời cải thiện khả năng chịu đựng của hệ thần kinh.",
+    tags: ["Sưng cơ", "Sau thi đấu", "Mỏi cơ"],
+    image: methodFallbackImage.cold,
+    imageAlt: "Ngâm lạnh",
+    treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }],
+  },
+  {
+    group: "infrared",
+    title: "Đèn hồng ngoại",
+    indexSubtitle: "Giãn cơ, giảm căng thẳng",
+    body: "Đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng và hỗ trợ quá trình tự chữa lành của cơ thể — thường kết hợp làm bước cuối của một buổi trị liệu.",
+    tags: ["Căng cơ", "Mệt mỏi", "Giãn mô"],
+    image: methodFallbackImage.infrared,
+    imageAlt: "Đèn hồng ngoại",
+    treatments: [{ slug: "heat-light", title: "Heat & Light" }],
   },
 ];
 
