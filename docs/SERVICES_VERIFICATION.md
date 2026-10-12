@@ -161,7 +161,7 @@ and [Vercel automation bypass](https://vercel.com/docs/deployment-protection/met
 Five email-render tests cover all three service-booking labels (`Dịch vụ`), treatment-page
 labels (`Liệu pháp`) and plain booking without context. The three service assertions fail
 against renderer `0de7dac` and pass with the current one. Rendering does not prove delivery
-or mailbox appearance. Repository suite: **120 tests / 25 files**.
+or mailbox appearance. Repository suite at that checkpoint: **120 tests / 25 files**.
 
 Read-only production inspection found four legacy `service` records: Giác hơi,
 Đèn hồng ngoại and Bể ngâm lạnh have resolving strong references; Tập luyện trị liệu
@@ -233,6 +233,26 @@ production deployment; the production content prerequisite is now satisfied.
 
 Screenshots: `production-services-vision.png` and `production-webhook-scoped.png`
 in `.context/acceptance/`. Secret values are excluded from screenshots and commits.
+
+## Review follow-up — 2026-10-12
+
+Verified both Greptile findings against the code. Studio's required-only service
+name allowed titles that the booking API rejects above 120 characters. It now
+reuses the API's `leadSchema.shape.treatment` validator and reports the Vietnamese
+length error, preserving the separate required message. This also matches the
+installed Zod's whitespace trimming and Unicode code-point counting; native Sanity
+`max` counts UTF-16 units differently.
+
+Five real-validator boundary cases cover 120/121 Vietnamese characters, 120/121
+emoji and a padded 120-character title, alongside parsing the complete booking
+payload with `leadSchema`. Over-limit tests failed against the previous schema;
+the corrected schema passes. Repository suite: **125 tests / 25 files**, lint,
+typecheck and production build pass. No lead request or email was sent.
+
+Removed the superseded research paragraph claiming Discard/webhook remained
+unverified and marked the initial research checklist as historical. Completed
+checks link to their current evidence. CodeRabbit's docstring coverage suggestion
+is informational: no 80% requirement exists in repository instructions or CI.
 
 ## Acceptance and rollout status
 

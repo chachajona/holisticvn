@@ -3,6 +3,7 @@ import { builtinTypes } from "@sanity/schema/_internal";
 import { validateDocument } from "@sanity/validation";
 import { describe, expect, it } from "vitest";
 import { serviceGroups } from "@/lib/content";
+import { leadSchema } from "@/lib/validation";
 import { schemaTypes } from "@/sanity/schemaTypes";
 
 const schema = Schema.compile({ name: "test", types: [...schemaTypes, ...builtinTypes] });
@@ -56,6 +57,29 @@ describe("servicesPage schema", () => {
 
   it("accepts three complete groups", async () => {
     expect((await check(page(three()))).status).toBe("passed");
+  });
+
+  it.each([
+    ["Vietnamese title at 120 characters", "ị".repeat(120), true],
+    ["Vietnamese title at 121 characters", "ị".repeat(121), false],
+    ["emoji title at 120 code points", "😀".repeat(120), true],
+    ["emoji title at 121 code points", "😀".repeat(121), false],
+    ["120-character title surrounded by whitespace", `  ${"ị".repeat(120)}  `, true],
+  ])("matches booking validation for %s", async (_label, title, accepted) => {
+    const result = await check(
+      page([group("therapy", { title }), group("training"), group("recovery")]),
+    );
+    expect(result.status).toBe(accepted ? "passed" : "failed");
+    if (!accepted) expect(result.messages).toContain("Tên dịch vụ không được dài quá 120 ký tự.");
+    expect(
+      leadSchema.safeParse({
+        kind: "booking",
+        name: "Nguyễn An",
+        phone: "0901234567",
+        source: "/booking",
+        treatment: title,
+      }).success,
+    ).toBe(accepted);
   });
 
   it("blocks publishing a duplicated group", async () => {

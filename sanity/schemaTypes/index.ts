@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { serviceGroups, type ServiceGroup } from "@/lib/content";
+import { leadSchema } from "@/lib/validation";
 import { validateServiceGroups } from "@/sanity/serviceGroups";
 
 const seo = defineType({
@@ -102,7 +103,15 @@ const serviceGroup = defineType({
       name: "title",
       title: "Tên dịch vụ",
       type: "string",
-      validation: (rule) => rule.required().error("Cần tên dịch vụ."),
+      validation: (rule) => [
+        rule.required().error("Cần tên dịch vụ."),
+        // Reuse the booking limit, including its Unicode counting and whitespace trimming.
+        rule.custom((value) =>
+          leadSchema.shape.treatment.safeParse(value).success
+            ? true
+            : "Tên dịch vụ không được dài quá 120 ký tự.",
+        ),
+      ],
     }),
     defineField({
       name: "shortTitle",

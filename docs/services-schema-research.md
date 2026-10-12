@@ -144,20 +144,24 @@ Căn cứ: [Deciding on fields and relationships](https://www.sanity.io/docs/dev
 - Giới hạn: tối đa 32 MB mỗi document JSON, 1.000 thuộc tính mỗi document (gói Free/Growth), độ sâu tối đa 20; "arrays may not currently contain arrays"; một mảng không trộn object với kiểu nguyên thủy. Tôi ước lượng ba nhóm × khoảng 35 giá trị lá = khoảng 105, rất xa giới hạn; cách đếm thuộc tính theo document chưa xác minh (mục 4).
 - Trang "Attribute limit" khuyên dùng mảng để dựng trang (ít thuộc tính duy nhất hơn so với nhân đôi trường).
 
-## 4. Không xác minh được / cần thử trên staging
+## 4. Các điểm cần xác minh ở thời điểm nghiên cứu (2026-10-11)
+
+Danh sách ban đầu dưới đây giữ bối cảnh nghiên cứu. Kết quả nghiệm thu cập nhật nằm
+ở các tiểu mục ngày 2026-10-12 và [`SERVICES_VERIFICATION.md`](SERVICES_VERIFICATION.md);
+không dùng danh sách này làm checklist rollout hiện tại.
 
 1. **`document.singletons` có ổn định không.** Beta trong 6.17.0 (changelog + d.ts); không thấy dấu hiệu ổn định ở 6.18.0. Quyết định hiện tại: giữ cách thủ công.
 2. **Khi mở singleton chưa tồn tại, `initialValue` cấp mảng (với `_type` từng item) có được ghi vào draft ngay hay chỉ sau lần sửa đầu**, và lỗi `required`/`custom` có hiện ngay không.
 3. **Strong reference có chặn Unpublish treatment đang được nhóm tham chiếu không** (tài liệu chỉ nói chặn Delete và chặn publish document tham chiếu khi đích chưa publish). Ảnh hưởng đến Task 6 bước 3.
 4. **GROQ:** (a) `treatments[defined(@->slug.current)]->{...}` có parse và cho kết quả như mong đợi; (b) `array::compact(treatments[]->{...})` khi `treatments` là `null`; (c) `*[_id == "servicesPage"][0].groups[defined(group)]{...}` với `coalesce(..., [])` ngoài cùng. Thử trong Vision.
-5. **Trạng thái kẹt:** `disableActions: ["add","remove","duplicate"]` cộng `readOnly` theo `value` có để lại đường sửa cho editor khi tài liệu hỏng không, và Discard changes có đủ.
-6. **Webhook Sanity → `/api/revalidate` trên staging** đã được cấu hình với `SANITY_REVALIDATE_SECRET`? Không có thì tiêu chí "phản ánh trên preview" có thể trễ tới 3600 giây.
+5. **Trạng thái kẹt — đã kiểm chứng:** Studio chặn Publish draft có nhóm trùng/thiếu; Discard changes qua hộp xác nhận bỏ draft lỗi và giữ bản published hợp lệ.
+6. **Webhook — đã kiểm chứng:** staging tự động gọi `/api/revalidate` và cập nhật preview. Follow-up production cũng đã sửa auth, tách scope theo dataset và xác nhận delivery 200.
 7. **Nghĩa của "preview" trong #8** là suy ra từ câu chữ tiêu chí; cần owner xác nhận nếu muốn bản nháp.
 8. **Cách đếm thuộc tính theo document** (giới hạn 1.000): chỉ ước lượng.
 9. **`media.credit`**: không tìm thấy trong tài liệu `image`; `creditLine` thuộc asset document.
 10. **Ghi hai editor cùng lúc trên một singleton:** tài liệu nói thao tác theo `_key` an toàn, nhưng chưa thử với ảnh, reference và thay đổi thứ tự đồng thời.
-11. **Studio chặn Publish khi validator mảng lỗi** đã được tài liệu mô tả ("these will block the draft from being published"), nhưng thông điệp lỗi theo `path: [{_key}]` trên item trong mảng chưa nhìn thấy trong giao diện.
-12. **Seed bằng `--missing` ở ID đã publish:** chưa chạy; kiểm tra Studio hiển thị đúng trạng thái "published, không có draft" và Publish tiếp theo hoạt động.
+11. **Studio chặn Publish khi validator mảng lỗi — đã kiểm chứng:** thông điệp trùng/thiếu nhóm hiển thị trong Studio và Publish bị khoá.
+12. **Seed bằng `--missing` — đã kiểm chứng:** CLI chạy trên staging, chạy lại giữ nội dung đã có; Studio Publish tiếp theo hoạt động. Production đã được seed/publish riêng, không còn draft.
 
 ### Kiểm chứng Content Lake ngày 2026-10-12
 
@@ -188,11 +192,15 @@ bypass. Một thay đổi title qua Studio Publish nhận POST revalidate 200 sa
 preview hiện nội dung mới mà không revalidate thủ công. Xem evidence và phần khôi phục
 ở [`SERVICES_VERIFICATION.md`](SERVICES_VERIFICATION.md).
 
-Draft có nhóm trùng không ảnh hưởng query perspective `published`; xoá draft thử nghiệm
-giữ bản published nguyên vẹn. Đây là kiểm tra qua API, chưa xác minh nút Discard của Studio.
-Endpoint revalidate đã trả 200 với secret đúng và cập nhật trang sau mutation published,
-nhưng webhook tự động chưa được cấu hình/kiểm chứng. Chi tiết:
-[`SERVICES_VERIFICATION.md`](./SERVICES_VERIFICATION.md).
+### Follow-up review ngày 2026-10-12
+
+Tên dịch vụ được gửi nguyên vẹn vào trường booking `treatment`. Validator title của
+Studio nay dùng trực tiếp `leadSchema.shape.treatment` để giữ giới hạn 120 ký tự,
+trim khoảng trắng và cách đếm Unicode đồng nhất với API. Không dùng `rule.max(120)`
+riêng: bản Sanity đã cài đếm UTF-16, còn Zod đã cài đếm code point. Required vẫn có
+thông báo tiếng Việt riêng. Test validator thật kiểm tra 120/121 ký tự tiếng Việt,
+120/121 emoji và title 120 ký tự có khoảng trắng ở hai đầu; đối chiếu cùng payload
+booking bằng `leadSchema`.
 
 ## 5. Hệ quả cho repo
 
