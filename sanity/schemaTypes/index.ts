@@ -336,7 +336,7 @@ const methodsPage = defineType({
       name: "groups",
       title: "Năm nhóm phương pháp",
       description:
-        "Thứ tự hiển thị cố định. Phải đủ trị liệu thủ công, điện trị liệu, tập luyện phục hồi, ngâm lạnh, đèn hồng ngoại, mỗi nhóm một lần.",
+        "Thứ tự hiển thị cố định. Phải đủ trị liệu thủ công, trị liệu bằng thiết bị, tập luyện phục hồi & tăng cường, ngâm lạnh, đèn hồng ngoại, mỗi nhóm một lần.",
       type: "array",
       of: [defineArrayMember({ type: "methodGroup" })],
       options: {
