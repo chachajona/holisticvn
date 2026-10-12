@@ -20,7 +20,7 @@ Ngoài phạm vi: thêm phương pháp thứ sáu, tạo document `treatment` m�
 - Document singleton `methodsPage` với mảng `groups` gồm năm object `methodGroup`.
 - `methodGroup`:
   - `group`: `manual | electro | rehab | cold | infrared`, bắt buộc, `readOnly` sau khi có giá trị.
-  - `title`, `indexSubtitle`, `body`: bắt buộc.
+  - `title`, `body`: bắt buộc. `indexSubtitle`: tuỳ chọn; thiếu thì thẻ chọn nhóm bỏ dòng phụ.
   - `tags`: mảng chuỗi, tối đa 5, không trùng, không rỗng.
   - `image` kèm `alt`; bắt buộc `alt` khi có asset. Bỏ trống thì dùng ảnh mặc định của nhóm.
   - `treatments`: mảng reference mạnh tới `treatment`, `options.filter: "defined(slug.current)"`, `disableNew: true`, `rule.unique()`. Một liệu pháp được phép xuất hiện ở hai nhóm khác nhau, không được lặp trong cùng nhóm.
