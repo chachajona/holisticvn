@@ -1,6 +1,6 @@
 # Nhóm phương pháp trong Sanity — thiết kế (#9)
 
-Trạng thái: **đã duyệt thiết kế trong chat (2026-10-12), chờ review bản viết**. Chưa có code nào được viết theo spec này.
+Trạng thái: **đã duyệt thiết kế trong chat (2026-10-12); owner xác nhận 5 nhóm và gửi bảng giá để ánh xạ (mục 10)**. Chưa có code nào được viết theo spec này.
 Liên quan: #1 (tracking), #8 (mẫu `servicesPage`), #6 (blocker, đã xong). Căn cứ kỹ thuật: `docs/methods-schema-research.md`, `docs/services-schema-research.md`.
 
 ## 1. Bối cảnh và mục tiêu
@@ -35,13 +35,14 @@ Ngoài phạm vi: thêm phương pháp thứ sáu, tạo document `treatment` m�
 - `lib/sanity.ts`: `getMethods()` truy vấn `*[_id == "methodsPage"][0].groups[defined(group)]{…, "treatments": treatments[]->{"slug":slug.current,title}}`, parse bằng zod (cùng lớp `cdnImage`, `text`, `strings`).
   - Bỏ nhóm không hợp lệ hoặc trùng; bỏ reference `null` và liệu pháp thiếu `slug`/`title`.
   - Ảnh thiếu hoặc không thuộc `cdn.sanity.io` dùng `methodFallbackImage[group]`.
+- Liên kết liệu pháp viết cứng chỉ dùng khi Sanity chưa cấu hình. Khi đã cấu hình, `dry-needling` và `iastm` chưa có document trong dataset, nên nhóm rơi về fallback không mang theo link nào (không dẫn tới slug không tồn tại).
 - **Fallback theo từng nhóm**, khác `/services`: footer luôn có năm link neo (`footerMethods`), nên nhóm thiếu/lỗi rơi về nội dung viết cứng của chính nhóm đó và kết quả luôn đủ năm nhóm theo thứ tự chuẩn.
 
 | Trạng thái                                  | Kết quả                                           |
 | ------------------------------------------- | ------------------------------------------------- |
-| Sanity chưa cấu hình                        | Toàn bộ fallback                                  |
-| Singleton chưa publish (`null`)             | Toàn bộ fallback                                  |
-| Nhóm thiếu hoặc không hợp lệ                | Fallback của nhóm đó                              |
+| Sanity chưa cấu hình                        | Toàn bộ fallback, kèm liên kết liệu pháp viết cứng |
+| Singleton chưa publish (`null`)             | Nội dung fallback của cả 5 nhóm, **không** có liên kết liệu pháp |
+| Nhóm thiếu hoặc không hợp lệ                | Nội dung fallback của nhóm đó, **không** có liên kết liệu pháp |
 | Reference trỏ liệu pháp bị gỡ hoặc thiếu slug | Mục bị bỏ; không link chết                      |
 | `client.fetch` ném lỗi                      | Ném lỗi (ISR giữ trang cũ), giống hành vi hiện tại |
 
@@ -82,8 +83,25 @@ Vitest, mỗi file sao từ file tương ứng của #8:
 
 ## 9. Câu hỏi cần owner
 
-1. Xác nhận năm nhóm là chính thức để sửa mô tả #9.
-2. Duyệt ánh xạ liệu pháp theo nhóm (đề xuất `manual` → `cupping`, `cold` → `cold-plunge`, `infrared` → `heat-light`; `electro` và `rehab` chưa có `treatment`). `dry-needling` và `iastm` chỉ có ở fallback.
+1. ~~Xác nhận năm nhóm~~ — đã xác nhận 2026-10-12. Còn lại: sửa mô tả #9 từ "bốn nhóm" thành năm nhóm.
+2. ~~Duyệt ánh xạ liệu pháp theo nhóm~~ — đã gửi bảng giá, ánh xạ ở mục 10. Còn lại: tạo document `treatment` cho các dịch vụ chưa có trang (follow-up, ngoài #9).
 3. Duyệt vị trí và nhãn khối "Liệu pháp liên quan".
 4. Xác nhận `tags` và `body` hiện có là nội dung đã duyệt.
 5. Ai thêm `methodsPage` vào filter webhook staging và production.
+
+## 10. Ánh xạ bảng giá vào năm nhóm (owner gửi bảng giá 2026-10-12)
+
+Căn cứ: ảnh bảng giá phòng khám (VN và EN). Chỉ dùng để xác định dịch vụ nào thuộc nhóm nào; không đổi nội dung nhóm, không tạo `treatment` mới.
+
+| Nhóm       | Dịch vụ trong bảng giá                                                       | `treatment` đã có document |
+| ---------- | ---------------------------------------------------------------------------- | -------------------------- |
+| `manual`   | Massage trị liệu toàn thân, massage cục bộ, nắn chỉnh cột sống, IASTM, tapping, giác hơi, châm khô | `cupping` (production); `iastm`, `dry-needling` chỉ có ở fallback |
+| `electro`  | Xung kích, điện xung, sóng siêu âm, điện châm                                | không có                   |
+| `rehab`    | Tập luyện phục hồi, tập luyện tăng cường                                     | không có                   |
+| `cold`     | Ngâm lạnh                                                                    | `cold-plunge`              |
+| `infrared` | Đèn hồng ngoại                                                               | `heat-light`               |
+| (không nhóm) | Tư vấn, đánh giá tình trạng sức khoẻ vận động (199k)                       | trả lời bằng CTA đặt buổi đánh giá |
+
+- Bốn dịch vụ ở `manual` không phải thao tác thuần tay (tapping, châm khô, IASTM dùng dụng cụ). Chúng ở đây vì mô tả của nhóm là "chuyên viên can thiệp trực tiếp lên khớp, cơ và mô mềm". Điện châm ở `electro` vì dùng dòng điện. Đây là phán đoán cần owner xác nhận.
+- Dịch vụ chưa có `treatment` (massage, nắn chỉnh, tapping, xung kích, điện xung, siêu âm, điện châm, hai chương trình tập) không có link chi tiết cho tới khi owner tạo document. Tạo document nằm ngoài phạm vi #9.
+- Liên kết trong seed fallback: `manual` → `dry-needling`, `cupping`, `iastm`; `cold` → `cold-plunge`; `infrared` → `heat-light`; `electro`, `rehab` → không có.
