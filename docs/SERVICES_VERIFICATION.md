@@ -14,8 +14,9 @@ is unchanged by these follow-ups.
 - Only Preview branch `feat/8-services-sanity-cta` uses `staging` through
   `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_DATASET` and `SANITY_STUDIO_DATASET`.
   Pulling another branch's Preview environment confirmed it still uses `production`.
-- The owner deferred live email sends. Browser submissions were intercepted before
-  reaching `/api/leads`; no provider or staff message was sent.
+- Browser submissions were intercepted before reaching `/api/leads`; no provider
+  or staff message was sent. On 2026-10-12, the owner explicitly waived live email
+  verification for this PR and authorized production seed/publish.
 - Credentials, protection cookies, raw SDK results and screenshots are kept in ignored
   `.context/acceptance/` files. Secret values are excluded from evidence and commits.
 
@@ -149,11 +150,10 @@ reload showed the original title. Published groups match the baseline exactly an
 no draft remains. This demonstrates automatic refresh, without guaranteeing the
 first post-webhook request is fresh.
 
-The existing production webhook targets `www.holisticvn.com` with **All datasets**;
-its configuration was left untouched. Staging changes may therefore also invalidate
-production cache, although production content was not edited. The staging webhook
-occupies the second included webhook slot and should be removed when this preview
-is retired. Configuration follows [Sanity custom headers and triggers](https://www.sanity.io/docs/content-lake/webhooks)
+At this staging-check point, the existing production webhook targeted
+`www.holisticvn.com` with **All datasets**. The later authorized production follow-up
+below scopes it to production and repairs its authentication. The staging webhook
+occupies the second included slot and should be removed when this preview is retired. Configuration follows [Sanity custom headers and triggers](https://www.sanity.io/docs/content-lake/webhooks)
 and [Vercel automation bypass](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation).
 
 ### Email regression and legacy inventory
@@ -166,9 +166,75 @@ or mailbox appearance. Repository suite: **120 tests / 25 files**.
 Read-only production inspection found four legacy `service` records: Giác hơi,
 Đèn hồng ngoại and Bể ngâm lạnh have resolving strong references; Tập luyện trị liệu
 has none. No production content was changed or deleted. Production `servicesPage`
-is still absent.
+was absent at this staging-check point; the authorized production follow-up below
+creates it.
 
-## Remaining acceptance and rollout
+## Production seed/publish — 2026-10-12
+
+The owner authorized production seed/publish and removed live email delivery from
+this PR's required verification. Delivery remains unverified; no live booking or
+email request was submitted.
+
+Before writing, captured all 75 existing production documents in ignored local
+`production-before-seed.json`. Neither `servicesPage` nor its draft existed.
+Prepared the restored, tested staging copy with production assets and the existing
+production treatment IDs; no treatment record was copied or invented. Uploaded
+`Iastm.jpg`, `Coaching.jpg` and `Infrared.jpg` from the approved clinic photo set.
+
+Two additional temporary tests passed: the actual Sanity schema validator against
+production targets, and resolving the approved slugs/strong references/production
+image URLs. The installed CLI then created the published ID without replacing an
+existing document:
+
+```bash
+npx sanity documents create .context/acceptance/production-services-page.json \
+  --missing --project-id yjzexxml --dataset production
+```
+
+CLI output: `Created: servicesPage`; published at `2026-10-12T02:29:06Z`.
+The public, unauthenticated service projection and authenticated Vision
+(`production`, `v2025-01-01`, `published`) return exactly:
+
+| Group    | Treatment slugs         | Image HTTP status |
+| -------- | ----------------------- | ----------------- |
+| therapy  | cupping                 | 200               |
+| training | None                    | 200               |
+| recovery | heat-light, cold-plunge | 200               |
+
+The 75 pre-existing documents remain identical to their snapshots. Additions are
+only three image assets and the published singleton; no draft or test marker remains.
+Preview continues using staging. Data snapshots and seed payload remain ignored
+local artifacts; published data is additive and compatible with the previous app.
+
+### Production webhook repair and deployment check
+
+The initial production seed triggered `/api/revalidate` **401**. The production
+`SANITY_REVALIDATE_SECRET` variable existed with an empty value, and the existing
+Sanity webhook had no custom authentication header. Configured a non-empty private
+production secret in Vercel and the matching custom `x-sanity-secret` header in
+webhook `Revalidate` (`Syff8uI7XZEcKd5Q`). Scoped that webhook from All datasets to
+**production only**; published Create/Update/Delete, POST and disabled draft/version
+triggers are preserved. The staging webhook remains staging only.
+
+Activated the environment change by redeploying the exact existing main revision
+`89036bff6177c3105b7f5655046c5a7eb623630f`. Active production deployment:
+`dpl_D4UYL1fxoc8B37o9dFSoHizhT13M`, source revision unchanged. PR #40 was not merged
+or deployed to production.
+
+A revision-guarded republish of the identical approved groups triggered an actual
+production webhook POST **200** at `2026-10-12T02:35:18.648Z`, recorded on the new
+production deployment. No visible test content was added. Read-only smoke checks
+for `/services`, `/booking`, `/treatments/cupping`, `/treatments/heat-light` and
+`/treatments/cold-plunge` returned **200**, with the expected page titles, main and h1.
+
+The live site still uses main's existing services implementation. The PR's CMS-driven
+service rendering and booking-context changes become live after review, merge and
+production deployment; the production content prerequisite is now satisfied.
+
+Screenshots: `production-services-vision.png` and `production-webhook-scoped.png`
+in `.context/acceptance/`. Secret values are excluded from screenshots and commits.
+
+## Acceptance and rollout status
 
 CORS follow-up: the owner added the credentialed branch origin. A real preflight to
 Sanity returned **204**, the exact branch `Access-Control-Allow-Origin`,
@@ -193,13 +259,15 @@ signed into this isolated profile; authenticated Studio and Vision checks passed
 - [x] Confirm the localized validation messages on the updated deployed Studio.
 - [x] Configure and verify an actual staging webhook through Vercel deployment
       protection, with HTTP 200 and an automatically refreshed published page.
-- [ ] Send a controlled booking and confirm received email with staff when the owner
-      enables live sends. Preview has no `RESEND_API_KEY` and an empty `RESEND_FROM_EMAIL`;
-      delivery is deferred by owner decision.
-- [ ] Seed/publish production before merging/deploying this catalogue change.
-      Staging acceptance does not seed production.
+- [x] Owner waived live booking/email delivery verification for this PR. Mocked UI
+      and email-render checks remain verified; actual delivery is not claimed.
+- [x] Seed/publish production with valid copy, production images and real strong
+      references; verify public projection, no draft, preserved existing records
+      and repaired production webhook authentication.
 
-Keep PR #40 as a draft and issue #8 open until outstanding checks have evidence.
+Implementation/data acceptance is complete under the explicit email waiver. PR #40
+is ready for review; keep issue #8 open until the change is merged. Production code
+rollout still follows review/merge.
 Screenshots: `.context/acceptance/services-staging-{320,768,1440}.png`,
 `services-staging-mutation.png`, `booking-staging-{320,768,1440}.png`,
 `studio-validation-{missing-copy-alt,duplicate-reference,duplicate-group}.png`,

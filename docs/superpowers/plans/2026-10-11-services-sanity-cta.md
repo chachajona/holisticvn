@@ -800,7 +800,8 @@ Kết quả thực tế ngày 2026-10-12: xem [`docs/SERVICES_VERIFICATION.md`](
 Đã seed staging, thử mutation bản published và khôi phục, kiểm tra responsive/keyboard/CTA,
 reference và schema qua SDK, cùng revalidate thủ công. Phiên đã đăng nhập cũng đã kiểm
 tra Studio/Vision, Discard và Publish; webhook staging tự động nhận 200 và cập nhật
-preview. Email thật hoãn theo owner; production chưa seed. Các mutation order/ảnh/reference
+preview. Owner đã miễn kiểm tra email thật và cho phép seed/publish production ngày
+2026-10-12; production đã seed và webhook 401 đã sửa thành 200. Các mutation order/ảnh/reference
 được thực hiện qua SDK, còn title và Publish/khôi phục được thực hiện trực tiếp trong Studio.
 
 - [x] **Step 1: Nạp nội dung.** Chạy Task 6 bước 5, hoặc mở Studio → "Trang Dịch vụ", Studio tự điền ba nhóm từ `initialValue`; điền `title`, `summary`, `body` rồi Publish. Xác nhận Studio hiện đủ ba nhóm, không có nút thêm/xoá/nhân bản, và không có Unpublish/Delete.
@@ -809,7 +810,7 @@ preview. Email thật hoãn theo owner; production chưa seed. Các mutation ord
 - [x] **Step 4: Validation trong Studio.** Thử đổi `group` (phải khoá), để trống `summary`, thêm ảnh không alt, chọn cùng treatment hai lần: Studio phải chặn Publish với thông báo tiếng Việt đúng.
 - [x] **Step 5: Lối thoát khi tài liệu hỏng.** Ghi qua API một bản có trùng `group` vào draft; xác nhận Discard changes khôi phục bản đã publish và zod vẫn giữ trang hiển thị đúng.
 - [x] **Step 6: Query và webhook.** Trong Vision chạy câu GROQ của `getServices()` và xác nhận `treatments[]->{...}` trả `null` cho mục trỏ tới document không còn (và `array::compact` nếu muốn bỏ ở phía query); xác nhận webhook Sanity gọi `/api/revalidate` với `SANITY_REVALIDATE_SECRET` để thay đổi hiện ngay thay vì trễ tới 3600 giây.
-- [ ] **Step 7: CTA, bàn phím, responsive.** Phần UI/keyboard/responsive đã qua; email delivery còn hoãn theo owner. Bấm "Đặt lịch →" ở từng nhóm: `/booking?service=<group>` hiện "Dịch vụ: …", gửi form và kiểm tra email nhân viên có dòng "Dịch vụ: <tên dịch vụ>". Tab qua thẻ nhóm và CTA ở 320 / 768 / desktop.
+- [x] **Step 7: CTA, bàn phím, responsive.** Phần UI/keyboard/responsive đã qua; owner miễn kiểm tra email delivery cho PR này, không khẳng định email đã được gửi/nhận. Bấm "Đặt lịch →" ở từng nhóm: `/booking?service=<group>` hiện "Dịch vụ: …"; response mock và email-render test giữ đúng nhãn/ngữ cảnh dịch vụ. Tab qua thẻ nhóm và CTA ở 320 / 768 / desktop.
 - [x] **Step 8: Gắn kết quả vào PR.** Cập nhật PR bằng tiếng Anh với evidence; screenshot giữ trong `.context/acceptance/` và hiển thị inline cho owner trong Conductor, không upload lên GitHub. Chỉ khi đủ evidence mới đề nghị đóng #8.
 
 ### Task 10: Việc tách ra (không làm trong PR này)
