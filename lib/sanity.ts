@@ -71,7 +71,12 @@ const methodSchema = z
   .transform((method) => ({
     ...method,
     image: method.image ?? methodFallbackImage[method.group],
-    imageAlt: method.imageAlt || method.title,
+    imageAlt: method.image
+      ? method.imageAlt || method.title
+      : fallbackMethods.find((fallback) => fallback.group === method.group)!.imageAlt,
+    treatments: method.treatments.filter(
+      (treatment, i, links) => links.findIndex((link) => link.slug === treatment.slug) === i,
+    ),
   }));
 const treatmentSchema = z.object({
   ...record,

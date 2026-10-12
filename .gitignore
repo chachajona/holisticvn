@@ -16,3 +16,4 @@ migration-output/
 *.pem
 *.key
 *.log
+.vercel

@@ -8,13 +8,13 @@ import styles from "./treatments.module.css";
 /*
 DIRECTION CONTRACT (impeccable, brief-pinned — comp supplied as full desktop 1440 /
 mobile 390 mock, no concept roll).
-THESIS: Phương pháp (Methods) — a curated editorial index of the four technique
+THESIS: Phương pháp (Methods) — a curated editorial index of the five technique
 families Holistic draws from, presented as a numbered timeline rather than a raw
 CMS treatment list, so a first-time visitor understands the "why" before the
 "which."
 OWN-WORLD: same Warm Clay Editorial v2 chrome as the homepage — card ground, ink
 hero panel, sage/clay actions, Roboto Slab headings over Roboto Serif body.
-STORY: a visitor unsure which technique fits reads four grouped families, sees
+STORY: a visitor unsure which technique fits reads five grouped families, sees
 which symptoms each addresses, and books an assessment rather than guessing.
 FIRST VIEWPORT: 340px full-bleed dark hero card, breadcrumb, "Phương pháp" title,
 one clarifying line.
