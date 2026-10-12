@@ -4,7 +4,7 @@ import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import { schemaTypes } from "@/sanity/schemaTypes";
 
-const singletonTypes = new Set(["siteSettings", "servicesPage"]);
+const singletonTypes = new Set(["siteSettings", "servicesPage", "methodsPage"]);
 
 export default defineConfig({
   name: "holisticvn",
@@ -27,6 +27,10 @@ export default defineConfig({
               .title("Trang Dịch vụ")
               .id("servicesPage")
               .child(S.document().schemaType("servicesPage").documentId("servicesPage")),
+            S.listItem()
+              .title("Trang Phương pháp")
+              .id("methodsPage")
+              .child(S.document().schemaType("methodsPage").documentId("methodsPage")),
             S.divider(),
             ...S.documentTypeListItems().filter((item) => !singletonTypes.has(item.getId() ?? "")),
           ]),
