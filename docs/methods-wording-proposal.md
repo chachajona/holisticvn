@@ -1,6 +1,6 @@
 # Bản đề xuất wording năm nhóm phương pháp
 
-Ngày: 2026-10-12. Trạng thái: **owner đã duyệt và yêu cầu cập nhật CMS/website ngày 2026-10-12**. Đây là câu chữ biên tập mới, không phải trích nguyên văn bảng dịch vụ. Nội dung đã cập nhật đồng bộ fallback, seed và CMS staging; bộ lọc đã triển khai trên website và Preview. Nhánh vẫn giữ local, production chưa triển khai.
+Ngày: 2026-10-12. Trạng thái: **owner đã duyệt và yêu cầu cập nhật CMS/website ngày 2026-10-12**. Đây là câu chữ biên tập mới, không phải trích nguyên văn bảng dịch vụ. Nội dung các nhóm đã cập nhật đồng bộ fallback, seed và CMS staging; bộ lọc đã triển khai trên website và Preview. Nhánh vẫn giữ local, production chưa triển khai.
 
 ## Căn cứ và phạm vi
 
@@ -12,9 +12,11 @@ Ngày: 2026-10-12. Trạng thái: **owner đã duyệt và yêu cầu cập nh�
 
 Giữ năm nhóm, mã nhóm, anchor, ánh xạ và vị trí “Liệu pháp liên quan” đã duyệt. Hai tên hiển thị mới đã được chấp thuận cùng yêu cầu cập nhật; không thay đổi phân nhóm kỹ thuật. Giá và thời lượng dịch vụ nằm ngoài bản nháp này.
 
-## Câu dẫn đề xuất
+## Câu dẫn đã duyệt
 
-Mỗi người có thói quen sinh hoạt và khả năng vận động riêng. Holistic bắt đầu từ việc đánh giá cách bạn chuyển động, rồi kết hợp trị liệu và bài tập theo tình trạng và mục tiêu của bạn.
+Holistic đánh giá khả năng vận động, rồi kết hợp trị liệu và bài tập phù hợp với nhu cầu của bạn.
+
+Owner duyệt bản rút gọn trên ngày 2026-10-12 để mô tả hero ngắn và dễ đọc hơn. Câu dẫn được cập nhật trực tiếp tại `app/treatments/page.tsx`.
 
 CTA: **Đặt lịch đánh giá ban đầu**.
 
@@ -129,7 +131,7 @@ Các câu “tự chữa lành” và “khả năng chịu đựng của hệ t
 - [x] Owner duyệt mô tả năm nhóm.
 - [x] Owner duyệt bộ nhãn dùng chung, ánh xạ nhãn vào nhóm và hành vi lọc.
 - [x] Owner duyệt hai tên hiển thị mới.
-- [x] Owner duyệt câu dẫn đề xuất nếu thay câu dẫn của trang.
+- [x] Owner duyệt câu dẫn rút gọn; đã cập nhật trong mã nguồn trang ngày 2026-10-12.
 - [x] Owner duyệt CTA mới nếu thay “Đặt buổi đánh giá”.
 
 Đã cập nhật đồng bộ CMS staging, fallback và seed; `indexSubtitle` dùng mô tả kỹ thuật/mục tiêu ngắn, không lặp tuyên bố cũ. Nguồn thật và fallback đều được kiểm tra. Bằng chứng: [METHODS_FILTERS_VERIFICATION.md](METHODS_FILTERS_VERIFICATION.md). Giữ nhánh local theo yêu cầu của owner.

@@ -54,9 +54,8 @@ export default async function TreatmentsPage() {
             </div>
             <h1>Phương pháp</h1>
             <p className={styles.heroBody}>
-              Mỗi người có thói quen sinh hoạt và khả năng vận động riêng. Holistic bắt đầu từ việc
-              đánh giá cách bạn chuyển động, rồi kết hợp trị liệu và bài tập theo tình trạng và mục
-              tiêu của bạn.
+              Holistic đánh giá khả năng vận động, rồi kết hợp trị liệu và bài tập phù hợp với nhu
+              cầu của bạn.
             </p>
           </div>
         </div>
