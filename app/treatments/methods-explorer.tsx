@@ -2,13 +2,12 @@
 
 import {
   createContext,
+  Fragment,
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
-  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import Link from "next/link";
@@ -16,15 +15,21 @@ import type { MethodGroup } from "@/lib/content";
 import { matchesMethodTags, methodTagLabel, methodTags, type MethodTagId } from "@/lib/method-tags";
 import styles from "./treatments.module.css";
 
-const subscribeToHydration = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
+type TagCategory = (typeof methodTags)[number]["category"];
+type Choice = Partial<Record<TagCategory, MethodTagId>>;
+
+const categoryOf = (id: MethodTagId) => methodTags.find((tag) => tag.id === id)!.category;
+// One choice per category (a select each); a tag in either slot counts, so results are the union.
+const toggled = (choice: Choice, id: MethodTagId): Choice => ({
+  ...choice,
+  [categoryOf(id)]: choice[categoryOf(id)] === id ? undefined : id,
+});
+
 const FilterContext = createContext<{
-  selected: MethodTagId[];
+  choice: Choice;
   toggle: (id: MethodTagId) => void;
-  recoverFocus: (id: string) => void;
-  ready: boolean;
-}>({ selected: [], toggle: () => {}, recoverFocus: () => {}, ready: false });
+  revealed: string | null;
+}>({ choice: {}, toggle: () => {}, revealed: null });
 
 function SelectionMark() {
   return (
@@ -41,80 +46,139 @@ function SelectionMark() {
   );
 }
 
+const tagRows = [
+  { category: "condition", label: "Khi bạn gặp" },
+  { category: "goal", label: "Khi bạn muốn" },
+] as const;
+
 export function MethodTags({ ids }: { ids: MethodTagId[] }) {
-  const { selected, toggle, recoverFocus, ready } = useContext(FilterContext);
+  const { choice, toggle } = useContext(FilterContext);
   return ids.length ? (
     <div className={styles.methodTags}>
-      {ids.map((id) => (
-        <button
-          type="button"
-          disabled={!ready}
-          key={id}
-          aria-pressed={selected.includes(id)}
-          onClick={() => {
-            const next = selected.includes(id)
-              ? selected.filter((value) => value !== id)
-              : [...selected, id];
-            toggle(id);
-            // If this section disappears, keep keyboard focus on the corresponding filter.
-            if (!matchesMethodTags(ids, next)) recoverFocus(`method-filter-${id}`);
-          }}
-        >
-          <SelectionMark />
-          {methodTagLabel(id)}
-        </button>
-      ))}
+      {tagRows.map(({ category, label }) => {
+        const rowIds = ids.filter((id) => categoryOf(id) === category);
+        return rowIds.length ? (
+          <div key={category} className={styles.tagRow} role="group" aria-label={label}>
+            <span className={styles.tagRowLabel} aria-hidden="true">
+              {label}
+            </span>
+            <div className={styles.tagPills}>
+              {rowIds.map((id) => (
+                <button
+                  type="button"
+                  key={id}
+                  aria-pressed={choice[category] === id}
+                  onClick={() => {
+                    const next = Object.values(toggled(choice, id));
+                    toggle(id);
+                    // If this section disappears, keep keyboard focus on the corresponding filter.
+                    if (!matchesMethodTags(ids, next))
+                      document
+                        .getElementById(`method-filter-${category}`)
+                        ?.focus({ preventScroll: true });
+                  }}
+                >
+                  <SelectionMark />
+                  {methodTagLabel(id)}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null;
+      })}
     </div>
   ) : null;
 }
 
+// On narrow screens a method is a collapsed row (thumbnail, title, subtitle) that opens on demand;
+// from 701px up the CSS ignores the state and shows everything.
+export function MethodArticle({
+  id,
+  title,
+  media,
+  head,
+  children,
+}: {
+  id: string;
+  title: string;
+  media: ReactNode;
+  head: ReactNode;
+  children: ReactNode;
+}) {
+  const { choice, revealed } = useContext(FilterContext);
+  const selection = Object.values(choice).join();
+  const [toggledOpen, setToggledOpen] = useState<{ selection: string; open: boolean } | null>(null);
+  // An active filter or a footer link opens its rows; a tap on the row always wins afterwards.
+  const open =
+    toggledOpen?.selection === selection ? toggledOpen.open : Boolean(selection) || revealed === id;
+  return (
+    <article className={styles.method} id={id} tabIndex={-1} data-open={open || undefined}>
+      {media}
+      <div className={styles.methodHead}>{head}</div>
+      <button
+        type="button"
+        className={styles.methodToggle}
+        aria-expanded={open}
+        aria-controls={`${id}-body`}
+        aria-label={title}
+        onClick={() => setToggledOpen({ selection, open: !open })}
+      />
+      <div className={styles.methodBody} id={`${id}-body`}>
+        <div className={styles.methodBodyInner}>{children}</div>
+      </div>
+    </article>
+  );
+}
+
 type ExplorerItem = {
   group: MethodGroup;
+  stage: string;
   anchor: string;
-  title: string;
-  indexSubtitle: string;
   filterTags: MethodTagId[];
   content: ReactNode;
 };
 
-export function MethodsExplorer({ items }: { items: ExplorerItem[] }) {
-  const [selected, setSelected] = useState<MethodTagId[]>([]);
-  const [destination, setDestination] = useState<{ anchor: string; center?: boolean } | null>(null);
-  const recoverFocus = useCallback(
-    (id: string) => setDestination({ anchor: id, center: true }),
-    [],
+export function MethodsExplorer({
+  items,
+  stages,
+}: {
+  items: ExplorerItem[];
+  stages: { id: string; title: string }[];
+}) {
+  const [choice, setChoiceState] = useState<Choice>({});
+  // Results only animate in after the visitor has changed the filter, never on first paint.
+  const [touched, setTouched] = useState(false);
+  const setChoice = useCallback((next: Choice | ((current: Choice) => Choice)) => {
+    setTouched(true);
+    setChoiceState(next);
+  }, []);
+  const selected = useMemo(
+    () => Object.values(choice).filter((id): id is MethodTagId => Boolean(id)),
+    [choice],
   );
-  const ready = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot);
   const toggle = useCallback(
-    (id: MethodTagId) =>
-      setSelected((current) =>
-        current.includes(id) ? current.filter((value) => value !== id) : [...current, id],
-      ),
-    [],
+    (id: MethodTagId) => setChoice((current) => toggled(current, id)),
+    [setChoice],
   );
-  const context = useMemo(
-    () => ({ selected, toggle, recoverFocus, ready }),
-    [selected, toggle, recoverFocus, ready],
-  );
+  const [revealed, setRevealed] = useState<string | null>(null);
+  const context = useMemo(() => ({ choice, toggle, revealed }), [choice, toggle, revealed]);
   const availableTags = methodTags.filter((tag) =>
     items.some((item) => item.filterTags.includes(tag.id)),
   );
   const visible = items.filter((item) => matchesMethodTags(item.filterTags, selected));
 
-  const reveal = useCallback((anchor: string) => {
-    setSelected([]);
-    setDestination({ anchor });
-  }, []);
-
-  // Visibility has committed before scrolling; no delayed callback can survive unmount.
-  useLayoutEffect(() => {
-    if (!destination) return;
-    const target = document.getElementById(destination.anchor);
-    target?.scrollIntoView(
-      destination.center ? { block: "center", behavior: "instant" } : undefined,
-    );
-    target?.focus({ preventScroll: true });
-  }, [destination]);
+  const reveal = useCallback(
+    (anchor: string) => {
+      setChoice({});
+      setRevealed(anchor);
+      requestAnimationFrame(() => {
+        const target = document.getElementById(anchor);
+        target?.scrollIntoView();
+        target?.focus({ preventScroll: true });
+      });
+    },
+    [setChoice],
+  );
 
   useEffect(() => {
     const onHashChange = () => {
@@ -157,111 +221,108 @@ export function MethodsExplorer({ items }: { items: ExplorerItem[] }) {
 
   return (
     <FilterContext value={context}>
-      <section className={styles.filters} aria-labelledby="method-filter-heading">
-        <h2 id="method-filter-heading" tabIndex={-1}>
-          {availableTags.length
-            ? "Bạn đang gặp vấn đề gì hoặc muốn cải thiện điều gì?"
-            : "Khám phá các phương pháp tại Holistic"}
-        </h2>
-        <p>
-          {availableTags.length
-            ? "Chọn một hoặc nhiều mục. Kết quả liên quan đến ít nhất một mục bạn chọn. Chuyên viên sẽ cùng bạn lựa chọn phương pháp qua buổi đánh giá."
-            : "Bạn có thể xem các phương pháp bên dưới hoặc đặt lịch đánh giá ban đầu để trao đổi cùng chuyên viên."}
-        </p>
-        <div className={styles.filterCategories}>
+      <section className={styles.finder} aria-label="Lọc phương pháp">
+        <p className={styles.sentence}>
           {(["condition", "goal"] as const).map((category) => {
             const tags = availableTags.filter((tag) => tag.category === category);
             return tags.length ? (
-              <fieldset key={category} className={styles.filterCategory}>
-                <legend>
-                  {category === "condition" ? "Tình trạng của bạn" : "Mục tiêu của bạn"}
-                </legend>
-                <div className={styles.filterChoices}>
-                  {tags.map((tag) => (
+              <Fragment key={category}>
+                {category === "condition" ? "Tôi đang gặp " : " và\u00a0muốn "}
+                <span className={styles.field}>
+                  <select
+                    id={`method-filter-${category}`}
+                    aria-label={
+                      category === "condition" ? "Tình trạng của bạn" : "Mục tiêu của bạn"
+                    }
+                    data-empty={!choice[category] || undefined}
+                    value={choice[category] ?? ""}
+                    onChange={(event) =>
+                      setChoice((current) => ({
+                        ...current,
+                        [category]: event.target.value || undefined,
+                      }))
+                    }
+                  >
+                    <option value="">
+                      {category === "condition" ? "vấn đề nào" : "cải thiện điều gì"}
+                    </option>
+                    {tags.map((tag) => (
+                      <option key={tag.id} value={tag.id}>
+                        {tag.label.toLocaleLowerCase("vi")}
+                      </option>
+                    ))}
+                  </select>
+                  {choice[category] ? (
                     <button
                       type="button"
-                      disabled={!ready}
-                      key={tag.id}
-                      id={`method-filter-${tag.id}`}
-                      aria-pressed={selected.includes(tag.id)}
-                      onClick={() => toggle(tag.id)}
+                      className={styles.clearValue}
+                      aria-label={`Bỏ ${methodTagLabel(choice[category]!).toLocaleLowerCase("vi")}`}
+                      onClick={() => {
+                        setChoice((current) => ({ ...current, [category]: undefined }));
+                        // The button unmounts; keep keyboard focus on its select.
+                        document.getElementById(`method-filter-${category}`)?.focus();
+                      }}
                     >
-                      <SelectionMark />
-                      {tag.label}
+                      <svg aria-hidden="true" viewBox="0 0 16 16">
+                        <path
+                          d="m4.5 4.5 7 7m0-7-7 7"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                        />
+                      </svg>
                     </button>
-                  ))}
-                </div>
-              </fieldset>
+                  ) : null}
+                </span>
+              </Fragment>
             ) : null;
           })}
-        </div>
-        <div className={styles.filterResult}>
-          <p role="status" aria-live="polite" aria-atomic="true">
-            Đang hiển thị {visible.length} phương pháp
+        </p>
+        <div className={styles.finderStatus}>
+          <p
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-idle={!selected.length || undefined}
+          >
+            {selected.length
+              ? `${visible.length} phương pháp`
+              : `Đang hiển thị ${visible.length} phương pháp`}
           </p>
-          {availableTags.length || selected.length ? (
-            <button
-              type="button"
-              onClick={() => {
-                if (!availableTags.length) recoverFocus("method-filter-heading");
-                setSelected([]);
-              }}
-              disabled={!ready || !selected.length}
-            >
-              Xóa bộ lọc
-            </button>
-          ) : null}
         </div>
-        {selected.length ? (
-          <p className={styles.selectedFilters}>
-            Đang chọn: {selected.map(methodTagLabel).join(" · ")}
-          </p>
-        ) : null}
       </section>
 
-      <nav className={styles.index} aria-label="Các phương pháp">
-        <div className={styles.indexHead}>
-          <span>Các phương pháp</span>
-          <i />
-        </div>
-        {selected.length ? (
-          <p className={styles.indexHint}>
-            Đây là mục lục đầy đủ. Chọn một nhóm để xóa bộ lọc và xem lại tất cả phương pháp.
-          </p>
-        ) : null}
-        <div className={styles.indexGrid}>
-          {items.map((item, i) => (
-            <a href={`#${item.anchor}`} key={item.group} className={styles.indexCard}>
-              <span className={styles.indexNumeral}>{String(i + 1).padStart(2, "0")}</span>
-              <strong>{item.title}</strong>
-              {item.indexSubtitle ? <span>{item.indexSubtitle}</span> : null}
-            </a>
-          ))}
-        </div>
-      </nav>
-
-      <div className={styles.timeline}>
-        {items.map((item) => (
-          <div
-            key={item.group}
-            hidden={!matchesMethodTags(item.filterTags, selected)}
-            className={styles.filteredMethod}
-          >
-            {item.content}
-          </div>
-        ))}
+      <div className={styles.stages} data-touched={touched || undefined}>
+        {stages.map((stage) => {
+          const stageItems = items.filter((item) => item.stage === stage.id);
+          return (
+            <section
+              key={stage.id}
+              className={styles.stage}
+              aria-labelledby={`stage-${stage.id}`}
+              hidden={!stageItems.some((item) => matchesMethodTags(item.filterTags, selected))}
+            >
+              <h2 id={`stage-${stage.id}`}>{stage.title}</h2>
+              <div className={styles.stageMethods}>
+                {stageItems.map((item) => (
+                  <div
+                    key={item.group}
+                    hidden={!matchesMethodTags(item.filterTags, selected)}
+                    className={styles.filteredMethod}
+                  >
+                    {item.content}
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
         {!visible.length ? (
           <div className={styles.emptyResults}>
             <h2>Chưa có phương pháp được gắn với lựa chọn này.</h2>
             <p>Bạn có thể xóa bộ lọc hoặc đặt buổi đánh giá để trao đổi với Holistic.</p>
-            <button
-              type="button"
-              onClick={() => {
-                recoverFocus("method-filter-heading");
-                setSelected([]);
-              }}
-              className={styles.primaryButton}
-            >
+            <button type="button" onClick={() => setChoice({})} className={styles.primaryButton}>
               Xóa bộ lọc
             </button>
             <Link href="/booking" className={styles.outlineButton}>

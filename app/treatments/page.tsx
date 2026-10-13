@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { methodAnchor } from "@/lib/content";
+import { methodAnchor, methodStages } from "@/lib/content";
 import { getMethods } from "@/lib/sanity";
 import { createMetadata } from "@/lib/seo";
-import { MethodsExplorer, MethodTags } from "./methods-explorer";
+import { MethodArticle, MethodsExplorer, MethodTags } from "./methods-explorer";
 import styles from "./treatments.module.css";
 
 /*
@@ -61,67 +61,59 @@ export default async function TreatmentsPage() {
         </div>
       </section>
 
-      <MethodsExplorer
-        items={methods.map((method, i) => {
-          const imageLeft = i % 2 === 0;
-          return {
-            group: method.group,
-            anchor: methodAnchor[method.group],
-            title: method.title,
-            indexSubtitle: method.indexSubtitle,
-            filterTags: method.filterTags,
-            content: (
-              <div
-                className={styles.method}
-                id={methodAnchor[method.group]}
-                tabIndex={-1}
-                key={method.group}
-              >
-                <div className={styles.methodRail}>
-                  <span className={styles.methodNumeral}>{String(i + 1).padStart(2, "0")}</span>
-                  {i < methods.length - 1 ? <div className={styles.methodLine} /> : null}
-                </div>
-                <div className={styles.methodBody}>
-                  <div className={styles.methodCopy} style={{ order: imageLeft ? 2 : 1 }}>
-                    <h2>{method.title}</h2>
-                    <p>{method.body}</p>
-                    <MethodTags ids={method.filterTags} />
-                    {method.treatments.length ? (
-                      <div className={styles.methodLinks}>
-                        <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
-                        {method.treatments.map((t) => (
-                          <Link key={t.slug} href={`/treatments/${t.slug}`}>
-                            {t.title} ↗
-                          </Link>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className={styles.methodMedia} style={{ order: imageLeft ? 1 : 2 }}>
-                    <Image
-                      src={method.image}
-                      alt={method.imageAlt}
-                      fill
-                      sizes="(max-width: 980px) 100vw, 45vw"
-                    />
-                  </div>
-                </div>
-              </div>
-            ),
-          };
-        })}
-      />
+      <noscript>
+        <style>{`@media (max-width: 700px) { [id$="-body"] { display: flex !important; } button[aria-controls$="-body"] { display: none !important; } }`}</style>
+      </noscript>
 
-      <section className={styles.note}>
-        <div className={styles.noteCard}>
-          <div className={styles.noteCopy}>
-            <h2>Trị liệu và tập luyện kết nối trong một lộ trình phù hợp với bạn.</h2>
-          </div>
-          <Link href="/booking" className={styles.primaryButton}>
-            Đặt lịch đánh giá ban đầu
-          </Link>
-        </div>
-      </section>
+      <MethodsExplorer
+        stages={methodStages.map(({ id, title }) => ({ id, title }))}
+        items={methods.map((method) => ({
+          group: method.group,
+          stage: methodStages.find((stage) =>
+            (stage.groups as readonly string[]).includes(method.group),
+          )!.id,
+          anchor: methodAnchor[method.group],
+          filterTags: method.filterTags,
+          content: (
+            <MethodArticle
+              key={method.group}
+              id={methodAnchor[method.group]}
+              title={method.title}
+              media={
+                <div className={styles.methodMedia}>
+                  <Image
+                    src={method.image}
+                    alt={method.imageAlt}
+                    fill
+                    sizes="(max-width: 700px) 100vw, (max-width: 980px) 100vw, 40vw"
+                  />
+                </div>
+              }
+              head={
+                <>
+                  <h3>{method.title}</h3>
+                  {method.indexSubtitle ? (
+                    <p className={styles.methodSub}>{method.indexSubtitle}</p>
+                  ) : null}
+                </>
+              }
+            >
+              <p className={styles.methodText}>{method.body}</p>
+              <MethodTags ids={method.filterTags} />
+              {method.treatments.length ? (
+                <div className={styles.methodLinks}>
+                  <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
+                  {method.treatments.map((t) => (
+                    <Link key={t.slug} href={`/treatments/${t.slug}`}>
+                      {t.title} ↗
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </MethodArticle>
+          ),
+        }))}
+      />
 
       <section className={styles.cta}>
         <div className={styles.ctaCard}>

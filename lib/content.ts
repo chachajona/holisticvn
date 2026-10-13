@@ -25,6 +25,14 @@ export type ServiceGroup = (typeof serviceGroups)[number];
 export const methodGroups = ["manual", "electro", "rehab", "cold", "infrared"] as const;
 export type MethodGroup = (typeof methodGroups)[number];
 
+// Owner-confirmed grouping of the five method groups along the clinic's pathway.
+export const methodStages = [
+  { id: "therapy", title: "Trị liệu", groups: ["manual", "electro"] },
+  { id: "training", title: "Tập luyện", groups: ["rehab"] },
+  { id: "recovery", title: "Hồi phục", groups: ["cold", "infrared"] },
+] as const satisfies readonly { id: string; title: string; groups: readonly MethodGroup[] }[];
+export type MethodStageId = (typeof methodStages)[number]["id"];
+
 export type Service = {
   group: ServiceGroup;
   title: string;

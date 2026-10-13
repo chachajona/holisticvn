@@ -8,7 +8,7 @@ vi.mock("@/sanity/env", () => ({
 }));
 import { renderToStaticMarkup } from "react-dom/server";
 import TreatmentsPage from "@/app/treatments/page";
-import { methodAnchor, methodGroups, methods } from "@/lib/content";
+import { methodAnchor, methodGroups, methodStages, methods } from "@/lib/content";
 
 const cdn = "https://cdn.sanity.io/images/p/d/";
 const method = (group: string, extra = {}) => ({
@@ -28,7 +28,7 @@ describe("/treatments from Sanity", () => {
     fetch.mockReset();
   });
 
-  it("renders CMS content, derived numerals and anchors, and treatment links", async () => {
+  it("renders CMS content, section anchors in order, and treatment links", async () => {
     fetch.mockResolvedValue([
       ...methodGroups
         .map((group) =>
@@ -41,32 +41,20 @@ describe("/treatments from Sanity", () => {
     const html = renderToStaticMarkup(await TreatmentsPage());
     for (const group of methodGroups) {
       expect(html).toContain(`id="${methodAnchor[group]}"`);
-      expect(html).toContain(`href="#${methodAnchor[group]}"`);
     }
     expect(html).toContain("Nhóm cold");
     expect(html).toContain("Nội dung cold");
     expect(html).toContain('href="/treatments/cold-plunge"');
     expect(html).toContain("Cold Plunge");
-    const index = html.slice(html.indexOf("<nav"), html.indexOf("</nav>"));
     for (const [i, group] of methodGroups.entries()) {
-      const numeral = String(i + 1).padStart(2, "0");
-      expect(index).toMatch(
-        new RegExp(`href="#${methodAnchor[group]}"[^>]*><span[^>]*>${numeral}</span>`),
-      );
-      expect(html).toMatch(
-        new RegExp(`id="${methodAnchor[group]}"[^>]*><div[^>]*><span[^>]*>${numeral}</span>`),
-      );
       if (i > 0) {
-        expect(index.indexOf(`href="#${methodAnchor[group]}"`)).toBeGreaterThan(
-          index.indexOf(`href="#${methodAnchor[methodGroups[i - 1]]}"`),
-        );
         expect(html.indexOf(`id="${methodAnchor[group]}"`)).toBeGreaterThan(
           html.indexOf(`id="${methodAnchor[methodGroups[i - 1]]}"`),
         );
       }
-      expect(index.match(new RegExp(`href="#${methodAnchor[group]}"`, "g"))).toHaveLength(1);
       expect(html.match(new RegExp(`id="${methodAnchor[group]}"`, "g"))).toHaveLength(1);
     }
+    expect(html).not.toMatch(/>0[1-5]</);
   });
 
   it("renders a shared treatment once in each group that references it", async () => {
@@ -115,18 +103,21 @@ describe("/treatments from Sanity", () => {
     expect(html).not.toContain("Alt của ảnh đã gỡ");
   });
 
-  it("keeps index and section numbering when CMS and fallback groups coexist", async () => {
+  it("renders every group under its pathway stage when CMS and fallback groups coexist", async () => {
     fetch.mockResolvedValue([method("cold")]);
     const html = renderToStaticMarkup(await TreatmentsPage());
     expect(html).toContain("Nhóm cold");
-    for (const [i, group] of methodGroups.entries()) {
-      const numeral = String(i + 1).padStart(2, "0");
-      expect(html).toMatch(
-        new RegExp(`href="#${methodAnchor[group]}"[^>]*><span[^>]*>${numeral}</span>`),
-      );
-      expect(html).toMatch(
-        new RegExp(`id="${methodAnchor[group]}"[^>]*><div[^>]*><span[^>]*>${numeral}</span>`),
-      );
+    for (const [i, stage] of methodStages.entries()) {
+      const start = html.indexOf(`id="stage-${stage.id}"`);
+      expect(start, stage.id).toBeGreaterThan(-1);
+      const next = methodStages[i + 1];
+      const end = next ? html.indexOf(`id="stage-${next.id}"`) : html.length;
+      for (const group of methodGroups) {
+        const at = html.indexOf(`id="${methodAnchor[group]}"`);
+        expect(at > start && at < end, `${group} in ${stage.id}`).toBe(
+          (stage.groups as readonly string[]).includes(group),
+        );
+      }
     }
   });
 
