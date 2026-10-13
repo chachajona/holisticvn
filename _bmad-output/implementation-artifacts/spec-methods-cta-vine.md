@@ -1,15 +1,15 @@
 ---
-title: 'Grow a vine inside the Methods closing CTA'
-type: 'feature'
-created: '2026-10-13'
-status: 'in-review'
-baseline_commit: '90c2e8c56ad3131f7aab001c126f31cdf0303916'
+title: "Grow a vine inside the Methods closing CTA"
+type: "feature"
+created: "2026-10-13"
+status: "in-review"
+baseline_commit: "90c2e8c56ad3131f7aab001c126f31cdf0303916"
 review_loop_iteration: 0
 context:
-  - '/Users/chachajona/conductor/workspaces/holisticvn/tripoli/AGENTS.md'
-  - '/Users/chachajona/conductor/workspaces/holisticvn/tripoli/PRODUCT.md'
-  - '/Users/chachajona/conductor/workspaces/holisticvn/tripoli/docs/FRONTEND_CHECKLIST.md'
-  - '/Users/chachajona/.codex/skills/impeccable/reference/craft-floor.md'
+  - "/Users/chachajona/conductor/workspaces/holisticvn/tripoli/AGENTS.md"
+  - "/Users/chachajona/conductor/workspaces/holisticvn/tripoli/PRODUCT.md"
+  - "/Users/chachajona/conductor/workspaces/holisticvn/tripoli/docs/FRONTEND_CHECKLIST.md"
+  - "/Users/chachajona/.codex/skills/impeccable/reference/craft-floor.md"
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -42,12 +42,14 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
+
 - [ ] `app/treatments/cta-vine.tsx` — implement a local decorative frame that fits the actual CTA, scroll-driven growth that never decreases, cleanup, and safe static fallbacks. Keep browser work limited to the decoration.
 - [ ] `app/treatments/page.tsx` and `app/treatments/treatments.module.css` — integrate the frame and distinguish booking flowers from contact leaves on hover/focus. Fit both stacked and horizontal CTA layouts without shifting content or clipping decoration.
 - [ ] `DESIGN.md` — document the approved frame and separate interactions, mobile and reduced-motion behavior.
 - [ ] Verify the CTA in the real browser at 320px, 768px and desktop, including scroll, reverse scroll, booking/contact hover, keyboard focus, touch and reduced motion. Run existing repository checks; new mirror tests are unnecessary for this decoration.
 
 **Acceptance Criteria:**
+
 - Given the CTA below the viewport, when scrolling reveals it, then the vine grows along its inner lower and right edges, without first-paint animation elsewhere.
 - Given partial or complete growth, when scrolling back up, then the maximum growth remains, and returning to the CTA does not replay it.
 - Given an interactive pointer, when booking is hovered, then flowers open; when contact is hovered, then additional leaves open. Leaving the action closes only that temporary growth gently.
@@ -65,6 +67,7 @@ Preserve the existing flat Warm Clay Editorial identity. The frame should read a
 ## Verification
 
 **Commands:**
+
 - `npm run lint` — no errors or warnings.
 - `npm run typecheck` — types pass.
 - `npm test` — existing suite passes.
