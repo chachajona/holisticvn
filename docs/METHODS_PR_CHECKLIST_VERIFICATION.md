@@ -35,9 +35,11 @@ verification after the earlier staging acceptance and final hero copy update.
 - [x] Actual Chrome page zoom **200%**, set through Chrome's native Page zoom
       control in a separate persistent profile. Keyboard selection, clearing and
       all five anchor positions passed without horizontal overflow.
-- [ ] Native Safari: installed Safari 27.2 rejects session creation until
-      **Safari → Settings → Developer → Allow remote automation** is enabled.
-      No Safari or physical iOS-device result is claimed.
+- [x] Native Safari 27.2: after the owner enabled remote automation, verified the
+      hero, nine filters, OR selection/count/clear, focus recovery, index/footer
+      navigation and all five anchors. All three detail links opened the correct
+      pages. Native WebDriver keyboard actions verified Option-Tab traversal,
+      Space selection/deselection and a visible 2 px solid focus ring.
 
 Measured Chrome zoom geometry:
 
@@ -53,6 +55,37 @@ The final responsive run recorded two CSS preload warnings for
 `1_rvy1l_ycbni.css` and `10h_42sizrb29.css`; no uncaught JavaScript error or console
 error was observed. Functional/layout checks passed. These warnings remain
 recorded for follow-up; this is not a warning-free console claim.
+
+### Native Safari follow-up
+
+Safari's native MCP driver handled page interactions, viewport resizing, DOM
+measurements and screenshots. A separate native WebDriver session verified
+keyboard modality and focus styling, because MCP's targeted key action selected
+the filter without enabling `:focus-visible`. Application code and Safari settings
+were unchanged during these checks.
+
+| Measured Safari viewport | Document width | Broken visible images | All five anchors    |
+| ------------------------ | -------------- | --------------------- | ------------------- |
+| 336×819                  | 336            | 0                     | Clear sticky header |
+| 768×819                  | 768            | 0                     | Clear sticky header |
+| 1440×819                 | 1440           | 0                     | Clear sticky header |
+| 720×346                  | 720            | 0                     | Clear sticky header |
+
+The requested 320 px native window was clamped to 336 px by Safari. Requested
+height 1000 was clamped to an 819 px layout viewport; the shorter 450 px window
+produced a 346 px viewport. The table records actual browser measurements.
+These are desktop Safari checks at responsive widths; no physical iOS device was
+tested.
+
+Safari accessed the same immutable Preview through a localhost verification
+proxy, with the authorized Vercel protection bypass held server-side. The proxy
+only forwards GET/HEAD. Its rejection of an `OPTIONS /` request generated an HTTP
+405 console error, retained in the raw evidence. Safari also recorded the same
+two CSS preload warnings as Chrome. No uncaught application JavaScript error was
+observed; the verification does not establish a warning-free console.
+
+Native keyboard navigation used Option-Tab without changing the owner's keyboard
+preferences, following [Apple's Safari keyboard shortcuts](https://support.apple.com/en-gb/guide/safari/cpsh003/mac).
 
 ## Production content and references
 
@@ -123,6 +156,6 @@ temporary webhook edits/restoration. Those editor interactions were not rerun
 during this production verification; current staging content was read and
 validated against the current schema without mutation.
 
-Remaining: enable Safari remote automation and complete native Safari checks;
-review/merge the PR and deploy application code through the normal release flow.
-Issue #9 stays open for this handoff.
+All PR acceptance/verification checklist items are complete. Remaining: review/merge
+the PR and deploy application code through the normal release flow. Issue #9 stays
+open for this handoff. CSS preload warnings remain recorded for follow-up.
