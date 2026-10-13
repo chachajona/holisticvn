@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -160,31 +161,53 @@ export function MethodsExplorer({
     (id: MethodTagId) => setChoice((current) => toggled(current, id)),
     [setChoice],
   );
+  const stagesRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState<string | null>(null);
   const context = useMemo(() => ({ choice, toggle, revealed }), [choice, toggle, revealed]);
   const availableTags = methodTags.filter((tag) =>
     items.some((item) => item.filterTags.includes(tag.id)),
   );
   const visible = items.filter((item) => matchesMethodTags(item.filterTags, selected));
+  const statusText = selected.length
+    ? `${visible.length} phương pháp`
+    : `Đang hiển thị ${visible.length} phương pháp`;
 
   const reveal = useCallback(
     (anchor: string) => {
+      // Rows that close as the filter clears must not animate under the scroll: it would stop short.
+      stagesRef.current?.setAttribute("data-jump", "");
       setChoice({});
       setRevealed(anchor);
       requestAnimationFrame(() => {
         const target = document.getElementById(anchor);
         target?.scrollIntoView();
         target?.focus({ preventScroll: true });
+        // Arrival cue (CSS, motion-safe only); removing it first replays it on a repeat visit.
+        target?.removeAttribute("data-arrived");
+        void target?.offsetWidth;
+        target?.setAttribute("data-arrived", "");
+        requestAnimationFrame(() => stagesRef.current?.removeAttribute("data-jump"));
       });
     },
     [setChoice],
   );
 
+  const revealHash = useCallback(() => {
+    const item = items.find((item) => `#${item.anchor}` === window.location.hash);
+    if (item) reveal(item.anchor);
+  }, [items, reveal]);
+
+  // Arriving with a #mtd-… already in the URL (a footer link from another page) opens and marks
+  // that method too; the listeners below only see jumps made while the page is already open.
+  const arrivedByHash = useRef(false);
   useEffect(() => {
-    const onHashChange = () => {
-      const item = items.find((item) => `#${item.anchor}` === window.location.hash);
-      if (item) reveal(item.anchor);
-    };
+    if (arrivedByHash.current) return;
+    arrivedByHash.current = true;
+    revealHash();
+  }, [revealHash]);
+
+  useEffect(() => {
+    const onHashChange = revealHash;
     const onAnchorClick = (event: MouseEvent) => {
       if (
         event.button !== 0 ||
@@ -217,7 +240,7 @@ export function MethodsExplorer({
       window.removeEventListener("hashchange", onHashChange);
       document.removeEventListener("click", onAnchorClick, true);
     };
-  }, [items, reveal]);
+  }, [items, reveal, revealHash]);
 
   return (
     <FilterContext value={context}>
@@ -286,14 +309,13 @@ export function MethodsExplorer({
             aria-atomic="true"
             data-idle={!selected.length || undefined}
           >
-            {selected.length
-              ? `${visible.length} phương pháp`
-              : `Đang hiển thị ${visible.length} phương pháp`}
+            {/* The span is keyed on its text so a changed count replays status-in; the live region itself stays mounted. */}
+            <span key={statusText}>{statusText}</span>
           </p>
         </div>
       </section>
 
-      <div className={styles.stages} data-touched={touched || undefined}>
+      <div ref={stagesRef} className={styles.stages} data-touched={touched || undefined}>
         {stages.map((stage) => {
           const stageItems = items.filter((item) => item.stage === stage.id);
           return (
