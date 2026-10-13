@@ -12,6 +12,7 @@ import { ConcernPattern } from "@/components/concern-pattern";
 import { HighlightStage } from "@/components/highlight-stage";
 import { BranchSway } from "@/components/branch-sway";
 import { Reveal } from "@/components/reveal";
+import { sprigLeaves } from "@/components/sprig";
 import {
   QuickLinkIllustration,
   type QuickLinkIllustrationType,
@@ -234,15 +235,6 @@ const sketchRays = [
   "M343 -54.9Q351.5 -64.3 358 -75",
   "M365.3 -39.4Q376.6 -51.8 390.4 -65.8",
 ];
-const sketchLeaves = [
-  ["M-27.2 602.5Q-34.9 583.7 -55.1 583Q-47.5 601.8 -27.2 602.5Z", "M-27.2 602.5L-50.9 585.9"],
-  ["M-34 577.6Q-15.1 577.1 -8.2 559.5Q-27.1 560 -34 577.6Z", "M-34 577.6L-12.1 562.2"],
-  ["M-38 550.9Q-44.3 534.6 -61.8 534.3Q-55.5 550.6 -38 550.9Z", "M-38 550.9L-58.2 536.8"],
-  ["M-39.4 522.4Q-23.3 522.3 -17.7 507.2Q-33.8 507.3 -39.4 522.4Z", "M-39.4 522.4L-20.9 509.5"],
-  ["M-38 492.1Q-42.9 478.2 -57.7 478.3Q-52.8 492.3 -38 492.1Z", "M-38 492.1L-54.8 480.4"],
-  ["M-34 460Q-20.6 460.4 -16.4 447.7Q-29.8 447.3 -34 460Z", "M-34 460L-19 449.5"],
-];
-
 // Pen-drawn check mark for the intro list; the stroke draws in as it scrolls into view (CSS scroll-driven, static fallback).
 function IntroTick() {
   return (
@@ -324,7 +316,7 @@ function IntroSketch() {
                 pathLength={1}
                 d="M-10 640Q-52 570 -34 460"
               />
-              {sketchLeaves.map(([leaf, vein], i) => (
+              {sprigLeaves.map(([leaf, vein], i) => (
                 <g key={leaf} style={{ "--i": i } as CSSProperties}>
                   <path
                     className={`${styles.sketchSage} ${styles.sketchDraw} ${styles.sketchLeaf}`}

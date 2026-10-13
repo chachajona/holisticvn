@@ -15,11 +15,10 @@ describe("methods fallback (Sanity not configured)", () => {
     expect((await getMethods()).map((m) => m.group)).toEqual([...methodGroups]);
   });
 
-  it("renders every anchor, index card and the bundled treatment links", async () => {
+  it("renders every section anchor and the bundled treatment links", async () => {
     const html = renderToStaticMarkup(await TreatmentsPage());
     for (const group of methodGroups) {
       expect(html).toContain(`id="${methodAnchor[group]}"`);
-      expect(html).toContain(`href="#${methodAnchor[group]}"`);
     }
     for (const method of methods) {
       for (const t of method.treatments) expect(html).toContain(`href="/treatments/${t.slug}"`);

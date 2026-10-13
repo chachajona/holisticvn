@@ -4,6 +4,7 @@ import {
   methodAnchor,
   methodFallbackImage,
   methodGroups,
+  methodStages,
   methods,
   treatments,
 } from "@/lib/content";
@@ -14,6 +15,10 @@ describe("method groups", () => {
     expect(Object.keys(methodAnchor)).toEqual([...methodGroups]);
     expect(Object.keys(methodFallbackImage)).toEqual([...methodGroups]);
     expect(methods.map((m) => m.group)).toEqual([...methodGroups]);
+  });
+
+  it("places every method group in exactly one pathway stage, in group order", () => {
+    expect(methodStages.flatMap((stage) => stage.groups)).toEqual([...methodGroups]);
   });
 
   it("does not store presentation that the page derives from position", () => {

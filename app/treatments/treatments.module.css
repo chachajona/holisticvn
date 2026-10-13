@@ -8,7 +8,10 @@
   --sage: #48614c;
   --numeral: #ab917e;
   --warm-band: #f6efe6;
+  --warm-band-deep: #ede6dc;
   --dark-cta: #181f1a;
+  --hero-emphasis: #e0c1af;
+  --hero-thread: rgba(224, 193, 175, 0.5);
   color: var(--ink);
   background: var(--card);
   font-family: var(--font-accent);
@@ -48,38 +51,40 @@
   overflow: hidden;
   background: var(--ink);
 }
-.heroCard img {
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+}
+.heroPhoto img {
   object-fit: cover;
 }
 .heroScrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    95deg,
-    rgba(58, 42, 36, 0.82) 0%,
-    rgba(58, 42, 36, 0.55) 55%,
-    rgba(58, 42, 36, 0.15) 100%
-  );
+  /* The bottom layer only backs the pathway ribbon, so the photo stays clear above it. */
+  background:
+    linear-gradient(
+      0deg,
+      rgba(58, 42, 36, 0.85) 0,
+      rgba(58, 42, 36, 0.75) 80px,
+      rgba(58, 42, 36, 0) 160px
+    ),
+    linear-gradient(
+      95deg,
+      rgba(58, 42, 36, 0.82) 0%,
+      rgba(58, 42, 36, 0.69) min(620px, 88%),
+      rgba(58, 42, 36, 0.15) 100%
+    );
   pointer-events: none;
 }
 .heroContent {
   position: absolute;
   left: 64px;
-  top: 0;
-  bottom: 0;
+  top: 56px;
   right: 64px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 16px;
-}
-.breadcrumb {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.2em;
-  color: rgba(247, 243, 240, 0.6);
-}
-.breadcrumb a {
-  color: inherit;
+  gap: 14px;
 }
 .hero h1 {
   font-size: clamp(2rem, 5vw, 52px);
@@ -93,79 +98,209 @@
   line-height: 1.6;
   color: rgba(247, 243, 240, 0.82);
 }
+.heroPath {
+  position: absolute;
+  left: 64px;
+  right: 64px;
+  bottom: 32px;
+}
+.heroPath ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 0;
+  padding: 18px 0 0;
+  list-style: none;
+}
+.heroPath ol::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hero-thread);
+}
+.heroPath a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #f7f3f0;
+}
+.heroPath a::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--hero-emphasis);
+}
+.heroPath b {
+  font: 300 20px/1.2 var(--font-display);
+}
+.heroPath span {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(247, 243, 240, 0.78);
+}
+.heroPath b {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+}
+.heroPath a:hover b {
+  text-decoration-color: currentColor;
+}
+.heroPath a:focus-visible {
+  outline: 2px solid var(--hero-emphasis);
+  outline-offset: 6px;
+}
 
-/* ---------- Method index strip ---------- */
-.filters {
-  padding: 64px max(24px, calc((100vw - 1360px) / 2)) 0;
+/* ---------- Finder: two selects ---------- */
+.finder {
+  padding: 56px max(24px, calc((100vw - 1360px) / 2)) 0;
 }
-.filters h2 {
-  max-width: 760px;
-  font-size: clamp(1.4rem, 2.5vw, 28px);
-  line-height: 1.35;
+.sentence {
+  margin: 0;
+  font: 300 clamp(1.35rem, 3.2vw, 40px) / 1.6 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--ink);
 }
-.filters > p {
-  max-width: 70ch;
-  margin: 16px 0 0;
-  line-height: 1.75;
+.sentence select {
+  max-width: 100%;
+  padding: 0 1.1em 2px 2px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  /* Chevron plus an underline that is drawn once a value is chosen. */
+  background-color: transparent;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='m1.5 1.5 5.5 5.5 5.5-5.5' fill='none' stroke='%2348614c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    linear-gradient(var(--sage), var(--sage));
+  background-repeat: no-repeat;
+  background-position:
+    right 2px center,
+    left bottom;
+  background-size:
+    0.42em,
+    100% 2px;
+  background-origin: padding-box, border-box;
+  color: var(--sage);
+  font: inherit;
+  text-transform: lowercase;
+  cursor: pointer;
+  appearance: none;
+  field-sizing: content;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.sentence select[data-empty] {
+  border-bottom-style: dashed;
+  border-bottom-color: var(--clay);
+  background-size:
+    0.42em,
+    0 2px;
+  color: var(--clay-deep);
+}
+.sentence select:hover {
+  background-color: var(--warm-band);
+  border-bottom-style: solid;
+  border-bottom-color: var(--sage);
+}
+.field {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.field select {
+  min-width: 0;
+}
+.clearValue {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sage);
+  vertical-align: middle;
+  cursor: pointer;
+}
+.clearValue svg {
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.clearValue:hover svg {
+  background: var(--sage);
+  color: #fff;
+}
+/* The result count sits on the rule where the sentence ends and the results begin. */
+.finderStatus {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 0;
+  font-size: 14px;
   color: var(--muted);
 }
-.filterCategories {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-top: 28px;
+.finderStatus::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(58, 42, 36, 0.16);
 }
-.filterCategory {
-  min-width: 0;
-  padding: 0;
+.finderStatus p {
   margin: 0;
-  border: 0;
 }
-.filterCategory legend {
-  padding: 0;
-  margin-bottom: 14px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--sage);
+/* Nothing to report without a filter: keep the live region for screen readers only. */
+.finderStatus p[data-idle] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.filterChoices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.filterChoices button,
+
 .methodTags button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
+  min-height: 40px;
   max-width: 100%;
-  padding: 9px 13px;
-  border: 1px solid rgba(72, 97, 76, 0.6);
+  padding: 7px 16px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: transparent;
-  color: var(--sage);
+  background: var(--warm-band);
+  color: var(--muted);
   font: 400 14px/1.5 var(--font-accent);
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
-.filterChoices button:hover,
 .methodTags button:hover {
-  background: var(--warm-band);
+  background: var(--warm-band-deep);
+  border-color: rgba(72, 97, 76, 0.45);
 }
-.filterChoices button:disabled,
-.methodTags button:disabled {
-  cursor: default;
-}
-.indexHint {
-  margin: -12px 0 0;
-  max-width: 70ch;
-  line-height: 1.6;
-  color: var(--muted);
-  font-size: 14px;
-}
-.filterChoices button[aria-pressed="true"],
 .methodTags button[aria-pressed="true"] {
+  border-color: var(--sage);
   background: var(--sage);
   color: #fff;
 }
@@ -173,41 +308,27 @@
   flex: none;
   width: 16px;
   height: 16px;
-  visibility: hidden;
+  display: none;
 }
 button[aria-pressed="true"] .selectionMark {
-  visibility: visible;
+  display: block;
 }
-.filterResult {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 24px;
-  margin-top: 24px;
+button[aria-pressed="true"] .selectionMark path {
+  stroke-dasharray: 14;
+  animation: draw-check 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.filterResult p {
-  margin: 0;
-  color: var(--muted);
+@keyframes draw-check {
+  from {
+    stroke-dashoffset: 14;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
-.filterResult button {
-  min-height: 44px;
-  padding: 8px 0;
-  border: 0;
-  background: transparent;
-  color: var(--clay-deep);
-  font: inherit;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  cursor: pointer;
-}
-.filterResult button:disabled {
-  color: var(--muted);
-  text-decoration: none;
-  cursor: default;
-}
-.filters > .selectedFilters {
-  margin-top: 8px;
-  font-size: 14px;
+@media (prefers-reduced-motion: reduce) {
+  button[aria-pressed="true"] .selectionMark path {
+    animation: none;
+  }
 }
 .filteredMethod[hidden] {
   display: none;
@@ -224,151 +345,171 @@ button[aria-pressed="true"] .selectionMark {
   cursor: pointer;
   margin-right: 12px;
 }
-.filterChoices button:focus-visible,
+.sentence select:focus-visible,
+.clearValue:focus-visible,
 .methodTags button:focus-visible,
-.filterResult button:focus-visible,
-.filters h2:focus-visible,
+.methodToggle:focus-visible,
 .emptyResults :is(button, a):focus-visible {
   outline: 2px solid var(--sage);
   outline-offset: 4px;
 }
-.indexCard:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: -5px;
+
+/* ---------- Pathway stages ---------- */
+.stages {
+  position: relative;
+  padding: 0 max(24px, calc((100vw - 1360px) / 2));
 }
-.index {
-  padding: 64px max(24px, calc((100vw - 1360px) / 2)) 0;
+/* A thread down the gutter beside the stage titles, lengthened by ScrollThread as the stages scroll
+   through, with a dot at each title (the hero ribbon's thread-and-dot motif). Wide screens only:
+   narrower, it would meet the titles. */
+.stages {
+  --pad: max(24px, calc((100vw - 1360px) / 2));
+}
+.thread {
+  display: none;
+}
+@media (min-width: 1100px) {
+  .thread {
+    display: block;
+    position: absolute;
+    top: 59px;
+    left: calc(var(--pad) + 232px);
+    width: 1px;
+    height: min(max(calc(var(--reach, 99999px) - 59px), 0px), calc(100% - 59px));
+    background: rgba(144, 119, 110, 0.5);
+    pointer-events: none;
+  }
+  .stage {
+    position: relative;
+  }
+  .stage::before {
+    content: "";
+    position: absolute;
+    top: 54.5px;
+    left: 227.5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--clay);
+  }
+}
+.stage {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
+  gap: 56px;
+  padding: 40px 0 48px;
+  border-bottom: 1px solid rgba(58, 42, 36, 0.16);
+}
+.stage[hidden] {
+  display: none;
+}
+.stage > h2 {
+  font-size: clamp(1.5rem, 2.6vw, 32px);
+  line-height: 1.2;
+  color: var(--sage);
+}
+.stageMethods {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 56px;
 }
-.indexHead {
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-}
-.indexHead span {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--clay);
-}
-.indexHead i {
-  flex: 1;
-  height: 1px;
-  background: rgba(58, 42, 36, 0.16);
-  font-style: normal;
-}
-.indexGrid {
+.method {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1px;
-  background: rgba(58, 42, 36, 0.14);
-  border: 1px solid rgba(58, 42, 36, 0.14);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "media head"
+    "media body";
+  column-gap: 40px;
+  row-gap: 14px;
+  align-items: start;
+}
+.methodMedia {
+  grid-area: media;
+  position: relative;
+  height: 260px;
   border-radius: 16px;
   overflow: hidden;
 }
-.indexCard {
-  background: #fff;
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  color: var(--ink);
-  transition: background-color 0.2s ease;
+.methodMedia img {
+  object-fit: cover;
 }
-.indexCard:hover {
-  background: var(--warm-band);
+.methodHead {
+  grid-area: head;
+  max-width: 560px;
 }
-.indexNumeral {
-  font: 200 15px var(--font-display);
-  color: var(--numeral);
+.methodHead h3 {
+  font-size: clamp(1.4rem, 2.4vw, 28px);
+  line-height: 1.25;
 }
-.indexCard strong {
-  font: 400 18px var(--font-display);
-}
-.indexCard span {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-/* ---------- Timeline ---------- */
-.timeline {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
-  display: flex;
-  flex-direction: column;
-}
-.method {
-  display: flex;
-  gap: 48px;
-}
-.methodRail {
-  width: 56px;
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.methodNumeral {
-  font: 200 32px/1 var(--font-display);
-  color: var(--numeral);
-}
-.methodLine {
-  width: 1px;
-  flex: 1;
-  margin-top: 16px;
-  background: rgba(58, 42, 36, 0.16);
+.methodHead .methodSub {
+  margin: 4px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--sage);
 }
 .methodBody {
-  flex: 1;
-  padding-bottom: 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: center;
+  grid-area: body;
+  max-width: 560px;
 }
-.methodCopy {
+.methodBodyInner {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  max-width: 460px;
+  gap: 14px;
 }
-.methodCopy h2 {
-  font-size: clamp(1.5rem, 3vw, 32px);
-  line-height: 1.2;
-}
-.methodCopy p {
+.methodBody .methodText {
   margin: 0;
   font-size: 16px;
   line-height: 1.75;
   color: var(--muted);
 }
+.methodToggle {
+  display: none;
+}
 .methodTags {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.tagRow {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 4px 12px;
+  align-items: start;
+}
+.tagRowLabel {
+  padding-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tagPills {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-top: 4px;
 }
 .methodLinks {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(58, 42, 36, 0.14);
 }
 .methodLinksLabel {
+  flex-basis: 100%;
   font: 500 11px var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-right: 4px;
 }
 .methodLinks a {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.06em;
+  font: 400 14px/1.4 var(--font-accent);
   color: var(--clay-deep);
   border: 1px solid rgba(116, 77, 64, 0.3);
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   transition:
     border-color 0.2s ease,
@@ -378,46 +519,14 @@ button[aria-pressed="true"] .selectionMark {
   border-color: var(--clay-deep);
   color: var(--clay-hover);
 }
-.methodMedia {
-  height: 320px;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-}
-.methodMedia img {
-  object-fit: cover;
-}
-
-/* ---------- Combination note ---------- */
-.note {
-  padding: 80px max(24px, calc((100vw - 1360px) / 2)) 0;
-}
-.noteCard {
-  background: var(--warm-band);
-  border-radius: 18px;
-  padding: 52px 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
-.noteCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 600px;
-}
-.noteCopy h2 {
-  font-size: clamp(1.4rem, 2.6vw, 30px);
-  line-height: 1.25;
-  color: var(--sage);
-}
 
 /* ---------- CTA band ---------- */
 .cta {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  padding: 56px max(24px, calc((100vw - 1360px) / 2)) 72px;
 }
 .ctaCard {
+  position: relative;
+  overflow: hidden;
   background: var(--dark-cta);
   border-radius: 18px;
   padding: 56px;
@@ -425,6 +534,43 @@ button[aria-pressed="true"] .selectionMark {
   align-items: center;
   justify-content: space-between;
   gap: 40px;
+}
+/* Pen garland along the top edge (see cta-garland.tsx): fixed proportions, anchored top-right, and it
+   shrinks to stay clear of the heading on narrower cards. */
+.ctaGarland {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(692px, calc(100% - 540px));
+  height: auto;
+  overflow: hidden;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ctaGarland [data-part] {
+  stroke-width: 1.3;
+}
+.ctaGarland [data-part="stem"],
+.ctaGarland [data-part="bloom"] {
+  stroke: var(--hero-emphasis);
+}
+.ctaGarland [data-part="leaf"] {
+  stroke: #9db39f;
+}
+.ctaCopy,
+.ctaActions {
+  position: relative;
+}
+.ctaActions a:focus-visible {
+  outline: 2px solid var(--hero-emphasis);
+  outline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctaActions a {
+    transition: none;
+  }
 }
 .ctaCopy {
   display: flex;
@@ -436,12 +582,6 @@ button[aria-pressed="true"] .selectionMark {
   font-size: clamp(1.5rem, 2.6vw, 32px);
   line-height: 1.2;
   color: #e4ebe6;
-}
-.ctaCopy p {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 300;
-  color: rgba(215, 225, 218, 0.85);
 }
 .ctaActions {
   display: flex;
@@ -474,7 +614,11 @@ button[aria-pressed="true"] .selectionMark {
 }
 .primaryButton:hover {
   background: var(--clay-hover);
-  transform: translateY(-2px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .primaryButton:hover {
+    transform: translateY(-2px);
+  }
 }
 .lightButton {
   background: #f7f3f0;
@@ -501,26 +645,44 @@ button[aria-pressed="true"] .selectionMark {
 }
 
 @media (max-width: 980px) {
-  .filterCategories {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  .heroCard {
+    height: 372px;
   }
   .heroContent {
     left: 32px;
     right: 32px;
   }
-  .methodBody {
+  .heroPath {
+    left: 32px;
+    right: 32px;
+  }
+  .heroBody {
+    max-width: 460px;
+  }
+  .stage {
     grid-template-columns: 1fr;
     gap: 24px;
+    padding: 36px 0 44px;
   }
-  .methodMedia {
-    order: -1 !important;
+  .method {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+      "media"
+      "head"
+      "body";
+    row-gap: 16px;
   }
-  .noteCard,
   .ctaCard {
     flex-direction: column;
     align-items: flex-start;
     gap: 24px;
+  }
+  .ctaCard {
+    padding-top: 76px;
+  }
+  .ctaGarland {
+    width: min(520px, 100%);
   }
 }
 
@@ -529,14 +691,34 @@ button[aria-pressed="true"] .selectionMark {
     padding: 0 16px;
   }
   .heroCard {
-    height: 260px;
+    height: auto;
     border-radius: 16px;
   }
+  .heroPhoto {
+    bottom: auto;
+    height: 270px;
+  }
+  .heroScrim {
+    background: linear-gradient(180deg, rgba(58, 42, 36, 0) 48%, var(--ink) 92%);
+  }
   .heroContent {
-    left: 20px;
-    right: 20px;
-    bottom: 22px;
-    top: auto;
+    position: relative;
+    inset: auto;
+    padding: 208px 20px 0;
+  }
+  .heroPath {
+    position: relative;
+    inset: auto;
+    padding: 12px 20px 22px;
+  }
+  .heroPath ol {
+    gap: 0 12px;
+  }
+  .heroPath b {
+    font-size: 17px;
+  }
+  .heroPath span {
+    display: none;
   }
   .hero h1 {
     font-size: 34px;
@@ -544,32 +726,131 @@ button[aria-pressed="true"] .selectionMark {
   .heroBody {
     font-size: 14px;
   }
-  .index,
-  .filters,
-  .timeline,
-  .note,
+  .finder,
+  .stages,
   .cta {
     padding-inline: 16px;
   }
-  .indexGrid {
-    grid-template-columns: 1fr 1fr;
+  .tagRow {
+    grid-template-columns: 1fr;
   }
-  .indexCard {
-    padding: 18px;
+  .tagRowLabel {
+    padding-top: 0;
+  }
+  /* Each method is a photo band that opens on tap. */
+  .stageMethods {
+    gap: 12px;
   }
   .method {
-    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: none;
+    row-gap: 0;
+    align-items: stretch;
   }
-  .methodRail {
-    display: none;
+  .methodMedia,
+  .methodHead,
+  .methodToggle {
+    grid-area: 1 / 1;
+  }
+  .methodMedia {
+    height: auto;
+    min-height: 112px;
+    align-self: stretch;
+    background: #181f1a;
+    border-radius: 16px;
+  }
+  .methodMedia::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgba(24, 31, 26, 0.86) 0%,
+      rgba(24, 31, 26, 0.74) 60%,
+      rgba(24, 31, 26, 0.74) 100%
+    );
+  }
+  .methodHead {
+    z-index: 1;
+    align-self: end;
+    max-width: none;
+    padding: 21px 64px 21px 18px;
+    pointer-events: none;
+  }
+  .methodHead h3 {
+    font-size: 22px;
+    color: #f7f3f0;
+  }
+  .methodHead .methodSub {
+    margin-top: 2px;
+    font-size: 14px;
+    color: rgba(247, 243, 240, 0.92);
   }
   .methodBody {
-    padding-bottom: 44px;
+    grid-area: 2 / 1;
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    max-width: none;
   }
-  .noteCard,
-  .ctaCard {
-    padding: 28px;
+  .methodBodyInner {
+    min-height: 0;
+    overflow: hidden;
+    padding-inline: 4px;
+  }
+  .methodBodyInner::before {
+    content: "";
+    flex: none;
+    height: 2px;
+  }
+  .methodToggle {
+    display: block;
+    z-index: 2;
+    position: relative;
+    border: 0;
     border-radius: 16px;
+    background: transparent;
+    cursor: pointer;
+  }
+  /* One ring, chevron centred inside it by its own background, so it stays optically balanced. */
+  .methodToggle::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(247, 243, 240, 0.75);
+    border-radius: 50%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6.25 4 4 4-4' fill='none' stroke='%23f7f3f0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 16px no-repeat;
+  }
+  .methodToggle:hover::after {
+    background-color: rgba(247, 243, 240, 0.16);
+  }
+  .methodToggle:active::after {
+    background-color: rgba(247, 243, 240, 0.3);
+  }
+  .methodToggle:focus-visible {
+    outline-offset: 2px;
+  }
+  .method[data-open] .methodMedia {
+    min-height: 200px;
+  }
+  .method[data-open] .methodToggle::after {
+    transform: rotate(180deg);
+  }
+  .method[data-open] .methodBody {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+  .ctaCard {
+    padding: 64px 20px 28px;
+    border-radius: 16px;
+  }
+  .ctaGarland {
+    width: 100%;
   }
   .ctaActions {
     flex-direction: column;
@@ -577,5 +858,224 @@ button[aria-pressed="true"] .selectionMark {
   }
   .ctaActions a {
     text-align: center;
+  }
+}
+
+/* ---------- Motion: answers to the visitor's own actions, never ambient ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .sentence select {
+    transition:
+      background-size 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .finderStatus p:not([data-idle]) span {
+    display: inline-block;
+    animation: status-in 0.3s ease-out;
+  }
+  .clearValue {
+    transition:
+      opacity 0.2s ease-out,
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.2s ease;
+  }
+  /* Only after the filter has changed: methods that come back ease in instead of popping. */
+  .stages[data-touched] .stage,
+  .stages[data-touched] .filteredMethod {
+    transition:
+      opacity 0.4s ease-out 0.15s,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+  }
+  /* Leaving is quicker than arriving: it fades out first, then display drops, then the rest eases in. */
+  .stages[data-touched] .stage[hidden],
+  .stages[data-touched] .filteredMethod[hidden] {
+    opacity: 0;
+    transition:
+      opacity 0.15s ease-out,
+      display 0.15s allow-discrete;
+  }
+  /* A light stagger (40ms steps) so returning stages and methods read as a list. */
+  .stages[data-touched] .stage:nth-of-type(2):not([hidden]) {
+    transition-delay: 0.19s;
+  }
+  .stages[data-touched] .stage:nth-of-type(3):not([hidden]) {
+    transition-delay: 0.23s;
+  }
+  .stages[data-touched] .stageMethods > .filteredMethod:nth-child(2):not([hidden]) {
+    transition-delay: 0.19s;
+  }
+  /* Thread: each dot pops as the line reaches its stage. */
+  .stage::before {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .stages[data-thread-ready] .stage:not([data-reached])::before {
+    transform: scale(0);
+  }
+  /* CTA garland: the stem draws, then each leaf, the first time the card scrolls in (JS sets data-paint). */
+  .ctaGarland[data-paint="pending"] [data-part="stem"],
+  .ctaGarland[data-paint="pending"] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .ctaGarland[data-paint="pending"] [data-part="bloom"] {
+    opacity: 0;
+  }
+  .ctaGarland[data-paint="painting"] [data-part="stem"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland[data-paint="painting"] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.5s + var(--i, 0) * 0.12s);
+  }
+  /* New growth: a leaf draws in, a blossom opens; the oldest item drops off when the garland is full. */
+  .ctaGarland [data-grown] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland [data-grown] [data-part="bloom"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: garland-open 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland [data-state="falling"] {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    animation: garland-fall 1s cubic-bezier(0.55, 0, 0.9, 0.6) forwards;
+  }
+  /* Press feedback: a small scale-down the moment a pill or button is pressed, released in 160ms. */
+  .methodTags button {
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .methodTags button:active,
+  .primaryButton:active,
+  .lightButton:active,
+  .outlineButton:active,
+  .darkOutlineButton:active {
+    transform: scale(0.97);
+  }
+  /* Hero ribbon: the underline fades in and the stage's dot swells; hover-gated so touch never sticks. */
+  .heroPath b {
+    transition: text-decoration-color 0.2s ease;
+  }
+  .heroPath a::before {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .heroPath a:hover::before,
+    .heroPath a:focus-visible::before {
+      transform: scale(1.3);
+    }
+  }
+  /* While a ribbon or footer link scrolls to its method, nothing may resize or shift under the scroll. */
+  .stages[data-jump] * {
+    transition: none !important;
+  }
+  /* Arrival cue after a ribbon or footer #mtd link: a soft wash that waits for the scroll, then fades. */
+  .method {
+    isolation: isolate;
+  }
+  .method[data-arrived]::before {
+    content: "";
+    position: absolute;
+    inset: -16px -20px;
+    z-index: -1;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--warm-band) 55%, transparent);
+    pointer-events: none;
+    animation: arrive 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  }
+  @starting-style {
+    .clearValue {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    .stages[data-touched] .stage,
+    .stages[data-touched] .filteredMethod {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  @media (max-width: 700px) {
+    /* The body text fades in as its band opens (not on first paint: only an opened row has data-open). */
+    .method[data-open] .methodBodyInner {
+      animation: body-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+    }
+    .methodMedia {
+      transition: min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .methodToggle::after {
+      transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+    }
+    .methodBody {
+      transition:
+        grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 0.4s;
+    }
+    .method[data-open] .methodBody {
+      transition:
+        grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s;
+    }
+  }
+}
+@keyframes garland-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes garland-open {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes garland-fall {
+  to {
+    opacity: 0;
+    transform: translate(8px, 52px) rotate(40deg);
+  }
+}
+@keyframes body-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes arrive {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes status-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
