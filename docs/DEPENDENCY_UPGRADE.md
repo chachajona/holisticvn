@@ -60,3 +60,7 @@ Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 ## Audit boundary
 
 After the latest upgrade and compatible transitive refresh, npm audit reports 24 affected packages (13 high, 11 moderate, no critical). These are dependency chains rooted in Sanity CLI tooling and Next ESLint’s glob dependencies. The report proposes downgrading current direct packages; that conflicts with this upgrade. No forced downgrade or unverified major transitive override was applied. This baseline is not a production security sign-off; review the remaining advisories before launch.
+
+## Methods interaction test environment — 2026-10-12
+
+Added exact dev dependency `happy-dom@21.0.1` for six tracked React DOM interaction tests in the normal Vitest run. Its Node >=20 engine remains compatible with the project Node >=24 baseline. It is test-only and adds no website runtime dependency. Existing TypeScript aliases and peer overrides are unchanged. Vitest documents the [Happy DOM environment](https://vitest.dev/guide/environment.html), and React documents asynchronous [act](https://react.dev/reference/react/act) for rendering and event updates. npm audit reports no advisory for Happy DOM or its newly added packages; existing toolchain advisories remain outside this feature.

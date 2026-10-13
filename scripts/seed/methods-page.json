@@ -1,0 +1,74 @@
+{
+  "_id": "methodsPage",
+  "_type": "methodsPage",
+  "groups": [
+    {
+      "_key": "manual",
+      "_type": "methodGroup",
+      "group": "manual",
+      "title": "Trị liệu thủ công",
+      "indexSubtitle": "Massage, khớp và mô mềm",
+      "body": "Chuyên viên kết hợp massage, vận động khớp và các kỹ thuật tác động lên mô mềm để hỗ trợ giảm đau mỏi, giảm căng cứng và giúp bạn cử động dễ hơn. Kỹ thuật phù hợp tùy theo tình trạng vận động của bạn.",
+      "tags": ["Đau mỏi cổ vai gáy", "Đau lưng", "Căng cứng cơ", "Khó cử động", "Giảm đau mỏi"],
+      "filterTags": [
+        "neck-pain",
+        "back-pain",
+        "muscle-stiffness",
+        "limited-movement",
+        "pain-relief"
+      ]
+    },
+    {
+      "_key": "electro",
+      "_type": "methodGroup",
+      "group": "electro",
+      "title": "Trị liệu bằng thiết bị",
+      "indexSubtitle": "Điện xung, siêu âm và xung kích",
+      "body": "Holistic kết hợp điện xung, siêu âm hoặc xung kích với trị liệu và bài tập khi phù hợp. Mỗi kỹ thuật có cách tác động riêng, hướng đến giảm đau và giúp bạn vận động dễ dàng hơn.",
+      "tags": ["Căng cứng cơ", "Giảm đau mỏi"],
+      "filterTags": ["muscle-stiffness", "pain-relief"]
+    },
+    {
+      "_key": "rehab",
+      "_type": "methodGroup",
+      "group": "rehab",
+      "title": "Tập luyện phục hồi & tăng cường",
+      "indexSubtitle": "Phục hồi, sức mạnh và chuyển động",
+      "body": "Bắt đầu từ khả năng vận động hiện tại, chuyên viên hướng dẫn các bài tập giúp bạn từng bước phục hồi sau chấn thương, tăng sức mạnh và kiểm soát chuyển động. Mức độ tập thay đổi theo mục tiêu sinh hoạt, công việc và thể thao của bạn.",
+      "tags": [
+        "Khó cử động",
+        "Giảm đau mỏi",
+        "Phục hồi sau chấn thương",
+        "Tăng sức mạnh",
+        "Kiểm soát chuyển động tốt hơn"
+      ],
+      "filterTags": [
+        "limited-movement",
+        "pain-relief",
+        "injury-rehab",
+        "strength",
+        "movement-control"
+      ]
+    },
+    {
+      "_key": "cold",
+      "_type": "methodGroup",
+      "group": "cold",
+      "title": "Ngâm lạnh",
+      "indexSubtitle": "Hỗ trợ hồi phục sau tập luyện",
+      "body": "Ngâm nước lạnh có thể giúp dịu cảm giác đau nhức cơ sau buổi tập hoặc vận động cường độ cao. Chuyên viên đánh giá sự phù hợp và hướng dẫn bạn trong buổi ngâm.",
+      "tags": ["Hồi phục sau tập luyện"],
+      "filterTags": ["post-workout-recovery"]
+    },
+    {
+      "_key": "infrared",
+      "_type": "methodGroup",
+      "group": "infrared",
+      "title": "Đèn hồng ngoại",
+      "indexSubtitle": "Sức ấm trong buổi trị liệu",
+      "body": "Đèn hồng ngoại làm ấm vùng được chiếu. Holistic sử dụng sức ấm này để hỗ trợ cảm giác thư giãn, dễ chịu và phối hợp với các phương pháp khác khi phù hợp.",
+      "tags": ["Căng cứng cơ"],
+      "filterTags": ["muscle-stiffness"]
+    }
+  ]
+}

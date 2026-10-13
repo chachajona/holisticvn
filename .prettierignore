@@ -4,6 +4,7 @@
 package-lock.json
 next-env.d.ts
 public/
+_bmad/render/
 
 # Next.js maintains the rules block in this file.
 AGENTS.md

@@ -1,3 +1,5 @@
+import type { MethodTagId } from "@/lib/method-tags";
+
 export type ProtocolStep = {
   step: number;
   title: string;
@@ -20,6 +22,9 @@ export type Treatment = {
 export const serviceGroups = ["therapy", "training", "recovery"] as const;
 export type ServiceGroup = (typeof serviceGroups)[number];
 
+export const methodGroups = ["manual", "electro", "rehab", "cold", "infrared"] as const;
+export type MethodGroup = (typeof methodGroups)[number];
+
 export type Service = {
   group: ServiceGroup;
   title: string;
@@ -27,6 +32,18 @@ export type Service = {
   summary: string;
   body: string;
   bullets: string[];
+  image: string;
+  imageAlt: string;
+  treatments: Array<{ slug: string; title: string }>;
+};
+
+export type Method = {
+  group: MethodGroup;
+  title: string;
+  indexSubtitle: string;
+  body: string;
+  tags: string[];
+  filterTags: MethodTagId[];
   image: string;
   imageAlt: string;
   treatments: Array<{ slug: string; title: string }>;
@@ -91,8 +108,8 @@ export const footerServices: Array<[string, string]> = [
 ];
 export const footerMethods: Array<[string, string]> = [
   ["Trị liệu thủ công", `/treatments#${methodAnchor.manual}`],
-  ["Điện trị liệu", `/treatments#${methodAnchor.electro}`],
-  ["Tập luyện phục hồi", `/treatments#${methodAnchor.rehab}`],
+  ["Trị liệu bằng thiết bị", `/treatments#${methodAnchor.electro}`],
+  ["Tập luyện phục hồi & tăng cường", `/treatments#${methodAnchor.rehab}`],
   ["Ngâm lạnh", `/treatments#${methodAnchor.cold}`],
   ["Đèn hồng ngoại", `/treatments#${methodAnchor.infrared}`],
 ];
@@ -164,6 +181,84 @@ export const services: Service[] = [
       { slug: "heat-light", title: "Heat & Light" },
       { slug: "cold-plunge", title: "Cold Plunge" },
     ],
+  },
+];
+
+// Local image per group: fallback when a CMS method has no usable image.
+export const methodFallbackImage: Record<MethodGroup, string> = {
+  manual: "/images/Iastm.jpg",
+  electro: "/images/ElectroPulse.jpg",
+  rehab: "/images/Coaching.jpg",
+  cold: "/images/ColdPlungeTub.jpg",
+  infrared: "/images/Infrared.jpg",
+};
+
+// Bundled copy, used as-is when Sanity is not configured and per group when a CMS group is missing or invalid.
+export const methods: Method[] = [
+  {
+    group: "manual",
+    title: "Trị liệu thủ công",
+    indexSubtitle: "Massage, khớp và mô mềm",
+    body: "Chuyên viên kết hợp massage, vận động khớp và các kỹ thuật tác động lên mô mềm để hỗ trợ giảm đau mỏi, giảm căng cứng và giúp bạn cử động dễ hơn. Kỹ thuật phù hợp tùy theo tình trạng vận động của bạn.",
+    tags: ["Đau mỏi cổ vai gáy", "Đau lưng", "Căng cứng cơ", "Khó cử động", "Giảm đau mỏi"],
+    filterTags: ["neck-pain", "back-pain", "muscle-stiffness", "limited-movement", "pain-relief"],
+    image: methodFallbackImage.manual,
+    imageAlt: "Trị liệu thủ công",
+    treatments: [
+      { slug: "dry-needling", title: "Dry Needling" },
+      { slug: "cupping", title: "Cupping Therapy" },
+      { slug: "iastm", title: "IASTM" },
+    ],
+  },
+  {
+    group: "electro",
+    title: "Trị liệu bằng thiết bị",
+    indexSubtitle: "Điện xung, siêu âm và xung kích",
+    body: "Holistic kết hợp điện xung, siêu âm hoặc xung kích với trị liệu và bài tập khi phù hợp. Mỗi kỹ thuật có cách tác động riêng, hướng đến giảm đau và giúp bạn vận động dễ dàng hơn.",
+    tags: ["Căng cứng cơ", "Giảm đau mỏi"],
+    filterTags: ["muscle-stiffness", "pain-relief"],
+    image: methodFallbackImage.electro,
+    imageAlt: "Trị liệu bằng thiết bị",
+    treatments: [],
+  },
+  {
+    group: "rehab",
+    title: "Tập luyện phục hồi & tăng cường",
+    indexSubtitle: "Phục hồi, sức mạnh và chuyển động",
+    body: "Bắt đầu từ khả năng vận động hiện tại, chuyên viên hướng dẫn các bài tập giúp bạn từng bước phục hồi sau chấn thương, tăng sức mạnh và kiểm soát chuyển động. Mức độ tập thay đổi theo mục tiêu sinh hoạt, công việc và thể thao của bạn.",
+    tags: [
+      "Khó cử động",
+      "Giảm đau mỏi",
+      "Phục hồi sau chấn thương",
+      "Tăng sức mạnh",
+      "Kiểm soát chuyển động tốt hơn",
+    ],
+    filterTags: ["limited-movement", "pain-relief", "injury-rehab", "strength", "movement-control"],
+    image: methodFallbackImage.rehab,
+    imageAlt: "Tập luyện phục hồi & tăng cường",
+    treatments: [],
+  },
+  {
+    group: "cold",
+    title: "Ngâm lạnh",
+    indexSubtitle: "Hỗ trợ hồi phục sau tập luyện",
+    body: "Ngâm nước lạnh có thể giúp dịu cảm giác đau nhức cơ sau buổi tập hoặc vận động cường độ cao. Chuyên viên đánh giá sự phù hợp và hướng dẫn bạn trong buổi ngâm.",
+    tags: ["Hồi phục sau tập luyện"],
+    filterTags: ["post-workout-recovery"],
+    image: methodFallbackImage.cold,
+    imageAlt: "Ngâm lạnh",
+    treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }],
+  },
+  {
+    group: "infrared",
+    title: "Đèn hồng ngoại",
+    indexSubtitle: "Sức ấm trong buổi trị liệu",
+    body: "Đèn hồng ngoại làm ấm vùng được chiếu. Holistic sử dụng sức ấm này để hỗ trợ cảm giác thư giãn, dễ chịu và phối hợp với các phương pháp khác khi phù hợp.",
+    tags: ["Căng cứng cơ"],
+    filterTags: ["muscle-stiffness"],
+    image: methodFallbackImage.infrared,
+    imageAlt: "Đèn hồng ngoại",
+    treatments: [{ slug: "heat-light", title: "Heat & Light" }],
   },
 ];
 

@@ -1,7 +1,8 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { serviceGroups, type ServiceGroup } from "@/lib/content";
+import { methodGroups, serviceGroups, type MethodGroup, type ServiceGroup } from "@/lib/content";
+import { methodTags } from "@/lib/method-tags";
 import { leadSchema } from "@/lib/validation";
-import { validateServiceGroups } from "@/sanity/serviceGroups";
+import { validateMethodGroups, validateServiceGroups } from "@/sanity/serviceGroups";
 
 const seo = defineType({
   name: "seo",
@@ -202,6 +203,153 @@ const servicesPage = defineType({
   ],
   preview: { prepare: () => ({ title: "Trang Dịch vụ" }) },
 });
+const methodGroupTitles: Record<MethodGroup, string> = {
+  manual: "Trị liệu thủ công",
+  electro: "Trị liệu bằng thiết bị",
+  rehab: "Tập luyện phục hồi & tăng cường",
+  cold: "Ngâm lạnh",
+  infrared: "Đèn hồng ngoại",
+};
+const methodGroup = defineType({
+  name: "methodGroup",
+  title: "Nhóm phương pháp",
+  type: "object",
+  fields: [
+    defineField({
+      name: "group",
+      title: "Nhóm",
+      description: "Cố định sau khi tạo. Quyết định mục neo trên trang và liên kết ở chân trang.",
+      type: "string",
+      options: {
+        list: methodGroups.map((value) => ({ value, title: methodGroupTitles[value] })),
+        layout: "radio",
+      },
+      readOnly: ({ value }) => Boolean(value),
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "title",
+      title: "Tên phương pháp",
+      type: "string",
+      validation: (rule) => rule.required().error("Cần tên phương pháp."),
+    }),
+    defineField({
+      name: "indexSubtitle",
+      title: "Dòng phụ trên thẻ chọn nhóm",
+      description: "Ví dụ: tình trạng thường gặp. Bỏ trống để ẩn dòng này.",
+      type: "string",
+    }),
+    defineField({
+      name: "body",
+      title: "Nội dung",
+      type: "text",
+      rows: 5,
+      validation: (rule) => rule.required().error("Cần nội dung phương pháp."),
+    }),
+    defineField({
+      name: "tags",
+      title: "Nhãn tương thích giao diện cũ",
+      description:
+        "Nhãn tại lần chuyển sang bộ lọc, dành cho bản website cũ. Website hiện tại dùng Nhãn bộ lọc bên dưới; chỉnh bộ lọc không thay đổi trường lịch sử này.",
+      readOnly: true,
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      options: { layout: "tags" },
+      validation: (rule) => [
+        rule.max(5).error("Tối đa 5 nhãn."),
+        rule.unique().error("Không lặp nhãn."),
+        rule.custom((tags) =>
+          (tags ?? []).every((t) => typeof t === "string" && t.trim() && t.trim().length <= 40)
+            ? true
+            : "Mỗi nhãn dài 1 đến 40 ký tự.",
+        ),
+      ],
+    }),
+    defineField({
+      name: "filterTags",
+      title: "Nhãn bộ lọc",
+      description:
+        "Chọn tình trạng hoặc mục tiêu liên quan đến nội dung nhóm. Không phải chỉ định điều trị. Nhãn chưa gắn vào nhóm nào sẽ chưa xuất hiện trong bộ lọc website.",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      options: { list: methodTags.map((tag) => ({ value: tag.id, title: tag.label })) },
+      validation: (rule) => [
+        rule.unique().error("Không lặp nhãn bộ lọc."),
+        rule.max(methodTags.length).error(`Tối đa ${methodTags.length} nhãn bộ lọc.`),
+        rule.custom(
+          (values) =>
+            (values ?? []).every((value) => methodTags.some((tag) => tag.id === value)) ||
+            "Chọn nhãn từ danh mục bộ lọc.",
+        ),
+      ],
+    }),
+    defineField({
+      name: "image",
+      title: "Ảnh",
+      description: "Bỏ trống để dùng ảnh mặc định của nhóm. Ảnh không được lộ mặt người.",
+      type: "image",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          validation: (rule) =>
+            rule.custom((value, context) =>
+              (context.parent as { asset?: unknown } | undefined)?.asset && !value
+                ? "Cần alt text khi có ảnh."
+                : true,
+            ),
+        }),
+      ],
+    }),
+    defineField({
+      name: "treatments",
+      title: "Liệu pháp liên quan",
+      description:
+        "Hiện thành liên kết tới trang liệu pháp. Chỉ chọn được liệu pháp có slug. Một liệu pháp có thể xuất hiện ở hai nhóm khác nhau.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "reference",
+          to: [{ type: "treatment" }],
+          options: { filter: "defined(slug.current)", disableNew: true },
+        }),
+      ],
+      validation: (rule) => rule.unique().error("Không chọn cùng một liệu pháp nhiều lần."),
+    }),
+  ],
+  preview: {
+    select: { title: "title", group: "group", media: "image" },
+    prepare: ({ title, group, media }) => ({
+      title,
+      subtitle: methodGroupTitles[group as MethodGroup],
+      media,
+    }),
+  },
+});
+const methodsPage = defineType({
+  name: "methodsPage",
+  title: "Trang Phương pháp",
+  type: "document",
+  fields: [
+    defineField({
+      name: "groups",
+      title: "Năm nhóm phương pháp",
+      description:
+        "Thứ tự hiển thị cố định. Phải đủ trị liệu thủ công, trị liệu bằng thiết bị, tập luyện phục hồi & tăng cường, ngâm lạnh, đèn hồng ngoại, mỗi nhóm một lần.",
+      type: "array",
+      of: [defineArrayMember({ type: "methodGroup" })],
+      options: {
+        sortable: false,
+        disableActions: ["add", "addBefore", "addAfter", "remove", "duplicate"],
+      },
+      initialValue: methodGroups.map((group) => ({ _type: "methodGroup", group })),
+      validation: (rule) =>
+        rule.required().custom<Array<{ _key?: string; group?: string }>>(validateMethodGroups),
+    }),
+  ],
+  preview: { prepare: () => ({ title: "Trang Phương pháp" }) },
+});
 const treatment = defineType({
   name: "treatment",
   title: "Liệu pháp",
@@ -366,6 +514,8 @@ export const schemaTypes = [
   siteSettings,
   serviceGroup,
   servicesPage,
+  methodGroup,
+  methodsPage,
   treatment,
   post,
   testimonial,
