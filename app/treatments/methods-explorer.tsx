@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
+import { ScrollThread } from "./scroll-thread";
 import type { MethodGroup } from "@/lib/content";
 import { matchesMethodTags, methodTagLabel, methodTags, type MethodTagId } from "@/lib/method-tags";
 import styles from "./treatments.module.css";
@@ -316,6 +317,7 @@ export function MethodsExplorer({
       </section>
 
       <div ref={stagesRef} className={styles.stages} data-touched={touched || undefined}>
+        <ScrollThread className={styles.thread} />
         {stages.map((stage) => {
           const stageItems = items.filter((item) => item.stage === stage.id);
           return (

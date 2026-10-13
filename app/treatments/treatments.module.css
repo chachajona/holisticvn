@@ -356,7 +356,42 @@ button[aria-pressed="true"] .selectionMark path {
 
 /* ---------- Pathway stages ---------- */
 .stages {
+  position: relative;
   padding: 0 max(24px, calc((100vw - 1360px) / 2));
+}
+/* A thread down the gutter beside the stage titles, lengthened by ScrollThread as the stages scroll
+   through, with a dot at each title (the hero ribbon's thread-and-dot motif). Wide screens only:
+   narrower, it would meet the titles. */
+.stages {
+  --pad: max(24px, calc((100vw - 1360px) / 2));
+}
+.thread {
+  display: none;
+}
+@media (min-width: 1100px) {
+  .thread {
+    display: block;
+    position: absolute;
+    top: 59px;
+    left: calc(var(--pad) + 232px);
+    width: 1px;
+    height: min(max(calc(var(--reach, 99999px) - 59px), 0px), calc(100% - 59px));
+    background: rgba(144, 119, 110, 0.5);
+    pointer-events: none;
+  }
+  .stage {
+    position: relative;
+  }
+  .stage::before {
+    content: "";
+    position: absolute;
+    top: 54.5px;
+    left: 227.5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--clay);
+  }
 }
 .stage {
   display: grid;
@@ -826,6 +861,13 @@ button[aria-pressed="true"] .selectionMark path {
   }
   .stages[data-touched] .stageMethods > .filteredMethod:nth-child(2):not([hidden]) {
     transition-delay: 0.19s;
+  }
+  /* Thread: each dot pops as the line reaches its stage. */
+  .stage::before {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .stage:not([data-reached])::before {
+    transform: scale(0);
   }
   /* Press feedback: a small scale-down the moment a pill or button is pressed, released in 160ms. */
   .methodTags button {
