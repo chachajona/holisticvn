@@ -1,5 +1,9 @@
 # Methods acceptance — issue #9
 
+Historical staging record. Current PR CI, production publishing/webhook and Chrome
+zoom results are in [PR checklist verification](METHODS_PR_CHECKLIST_VERIFICATION.md)
+(2026-10-13); the pending/local-only statements below describe the earlier session.
+
 Recorded on 2026-10-12 (Asia/Ho_Chi_Minh). Tested application revision:
 `5f18ee273e7810cd38d0255b34880fc986c785d2`.
 

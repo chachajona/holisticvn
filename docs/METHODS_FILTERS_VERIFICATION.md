@@ -1,5 +1,9 @@
 # Approved methods copy and filters — issue #9
 
+Historical staging record. Current PR CI, production publishing/webhook and Chrome
+zoom results are in [PR checklist verification](METHODS_PR_CHECKLIST_VERIFICATION.md)
+(2026-10-13); the pending/local-only statements below describe the earlier session.
+
 Owner requested CMS and website updates on 2026-10-12 after reviewing the revised
 [wording proposal](methods-wording-proposal.md). Branch remains local; no push, PR,
 production deployment or production content mutation was performed.
