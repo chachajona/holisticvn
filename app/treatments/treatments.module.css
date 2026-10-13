@@ -525,6 +525,8 @@ button[aria-pressed="true"] .selectionMark path {
   padding: 56px max(24px, calc((100vw - 1360px) / 2)) 72px;
 }
 .ctaCard {
+  position: relative;
+  overflow: hidden;
   background: var(--dark-cta);
   border-radius: 18px;
   padding: 56px;
@@ -532,6 +534,43 @@ button[aria-pressed="true"] .selectionMark path {
   align-items: center;
   justify-content: space-between;
   gap: 40px;
+}
+/* Pen garland along the top edge (see cta-garland.tsx): fixed proportions, anchored top-right, and it
+   shrinks to stay clear of the heading on narrower cards. */
+.ctaGarland {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(692px, calc(100% - 540px));
+  height: auto;
+  overflow: hidden;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ctaGarland [data-part] {
+  stroke-width: 1.3;
+}
+.ctaGarland [data-part="stem"],
+.ctaGarland [data-part="bloom"] {
+  stroke: var(--hero-emphasis);
+}
+.ctaGarland [data-part="leaf"] {
+  stroke: #9db39f;
+}
+.ctaCopy,
+.ctaActions {
+  position: relative;
+}
+.ctaActions a:focus-visible {
+  outline: 2px solid var(--hero-emphasis);
+  outline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctaActions a {
+    transition: none;
+  }
 }
 .ctaCopy {
   display: flex;
@@ -543,12 +582,6 @@ button[aria-pressed="true"] .selectionMark path {
   font-size: clamp(1.5rem, 2.6vw, 32px);
   line-height: 1.2;
   color: #e4ebe6;
-}
-.ctaCopy p {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 300;
-  color: rgba(215, 225, 218, 0.85);
 }
 .ctaActions {
   display: flex;
@@ -644,6 +677,12 @@ button[aria-pressed="true"] .selectionMark path {
     flex-direction: column;
     align-items: flex-start;
     gap: 24px;
+  }
+  .ctaCard {
+    padding-top: 76px;
+  }
+  .ctaGarland {
+    width: min(520px, 100%);
   }
 }
 
@@ -807,8 +846,11 @@ button[aria-pressed="true"] .selectionMark path {
     visibility: visible;
   }
   .ctaCard {
-    padding: 28px;
+    padding: 64px 20px 28px;
     border-radius: 16px;
+  }
+  .ctaGarland {
+    width: 100%;
   }
   .ctaActions {
     flex-direction: column;
@@ -868,6 +910,39 @@ button[aria-pressed="true"] .selectionMark path {
   }
   .stage:not([data-reached])::before {
     transform: scale(0);
+  }
+  /* CTA garland: the stem draws, then each leaf, the first time the card scrolls in (JS sets data-paint). */
+  .ctaGarland[data-paint="pending"] [data-part="stem"],
+  .ctaGarland[data-paint="pending"] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .ctaGarland[data-paint="pending"] [data-part="bloom"] {
+    opacity: 0;
+  }
+  .ctaGarland[data-paint="painting"] [data-part="stem"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland[data-paint="painting"] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.5s + var(--i, 0) * 0.12s);
+  }
+  /* New growth: a leaf draws in, a blossom opens; the oldest item drops off when the garland is full. */
+  .ctaGarland [data-grown] [data-part="leaf"] {
+    stroke-dasharray: 1;
+    animation: garland-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland [data-grown] [data-part="bloom"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: garland-open 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ctaGarland [data-state="falling"] {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    animation: garland-fall 1s cubic-bezier(0.55, 0, 0.9, 0.6) forwards;
   }
   /* Press feedback: a small scale-down the moment a pill or button is pressed, released in 160ms. */
   .methodTags button {
@@ -944,6 +1019,30 @@ button[aria-pressed="true"] .selectionMark path {
         grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1),
         visibility 0s;
     }
+  }
+}
+@keyframes garland-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes garland-open {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes garland-fall {
+  to {
+    opacity: 0;
+    transform: translate(8px, 52px) rotate(40deg);
   }
 }
 @keyframes body-in {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { methodAnchor, methodStages } from "@/lib/content";
 import { getMethods } from "@/lib/sanity";
 import { createMetadata } from "@/lib/seo";
+import { CtaGarland } from "./cta-garland";
 import { MethodArticle, MethodsExplorer, MethodTags } from "./methods-explorer";
 import styles from "./treatments.module.css";
 
@@ -135,12 +136,9 @@ export default async function TreatmentsPage() {
 
       <section className={styles.cta}>
         <div className={styles.ctaCard}>
+          <CtaGarland />
           <div className={styles.ctaCopy}>
             <h2>Chưa chắc phương pháp nào phù hợp?</h2>
-            <p>
-              Buổi đánh giá ban đầu giúp bạn hiểu tình trạng vận động và trao đổi hướng trị liệu,
-              tập luyện phù hợp.
-            </p>
           </div>
           <div className={styles.ctaActions}>
             <Link href="/booking" className={styles.lightButton}>
