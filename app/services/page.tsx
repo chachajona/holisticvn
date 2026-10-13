@@ -17,8 +17,7 @@ Roboto Serif body.
 STORY: a visitor picks the category matching their need, reads the specific
 technique and its outcomes, and books that service — or follows a real
 treatment link into CMS-backed detail.
-FIRST VIEWPORT: 340px full-bleed dark hero card, breadcrumb, "Dịch vụ" title,
-one clarifying line.
+FIRST VIEWPORT: 340px full-bleed dark hero card, "Dịch vụ" title, one clarifying line.
 FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
@@ -76,9 +75,6 @@ export default async function ServicesPage() {
           />
           <div className={styles.heroScrim} />
           <div className={styles.heroContent}>
-            <div className={styles.breadcrumb}>
-              <Link href="/">Trang chủ</Link> &nbsp;/&nbsp; Dịch vụ
-            </div>
             <h1>Dịch vụ</h1>
             <p className={styles.heroBody}>
               Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.

@@ -67,14 +67,6 @@
   justify-content: center;
   gap: 16px;
 }
-.breadcrumb {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.2em;
-  color: rgba(247, 243, 240, 0.6);
-}
-.breadcrumb a {
-  color: inherit;
-}
 .hero h1 {
   font-size: clamp(2rem, 5vw, 52px);
   line-height: 1.1;

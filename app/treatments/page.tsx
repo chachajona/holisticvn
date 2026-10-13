@@ -17,8 +17,8 @@ OWN-WORLD: same Warm Clay Editorial v2 chrome as the homepage — card ground, i
 hero panel, sage/clay actions, Roboto Slab headings over Roboto Serif body.
 STORY: a visitor unsure which technique fits reads five grouped families, sees
 which symptoms each addresses, and books an assessment rather than guessing.
-FIRST VIEWPORT: 340px full-bleed dark hero card, breadcrumb, "Phương pháp" title,
-one clarifying line.
+FIRST VIEWPORT: 340px full-bleed dark hero card, "Phương pháp" title,
+one clarifying line, and a three-stage pathway ribbon linking to each stage's first method.
 FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
 review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
@@ -39,25 +39,41 @@ export default async function TreatmentsPage() {
     <main id="main" className={styles.root}>
       <section className={styles.hero}>
         <div className={styles.heroCard}>
-          <Image
-            src="/images/HeroTreatments.jpg"
-            alt="Dấu giác hơi trên vai sau buổi trị liệu"
-            fill
-            priority
-            sizes="100vw"
-            style={{ objectFit: "cover" }}
-          />
-          <div className={styles.heroScrim} />
+          <div className={styles.heroPhoto}>
+            <Image
+              src="/images/HeroTreatments.jpg"
+              alt="Dấu giác hơi trên vai sau buổi trị liệu"
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectFit: "cover", objectPosition: "68% 50%" }}
+            />
+            <div className={styles.heroScrim} />
+          </div>
           <div className={styles.heroContent}>
-            <div className={styles.breadcrumb}>
-              <Link href="/">Trang chủ</Link> &nbsp;/&nbsp; Phương pháp
-            </div>
             <h1>Phương pháp</h1>
             <p className={styles.heroBody}>
               Holistic đánh giá khả năng vận động, rồi kết hợp trị liệu và bài tập phù hợp với nhu
               cầu của bạn.
             </p>
           </div>
+          <nav className={styles.heroPath} aria-label="Các chặng trong lộ trình">
+            <ol>
+              {methodStages.map((stage) => (
+                <li key={stage.id}>
+                  <a href={`#${methodAnchor[stage.groups[0]]}`}>
+                    <b>{stage.title}</b>
+                    <span>
+                      {stage.groups
+                        .map((group) => methods.find((method) => method.group === group)?.title)
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </div>
       </section>
 
@@ -98,10 +114,12 @@ export default async function TreatmentsPage() {
                 </>
               }
             >
-              <p className={styles.methodText}>{method.body}</p>
-              <MethodTags ids={method.filterTags} />
+              <p key="body" className={styles.methodText}>
+                {method.body}
+              </p>
+              <MethodTags key="tags" ids={method.filterTags} />
               {method.treatments.length ? (
-                <div className={styles.methodLinks}>
+                <div key="links" className={styles.methodLinks}>
                   <span className={styles.methodLinksLabel}>Liệu pháp liên quan</span>
                   {method.treatments.map((t) => (
                     <Link key={t.slug} href={`/treatments/${t.slug}`}>

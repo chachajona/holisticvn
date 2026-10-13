@@ -10,6 +10,8 @@
   --warm-band: #f6efe6;
   --warm-band-deep: #ede6dc;
   --dark-cta: #181f1a;
+  --hero-emphasis: #e0c1af;
+  --hero-thread: rgba(224, 193, 175, 0.5);
   color: var(--ink);
   background: var(--card);
   font-family: var(--font-accent);
@@ -49,38 +51,40 @@
   overflow: hidden;
   background: var(--ink);
 }
-.heroCard img {
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+}
+.heroPhoto img {
   object-fit: cover;
 }
 .heroScrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    95deg,
-    rgba(58, 42, 36, 0.82) 0%,
-    rgba(58, 42, 36, 0.55) 55%,
-    rgba(58, 42, 36, 0.15) 100%
-  );
+  /* The bottom layer only backs the pathway ribbon, so the photo stays clear above it. */
+  background:
+    linear-gradient(
+      0deg,
+      rgba(58, 42, 36, 0.85) 0,
+      rgba(58, 42, 36, 0.75) 80px,
+      rgba(58, 42, 36, 0) 160px
+    ),
+    linear-gradient(
+      95deg,
+      rgba(58, 42, 36, 0.82) 0%,
+      rgba(58, 42, 36, 0.69) min(620px, 88%),
+      rgba(58, 42, 36, 0.15) 100%
+    );
   pointer-events: none;
 }
 .heroContent {
   position: absolute;
   left: 64px;
-  top: 0;
-  bottom: 0;
+  top: 56px;
   right: 64px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 16px;
-}
-.breadcrumb {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.2em;
-  color: rgba(247, 243, 240, 0.6);
-}
-.breadcrumb a {
-  color: inherit;
+  gap: 14px;
 }
 .hero h1 {
   font-size: clamp(2rem, 5vw, 52px);
@@ -93,6 +97,63 @@
   font-size: 17px;
   line-height: 1.6;
   color: rgba(247, 243, 240, 0.82);
+}
+.heroPath {
+  position: absolute;
+  left: 64px;
+  right: 64px;
+  bottom: 32px;
+}
+.heroPath ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 0;
+  padding: 18px 0 0;
+  list-style: none;
+}
+.heroPath ol::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hero-thread);
+}
+.heroPath a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #f7f3f0;
+}
+.heroPath a::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--hero-emphasis);
+}
+.heroPath b {
+  font: 300 20px/1.2 var(--font-display);
+}
+.heroPath span {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(247, 243, 240, 0.78);
+}
+.heroPath a:hover b {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.heroPath a:focus-visible {
+  outline: 2px solid var(--hero-emphasis);
+  outline-offset: 6px;
 }
 
 /* ---------- Finder: two selects ---------- */
@@ -508,9 +569,19 @@ button[aria-pressed="true"] .selectionMark path {
 }
 
 @media (max-width: 980px) {
+  .heroCard {
+    height: 372px;
+  }
   .heroContent {
     left: 32px;
     right: 32px;
+  }
+  .heroPath {
+    left: 32px;
+    right: 32px;
+  }
+  .heroBody {
+    max-width: 460px;
   }
   .stage {
     grid-template-columns: 1fr;
@@ -538,14 +609,34 @@ button[aria-pressed="true"] .selectionMark path {
     padding: 0 16px;
   }
   .heroCard {
-    height: 260px;
+    height: auto;
     border-radius: 16px;
   }
+  .heroPhoto {
+    bottom: auto;
+    height: 270px;
+  }
+  .heroScrim {
+    background: linear-gradient(180deg, rgba(58, 42, 36, 0) 48%, var(--ink) 92%);
+  }
   .heroContent {
-    left: 20px;
-    right: 20px;
-    bottom: 22px;
-    top: auto;
+    position: relative;
+    inset: auto;
+    padding: 208px 20px 0;
+  }
+  .heroPath {
+    position: relative;
+    inset: auto;
+    padding: 12px 20px 22px;
+  }
+  .heroPath ol {
+    gap: 0 12px;
+  }
+  .heroPath b {
+    font-size: 17px;
+  }
+  .heroPath span {
+    display: none;
   }
   .hero h1 {
     font-size: 34px;
