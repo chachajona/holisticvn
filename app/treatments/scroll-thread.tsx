@@ -32,12 +32,18 @@ export function ScrollThread({ className }: { className?: string }) {
       if (!frame) frame = requestAnimationFrame(update);
     };
     update();
+    host.setAttribute("data-thread-ready", "");
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     reduced.addEventListener("change", schedule);
     const resize = new ResizeObserver(schedule);
     resize.observe(host);
     return () => {
+      host.removeAttribute("data-thread-ready");
+      node.style.removeProperty("--reach");
+      host.querySelectorAll(":scope > section").forEach((stage) => {
+        stage.removeAttribute("data-reached");
+      });
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);

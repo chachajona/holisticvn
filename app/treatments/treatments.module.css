@@ -754,7 +754,10 @@ button[aria-pressed="true"] .selectionMark path {
     grid-area: 1 / 1;
   }
   .methodMedia {
-    height: 112px;
+    height: auto;
+    min-height: 112px;
+    align-self: stretch;
+    background: #181f1a;
     border-radius: 16px;
   }
   .methodMedia::after {
@@ -764,15 +767,15 @@ button[aria-pressed="true"] .selectionMark path {
     background: linear-gradient(
       0deg,
       rgba(24, 31, 26, 0.86) 0%,
-      rgba(24, 31, 26, 0.7) 60%,
-      rgba(24, 31, 26, 0.3) 100%
+      rgba(24, 31, 26, 0.74) 60%,
+      rgba(24, 31, 26, 0.74) 100%
     );
   }
   .methodHead {
     z-index: 1;
     align-self: end;
     max-width: none;
-    padding: 0 64px 21px 18px;
+    padding: 21px 64px 21px 18px;
     pointer-events: none;
   }
   .methodHead h3 {
@@ -822,9 +825,6 @@ button[aria-pressed="true"] .selectionMark path {
     border-radius: 50%;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6.25 4 4 4-4' fill='none' stroke='%23f7f3f0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
       center / 16px no-repeat;
-    transition:
-      transform 0.2s ease,
-      background-color 0.2s ease;
   }
   .methodToggle:hover::after {
     background-color: rgba(247, 243, 240, 0.16);
@@ -836,7 +836,7 @@ button[aria-pressed="true"] .selectionMark path {
     outline-offset: 2px;
   }
   .method[data-open] .methodMedia {
-    height: 200px;
+    min-height: 200px;
   }
   .method[data-open] .methodToggle::after {
     transform: rotate(180deg);
@@ -908,7 +908,7 @@ button[aria-pressed="true"] .selectionMark path {
   .stage::before {
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .stage:not([data-reached])::before {
+  .stages[data-thread-ready] .stage:not([data-reached])::before {
     transform: scale(0);
   }
   /* CTA garland: the stem draws, then each leaf, the first time the card scrolls in (JS sets data-paint). */
@@ -1007,7 +1007,12 @@ button[aria-pressed="true"] .selectionMark path {
       animation: body-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
     }
     .methodMedia {
-      transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .methodToggle::after {
+      transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
     }
     .methodBody {
       transition:

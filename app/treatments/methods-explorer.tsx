@@ -19,6 +19,10 @@ import styles from "./treatments.module.css";
 
 type TagCategory = (typeof methodTags)[number]["category"];
 type Choice = Partial<Record<TagCategory, MethodTagId>>;
+type RevealRequest = { anchor: string };
+
+const selectedTags = (choice: Choice) =>
+  Object.values(choice).filter((id): id is MethodTagId => id !== undefined);
 
 const categoryOf = (id: MethodTagId) => methodTags.find((tag) => tag.id === id)!.category;
 // One choice per category (a select each); a tag in either slot counts, so results are the union.
@@ -30,7 +34,7 @@ const toggled = (choice: Choice, id: MethodTagId): Choice => ({
 const FilterContext = createContext<{
   choice: Choice;
   toggle: (id: MethodTagId) => void;
-  revealed: string | null;
+  revealed: RevealRequest | null;
 }>({ choice: {}, toggle: () => {}, revealed: null });
 
 function SelectionMark() {
@@ -70,14 +74,27 @@ export function MethodTags({ ids }: { ids: MethodTagId[] }) {
                   type="button"
                   key={id}
                   aria-pressed={choice[category] === id}
-                  onClick={() => {
-                    const next = Object.values(toggled(choice, id));
+                  onClick={(event) => {
+                    const button = event.currentTarget;
+                    const next = selectedTags(toggled(choice, id));
                     toggle(id);
                     // If this section disappears, keep keyboard focus on the corresponding filter.
                     if (!matchesMethodTags(ids, next))
                       document
                         .getElementById(`method-filter-${category}`)
                         ?.focus({ preventScroll: true });
+                    else if (!next.length && window.matchMedia("(max-width: 700px)").matches)
+                      requestAnimationFrame(() => {
+                        // Clearing the last filter can collapse this mobile body after rendering.
+                        // A manually opened row stays open, so its pill can retain focus.
+                        if (
+                          document.activeElement === button &&
+                          !button.closest("article")?.hasAttribute("data-open")
+                        )
+                          document
+                            .getElementById(`method-filter-${category}`)
+                            ?.focus({ preventScroll: true });
+                      });
                   }}
                 >
                   <SelectionMark />
@@ -108,11 +125,19 @@ export function MethodArticle({
   children: ReactNode;
 }) {
   const { choice, revealed } = useContext(FilterContext);
-  const selection = Object.values(choice).join();
-  const [toggledOpen, setToggledOpen] = useState<{ selection: string; open: boolean } | null>(null);
+  const selection = selectedTags(choice).join();
+  const revealRequest = revealed?.anchor === id ? revealed : null;
+  const [toggledOpen, setToggledOpen] = useState<{
+    selection: string;
+    revealed: RevealRequest | null;
+    open: boolean;
+  } | null>(null);
   // An active filter or a footer link opens its rows; a tap on the row always wins afterwards.
   const open =
-    toggledOpen?.selection === selection ? toggledOpen.open : Boolean(selection) || revealed === id;
+    toggledOpen?.selection === selection &&
+    (!revealRequest || toggledOpen.revealed === revealRequest)
+      ? toggledOpen.open
+      : Boolean(selection) || Boolean(revealRequest);
   return (
     <article className={styles.method} id={id} tabIndex={-1} data-open={open || undefined}>
       {media}
@@ -123,7 +148,7 @@ export function MethodArticle({
         aria-expanded={open}
         aria-controls={`${id}-body`}
         aria-label={title}
-        onClick={() => setToggledOpen({ selection, open: !open })}
+        onClick={() => setToggledOpen({ selection, revealed: revealRequest, open: !open })}
       />
       <div className={styles.methodBody} id={`${id}-body`}>
         <div className={styles.methodBodyInner}>{children}</div>
@@ -154,16 +179,13 @@ export function MethodsExplorer({
     setTouched(true);
     setChoiceState(next);
   }, []);
-  const selected = useMemo(
-    () => Object.values(choice).filter((id): id is MethodTagId => Boolean(id)),
-    [choice],
-  );
+  const selected = useMemo(() => selectedTags(choice), [choice]);
   const toggle = useCallback(
     (id: MethodTagId) => setChoice((current) => toggled(current, id)),
     [setChoice],
   );
   const stagesRef = useRef<HTMLDivElement>(null);
-  const [revealed, setRevealed] = useState<string | null>(null);
+  const [revealed, setRevealed] = useState<RevealRequest | null>(null);
   const context = useMemo(() => ({ choice, toggle, revealed }), [choice, toggle, revealed]);
   const availableTags = methodTags.filter((tag) =>
     items.some((item) => item.filterTags.includes(tag.id)),
@@ -178,7 +200,8 @@ export function MethodsExplorer({
       // Rows that close as the filter clears must not animate under the scroll: it would stop short.
       stagesRef.current?.setAttribute("data-jump", "");
       setChoice({});
-      setRevealed(anchor);
+      // A new request supersedes earlier manual closure, even when the fragment is unchanged.
+      setRevealed({ anchor });
       requestAnimationFrame(() => {
         const target = document.getElementById(anchor);
         target?.scrollIntoView();

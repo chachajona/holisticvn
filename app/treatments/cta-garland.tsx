@@ -7,7 +7,7 @@ import styles from "./treatments.module.css";
 // scrolls into view, then keeps growing: each time a button is hovered or focused a new leaf or
 // blossom sprouts on a free spot along the stem. When every spot is taken, the oldest one drops off
 // and a new one grows in its place. Nothing runs on its own; without JavaScript, with reduced motion
-// or on touch screens it is simply the finished garland (reduced motion swaps without animating).
+// or on touch-only devices it is simply the finished initial garland.
 type Pt = [number, number];
 type Curve = [Pt, Pt, Pt, Pt];
 type Kind = "leaf" | "bloom";
@@ -73,9 +73,13 @@ export function CtaGarland() {
     const node = ref.current;
     const card = node?.parentElement;
     if (!node || !card) return;
+    // any-* keeps mouse/keyboard enhancement available on hybrid devices whose primary pointer
+    // is touch; touch-only and reduced-motion visitors keep the completed initial decoration.
+    const pointer = window.matchMedia("(any-hover: hover) and (any-pointer: fine)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const { timers } = state.current;
     let observer: IntersectionObserver | undefined;
-    if ("IntersectionObserver" in window) {
+    if (pointer.matches && !reduced.matches && "IntersectionObserver" in window) {
       let first = true;
       observer = new IntersectionObserver(
         ([entry]) => {
@@ -95,6 +99,7 @@ export function CtaGarland() {
     }
 
     const grow = () => {
+      if (!pointer.matches || reduced.matches) return;
       const s = state.current;
       const now = Date.now();
       if (node.dataset.paint === "pending" || node.dataset.paint === "painting") return;
@@ -124,16 +129,19 @@ export function CtaGarland() {
     const onFocus = (event: FocusEvent) => {
       if (event.target instanceof Element && event.target.matches(":focus-visible")) grow();
     };
+    const onPointerEnter = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") grow();
+    };
     const links = Array.from(card.querySelectorAll("a"));
     links.forEach((link) => {
-      link.addEventListener("pointerenter", grow);
+      link.addEventListener("pointerenter", onPointerEnter);
       link.addEventListener("focus", onFocus);
     });
     return () => {
       observer?.disconnect();
       timers.forEach(clearTimeout);
       links.forEach((link) => {
-        link.removeEventListener("pointerenter", grow);
+        link.removeEventListener("pointerenter", onPointerEnter);
         link.removeEventListener("focus", onFocus);
       });
     };

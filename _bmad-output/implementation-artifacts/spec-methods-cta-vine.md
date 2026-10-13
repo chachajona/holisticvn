@@ -3,6 +3,7 @@ title: "Grow a vine inside the Methods closing CTA"
 type: "feature"
 created: "2026-10-13"
 status: "in-review"
+superseded_by: "DESIGN.md — Methods closing CTA garland (030ca55)"
 baseline_commit: "90c2e8c56ad3131f7aab001c126f31cdf0303916"
 review_loop_iteration: 0
 context:
@@ -11,6 +12,8 @@ context:
   - "/Users/chachajona/conductor/workspaces/holisticvn/tripoli/docs/FRONTEND_CHECKLIST.md"
   - "/Users/chachajona/.codex/skills/impeccable/reference/craft-floor.md"
 ---
+
+> **Historical specification — superseded.** The lower/right vine and temporary, action-specific growth below describe an earlier iteration. The implemented top-right garland and persistent leaf/blossom growth are documented in `DESIGN.md`, updated in commit `030ca55` after the garland implementation in `53b2f4d`. Use that current design description for PR #44 review. The frozen intent and unchecked acceptance criteria are retained as historical context; they are not acceptance evidence for the current garland. Final owner acceptance of the page remains pending.
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
 

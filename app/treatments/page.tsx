@@ -79,7 +79,7 @@ export default async function TreatmentsPage() {
       </section>
 
       <noscript>
-        <style>{`@media (max-width: 700px) { [id$="-body"] { display: flex !important; } button[aria-controls$="-body"] { display: none !important; } }`}</style>
+        <style>{`@media (max-width: 700px) { [id$="-body"] { display: flex !important; visibility: visible !important; } button[aria-controls$="-body"] { display: none !important; } }`}</style>
       </noscript>
 
       <MethodsExplorer
