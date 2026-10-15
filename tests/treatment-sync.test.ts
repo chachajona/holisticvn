@@ -112,6 +112,22 @@ describe("planSync", () => {
     ).toThrow('methodsPage thiếu nhóm "electro"');
   });
 
+  it("stops when a matched group has an unsafe or missing _key", () => {
+    const withKey = (key?: string) => {
+      const p = pages();
+      const group = p.methodsPage.groups[0] as { _key?: string };
+      if (key === undefined) delete group._key;
+      else group._key = key;
+      return p;
+    };
+    expect(() => run({ pages: withKey('a"b') })).toThrow(
+      'methodsPage: _key "a"b" của nhóm "manual" không hợp lệ',
+    );
+    expect(() => run({ pages: withKey() })).toThrow(
+      'methodsPage: _key "undefined" của nhóm "manual" không hợp lệ',
+    );
+  });
+
   it("stops when a links slug is not in the seed", () => {
     const bad = { ...links, methodsPage: { ...links.methodsPage, manual: ["no-such-treatment"] } };
     expect(() => run({ links: bad })).toThrow('Thiếu liệu pháp "no-such-treatment"');

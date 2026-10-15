@@ -4,6 +4,9 @@
 // Dry run (default): node --env-file=.env.local scripts/sync-treatments.mjs --project <id> --dataset staging
 // Apply: add --apply --confirm <id>/staging after reviewing the dry run.
 // Needs SANITY_AUTH_TOKEN (write access). Writes a backup to .context/ before applying.
+// --apply stops when open drafts or release versions exist; pass --allow-drafts only after
+// reading the WARNING (drafts are not changed by this script).
+// Run from the repository root (seed paths and the .context/ backup are relative to it).
 
 import { createClient } from "@sanity/client";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -16,6 +19,7 @@ const { values } = parseArgs({
     dataset: { type: "string" },
     apply: { type: "boolean", default: false },
     confirm: { type: "string" },
+    "allow-drafts": { type: "boolean", default: false },
   },
 });
 if (!values.project || !values.dataset) {
@@ -62,6 +66,12 @@ const draftIds = await client.fetch(
 
 const { mutations, skipped, warnings } = planSync({ seed, links, treatments, pages, draftIds });
 for (const warning of warnings) console.warn(`WARNING: ${warning}`);
+if (values.apply && warnings.length && !values["allow-drafts"]) {
+  console.error(
+    "Open drafts or release versions exist. Publish or discard them, or re-run with --allow-drafts.",
+  );
+  process.exit(1);
+}
 for (const id of skipped) console.warn(`Skipped (not in this dataset): ${id}`);
 for (const mutation of mutations) {
   if (mutation.createIfNotExists) console.log("Would create:", mutation.createIfNotExists._id);
@@ -69,31 +79,30 @@ for (const mutation of mutations) {
 }
 if (!values.apply) {
   console.log(`${mutations.length} mutations planned. Nothing written.`);
-  process.exit(0);
-}
+} else {
+  const ids = mutations.map((m) => m.createIfNotExists?._id ?? m.patch.id);
+  const before = await client.fetch(`*[_id in $ids]`, { ids });
+  mkdirSync(".context", { recursive: true });
+  // unique name + "wx": never overwrite an earlier backup, it may be the only rollback copy
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const backup = `.context/treatments-before-${values.dataset}-${stamp}.json`;
+  writeFileSync(backup, JSON.stringify(before, null, 2), { flag: "wx" });
+  console.log(`Backed up ${before.length} documents to ${backup}`);
 
-const ids = mutations.map((m) => m.createIfNotExists?._id ?? m.patch.id);
-const before = await client.fetch(`*[_id in $ids]`, { ids });
-mkdirSync(".context", { recursive: true });
-// unique name + "wx": never overwrite an earlier backup, it may be the only rollback copy
-const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-const backup = `.context/treatments-before-${values.dataset}-${stamp}.json`;
-writeFileSync(backup, JSON.stringify(before, null, 2), { flag: "wx" });
-console.log(`Backed up ${before.length} documents to ${backup}`);
-
-const transaction = client.transaction();
-for (const mutation of mutations) {
-  if (mutation.createIfNotExists) {
-    transaction.createIfNotExists(mutation.createIfNotExists);
-    continue;
+  const transaction = client.transaction();
+  for (const mutation of mutations) {
+    if (mutation.createIfNotExists) {
+      transaction.createIfNotExists(mutation.createIfNotExists);
+      continue;
+    }
+    const { id, ifRevisionID, set, unset } = mutation.patch;
+    transaction.patch(id, (patch) => {
+      patch = patch.ifRevisionId(ifRevisionID);
+      if (set && Object.keys(set).length) patch = patch.set(set);
+      if (unset?.length) patch = patch.unset(unset);
+      return patch;
+    });
   }
-  const { id, ifRevisionID, set, unset } = mutation.patch;
-  transaction.patch(id, (patch) => {
-    patch = patch.ifRevisionId(ifRevisionID);
-    if (set && Object.keys(set).length) patch = patch.set(set);
-    if (unset?.length) patch = patch.unset(unset);
-    return patch;
-  });
+  const result = await transaction.commit();
+  console.log(`Committed transaction ${result.transactionId}: ${result.results.length} documents.`);
 }
-const result = await transaction.commit();
-console.log(`Committed transaction ${result.transactionId}: ${result.results.length} documents.`);

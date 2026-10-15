@@ -59,6 +59,10 @@ export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
       if (!slugs.length) continue;
       const found = page.groups?.find((g) => g.group === group);
       if (!found) throw new Error(`${pageId} thiếu nhóm "${group}"`);
+      // the _key goes into a patch path, so only plain key characters are allowed
+      if (!/^[A-Za-z0-9_-]+$/.test(found._key ?? "")) {
+        throw new Error(`${pageId}: _key "${found._key}" của nhóm "${group}" không hợp lệ`);
+      }
       set[`groups[_key=="${found._key}"].treatments`] = slugs.map((slug) => {
         const ref = idBySlug.get(slug);
         if (!ref) throw new Error(`Thiếu liệu pháp "${slug}"`);

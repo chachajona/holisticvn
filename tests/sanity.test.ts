@@ -178,6 +178,7 @@ describe("configured Sanity content", () => {
       const html = await render("full");
       expect(html).toContain("Long description");
       expect(html).not.toContain("Thời lượng gợi ý");
+      expect(html).not.toContain("45 phút");
       expect(html.indexOf("Bước một")).toBeGreaterThan(-1);
       expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
       expect(html).toContain("<img");
