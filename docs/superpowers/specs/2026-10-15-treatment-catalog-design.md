@@ -100,7 +100,7 @@ Trong `app/treatments/[slug]/page.tsx` (và CSS module hiện có, nếu đã đ
 Theo quy ước của #8 và #9 (`docs/SERVICES_VERIFICATION.md`, `docs/METHODS_VERIFICATION.md`): staging trước, sao lưu trước khi ghi production, tham chiếu gắn sau khi seed có kiểm tra phiên bản.
 
 1. **Seed gồm 11 document** trong `scripts/seed/treatments.json` (nguồn dữ liệu duy nhất), mỗi document `_id: "treatment-<slug>"`. `scripts/sync-treatments.mjs` tạo document chưa có (`createIfNotExists`, `_id: treatment-<slug>`), patch document đã có theo slug (điểm 2) và gắn tham chiếu nhóm (điểm 3) trong một giao dịch, mặc định dry-run, theo quy ước `--project/--dataset/--apply/--confirm` của `scripts/transform-legacy-content.mjs`. Lý do thay lệnh CLI `npx sanity documents create ... --missing`: một công cụ, có dry-run và kiểm tra phiên bản; CLI không có dry-run và chưa kiểm chứng việc nhận mảng nhiều document.
-2. **Ba document production có sẵn** (`cupping`, `cold-plunge`, `heat-light`) giữ nguyên `_id` và nên **không** đi qua `--missing` (sẽ tạo bản trùng slug). Dùng patch theo slug: đặt `title`, `englishTitle`, `shortDescription`, `description`, `price`, `requiresCertifiedPractitioner`, `seo` (xoá), `benefits` và `protocols` (xoá), mỗi patch kèm `ifRevisionID`. Sao lưu document trước khi patch vào `production-before-treatments.json` (không commit nếu chứa nội dung riêng).
+2. **Ba document production có sẵn** (`cupping`, `cold-plunge`, `heat-light`) giữ nguyên `_id`: script chỉ patch chúng theo slug và không bao giờ tạo mới (tạo mới sẽ sinh bản trùng slug). Patch theo slug: đặt `title`, `englishTitle`, `shortDescription`, `description`, `price`, `requiresCertifiedPractitioner`, `seo` (xoá), `benefits` và `protocols` (xoá), mỗi patch kèm `ifRevisionID`. Sao lưu document trước khi patch vào `production-before-treatments.json` (không commit nếu chứa nội dung riêng).
 3. **Tham chiếu nhóm** (gắn sau seed, bằng script tìm `_id` theo slug rồi patch `methodsPage` và `servicesPage` với revision guard):
    - `methodsPage`: `manual` = dry-needling, cupping, iastm, tapping, chiropractic-adjustment; `electro` = shockwave, bio-electric, therapeutic-ultrasound, electroacupuncture; `cold` = cold-plunge; `infrared` = heat-light.
    - `servicesPage`: `therapy` = dry-needling, cupping, iastm, tapping, chiropractic-adjustment, shockwave, bio-electric, therapeutic-ultrasound, electroacupuncture; `recovery` = heat-light, cold-plunge; `training` = rỗng.
@@ -136,7 +136,7 @@ Theo quy ước của #8 và #9 (`docs/SERVICES_VERIFICATION.md`, `docs/METHODS_
 **Xác minh thủ công và bằng chứng** (đính kèm PR, theo tiêu chí #10):
 
 - Đối chiếu từng chữ và giá trong `treatments.json` và trang với ảnh bảng giá (tiếng Việt và tiếng Anh).
-- Staging: document đầy đủ, thiếu optional fields, slug lạ; seed chạy hai lần (lần hai `Skipped`); trang `/treatments` và `/services` liên kết đủ 11 trang.
+- Staging: document đầy đủ, thiếu optional fields, slug lạ; dry run lần hai không lập kế hoạch tạo mới nào và chỉ còn các patch idempotent; trang `/treatments` và `/services` liên kết đủ 11 trang.
 - Giá và chú thích `*` hiển thị đúng ở desktop 1280, 768 và mobile 375; bàn phím; không cuộn ngang.
 - Gửi form thật trên staging cho một liệu pháp có dấu `*` và một liệu pháp không có; email có dòng "Liệu pháp" đúng tên tiếng Việt.
 - `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
