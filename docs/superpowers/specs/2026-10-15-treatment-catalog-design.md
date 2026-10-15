@@ -1,6 +1,6 @@
 # Danh mục 11 liệu pháp và trang chi tiết `/treatments/[slug]` — thiết kế
 
-Trạng thái: **đã được owner duyệt thiết kế trong hội thoại ngày 2026-10-15; chờ duyệt bản viết này** trước khi lập kế hoạch triển khai. Chưa có code nào được viết theo spec này (phần code của #10 đã làm trước đó nằm ở mục 2).
+Trạng thái: **đã được owner duyệt thiết kế và kế hoạch triển khai; code đã được triển khai trên nhánh `issue-10`, còn bước staging/production (cần token và xác nhận owner)**.
 Liên quan: #10 (issue này), #1 (tracking), #8 (trang dịch vụ từ Sanity), #9 (nhóm phương pháp Sanity), #4 (kiểm kê nội dung). Nghiên cứu nền: [`treatment-detail-schema-research.md`](../../treatment-detail-schema-research.md), [`treatment-i18n-schema-research.md`](../../treatment-i18n-schema-research.md), [`methods-schema-research.md`](../../methods-schema-research.md), [`services-schema-research.md`](../../services-schema-research.md).
 
 ## 1. Bối cảnh và mục tiêu
@@ -16,7 +16,7 @@ Trang chi tiết liệu pháp đã render từ Sanity, nhưng:
 
 **Thay đổi so với nội dung issue:** dòng "Không cần thêm giá chưa được owner xác nhận" của #10 được thay thế. Owner đã cho phép hiển thị giá theo đúng bảng giá (xác nhận trong hội thoại 2026-10-15). Phần "không có chức năng đặt khung giờ tự động" giữ nguyên.
 
-## 2. Đã có sẵn trên nhánh `issue-10` (chưa commit)
+## 2. Đã có sẵn trên nhánh `issue-10`
 
 Không làm lại trong spec này:
 
@@ -100,7 +100,7 @@ Trong `app/treatments/[slug]/page.tsx` (và CSS module hiện có, nếu đã đ
 Theo quy ước của #8 và #9 (`docs/SERVICES_VERIFICATION.md`, `docs/METHODS_VERIFICATION.md`): staging trước, sao lưu trước khi ghi production, tham chiếu gắn sau khi seed có kiểm tra phiên bản.
 
 1. **Seed gồm 11 document** trong `scripts/seed/treatments.json` (nguồn dữ liệu duy nhất), mỗi document `_id: "treatment-<slug>"`. `scripts/sync-treatments.mjs` tạo document chưa có (`createIfNotExists`, `_id: treatment-<slug>`), patch document đã có theo slug (điểm 2) và gắn tham chiếu nhóm (điểm 3) trong một giao dịch, mặc định dry-run, theo quy ước `--project/--dataset/--apply/--confirm` của `scripts/transform-legacy-content.mjs`. Lý do thay lệnh CLI `npx sanity documents create ... --missing`: một công cụ, có dry-run và kiểm tra phiên bản; CLI không có dry-run và chưa kiểm chứng việc nhận mảng nhiều document.
-2. **Ba document production có sẵn** (`cupping`, `cold-plunge`, `heat-light`) giữ nguyên `_id`: script chỉ patch chúng theo slug và không bao giờ tạo mới (tạo mới sẽ sinh bản trùng slug). Patch theo slug: đặt `title`, `englishTitle`, `shortDescription`, `description`, `price`, `requiresCertifiedPractitioner`, `seo` (xoá), `benefits` và `protocols` (xoá), mỗi patch kèm `ifRevisionID`. Sao lưu document trước khi patch vào `production-before-treatments.json` (không commit nếu chứa nội dung riêng).
+2. **Ba document production có sẵn** (`cupping`, `cold-plunge`, `heat-light`) giữ nguyên `_id`: script chỉ patch chúng theo slug và không bao giờ tạo mới (tạo mới sẽ sinh bản trùng slug). Patch theo slug: đặt `title`, `englishTitle`, `shortDescription`, `description`, `price`, `requiresCertifiedPractitioner`, `seo` (xoá), `benefits` và `protocols` (xoá), mỗi patch kèm `ifRevisionID`. Sao lưu document trước khi patch vào `.context/treatments-before-<dataset>-<UTC timestamp>.json` (một file cho mỗi lần apply, không bao giờ ghi đè; chỉ sao lưu các document mà lần chạy đó thay đổi; không commit nếu chứa nội dung riêng).
 3. **Tham chiếu nhóm** (gắn sau seed, bằng script tìm `_id` theo slug rồi patch `methodsPage` và `servicesPage` với revision guard):
    - `methodsPage`: `manual` = dry-needling, cupping, iastm, tapping, chiropractic-adjustment; `electro` = shockwave, bio-electric, therapeutic-ultrasound, electroacupuncture; `cold` = cold-plunge; `infrared` = heat-light.
    - `servicesPage`: `therapy` = dry-needling, cupping, iastm, tapping, chiropractic-adjustment, shockwave, bio-electric, therapeutic-ultrasound, electroacupuncture; `recovery` = heat-light, cold-plunge; `training` = rỗng.
