@@ -72,6 +72,45 @@ describe("configured Sanity content", () => {
     expect(treatment.seo?.description).toBeUndefined();
     expect(treatment.seo?.ogImage).toBeUndefined();
   });
+  it("keeps an integer price and drops anything else", async () => {
+    fetch.mockResolvedValue([
+      { slug: "a", title: "A", price: 149000 },
+      { slug: "b", title: "B", price: 99.5 },
+      { slug: "c", title: "C", price: -1 },
+      { slug: "d", title: "D", price: "99000" },
+    ]);
+    expect((await getTreatments()).map((t) => t.price)).toEqual([
+      149000,
+      undefined,
+      undefined,
+      undefined,
+    ]);
+  });
+  it("maps englishTitle and the certified-practitioner flag with safe defaults", async () => {
+    fetch.mockResolvedValue([
+      {
+        slug: "a",
+        title: "Châm khô",
+        englishTitle: "Dry Needling",
+        requiresCertifiedPractitioner: true,
+      },
+      { slug: "b", title: "Giác hơi", englishTitle: "  ", requiresCertifiedPractitioner: "yes" },
+    ]);
+    const [a, b] = await getTreatments();
+    expect(a).toMatchObject({
+      englishTitle: "Dry Needling",
+      requiresCertifiedPractitioner: true,
+    });
+    expect(b.englishTitle).toBeUndefined();
+    expect(b.requiresCertifiedPractitioner).toBe(false);
+  });
+  it("asks Sanity for the new treatment fields", async () => {
+    fetch.mockResolvedValue([]);
+    await getTreatments();
+    const query = String(fetch.mock.calls.at(-1)?.[0]);
+    expect(query).toContain("englishTitle");
+    expect(query).toContain("requiresCertifiedPractitioner");
+  });
   it.each([null, undefined, "invalid-date"])(
     "handles a post without valid publishedAt (%s)",
     async (publishedAt) => {

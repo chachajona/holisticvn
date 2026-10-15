@@ -9,9 +9,11 @@ export type ProtocolStep = {
 export type Treatment = {
   slug: string;
   title: string;
+  englishTitle?: string;
+  requiresCertifiedPractitioner?: boolean;
   shortDescription: string;
   description: string;
-  duration: string;
+  duration?: string;
   image?: string;
   imageAlt?: string;
   benefits: string[];

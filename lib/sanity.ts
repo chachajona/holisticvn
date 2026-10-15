@@ -89,13 +89,15 @@ const protocolStepSchema = z.object({
 });
 const treatmentSchema = z.object({
   ...record,
+  englishTitle: optionalText,
+  requiresCertifiedPractitioner: z.boolean().catch(false),
   shortDescription: text,
   description: text,
   duration: text,
   image: cdnImage.optional().catch(undefined),
   imageAlt: optionalText,
   benefits: strings,
-  price: z.number().nonnegative().optional().catch(undefined),
+  price: z.number().int().nonnegative().optional().catch(undefined),
   isPopular: z.boolean().catch(false),
   // One malformed step is dropped, not the whole list; steps follow their CMS number.
   protocols: z
@@ -177,7 +179,7 @@ export const getMethods = cache(async (): Promise<Method[]> => {
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
   return fetchRecords(
-    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,shortDescription,description,duration,price,isPopular,"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
+    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,englishTitle,requiresCertifiedPractitioner,shortDescription,description,duration,price,isPopular,"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
     treatmentSchema,
   );
 });
