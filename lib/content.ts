@@ -12,11 +12,13 @@ export type Treatment = {
   shortDescription: string;
   description: string;
   duration: string;
-  image: string;
+  image?: string;
+  imageAlt?: string;
   benefits: string[];
   price?: number;
   isPopular?: boolean;
   protocols?: ProtocolStep[];
+  seo?: { title?: string; description?: string; ogImage?: string };
 };
 
 export const serviceGroups = ["therapy", "training", "recovery"] as const;

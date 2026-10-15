@@ -1,0 +1,260 @@
+.root {
+  --card: #fdfaf6;
+  --ink: #3a2a24;
+  --muted: #5c4b44;
+  --clay-deep: #744d40;
+  --clay-hover: #5f3d32;
+  --sage: #48614c;
+  --numeral: #ab917e;
+  --warm-band: #f6efe6;
+  --hero-emphasis: #e0c1af;
+  --line: rgba(58, 42, 36, 0.16);
+  color: var(--ink);
+  background: var(--card);
+  font-family: var(--font-accent);
+  font-weight: 300;
+  overflow: clip;
+}
+.root :global(::selection) {
+  background: #ddb6af;
+  color: var(--ink);
+}
+.root h1,
+.root h2,
+.root h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+  color: var(--ink);
+}
+.root h2 {
+  font-size: clamp(1.5rem, 3vw, 42px);
+  line-height: 1.2;
+  color: var(--sage);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--clay-deep);
+  font:
+    500 11px/1.2 var(--font-mono),
+    monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: var(--ink);
+  color: #f7f3f0;
+  padding: 42px 0 0;
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 570px;
+  align-items: center;
+  gap: 68px;
+}
+.heroPlain .heroGrid {
+  grid-template-columns: 1fr;
+  min-height: 0;
+  padding-bottom: 72px;
+}
+.backLink {
+  color: var(--hero-emphasis);
+  font:
+    500 11px/1.2 var(--font-mono),
+    monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.hero .eyebrow {
+  margin-top: 60px;
+  color: var(--hero-emphasis);
+}
+.hero h1 {
+  font-size: clamp(2rem, 4.4vw, 60px);
+  line-height: 1.1;
+  margin: 15px 0 22px;
+  color: #f7f3f0;
+}
+.hero p:not(.eyebrow) {
+  max-width: 540px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(247, 243, 240, 0.82);
+}
+.duration {
+  display: inline-block;
+  border-top: 1px solid rgba(247, 243, 240, 0.25);
+  margin-top: 25px;
+  padding-top: 12px;
+  font:
+    500 11px var(--font-mono),
+    monospace;
+  letter-spacing: 0.06em;
+}
+.heroImage {
+  position: relative;
+  height: 570px;
+  align-self: flex-end;
+}
+.heroImage img {
+  object-fit: cover;
+  filter: saturate(0.75);
+}
+
+/* ---------- Sections ---------- */
+.band {
+  background: var(--warm-band);
+}
+.expect {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 100px;
+}
+.expect h2 {
+  margin: 13px 0 20px;
+}
+.expect p:not(.eyebrow),
+.booking p:not(.eyebrow) {
+  max-width: 490px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+.benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.benefits li {
+  padding: 23px 0;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  font:
+    400 1.2rem var(--font-display),
+    serif;
+}
+.benefits li span {
+  color: var(--clay-deep);
+  font:
+    500 11px var(--font-mono),
+    monospace;
+}
+.protocol h2 {
+  margin: 13px 0 32px;
+}
+.protocol ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.protocol li {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  padding: 23px 0;
+  border-bottom: 1px solid var(--line);
+}
+.protocol li > span {
+  color: var(--numeral);
+  font:
+    200 clamp(28px, 3vw, 36px) / 1 var(--font-display),
+    serif;
+}
+.protocol h3 {
+  font:
+    400 1.2rem var(--font-display),
+    serif;
+}
+.protocol p {
+  max-width: 560px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.booking {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+}
+.booking h2 {
+  margin: 14px 0 20px;
+}
+.booking p:not(.eyebrow) {
+  max-width: 460px;
+}
+
+/* ---------- Lead form (scoped: /contact and /booking keep the global look) ---------- */
+.root :global(.lead-form) :global(.button) {
+  border-radius: 999px;
+  border-color: var(--clay-deep);
+  background: var(--clay-deep);
+  color: #f7f3f0;
+}
+.root :global(.lead-form) :global(.button:hover) {
+  border-color: var(--clay-hover);
+  background: var(--clay-hover);
+  transform: none;
+}
+.root :global(.lead-form) :global(.button:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.root :global(.lead-form) input,
+.root :global(.lead-form) textarea,
+.root :global(.lead-form) select {
+  border: 1px solid rgba(58, 42, 36, 0.25);
+  border-radius: 10px;
+  background: #fff;
+}
+.root :global(.lead-form) input:focus,
+.root :global(.lead-form) textarea:focus,
+.root :global(.lead-form) select:focus {
+  border-color: var(--clay-deep);
+  box-shadow: none;
+  outline: 2px solid var(--clay-deep);
+  outline-offset: 2px;
+}
+.root :global(.lead-form__details) summary:focus-visible {
+  outline-color: var(--clay-deep);
+}
+.root :global(.form-message) {
+  color: var(--clay-deep);
+}
+.root :global(.form-message--success) {
+  color: var(--sage);
+}
+
+@media (max-width: 760px) {
+  .heroGrid,
+  .expect,
+  .booking {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .heroGrid {
+    padding-top: 10px;
+  }
+  .hero .eyebrow {
+    margin-top: 40px;
+  }
+  .heroImage {
+    height: 330px;
+  }
+  .expect {
+    gap: 40px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .root :global(.lead-form) :global(.button:hover) {
+    transform: translateY(-2px);
+  }
+}

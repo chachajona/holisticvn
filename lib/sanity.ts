@@ -81,19 +81,43 @@ const methodSchema = z
       (treatment, i, links) => links.findIndex((link) => link.slug === treatment.slug) === i,
     ),
   }));
+const optionalText = z.string().trim().min(1).optional().catch(undefined);
+const protocolStepSchema = z.object({
+  step: z.number(),
+  title: z.string().trim().min(1),
+  description: text,
+});
 const treatmentSchema = z.object({
   ...record,
   shortDescription: text,
   description: text,
   duration: text,
-  image: z
-    .string()
-    .regex(/^https:\/\/cdn\.sanity\.io\//)
-    .catch("/images/Iastm.jpg"),
+  image: cdnImage.optional().catch(undefined),
+  imageAlt: optionalText,
   benefits: strings,
   price: z.number().nonnegative().optional().catch(undefined),
   isPopular: z.boolean().catch(false),
-  protocols: z.array(z.object({ step: z.number(), title: text, description: text })).catch([]),
+  // One malformed step is dropped, not the whole list; steps follow their CMS number.
+  protocols: z
+    .array(z.unknown())
+    .catch([])
+    .transform((items) =>
+      items
+        .flatMap((item) => {
+          const parsed = protocolStepSchema.safeParse(item);
+          return parsed.success ? [parsed.data] : [];
+        })
+        .sort((a, b) => a.step - b.step),
+    ),
+  seo: z
+    .object({
+      title: optionalText,
+      description: optionalText,
+      ogImage: cdnImage.optional().catch(undefined),
+    })
+    .nullish()
+    .catch(undefined)
+    .transform((seo) => seo ?? undefined),
 });
 const postSchema = z.object({
   ...record,
@@ -153,7 +177,7 @@ export const getMethods = cache(async (): Promise<Method[]> => {
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
   return fetchRecords(
-    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,shortDescription,description,duration,price,isPopular,"image":image.asset->url,benefits,protocols}`,
+    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,shortDescription,description,duration,price,isPopular,"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
     treatmentSchema,
   );
 });

@@ -359,7 +359,15 @@ const treatment = defineType({
       name: "title",
       title: "Tên liệu pháp",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => [
+        rule.required(),
+        // Reuse the booking limit: the title travels with the callback request.
+        rule.custom((value) =>
+          leadSchema.shape.treatment.safeParse(value).success
+            ? true
+            : "Tên liệu pháp không được dài quá 120 ký tự.",
+        ),
+      ],
     }),
     defineField({
       name: "slug",
