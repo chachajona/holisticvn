@@ -87,40 +87,61 @@ const protocolStepSchema = z.object({
   title: z.string().trim().min(1),
   description: text,
 });
-const treatmentSchema = z.object({
-  ...record,
-  englishTitle: optionalText,
-  requiresCertifiedPractitioner: z.boolean().catch(false),
-  shortDescription: text,
-  description: text,
-  duration: text,
-  image: cdnImage.optional().catch(undefined),
-  imageAlt: optionalText,
-  benefits: strings,
-  price: z.number().int().nonnegative().optional().catch(undefined),
-  isPopular: z.boolean().catch(false),
-  // One malformed step is dropped, not the whole list; steps follow their CMS number.
-  protocols: z
-    .array(z.unknown())
-    .catch([])
-    .transform((items) =>
-      items
-        .flatMap((item) => {
-          const parsed = protocolStepSchema.safeParse(item);
-          return parsed.success ? [parsed.data] : [];
-        })
-        .sort((a, b) => a.step - b.step),
-    ),
-  seo: z
-    .object({
-      title: optionalText,
-      description: optionalText,
-      ogImage: cdnImage.optional().catch(undefined),
-    })
-    .nullish()
-    .catch(undefined)
-    .transform((seo) => seo ?? undefined),
+const faqSchema = z.object({
+  question: z.string().trim().min(1),
+  answer: z.string().trim().min(1),
 });
+const treatmentSchema = z
+  .object({
+    ...record,
+    englishTitle: optionalText,
+    requiresCertifiedPractitioner: z.boolean().catch(false),
+    shortDescription: text,
+    description: text,
+    duration: text,
+    image: cdnImage.optional().catch(undefined),
+    imageAlt: optionalText,
+    benefits: strings,
+    price: z.number().int().nonnegative().optional().catch(undefined),
+    isPopular: z.boolean().catch(false),
+    badge: z.enum(["popular", "new"]).optional().catch(undefined),
+    // One malformed entry is dropped, not the whole list.
+    faqs: z
+      .array(z.unknown())
+      .catch([])
+      .transform((items) =>
+        items.flatMap((item) => {
+          const parsed = faqSchema.safeParse(item);
+          return parsed.success ? [parsed.data] : [];
+        }),
+      ),
+    // One malformed step is dropped, not the whole list; steps follow their CMS number.
+    protocols: z
+      .array(z.unknown())
+      .catch([])
+      .transform((items) =>
+        items
+          .flatMap((item) => {
+            const parsed = protocolStepSchema.safeParse(item);
+            return parsed.success ? [parsed.data] : [];
+          })
+          .sort((a, b) => a.step - b.step),
+      ),
+    seo: z
+      .object({
+        title: optionalText,
+        description: optionalText,
+        ogImage: cdnImage.optional().catch(undefined),
+      })
+      .nullish()
+      .catch(undefined)
+      .transform((seo) => seo ?? undefined),
+  })
+  .transform((treatment) => ({
+    ...treatment,
+    // The legacy isPopular flag reads as the "popular" badge until editors pick one.
+    badge: treatment.badge ?? (treatment.isPopular ? ("popular" as const) : undefined),
+  }));
 const postSchema = z.object({
   ...record,
   excerpt: text,
@@ -179,7 +200,7 @@ export const getMethods = cache(async (): Promise<Method[]> => {
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
   return fetchRecords(
-    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,englishTitle,requiresCertifiedPractitioner,shortDescription,description,duration,price,isPopular,"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
+    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,englishTitle,requiresCertifiedPractitioner,shortDescription,description,duration,price,isPopular,badge,"faqs":faqs[]{question,answer},"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
     treatmentSchema,
   );
 });

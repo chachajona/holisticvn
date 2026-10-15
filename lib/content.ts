@@ -6,6 +6,9 @@ export type ProtocolStep = {
   description: string;
 };
 
+export type TreatmentBadge = "popular" | "new";
+export type TreatmentFaq = { question: string; answer: string };
+
 export type Treatment = {
   slug: string;
   title: string;
@@ -19,6 +22,8 @@ export type Treatment = {
   benefits: string[];
   price?: number;
   isPopular?: boolean;
+  badge?: TreatmentBadge;
+  faqs?: TreatmentFaq[];
   protocols?: ProtocolStep[];
   seo?: { title?: string; description?: string; ogImage?: string };
 };

@@ -111,6 +111,49 @@ describe("configured Sanity content", () => {
     expect(query).toContain("englishTitle");
     expect(query).toContain("requiresCertifiedPractitioner");
   });
+  it("maps the badge, falling back to the legacy isPopular flag", async () => {
+    fetch.mockResolvedValue([
+      { slug: "a", title: "A", badge: "new" },
+      { slug: "b", title: "B", badge: "popular" },
+      { slug: "c", title: "C", badge: "best-seller" },
+      { slug: "d", title: "D", isPopular: true },
+      { slug: "e", title: "E", badge: "new", isPopular: true },
+      { slug: "f", title: "F" },
+    ]);
+    expect((await getTreatments()).map((t) => t.badge)).toEqual([
+      "new",
+      "popular",
+      undefined,
+      "popular",
+      "new",
+      undefined,
+    ]);
+  });
+  it("keeps only FAQ entries that have both a question and an answer", async () => {
+    fetch.mockResolvedValue([
+      {
+        slug: "a",
+        title: "A",
+        faqs: [
+          { question: " Hỏi một? ", answer: " Đáp một. " },
+          { question: "Thiếu đáp án?", answer: "  " },
+          { question: "", answer: "Thiếu câu hỏi" },
+          null,
+        ],
+      },
+      { slug: "b", title: "B", faqs: "không phải mảng" },
+    ]);
+    const [a, b] = await getTreatments();
+    expect(a.faqs).toEqual([{ question: "Hỏi một?", answer: "Đáp một." }]);
+    expect(b.faqs).toEqual([]);
+  });
+  it("asks Sanity for the badge and FAQs", async () => {
+    fetch.mockResolvedValue([]);
+    await getTreatments();
+    const query = String(fetch.mock.calls.at(-1)?.[0]);
+    expect(query).toContain("badge");
+    expect(query).toContain("faqs");
+  });
   it.each([null, undefined, "invalid-date"])(
     "handles a post without valid publishedAt (%s)",
     async (publishedAt) => {
