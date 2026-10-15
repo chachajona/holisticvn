@@ -54,4 +54,10 @@ describe("treatment catalogue (fallback)", () => {
       }
     }
   });
+
+  it("keeps the owner's orthography (toả, hoá), never the new-style tỏa", () => {
+    for (const t of treatments) expect(t.description, t.slug).not.toContain("tỏa");
+    const ultrasound = treatments.find((t) => t.slug === "therapeutic-ultrasound");
+    expect(ultrasound?.description).toContain("giải toả căng cơ");
+  });
 });

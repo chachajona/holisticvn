@@ -363,7 +363,7 @@ const catalogue: Array<{
     slug: "therapeutic-ultrasound",
     title: "Sóng siêu âm",
     englishTitle: "Therapeutic Ultrasound",
-    text: "Giảm đau, giải tỏa căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.",
+    text: "Giảm đau, giải toả căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.",
     price: 349000,
   },
   {
