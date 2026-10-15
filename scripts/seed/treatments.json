@@ -1,0 +1,154 @@
+[
+  {
+    "_id": "treatment-dry-needling",
+    "_type": "treatment",
+    "title": "Châm khô",
+    "englishTitle": "Dry Needling",
+    "slug": {
+      "_type": "slug",
+      "current": "dry-needling"
+    },
+    "shortDescription": "Tác động vào các điểm co cứng (trigger point) để giải phóng căng thẳng, giảm đau và phục hồi chức năng thần kinh – cơ.",
+    "description": "Tác động vào các điểm co cứng (trigger point) để giải phóng căng thẳng, giảm đau và phục hồi chức năng thần kinh – cơ.",
+    "price": 299000,
+    "requiresCertifiedPractitioner": true
+  },
+  {
+    "_id": "treatment-cupping",
+    "_type": "treatment",
+    "title": "Giác hơi",
+    "englishTitle": "Cupping",
+    "slug": {
+      "_type": "slug",
+      "current": "cupping"
+    },
+    "shortDescription": "Dùng áp suất trong ống giác hơi gây xung huyết tại chỗ để giải độc cơ thể và giải quyết một số cơn đau.",
+    "description": "Dùng áp suất trong ống giác hơi gây xung huyết tại chỗ để giải độc cơ thể và giải quyết một số cơn đau.",
+    "price": 99000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-iastm",
+    "_type": "treatment",
+    "title": "IASTM",
+    "slug": {
+      "_type": "slug",
+      "current": "iastm"
+    },
+    "shortDescription": "Dùng dụng cụ chuyên dụng tác động lên mô mềm nhằm giải phóng, tăng lưu thông máu và cải thiện độ đàn hồi của cơ – fascia.",
+    "description": "Dùng dụng cụ chuyên dụng tác động lên mô mềm nhằm giải phóng, tăng lưu thông máu và cải thiện độ đàn hồi của cơ – fascia.",
+    "price": 199000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-heat-light",
+    "_type": "treatment",
+    "title": "Đèn hồng ngoại",
+    "englishTitle": "Heat Light",
+    "slug": {
+      "_type": "slug",
+      "current": "heat-light"
+    },
+    "shortDescription": "Thư giãn cơ, giảm căng thẳng, thúc đẩy quá trình tự chữa lành của cơ thể.",
+    "description": "Thư giãn cơ, giảm căng thẳng, thúc đẩy quá trình tự chữa lành của cơ thể.",
+    "price": 99000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-cold-plunge",
+    "_type": "treatment",
+    "title": "Ngâm lạnh",
+    "englishTitle": "Cold Plunge",
+    "slug": {
+      "_type": "slug",
+      "current": "cold-plunge"
+    },
+    "shortDescription": "Giúp giảm viêm, sưng và phục hồi sau vận động cường độ cao và cải thiện khả năng chịu đựng của hệ thần kinh.",
+    "description": "Giúp giảm viêm, sưng và phục hồi sau vận động cường độ cao và cải thiện khả năng chịu đựng của hệ thần kinh.",
+    "price": 149000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-tapping",
+    "_type": "treatment",
+    "title": "Tapping",
+    "slug": {
+      "_type": "slug",
+      "current": "tapping"
+    },
+    "shortDescription": "Hỗ trợ giúp điều chỉnh trương lực cơ, giảm sưng, cải thiện cảm nhận vận động và ổn định khớp trong quá trình phục hồi.",
+    "description": "Hỗ trợ giúp điều chỉnh trương lực cơ, giảm sưng, cải thiện cảm nhận vận động và ổn định khớp trong quá trình phục hồi.",
+    "price": 99000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-shockwave",
+    "_type": "treatment",
+    "title": "Xung kích",
+    "englishTitle": "Shockwave Therapy",
+    "slug": {
+      "_type": "slug",
+      "current": "shockwave"
+    },
+    "shortDescription": "Tái tạo mô, giảm đau tại chỗ nhanh chóng.",
+    "description": "Tái tạo mô, giảm đau tại chỗ nhanh chóng.",
+    "price": 349000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-bio-electric",
+    "_type": "treatment",
+    "title": "Điện xung",
+    "englishTitle": "Bio-electric",
+    "slug": {
+      "_type": "slug",
+      "current": "bio-electric"
+    },
+    "shortDescription": "Kích thích thần kinh – cơ bằng xung điện nhẹ nhằm giảm đau, tăng kích hoạt cơ và phục hồi kiểm soát vận động.",
+    "description": "Kích thích thần kinh – cơ bằng xung điện nhẹ nhằm giảm đau, tăng kích hoạt cơ và phục hồi kiểm soát vận động.",
+    "price": 349000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-therapeutic-ultrasound",
+    "_type": "treatment",
+    "title": "Sóng siêu âm",
+    "englishTitle": "Therapeutic Ultrasound",
+    "slug": {
+      "_type": "slug",
+      "current": "therapeutic-ultrasound"
+    },
+    "shortDescription": "Giảm đau, giải toả căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.",
+    "description": "Giảm đau, giải toả căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.",
+    "price": 349000,
+    "requiresCertifiedPractitioner": false
+  },
+  {
+    "_id": "treatment-electroacupuncture",
+    "_type": "treatment",
+    "title": "Điện châm",
+    "englishTitle": "Electroacupuncture",
+    "slug": {
+      "_type": "slug",
+      "current": "electroacupuncture"
+    },
+    "shortDescription": "Kết hợp châm kim với dòng điện nhẹ nhằm tăng hiệu quả giảm đau, thư giãn cơ và cải thiện lưu thông tuần hoàn.",
+    "description": "Kết hợp châm kim với dòng điện nhẹ nhằm tăng hiệu quả giảm đau, thư giãn cơ và cải thiện lưu thông tuần hoàn.",
+    "price": 249000,
+    "requiresCertifiedPractitioner": true
+  },
+  {
+    "_id": "treatment-chiropractic-adjustment",
+    "_type": "treatment",
+    "title": "Nắn chỉnh cột sống",
+    "englishTitle": "Chiropractic Adjustment",
+    "slug": {
+      "_type": "slug",
+      "current": "chiropractic-adjustment"
+    },
+    "shortDescription": "Kỹ thuật huy động và nắn chỉnh khớp cột sống giúp cải thiện cân bằng, giảm chèn ép, tăng khả năng linh hoạt và tối ưu cảm nhận cơ thể.",
+    "description": "Kỹ thuật huy động và nắn chỉnh khớp cột sống giúp cải thiện cân bằng, giảm chèn ép, tăng khả năng linh hoạt và tối ưu cảm nhận cơ thể.",
+    "price": 299000,
+    "requiresCertifiedPractitioner": true
+  }
+]

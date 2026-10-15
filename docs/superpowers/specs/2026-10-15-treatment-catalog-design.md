@@ -99,7 +99,7 @@ Trong `app/treatments/[slug]/page.tsx` (và CSS module hiện có, nếu đã đ
 
 Theo quy ước của #8 và #9 (`docs/SERVICES_VERIFICATION.md`, `docs/METHODS_VERIFICATION.md`): staging trước, sao lưu trước khi ghi production, tham chiếu gắn sau khi seed có kiểm tra phiên bản.
 
-1. **Tám liệu pháp chưa có document production**: `tapping`, `shockwave`, `bio-electric`, `therapeutic-ultrasound`, `electroacupuncture`, `chiropractic-adjustment`, và `dry-needling`, `iastm` (hai liệu pháp này chỉ có trong dữ liệu fallback, chưa có trên production): file `scripts/seed/treatments.json`, mỗi document `_id: "treatment-<slug>"`, chạy `npx sanity documents create scripts/seed/treatments.json --missing --project-id yjzexxml --dataset staging`. Chạy lại lần hai phải in `Skipped (already exists)`.
+1. **Seed gồm 11 document** trong `scripts/seed/treatments.json` (nguồn dữ liệu duy nhất), mỗi document `_id: "treatment-<slug>"`. `scripts/sync-treatments.mjs` tạo document chưa có (`createIfNotExists`, `_id: treatment-<slug>`), patch document đã có theo slug (điểm 2) và gắn tham chiếu nhóm (điểm 3) trong một giao dịch, mặc định dry-run, theo quy ước `--project/--dataset/--apply/--confirm` của `scripts/transform-legacy-content.mjs`. Lý do thay lệnh CLI `npx sanity documents create ... --missing`: một công cụ, có dry-run và kiểm tra phiên bản; CLI không có dry-run và chưa kiểm chứng việc nhận mảng nhiều document.
 2. **Ba document production có sẵn** (`cupping`, `cold-plunge`, `heat-light`) giữ nguyên `_id` và nên **không** đi qua `--missing` (sẽ tạo bản trùng slug). Dùng patch theo slug: đặt `title`, `englishTitle`, `shortDescription`, `description`, `price`, `requiresCertifiedPractitioner`, `seo` (xoá), `benefits` và `protocols` (xoá), mỗi patch kèm `ifRevisionID`. Sao lưu document trước khi patch vào `production-before-treatments.json` (không commit nếu chứa nội dung riêng).
 3. **Tham chiếu nhóm** (gắn sau seed, bằng script tìm `_id` theo slug rồi patch `methodsPage` và `servicesPage` với revision guard):
    - `methodsPage`: `manual` = dry-needling, cupping, iastm, tapping, chiropractic-adjustment; `electro` = shockwave, bio-electric, therapeutic-ultrasound, electroacupuncture; `cold` = cold-plunge; `infrared` = heat-light.
@@ -130,7 +130,7 @@ Theo quy ước của #8 và #9 (`docs/SERVICES_VERIFICATION.md`, `docs/METHODS_
 - Mapping và mặc định: `price` số nguyên được giữ; `price` âm hoặc không phải số bị bỏ; `englishTitle` rỗng bị bỏ; `requiresCertifiedPractitioner` mặc định `false`.
 - Trang: dòng phụ chỉ hiện khi `englishTitle` khác `title`; dòng giá hiển thị đúng ("149.000 ₫"); không có dòng giá khi thiếu `price`; chú thích `*` hiện đúng chữ owner khi cờ bật và không hiện khi tắt; `duration` có giá trị cũng không hiển thị.
 - Schema: `validateDocument` với slug sai định dạng báo lỗi; `alt` thiếu khi có `asset` báo lỗi; SEO dài chỉ báo `warning`; `price` thập phân hoặc âm báo lỗi.
-- Seed: `treatments.json` có đúng 8 document với slug duy nhất, giá và cờ `*` khớp bảng ở mục 4, `_id` đúng định dạng; 3 document production còn lại không nằm trong file này.
+- Seed: `treatments.json` có đúng 11 document với slug duy nhất, giá và cờ `*` khớp bảng ở mục 4, `_id` đúng định dạng.
 - Fallback: mọi `slug` trong liên kết nhóm tồn tại trong `treatments`; 11 slug duy nhất.
 
 **Xác minh thủ công và bằng chứng** (đính kèm PR, theo tiêu chí #10):
