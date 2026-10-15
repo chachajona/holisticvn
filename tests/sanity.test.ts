@@ -177,7 +177,7 @@ describe("configured Sanity content", () => {
       fetch.mockResolvedValue([full]);
       const html = await render("full");
       expect(html).toContain("Long description");
-      expect(html).toContain("Thời lượng gợi ý");
+      expect(html).not.toContain("Thời lượng gợi ý");
       expect(html.indexOf("Bước một")).toBeGreaterThan(-1);
       expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
       expect(html).toContain("<img");
@@ -221,6 +221,40 @@ describe("configured Sanity content", () => {
       };
       const tree = await TreatmentPage({ params: Promise.resolve({ slug: "full" }) });
       expect(find(tree)?.props).toMatchObject({ kind: "booking", treatment: "Full Treatment" });
+    });
+    it("shows the English name as a subtitle, the price and the certified note", async () => {
+      fetch.mockResolvedValue([
+        {
+          ...full,
+          title: "Châm khô",
+          englishTitle: "Dry Needling",
+          price: 299000,
+          requiresCertifiedPractitioner: true,
+        },
+      ]);
+      const html = await render("full");
+      expect(html).toContain("<h1>Châm khô</h1>");
+      expect(html).toContain('lang="en">Dry Needling</p>');
+      expect(html).toMatch(/Giá<\/span>\s*299\.000\s₫/);
+      expect(html).toContain(
+        "Các dịch vụ trị liệu này chỉ được thực hiện và theo dõi bởi chuyên viên có chứng nhận và chứng chỉ chuyên môn.",
+      );
+    });
+    it("hides the subtitle when the English name repeats the title", async () => {
+      fetch.mockResolvedValue([{ ...full, title: "IASTM", englishTitle: "iastm" }]);
+      expect(await render("full")).not.toContain('lang="en"');
+    });
+    it.each([undefined, 0])("shows no price line for the price %s", async (price) => {
+      fetch.mockResolvedValue([{ ...full, price }]);
+      const html = await render("full");
+      expect(html).not.toContain("Giá</span>");
+      expect(html).not.toContain("₫");
+    });
+    it("shows the certified note even without a price, and not when the flag is off", async () => {
+      fetch.mockResolvedValue([{ ...full, requiresCertifiedPractitioner: true }]);
+      expect(await render("full")).toContain("chuyên viên có chứng nhận");
+      fetch.mockResolvedValue([{ ...full, requiresCertifiedPractitioner: false }]);
+      expect(await render("full")).not.toContain("chuyên viên có chứng nhận");
     });
   });
 });

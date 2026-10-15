@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { LeadForm } from "@/components/lead-form";
 import { createMetadata } from "@/lib/seo";
 import { getTreatments } from "@/lib/sanity";
+import { certifiedPractitionerNote, englishSubtitle, formatPrice } from "@/lib/treatment-display";
 import styles from "./treatment-detail.module.css";
 
 export const revalidate = 3600;
@@ -32,6 +33,7 @@ export default async function TreatmentDetailPage({
   const treatment = (await getTreatments()).find((item) => item.slug === slug);
   if (!treatment) notFound();
   const protocols = treatment.protocols ?? [];
+  const subtitle = englishSubtitle(treatment);
   return (
     <main id="main" className={styles.root}>
       <section
@@ -45,9 +47,19 @@ export default async function TreatmentDetailPage({
             </Link>
             <p className={styles.eyebrow}>Liệu pháp</p>
             <h1>{treatment.title}</h1>
+            {subtitle ? (
+              <p className={styles.subtitle} lang="en">
+                {subtitle}
+              </p>
+            ) : null}
             {treatment.description ? <p>{treatment.description}</p> : null}
-            {treatment.duration ? (
-              <span className={styles.duration}>Thời lượng gợi ý · {treatment.duration}</span>
+            {treatment.price ? (
+              <p className={styles.price}>
+                <span>Giá</span> {formatPrice(treatment.price)}
+              </p>
+            ) : null}
+            {treatment.requiresCertifiedPractitioner ? (
+              <p className={styles.note}>{certifiedPractitionerNote}</p>
             ) : null}
           </div>
           {treatment.image ? (
