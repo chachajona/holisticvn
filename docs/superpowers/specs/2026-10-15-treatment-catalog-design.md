@@ -57,7 +57,7 @@ Chữ mô tả là nguyên văn bảng giá bản tiếng Việt. `shortDescript
 | `tapping` (mới)                 | Tapping            | (trùng, ẩn)             | 99000     |     | Hỗ trợ giúp điều chỉnh trương lực cơ, giảm sưng, cải thiện cảm nhận vận động và ổn định khớp trong quá trình phục hồi.                 |
 | `shockwave` (mới)               | Xung kích          | Shockwave Therapy       | 349000    |     | Tái tạo mô, giảm đau tại chỗ nhanh chóng.                                                                                              |
 | `bio-electric` (mới)            | Điện xung          | Bio-electric            | 349000    |     | Kích thích thần kinh – cơ bằng xung điện nhẹ nhằm giảm đau, tăng kích hoạt cơ và phục hồi kiểm soát vận động.                          |
-| `therapeutic-ultrasound` (mới)  | Sóng siêu âm       | Therapeutic Ultrasound  | 349000    |     | Giảm đau, giải tỏa căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.                                          |
+| `therapeutic-ultrasound` (mới)  | Sóng siêu âm       | Therapeutic Ultrasound  | 349000    |     | Giảm đau, giải toả căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.                                          |
 | `electroacupuncture` (mới)      | Điện châm          | Electroacupuncture      | 249000    | có  | Kết hợp châm kim với dòng điện nhẹ nhằm tăng hiệu quả giảm đau, thư giãn cơ và cải thiện lưu thông tuần hoàn.                          |
 | `chiropractic-adjustment` (mới) | Nắn chỉnh cột sống | Chiropractic Adjustment | 299000    | có  | Kỹ thuật huy động và nắn chỉnh khớp cột sống giúp cải thiện cân bằng, giảm chèn ép, tăng khả năng linh hoạt và tối ưu cảm nhận cơ thể. |
 
