@@ -44,7 +44,7 @@ const client = createClient({
 const seed = JSON.parse(readFileSync("scripts/seed/treatments.json", "utf8"));
 const links = JSON.parse(readFileSync("scripts/seed/treatment-links.json", "utf8"));
 
-const published = `!(_id in path("drafts.**"))`;
+const published = `!(_id in path("drafts.**")) && !(_id in path("versions.**"))`;
 const treatments = await client.fetch(
   `*[_type == "treatment" && ${published}]{_id, _rev, "slug": slug.current}`,
 );
@@ -57,7 +57,7 @@ const pages = Object.fromEntries(
   ),
 );
 const draftIds = await client.fetch(
-  `*[_id in path("drafts.**") && (_type == "treatment" || _type in ["methodsPage", "servicesPage"])]._id`,
+  `*[(_id in path("drafts.**") || _id in path("versions.**")) && (_type == "treatment" || _type in ["methodsPage", "servicesPage"])]._id`,
 );
 
 const { mutations, skipped, warnings } = planSync({ seed, links, treatments, pages, draftIds });
@@ -75,8 +75,10 @@ if (!values.apply) {
 const ids = mutations.map((m) => m.createIfNotExists?._id ?? m.patch.id);
 const before = await client.fetch(`*[_id in $ids]`, { ids });
 mkdirSync(".context", { recursive: true });
-const backup = `.context/treatments-before-${values.dataset}.json`;
-writeFileSync(backup, JSON.stringify(before, null, 2));
+// unique name + "wx": never overwrite an earlier backup, it may be the only rollback copy
+const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+const backup = `.context/treatments-before-${values.dataset}-${stamp}.json`;
+writeFileSync(backup, JSON.stringify(before, null, 2), { flag: "wx" });
 console.log(`Backed up ${before.length} documents to ${backup}`);
 
 const transaction = client.transaction();

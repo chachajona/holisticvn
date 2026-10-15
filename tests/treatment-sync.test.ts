@@ -112,6 +112,19 @@ describe("planSync", () => {
     ).toThrow('methodsPage thiếu nhóm "electro"');
   });
 
+  it("stops when a links slug is not in the seed", () => {
+    const bad = { ...links, methodsPage: { ...links.methodsPage, manual: ["no-such-treatment"] } };
+    expect(() => run({ links: bad })).toThrow('Thiếu liệu pháp "no-such-treatment"');
+  });
+
+  it("stops when a seed _id is already used by another slug", () => {
+    expect(() =>
+      run({
+        treatments: [...production, { _id: "treatment-shockwave", _rev: "r8", slug: "other" }],
+      }),
+    ).toThrow('_id "treatment-shockwave" đã dùng cho slug "other"');
+  });
+
   it("warns about open drafts instead of overwriting them silently", () => {
     const { warnings } = run({ draftIds: ["drafts.legacy-cupping", "drafts.methodsPage"] });
     expect(warnings).toEqual([
@@ -127,5 +140,17 @@ describe("planSync", () => {
     }));
     const { mutations } = run({ treatments: after });
     expect(mutations.some((m: object) => "createIfNotExists" in m)).toBe(false);
+    const ids = seed.map((d: { slug: { current: string } }) => `treatment-${d.slug.current}`);
+    const patched = mutations
+      .filter((m: { patch?: { id: string } }) => m.patch?.id.startsWith("treatment-"))
+      .map((m: { patch: { id: string } }) => m.patch.id);
+    expect(patched).toHaveLength(11);
+    expect(patched.sort()).toEqual([...ids].sort());
+    const methods = mutations.find(
+      (m: { patch?: { id: string } }) => m.patch?.id === "methodsPage",
+    ).patch;
+    const refs = Object.values(methods.set).flat() as { _ref: string }[];
+    expect(refs.length).toBeGreaterThan(0);
+    for (const ref of refs) expect(ids).toContain(ref._ref);
   });
 });

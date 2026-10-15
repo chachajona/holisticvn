@@ -24,6 +24,9 @@ export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
     const slug = doc.slug.current;
     const existing = existingBySlug.get(slug);
     if (!existing) {
+      // createIfNotExists would silently do nothing if the id is taken by another slug
+      const other = treatments.find((t) => t._id === doc._id);
+      if (other) throw new Error(`_id "${doc._id}" đã dùng cho slug "${other.slug}"`);
       idBySlug.set(slug, doc._id);
       mutations.push({ createIfNotExists: doc });
       continue;
@@ -56,11 +59,11 @@ export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
       if (!slugs.length) continue;
       const found = page.groups?.find((g) => g.group === group);
       if (!found) throw new Error(`${pageId} thiếu nhóm "${group}"`);
-      set[`groups[_key=="${found._key}"].treatments`] = slugs.map((slug) => ({
-        _key: slug,
-        _type: "reference",
-        _ref: idBySlug.get(slug),
-      }));
+      set[`groups[_key=="${found._key}"].treatments`] = slugs.map((slug) => {
+        const ref = idBySlug.get(slug);
+        if (!ref) throw new Error(`Thiếu liệu pháp "${slug}"`);
+        return { _key: slug, _type: "reference", _ref: ref };
+      });
     }
     mutations.push({ patch: { id: pageId, ifRevisionID: page._rev, set } });
   }
