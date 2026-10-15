@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { certifiedPractitionerNote, englishSubtitle, formatPrice } from "@/lib/treatment-display";
+import {
+  certifiedPractitionerNote,
+  englishSubtitle,
+  formatPrice,
+  paragraphs,
+} from "@/lib/treatment-display";
 
 describe("treatment display helpers", () => {
   it("formats VND with dot separators, no decimals and the dong sign", () => {
@@ -23,5 +28,13 @@ describe("treatment display helpers", () => {
     expect(certifiedPractitionerNote).toBe(
       "Các dịch vụ trị liệu này chỉ được thực hiện và theo dõi bởi chuyên viên có chứng nhận và chứng chỉ chuyên môn.",
     );
+  });
+
+  it("splits CMS text into paragraphs on real line breaks and on the legacy literal \\n", () => {
+    expect(paragraphs("Một.\\n\\nHai.")).toEqual(["Một.", "Hai."]);
+    expect(paragraphs("Một.\n\nHai.\n Ba. ")).toEqual(["Một.", "Hai.", "Ba."]);
+    expect(paragraphs("Chỉ một đoạn.")).toEqual(["Chỉ một đoạn."]);
+    expect(paragraphs("")).toEqual([]);
+    expect(paragraphs(undefined)).toEqual([]);
   });
 });

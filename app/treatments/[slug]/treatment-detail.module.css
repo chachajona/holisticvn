@@ -96,6 +96,14 @@
   text-transform: uppercase;
   color: var(--hero-emphasis);
 }
+.hero p.duration {
+  margin: 18px 0 0;
+  font:
+    500 11px/1.4 var(--font-mono),
+    monospace;
+  letter-spacing: 0.06em;
+  color: var(--hero-emphasis);
+}
 .hero p.price {
   margin: 25px 0 0;
   padding-top: 12px;

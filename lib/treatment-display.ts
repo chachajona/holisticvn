@@ -18,3 +18,11 @@ export function englishSubtitle({ title, englishTitle }: { title: string; englis
   if (!english) return undefined;
   return english.toLowerCase() === title.trim().toLowerCase() ? undefined : english;
 }
+
+// CMS text holds real line breaks or, from the legacy import, the two characters "\n".
+export function paragraphs(text?: string) {
+  return (text ?? "")
+    .split(/\\n|\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}

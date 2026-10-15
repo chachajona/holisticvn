@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 import { LeadForm } from "@/components/lead-form";
 import { createMetadata } from "@/lib/seo";
 import { getTreatments } from "@/lib/sanity";
-import { certifiedPractitionerNote, englishSubtitle, formatPrice } from "@/lib/treatment-display";
+import {
+  certifiedPractitionerNote,
+  englishSubtitle,
+  formatPrice,
+  paragraphs,
+} from "@/lib/treatment-display";
 import styles from "./treatment-detail.module.css";
 
 export const revalidate = 3600;
@@ -34,6 +39,12 @@ export default async function TreatmentDetailPage({
   if (!treatment) notFound();
   const protocols = treatment.protocols ?? [];
   const subtitle = englishSubtitle(treatment);
+  // The short description leads the page; the detailed one moves under "what to expect".
+  const lede = treatment.shortDescription || treatment.description;
+  const detail =
+    treatment.description && treatment.description.trim() !== lede.trim()
+      ? paragraphs(treatment.description)
+      : [];
   return (
     <main id="main" className={styles.root}>
       <section
@@ -52,7 +63,12 @@ export default async function TreatmentDetailPage({
                 {subtitle}
               </p>
             ) : null}
-            {treatment.description ? <p>{treatment.description}</p> : null}
+            {paragraphs(lede).map((text, index) => (
+              <p key={index}>{text}</p>
+            ))}
+            {treatment.duration ? (
+              <p className={styles.duration}>Thời lượng gợi ý · {treatment.duration}</p>
+            ) : null}
             {treatment.price ? (
               <p className={styles.price}>
                 <span>Giá</span> {formatPrice(treatment.price)}
@@ -80,10 +96,14 @@ export default async function TreatmentDetailPage({
           <div>
             <p className={styles.eyebrow}>Điều bạn có thể mong đợi</p>
             <h2>Một phiên trị liệu có chủ đích.</h2>
-            <p>
-              Chuyên gia sẽ trao đổi về tình trạng hiện tại, giải thích hướng can thiệp và điều
-              chỉnh theo phản hồi của cơ thể trong suốt buổi trị liệu.
-            </p>
+            {detail.length ? (
+              detail.map((text, index) => <p key={index}>{text}</p>)
+            ) : (
+              <p>
+                Chuyên gia sẽ trao đổi về tình trạng hiện tại, giải thích hướng can thiệp và điều
+                chỉnh theo phản hồi của cơ thể trong suốt buổi trị liệu.
+              </p>
+            )}
           </div>
           {treatment.benefits.length ? (
             <ul className={styles.benefits}>

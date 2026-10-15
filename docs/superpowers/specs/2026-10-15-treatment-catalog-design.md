@@ -35,7 +35,7 @@ Không làm lại trong spec này:
 | 2   | Tạo 6 liệu pháp còn thiếu **trong #10**, không tách issue.                                                                                                                                             | Owner, 2026-10-15         |
 | 3   | `h1` là tên tiếng Việt; dòng phụ là tên tiếng Anh (`englishTitle`), ẩn khi trùng tên tiếng Việt. Khi sau này có trang tiếng Anh, `h1` là tên tiếng Anh và **không có** dòng phụ.                       | Owner, 2026-10-15         |
 | 4   | Ba document production (Giác hơi, Ngâm lạnh, Đèn hồng ngoại): **ghi đè** mô tả, SEO, benefits theo chữ bảng giá; bỏ `protocols` và benefits cũ; sửa giá về số nguyên VND.                              | Owner, 2026-10-15         |
-| 5   | `duration` không hiển thị (bảng giá không có thời lượng cho liệu pháp). Trường giữ trong schema, để trống.                                                                                             | Mặc định nhỏ, owner duyệt |
+| 5   | **Sửa 2026-10-15:** `duration` hiển thị khi CMS có giá trị (ba liệu pháp production có 45/15/60 phút do CMS cung cấp); bảng giá không có thời lượng nên liệu pháp mới để trống và dòng này tự ẩn.      | Mặc định nhỏ, owner duyệt |
 | 6   | Điện châm: nhóm thiết bị trên `/treatments`, nhóm trị liệu trên `/services`.                                                                                                                           | Mặc định nhỏ, owner duyệt |
 | 7   | Giác hơi giữ nguyên chữ "giải độc cơ thể" của owner.                                                                                                                                                   | Mặc định nhỏ, owner duyệt |
 | 8   | Liệu pháp mới không có benefits và protocols (bảng giá không có nguồn); hai mục tự ẩn.                                                                                                                 | Mặc định nhỏ, owner duyệt |
@@ -90,7 +90,8 @@ Trong `app/treatments/[slug]/page.tsx` (và CSS module hiện có, nếu đã đ
 - `h1`: `title`. Ngay dưới (hoặc trong khối tiêu đề): `englishTitle` làm dòng phụ khi có và khác `title` (so sánh không phân biệt hoa thường, bỏ khoảng trắng đầu cuối).
 - Dòng giá khi `price` có: `new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 })`, ví dụ "149.000 ₫". Nhãn: "Giá". Không có nhãn "từ", không có "ưu đãi".
 - Chú thích `*` khi `requiresCertifiedPractitioner`: dòng chữ nguyên văn mục 3 #9, đặt gần dòng giá, không chỉ dựa vào màu hay dấu `*` đơn lẻ.
-- Thời lượng: **không hiển thị**, kể cả khi trường `duration` có giá trị (bỏ dòng "Thời lượng gợi ý").
+- Thời lượng: hiển thị dòng "Thời lượng gợi ý · {duration}" khi CMS có `duration`; ẩn khi trống (sửa 2026-10-15 sau khi đối chiếu dữ liệu CMS thật).
+- Mô tả: `shortDescription` dẫn đầu trang (hero); `description` chi tiết nằm dưới "Điều bạn có thể mong đợi" khi khác `shortDescription`, thay cho đoạn chữ chung; nếu giống nhau thì chỉ hiện ở hero và giữ đoạn chữ chung. Văn bản CMS được tách đoạn theo xuống dòng, kể cả chuỗi `\n` nguyên văn từ dữ liệu import cũ.
 - Phần "Điều bạn có thể mong đợi" giữ như hiện nay; chữ nền tĩnh này không có nguồn riêng nên kiểm lại ở mục 9.
 - Metadata: không đổi so với nhánh `issue-10`.
 - Form: `LeadForm kind="booking" treatment={treatment.title}`, giữ nguyên hành vi. Email nhân viên nhận tên tiếng Việt.

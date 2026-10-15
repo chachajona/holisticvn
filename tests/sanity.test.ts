@@ -177,11 +177,33 @@ describe("configured Sanity content", () => {
       fetch.mockResolvedValue([full]);
       const html = await render("full");
       expect(html).toContain("Long description");
-      expect(html).not.toContain("Thời lượng gợi ý");
-      expect(html).not.toContain("45 phút");
+      expect(html).toContain("Thời lượng gợi ý · 45 phút");
       expect(html.indexOf("Bước một")).toBeGreaterThan(-1);
       expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
       expect(html).toContain("<img");
+    });
+    it("shows the short description up top and the detailed one under 'what to expect'", async () => {
+      fetch.mockResolvedValue([full]);
+      const html = await render("full");
+      expect(html.indexOf("Short")).toBeGreaterThan(-1);
+      expect(html.indexOf("Short")).toBeLessThan(html.indexOf("Long description"));
+      expect(html).not.toContain("Chuyên gia sẽ trao đổi");
+    });
+    it("shows the generic 'what to expect' text only when the CMS has no separate detail", async () => {
+      fetch.mockResolvedValue([
+        { ...full, shortDescription: "Same text", description: "Same text" },
+      ]);
+      const html = await render("full");
+      expect(html.match(/Same text/g)).toHaveLength(1);
+      expect(html).toContain("Chuyên gia sẽ trao đổi");
+    });
+    it("splits CMS text on line breaks, including the legacy literal backslash-n", async () => {
+      fetch.mockResolvedValue([{ ...full, description: "Đoạn một.\\n\\nĐoạn hai.\n\nĐoạn ba." }]);
+      const html = await render("full");
+      expect(html).not.toContain("\\n");
+      for (const part of ["Đoạn một.", "Đoạn hai.", "Đoạn ba."]) {
+        expect(html).toContain(`<p>${part}</p>`);
+      }
     });
     it("omits empty sections and the image when optional fields are missing", async () => {
       fetch.mockResolvedValue([{ slug: "bare", title: "Bare" }]);
