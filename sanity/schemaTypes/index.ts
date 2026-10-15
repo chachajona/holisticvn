@@ -73,6 +73,27 @@ const protocolStep = defineType({
     prepare: ({ step, title }) => ({ title: `${step}. ${title}` }),
   },
 });
+const treatmentFaq = defineType({
+  name: "treatmentFaq",
+  title: "Câu hỏi thường gặp",
+  type: "object",
+  fields: [
+    defineField({
+      name: "question",
+      title: "Câu hỏi",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "answer",
+      title: "Câu trả lời",
+      type: "text",
+      rows: 4,
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: { select: { title: "question" } },
+});
 const location = defineType({
   name: "location",
   title: "Cơ sở",
@@ -421,8 +442,23 @@ const treatment = defineType({
     defineField({
       name: "isPopular",
       title: "Liệu pháp phổ biến",
+      description: "Trường cũ, đã thay bằng Huy hiệu.",
       type: "boolean",
       initialValue: false,
+      hidden: true,
+    }),
+    defineField({
+      name: "badge",
+      title: "Huy hiệu",
+      description:
+        "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chữ hiển thị cố định, không nhập tự do. Bỏ chọn để không có huy hiệu.",
+      type: "string",
+      options: {
+        list: [
+          { title: "Được chọn nhiều", value: "popular" },
+          { title: "Mới", value: "new" },
+        ],
+      },
     }),
     defineField({
       name: "requiresCertifiedPractitioner",
@@ -443,6 +479,14 @@ const treatment = defineType({
       title: "Quy trình thực hiện",
       type: "array",
       of: [defineArrayMember({ type: "protocolStep" })],
+    }),
+    defineField({
+      name: "faqs",
+      title: "Câu hỏi thường gặp",
+      description: "Tùy chọn. Chỉ hiện trên trang khi có ít nhất một câu hỏi.",
+      type: "array",
+      of: [defineArrayMember({ type: "treatmentFaq" })],
+      validation: (rule) => rule.max(10).warning("Nên giữ tối đa 10 câu hỏi."),
     }),
     defineField({ name: "seo", title: "SEO", type: "seo" }),
   ],
@@ -558,6 +602,7 @@ const siteSettings = defineType({
 export const schemaTypes = [
   seo,
   protocolStep,
+  treatmentFaq,
   location,
   siteSettings,
   serviceGroup,

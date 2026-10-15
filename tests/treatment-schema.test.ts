@@ -88,4 +88,52 @@ describe("treatment schema", () => {
     expect(errors).toEqual([]);
     expect(warnings).toHaveLength(2);
   });
+
+  it("offers exactly two badges and hides the legacy popular flag", () => {
+    const badge = (
+      treatment.fields as unknown as Array<{
+        name: string;
+        type: string;
+        options?: { list?: Array<{ title: string; value: string }> };
+        hidden?: unknown;
+      }>
+    ).find((f) => f.name === "badge");
+    expect(badge?.type).toBe("string");
+    expect(badge?.options?.list).toEqual([
+      { title: "Được chọn nhiều", value: "popular" },
+      { title: "Mới", value: "new" },
+    ]);
+    const popular = (treatment.fields as unknown as Array<{ name: string; hidden?: unknown }>).find(
+      (f) => f.name === "isPopular",
+    );
+    expect(popular?.hidden).toBe(true);
+  });
+
+  it("requires both a question and an answer for each FAQ entry", async () => {
+    const faq = (question?: string, answer?: string) => ({
+      _key: "k1",
+      _type: "treatmentFaq",
+      question,
+      answer,
+    });
+    expect((await check({ ...base, faqs: [faq("Hỏi?", "Đáp.")] })).errors).toEqual([]);
+    expect(
+      (await check({ ...base, faqs: [faq("Hỏi?", undefined)] })).errors.length,
+    ).toBeGreaterThan(0);
+    expect(
+      (await check({ ...base, faqs: [faq(undefined, "Đáp.")] })).errors.length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("warns, but does not block, on more than ten FAQ entries", async () => {
+    const faqs = Array.from({ length: 11 }, (_, i) => ({
+      _key: `k${i}`,
+      _type: "treatmentFaq",
+      question: `Hỏi ${i}?`,
+      answer: "Đáp.",
+    }));
+    const { errors, warnings } = await check({ ...base, faqs });
+    expect(errors).toEqual([]);
+    expect(warnings).toContain("Nên giữ tối đa 10 câu hỏi.");
+  });
 });
