@@ -1,0 +1,71 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { dockVisible } from "@/lib/dock-visibility";
+import styles from "./treatment-page.module.css";
+
+type Props = { markerId: string; title: string; price?: string; duration?: string };
+
+export function TreatmentDock({ markerId, title, price, duration }: Props) {
+  const [shown, setShown] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const marker = document.getElementById(markerId);
+    const panel = document.getElementById("yeu-cau");
+    if (!marker || !panel) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setShown(
+        dockVisible({
+          markerBottom: marker.getBoundingClientRect().bottom,
+          panelTop: panel.getBoundingClientRect().top,
+          viewportHeight: window.innerHeight,
+        }),
+      );
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [markerId]);
+
+  // Other fixed widgets (chat buttons) read the dock's height to stay clear of it.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (shown && ref.current)
+      root.style.setProperty("--dock-h", `${ref.current.offsetHeight + 12}px`);
+    else root.style.removeProperty("--dock-h");
+    return () => {
+      root.style.removeProperty("--dock-h");
+    };
+  }, [shown]);
+
+  return (
+    <aside
+      ref={ref}
+      className={`${styles.dock} ${shown ? styles.dockShown : ""}`}
+      aria-label="Tóm tắt và gửi yêu cầu tư vấn"
+      inert={!shown}
+    >
+      <span className={styles.dockTitle}>{title}</span>
+      {price || duration ? (
+        <span className={styles.dockPrice}>
+          {price ?? duration}
+          {price && duration ? <small>{duration}</small> : null}
+        </span>
+      ) : null}
+      <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
+        Gửi yêu cầu tư vấn →
+      </a>
+    </aside>
+  );
+}
