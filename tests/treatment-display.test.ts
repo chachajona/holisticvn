@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   certifiedPractitionerNote,
   englishSubtitle,
+  factCells,
   formatPrice,
   paragraphs,
 } from "@/lib/treatment-display";
@@ -36,5 +37,21 @@ describe("treatment display helpers", () => {
     expect(paragraphs("Chỉ một đoạn.")).toEqual(["Chỉ một đoạn."]);
     expect(paragraphs("")).toEqual([]);
     expect(paragraphs(undefined)).toEqual([]);
+  });
+
+  it("builds the quick-facts cells only from data that exists", () => {
+    expect(
+      factCells({
+        price: 99000,
+        duration: " 45 phút ",
+        protocols: [{ step: 1, title: "A", description: "" }],
+      }),
+    ).toEqual([
+      { label: "Giá", value: expect.stringMatching(/^99\.000\s₫$/) },
+      { label: "Thời lượng gợi ý", value: "45 phút" },
+      { label: "Quy trình", value: "1 bước" },
+    ]);
+    expect(factCells({ price: 0, duration: "  ", protocols: [] })).toEqual([]);
+    expect(factCells({})).toEqual([]);
   });
 });

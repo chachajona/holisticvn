@@ -1,3 +1,5 @@
+import type { Treatment } from "@/lib/content";
+
 // Owner wording from the price list footnote (the `*` services). Keep verbatim.
 export const certifiedPractitionerNote =
   "Các dịch vụ trị liệu này chỉ được thực hiện và theo dõi bởi chuyên viên có chứng nhận và chứng chỉ chuyên môn.";
@@ -25,4 +27,21 @@ export function paragraphs(text?: string) {
     .split(/\\n|\n/)
     .map((part) => part.trim())
     .filter(Boolean);
+}
+
+export type FactCell = { label: string; value: string };
+
+// Quick-facts strip (spec 4.2): a cell exists only when its data does.
+export function factCells(
+  treatment: Pick<Treatment, "price" | "duration" | "protocols">,
+): FactCell[] {
+  const cells: FactCell[] = [];
+  if (treatment.price && treatment.price > 0) {
+    cells.push({ label: "Giá", value: formatPrice(treatment.price) });
+  }
+  const duration = treatment.duration?.trim();
+  if (duration) cells.push({ label: "Thời lượng gợi ý", value: duration });
+  const steps = treatment.protocols?.length ?? 0;
+  if (steps) cells.push({ label: "Quy trình", value: `${steps} bước` });
+  return cells;
 }
