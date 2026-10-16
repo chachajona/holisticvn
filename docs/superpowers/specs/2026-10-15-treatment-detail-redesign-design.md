@@ -66,10 +66,10 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
 
 ### 4.3 Thanh dính đáy
 
-- Component client. Hiện khi phần tử mốc (dải thông tin; nếu không có thì khối hành động của hero) đã cuộn khỏi viền trên màn hình **và** panel form chưa tới (đỉnh panel còn dưới viền dưới màn hình trừ 40 px). Một khi đã tới form, không hiện lại.
+- Component client. Hiện khi phần tử mốc (dải thông tin; nếu không có thì khối hành động của hero) đã cuộn khỏi viền trên màn hình **và** panel form chưa tới (đỉnh panel còn dưới viền dưới màn hình trừ 40 px). Một khi đã tới form, không hiện lại: thanh dính vẫn ẩn khi cuộn ngược lên cho tới khi tải lại trang.
 - Hình dạng: viên thuốc bo tròn, nền `--card` 96%, viền mảnh, không bóng đổ. Desktop: giữa trang, rộng tối đa 820 px, cách đáy 16 px; mobile: cách mép 10 px.
 - Nội dung: tên liệu pháp (ẩn trên mobile), giá lớn kèm thời lượng nhỏ (chỉ phần có dữ liệu), nút "Gửi yêu cầu tư vấn →" (link `#yeu-cau`). Không có giá và thời lượng: chỉ tên và nút.
-- Né các thành phần nổi có sẵn: đặt biến CSS `--dock-h` (chiều cao + 12 px) lên `:root` khi hiện, bỏ khi ẩn; `bottom` của thanh = `16px + var(--cookie-h, 0px)` (nằm trên banner cookie); nút liên hệ (`components/chat-widgets.module.css`, chỉ ở mobile ≤700 px) cộng thêm `var(--dock-h, 0px)`; trên desktop thanh dính đã chừa chỗ hai bên.
+- Né các thành phần nổi có sẵn: đặt biến CSS `--dock-h` (chiều cao + 12 px) lên `:root` khi hiện, bỏ khi ẩn; `bottom` của thanh = `16px` khi không có banner, `var(--cookie-h, 0px) + 24px` khi có banner cookie (cách banner 8 px; mobile: `10px` và `var(--cookie-h, 0px) + 18px`, cộng `env(safe-area-inset-bottom)`); nút liên hệ (`components/chat-widgets.module.css`, chỉ ở mobile ≤700 px) cộng thêm `var(--dock-h, 0px)`; trên desktop thanh dính đã chừa chỗ hai bên.
 - Truy cập: thẻ `aside` có `aria-label="Tóm tắt và gửi yêu cầu tư vấn"`, không bẫy tiêu điểm, nằm sau nội dung chính trong DOM; `padding-bottom: env(safe-area-inset-bottom)`. `prefers-reduced-motion`: hiện ngay, không trượt.
 
 ### 4.4 Giới thiệu (hướng E)
@@ -98,7 +98,7 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
 ### 4.6 Một buổi diễn ra thế nào
 
 - Điều kiện: có ít nhất một bước hợp lệ. Bước sắp theo `step` (đã có trong `lib/sanity.ts`).
-- Lưới thẻ y hệt trang chủ (`.stepsGrid`, `.stepCard`): thẻ bo 14 px nền `--warm-band-2`, padding 30 px × 28 px; số thứ tự Display 200, 36 px, màu `--clay-deep` (hai chữ số, `padStart(2, "0")`); `h3` 21 px 400; mô tả 15 px `muted`. 4 cột trên 1100 px, 2 cột từ 700 đến 1100 px, 1 cột dưới 700 px; khoảng cách 20 px. Hàng cuối được phép thiếu ô.
+- Lưới thẻ y hệt trang chủ (`.stepsGrid`, `.stepCard`): thẻ bo 14 px nền `--warm-band-2`, padding 30 px × 28 px; số thứ tự Display 200, 36 px, màu `--clay-deep` (hai chữ số, `padStart(2, "0")`); `h3` 21 px 400; mô tả 15 px `muted`. 4 cột trên 980 px, 2 cột đến 980 px, 1 cột dưới 700 px; khoảng cách 20 px. Hàng cuối được phép thiếu ô.
 - `ol` có thứ tự thật; `h3` là tiêu đề bước. Mô tả rỗng thì không có `<p>`.
 
 ### 4.7 Câu hỏi thường gặp
@@ -150,7 +150,7 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
 - **Nút:** pill; chính = `--clay-deep` (hover `--clay-hover`), sáng trên nền tối, viền sáng cho liên kết điện thoại.
 - **Khung:** nội dung trang 1360 px (`max(24px, calc((100vw - 1360px) / 2))`).
 - **Điểm ngắt:** 980 px (hai cột thành một, lưới 2 cột) và 700 px (mobile).
-- CSS nằm trong `app/treatments/[slug]/treatment-detail.module.css`; không đụng `globals.css` ngoài hai dòng `bottom` của nút liên hệ trong `components/chat-widgets.module.css`.
+- CSS nằm trong `app/treatments/[slug]/treatment-page.module.css`; không đụng `globals.css` ngoài hai dòng `bottom` của nút liên hệ trong `components/chat-widgets.module.css`.
 
 ## 7. Chữ (owner duyệt)
 

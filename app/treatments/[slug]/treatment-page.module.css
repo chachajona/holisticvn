@@ -80,8 +80,8 @@
 
 /* ---------- Hero: same card as /treatments ---------- */
 .back {
-  display: block;
-  padding: 16px var(--frame) 12px;
+  display: inline-block;
+  margin: 16px var(--frame) 12px;
   color: var(--clay-deep);
   font:
     500 11px/1.2 var(--font-mono),
@@ -101,6 +101,9 @@
   border-radius: 18px;
   overflow: hidden;
   background: var(--ink);
+}
+.heroCardNoRibbon .heroContent {
+  padding-bottom: 56px;
 }
 .heroPhoto {
   position: absolute;
@@ -319,7 +322,7 @@
   }
   .facts {
     grid-template-columns: 1fr 1fr;
-    margin: 0 12px;
+    margin: 0 var(--frame);
   }
   .factCell {
     padding: 14px 12px;
@@ -587,7 +590,11 @@
   .tagLabel {
     padding-top: 0;
   }
-  .stepsGrid,
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
   .cards {
     grid-template-columns: 1fr;
   }
@@ -607,7 +614,6 @@
   padding: 48px;
   border-radius: 18px;
   background: var(--warm-band);
-  scroll-margin-top: 96px;
 }
 .root .panel h2 {
   font-size: clamp(1.6rem, 3vw, 36px);
@@ -642,6 +648,10 @@
     transform 0.35s ease,
     opacity 0.25s ease,
     visibility 0.35s;
+}
+/* Clear the cookie banner (fixed at 16px) by 8px. */
+:global(body:has(.cookie)) .dock {
+  bottom: calc(var(--cookie-h, 0px) + 24px);
 }
 .dockShown {
   visibility: visible;
@@ -692,6 +702,10 @@
     gap: 10px;
     padding: 8px 8px 8px 20px;
     transform: translateY(140%);
+  }
+  /* The banner sits at 10px on mobile: 10px + 8px gap. */
+  :global(body:has(.cookie)) .dock {
+    bottom: calc(var(--cookie-h, 0px) + 18px + env(safe-area-inset-bottom, 0px));
   }
   .dockShown {
     transform: none;
