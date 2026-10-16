@@ -1,6 +1,6 @@
 # Thiết kế lại trang chi tiết liệu pháp `/treatments/[slug]` — thiết kế
 
-Trạng thái: **owner đã duyệt thiết kế trong hội thoại ngày 2026-10-15; chờ duyệt bản viết này** trước khi lập kế hoạch triển khai. Chưa có code nào được viết theo spec này.
+Trạng thái: **đã được owner duyệt thiết kế và kế hoạch triển khai; code đã triển khai trên nhánh `issue-10`; còn kiểm chứng trên staging/production (cần xác nhận owner).**
 Liên quan: #10 (issue này), #1 (tracking), #9 (nhóm phương pháp), #42 (trang Phương pháp). Nền: [`2026-10-15-treatment-catalog-design.md`](2026-10-15-treatment-catalog-design.md) (11 liệu pháp, giá, cờ `*`, đã triển khai trên nhánh `issue-10`), [`../../treatment-detail-schema-research.md`](../../treatment-detail-schema-research.md), `DESIGN.md`.
 Thay thế: phần bố cục và chữ của `design-plans/treatment-detail-layout-and-wording.md` (không còn áp dụng).
 
@@ -69,7 +69,7 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
 - Component client. Hiện khi phần tử mốc (dải thông tin; nếu không có thì khối hành động của hero) đã cuộn khỏi viền trên màn hình **và** panel form chưa tới (đỉnh panel còn dưới viền dưới màn hình trừ 40 px). Một khi đã tới form, không hiện lại.
 - Hình dạng: viên thuốc bo tròn, nền `--card` 96%, viền mảnh, không bóng đổ. Desktop: giữa trang, rộng tối đa 820 px, cách đáy 16 px; mobile: cách mép 10 px.
 - Nội dung: tên liệu pháp (ẩn trên mobile), giá lớn kèm thời lượng nhỏ (chỉ phần có dữ liệu), nút "Gửi yêu cầu tư vấn →" (link `#yeu-cau`). Không có giá và thời lượng: chỉ tên và nút.
-- Né các thành phần nổi có sẵn: đặt biến CSS `--dock-h` (chiều cao + 12 px) lên `:root` khi hiện, bỏ khi ẩn; `bottom` của thanh = `16px + var(--cookie-h, 0px)` (nằm trên banner cookie); nút liên hệ (`components/chat-widgets.module.css`, hai chỗ `bottom`) cộng thêm `var(--dock-h, 0px)`.
+- Né các thành phần nổi có sẵn: đặt biến CSS `--dock-h` (chiều cao + 12 px) lên `:root` khi hiện, bỏ khi ẩn; `bottom` của thanh = `16px + var(--cookie-h, 0px)` (nằm trên banner cookie); nút liên hệ (`components/chat-widgets.module.css`, chỉ ở mobile ≤700 px) cộng thêm `var(--dock-h, 0px)`; trên desktop thanh dính đã chừa chỗ hai bên.
 - Truy cập: thẻ `aside` có `aria-label="Tóm tắt và gửi yêu cầu tư vấn"`, không bẫy tiêu điểm, nằm sau nội dung chính trong DOM; `padding-bottom: env(safe-area-inset-bottom)`. `prefers-reduced-motion`: hiện ngay, không trượt.
 
 ### 4.4 Giới thiệu (hướng E)
@@ -82,7 +82,7 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
   2. Câu chủ đề là **câu đầu của đoạn đầu**: cắt ở dấu chấm đầu tiên theo sau là khoảng trắng và một chữ cái viết hoa (`\p{Lu}`), **không** cắt sau các từ viết tắt `TP.`, `TS.`, `BS.`, `PGS.`, `ThS.`, `Dr.`.
   3. Chỉ dùng kiểu câu chủ đề khi câu đầu dài từ 40 đến 220 ký tự. Ngoài khoảng đó, hoặc không tách được: không dùng kiểu câu chủ đề; hiển thị các đoạn ở một cột (tối đa khoảng 66 ký tự mỗi dòng), không cố làm đẹp.
   4. Phần còn lại của đoạn đầu (nếu có) mở đầu cột phải, theo sau là các đoạn khác. Câu chủ đề không lặp lại ở cột phải. Chỉ có một câu và không có đoạn khác: chỉ hiện câu chủ đề, không để cột phải trống.
-  5. Nhấn mạnh: lần xuất hiện **đầu tiên** của `title` trong câu chủ đề (khớp không phân biệt hoa thường và dấu, chuẩn hoá NFC) được bọc `<b>` màu `--clay-deep`, `font-weight: 300`. Không tìm thấy thì không nhấn. Không in nghiêng.
+  5. Nhấn mạnh: lần xuất hiện **đầu tiên** của `title` trong câu chủ đề (khớp không phân biệt hoa thường, sau khi chuẩn hoá NFC; không bỏ dấu) được bọc `<b>` màu `--clay-deep`, `font-weight: 300`. Không tìm thấy thì không nhấn. Không in nghiêng.
 - Tiêu đề phần: "Giới thiệu".
 
 ### 4.5 Dành cho ai, hướng tới gì
@@ -121,7 +121,7 @@ Mỗi phần 2–6 dùng một kiểu tiêu đề: `h2` màu sage kèm đường
 
 ### 5.1 Schema Sanity (`treatment`)
 
-- `badge`: `string`, `options.list` = `[{ title: "Được chọn nhiều", value: "popular" }, { title: "Mới", value: "new" }]`, `layout: "radio"`, `options.direction: "horizontal"`, không bắt buộc. Mô tả: "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chữ hiển thị cố định, không nhập tự do."
+- `badge`: `string`, `options.list` = `[{ title: "Được chọn nhiều", value: "popular" }, { title: "Mới", value: "new" }]`, danh sách thả xuống (dropdown, để owner bỏ chọn được), không bắt buộc. Mô tả: "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chữ hiển thị cố định, không nhập tự do."
 - `isPopular`: ẩn khỏi form (`hidden: true`), giữ để tương thích.
 - `faqs`: mảng `treatmentFaq` (đối tượng mới, `question: string` bắt buộc, `answer: text` bắt buộc, `rows: 4`), `validation: (rule) => rule.max(10).warning("Nên giữ tối đa 10 câu hỏi.")`. Tiêu đề trong Studio: "Câu hỏi thường gặp".
 

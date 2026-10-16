@@ -28,6 +28,17 @@ Merging to `main` deploys production (production branch is `main`, see `docs/EMA
 - [ ] Owner confirmed staging result: <who, when>
 - [ ] Production sync applied before/with merge: <time, backup path>
 
+## Detail page redesign (spec 2026-10-15-treatment-detail-redesign)
+
+Controller check 2026-10-16 (production CMS data read-only, 1280 and 375 px, dev server): no horizontal scroll, one h1, facts strip, intro, tags, steps render; dock shows after the facts strip and hides at the form; hidden dock is inert. Screenshots in .context/evidence/ (not committed). Staging and owner review still open.
+
+- [ ] Real CMS data (Giác hơi, Ngâm lạnh, Đèn hồng ngoại) at 1280, 768 and 375 px: no horizontal scroll, one `h1`, every block present when its data exists
+- [ ] Minimal data (Tapping), no photo and no steps: page valid, primary call to action in the hero
+- [ ] `*` note (Châm khô) and both badges (stamp over a photo, chip without one)
+- [ ] Bottom dock: appears after the facts strip scrolls away, hides at the form, sits above the cookie banner, mobile chat buttons clear of it
+- [ ] Keyboard order and visible focus; the hidden dock is not tabbable; reduced motion switches the dock slide off
+- [ ] Owner has approved the new wording (spec section 7) and decided on "An toàn và ít tác dụng phụ"
+
 ## Staging (project yjzexxml, dataset staging)
 
 - [ ] Open drafts and release versions for the 3 legacy treatments and the two pages are discarded or published (the dry run lists them under WARNING); `--apply` refuses to run otherwise
