@@ -1,3 +1,350 @@
+/* Treatment detail page. Tokens and patterns follow DESIGN.md: flat, no italics, radii 14/16/18/pill. */
+.root {
+  --card: #fdfaf6;
+  --ink: #3a2a24;
+  --muted: #5c4b44;
+  --clay-deep: #744d40;
+  --clay-hover: #5f3d32;
+  --sage: #48614c;
+  --numeral: #ab917e;
+  --warm-band: #f6efe6;
+  --warm-band-2: #ede6dc;
+  --hero-emphasis: #e0c1af;
+  --line: rgba(58, 42, 36, 0.16);
+  --frame: max(24px, calc((100vw - 1360px) / 2));
+  color: var(--ink);
+  background: var(--card);
+  font-family: var(--font-accent);
+  font-weight: 300;
+  line-height: 1.75;
+  overflow: clip;
+}
+.root h1,
+.root h2,
+.root h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+  color: var(--ink);
+}
+.root p {
+  margin: 0;
+}
+.root :focus-visible {
+  outline: 2px solid var(--clay-deep);
+  outline-offset: 3px;
+}
+
+/* ---------- Buttons: full pills ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 14px 26px;
+  font: 400 15.5px/1 var(--font-accent);
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.btnPrimary {
+  background: var(--clay-deep);
+  color: #f7f3f0;
+}
+.btnPrimary:hover {
+  background: var(--clay-hover);
+}
+.btnLight {
+  background: #f7f3f0;
+  color: var(--ink);
+}
+.btnLight:hover {
+  background: var(--clay-deep);
+  color: #fff;
+}
+.btnOutline {
+  border: 1px solid rgba(247, 243, 240, 0.4);
+  color: #f7f3f0;
+}
+.btnOutline:hover {
+  border-color: #fff;
+}
+
+/* ---------- Hero: same card as /treatments ---------- */
+.back {
+  display: block;
+  padding: 16px var(--frame) 12px;
+  color: var(--clay-deep);
+  font:
+    500 11px/1.2 var(--font-mono),
+    monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.hero {
+  padding: 6px var(--frame) 0;
+}
+.heroCard {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--ink);
+}
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+}
+.heroPhoto img {
+  object-fit: cover;
+}
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(58, 42, 36, 0.85) 0,
+      rgba(58, 42, 36, 0.75) 80px,
+      rgba(58, 42, 36, 0) 160px
+    ),
+    linear-gradient(
+      95deg,
+      rgba(58, 42, 36, 0.82) 0%,
+      rgba(58, 42, 36, 0.69) min(620px, 88%),
+      rgba(58, 42, 36, 0.15) 100%
+    );
+  pointer-events: none;
+}
+.heroContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 56px 64px 100px;
+}
+.heroContent h1 {
+  font-size: clamp(2rem, 5vw, 56px);
+  line-height: 1.1;
+  color: #f7f3f0;
+}
+.subtitle {
+  margin-top: -6px;
+  font: 300 clamp(1.1rem, 2.2vw, 24px) / 1.2 var(--font-display);
+  color: var(--hero-emphasis);
+}
+.lede {
+  max-width: 520px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(247, 243, 240, 0.82);
+}
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+.ribbon {
+  position: absolute;
+  left: 64px;
+  right: 64px;
+  bottom: 26px;
+  display: flex;
+  align-items: center;
+  color: rgba(247, 243, 240, 0.85);
+  font-size: 14px;
+}
+.ribbonLabel {
+  margin-right: 18px;
+  color: var(--hero-emphasis);
+  font:
+    500 10.5px var(--font-mono),
+    monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ribbonStep {
+  display: flex;
+  align-items: center;
+}
+.ribbonLine {
+  width: 56px;
+  height: 1px;
+  margin: 0 12px;
+  background: rgba(224, 193, 175, 0.5);
+}
+.stage,
+.stageOn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stageOn {
+  color: #fff;
+}
+.stageDot {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--hero-emphasis);
+  border-radius: 50%;
+}
+.stageOn .stageDot {
+  background: var(--hero-emphasis);
+}
+
+/* ---------- Badge: tilted round stamp over a photo, a pill chip without one ---------- */
+.badge {
+  position: absolute;
+  top: 36px;
+  right: 56px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  width: 108px;
+  height: 108px;
+  padding: 12px;
+  border-radius: 50%;
+  background: var(--clay-deep);
+  color: #f7f3f0;
+  text-align: center;
+  transform: rotate(-8deg);
+  font: 300 15.5px/1.15 var(--font-display);
+}
+.badgeNew {
+  background: var(--sage);
+}
+.badge svg,
+.badgeChip svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--hero-emphasis);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.badgeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px 7px 12px;
+  border-radius: 999px;
+  background: var(--clay-deep);
+  color: #f7f3f0;
+  font: 400 14px/1 var(--font-accent);
+}
+.badgeChip svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Quick facts: unboxed strip like the homepage quick-link strip ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(var(--cells, 3), minmax(0, 1fr)) auto;
+  align-items: center;
+  margin: 0 var(--frame);
+  border-bottom: 1px solid var(--line);
+}
+.factCell {
+  padding: 20px 24px;
+  border-right: 1px solid var(--line);
+}
+.factLabel {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font:
+    500 11px var(--font-mono),
+    monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.factValue {
+  font: 300 clamp(1.5rem, 2.4vw, 32px) / 1.15 var(--font-display);
+}
+.factCta {
+  padding-left: 24px;
+}
+.cert {
+  margin: 14px var(--frame) 0;
+  padding: 14px 22px;
+  border-radius: 14px;
+  background: var(--warm-band);
+  color: var(--muted);
+  font-size: 15px;
+}
+
+@media (max-width: 700px) {
+  .heroCard {
+    min-height: 520px;
+  }
+  .heroContent {
+    padding: 30px 22px 110px;
+  }
+  .badge {
+    top: 16px;
+    right: 16px;
+    width: 88px;
+    height: 88px;
+    font-size: 13px;
+  }
+  .ribbon {
+    left: 22px;
+    right: 22px;
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .ribbonLabel {
+    display: none;
+  }
+  .ribbonLine {
+    width: 18px;
+    margin: 0 6px;
+  }
+  .facts {
+    grid-template-columns: 1fr 1fr;
+    margin: 0 12px;
+  }
+  .factCell {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .factCell:nth-child(2n) {
+    border-right: 0;
+  }
+  .factCell:last-of-type {
+    grid-column: 1 / -1;
+    border-right: 0;
+  }
+  .factCta {
+    grid-column: 1 / -1;
+    padding: 14px 0;
+  }
+  .factCta .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}
+
+/* Dock: filled in by a later task. */
 .dock {
 }
 .dockShown {
@@ -5,8 +352,4 @@
 .dockTitle {
 }
 .dockPrice {
-}
-.btn {
-}
-.btnPrimary {
 }
