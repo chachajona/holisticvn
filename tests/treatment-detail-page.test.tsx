@@ -96,7 +96,7 @@ describe("treatment detail page", () => {
       "Câu hỏi thường gặp",
       "Có thể bạn quan tâm",
       "Muốn biết liệu pháp này có phù hợp với bạn?",
-    ].map((heading) => html.indexOf(heading));
+    ].map((heading) => html.indexOf(`>${heading}</h2>`));
     expect(order.every((index) => index > -1)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));

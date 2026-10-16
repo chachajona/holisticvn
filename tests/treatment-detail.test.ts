@@ -45,14 +45,14 @@ describe("buildTreatmentDetail", () => {
 
   it("merges two groups without repeating stages, conditions or siblings, and skips itself", () => {
     const two = [
-      group("cold", ["post-workout-recovery", "muscle-stiffness"], ["a", "b"]),
-      group("infrared", ["muscle-stiffness"], ["a", "c"]),
+      group("cold", ["post-workout-recovery", "muscle-stiffness"], ["a", "b", "c"]),
+      group("infrared", ["muscle-stiffness"], ["a", "c", "d"]),
     ];
-    const detail = buildTreatmentDetail(doc("a"), [doc("a"), doc("b"), doc("c")], two);
+    const detail = buildTreatmentDetail(doc("a"), [doc("a"), doc("b"), doc("c"), doc("d")], two);
     expect(detail.groups.map((g) => g.group)).toEqual(["cold", "infrared"]);
     expect(detail.stages).toEqual(["recovery"]);
     expect(detail.conditions).toEqual(["Căng cứng cơ"]);
-    expect(detail.related.map((r) => r.slug)).toEqual(["b", "c"]);
+    expect(detail.related.map((r) => r.slug)).toEqual(["b", "c", "d"]);
   });
 
   it("skips siblings with no document, drops non-positive prices and caps the list at six", () => {

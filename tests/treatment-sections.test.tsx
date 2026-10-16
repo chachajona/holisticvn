@@ -25,6 +25,13 @@ describe("TreatmentIntro", () => {
     expect(html).not.toMatch(/<(em|i)[ >]/);
   });
 
+  it("gives a statement without body text the full width instead of an empty right column", () => {
+    const html = renderToStaticMarkup(<TreatmentIntro title="Giác hơi" description={sentence} />);
+    expect(html).toContain("<b>Giác hơi</b>");
+    expect(html).toContain("introSolo");
+    expect(html).not.toContain("introText");
+  });
+
   it("falls back to plain paragraphs when the first sentence cannot lead", () => {
     const html = renderToStaticMarkup(
       <TreatmentIntro title="Giác hơi" description={"Ngắn quá. Câu hai.\n\nĐoạn hai."} />,
@@ -64,6 +71,7 @@ describe("TreatmentAudience", () => {
     expect(html).not.toContain("Khi bạn gặp");
     expect(html).not.toContain("Nhãn");
     expect(html).toContain("Hướng tới");
+    expect(html).toContain("Mỗi người một khác");
   });
 
   it("renders nothing without conditions and benefits", () => {
