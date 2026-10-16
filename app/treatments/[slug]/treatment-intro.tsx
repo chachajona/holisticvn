@@ -10,7 +10,7 @@ export function TreatmentIntro({ title, description }: { title: string; descript
     <section className={styles.sec} aria-labelledby="gioi-thieu">
       <SectionHead id="gioi-thieu">Giới thiệu</SectionHead>
       {statement ? (
-        <div className={styles.intro}>
+        <div className={rest.length ? styles.intro : `${styles.intro} ${styles.introSolo}`}>
           <p className={styles.statement}>
             {statement.map((part, index) =>
               part.emphasis ? <b key={index}>{part.text}</b> : <span key={index}>{part.text}</span>,

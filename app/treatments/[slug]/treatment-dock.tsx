@@ -41,10 +41,17 @@ export function TreatmentDock({ markerId, title, price, duration }: Props) {
   // Other fixed widgets (chat buttons) read the dock's height to stay clear of it.
   useEffect(() => {
     const root = document.documentElement;
-    if (shown && ref.current)
-      root.style.setProperty("--dock-h", `${ref.current.offsetHeight + 12}px`);
-    else root.style.removeProperty("--dock-h");
+    const dock = ref.current;
+    if (!shown || !dock) {
+      root.style.removeProperty("--dock-h");
+      return;
+    }
+    const measure = () => root.style.setProperty("--dock-h", `${dock.offsetHeight + 12}px`);
+    measure();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    observer?.observe(dock);
     return () => {
+      observer?.disconnect();
       root.style.removeProperty("--dock-h");
     };
   }, [shown]);

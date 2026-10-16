@@ -9,7 +9,7 @@ export function TreatmentRelated({ related }: { related: RelatedTreatment[] }) {
   return (
     <section className={styles.sec} aria-labelledby="co-the-ban-quan-tam">
       <SectionHead id="co-the-ban-quan-tam">Có thể bạn quan tâm</SectionHead>
-      <ul className={styles.cards}>
+      <ul className={styles.cards} role="list">
         {related.map((item) => (
           <li key={item.slug}>
             <Link className={styles.cardLink} href={`/treatments/${item.slug}`}>

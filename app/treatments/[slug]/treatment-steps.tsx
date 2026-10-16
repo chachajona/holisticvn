@@ -7,7 +7,7 @@ export function TreatmentSteps({ protocols }: { protocols: ProtocolStep[] }) {
   return (
     <section className={styles.sec} aria-labelledby="buoi-tri-lieu">
       <SectionHead id="buoi-tri-lieu">Một buổi diễn ra thế nào</SectionHead>
-      <ol className={styles.stepsGrid}>
+      <ol className={styles.stepsGrid} role="list">
         {protocols.map((protocol, index) => (
           <li className={styles.stepCard} key={`${protocol.step}-${index}`}>
             <span className={styles.stepNumeral} aria-hidden="true">

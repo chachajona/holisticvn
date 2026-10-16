@@ -7,9 +7,9 @@ function TagRow({ label, items }: { label: string; items: string[] }) {
   return (
     <div className={styles.tagRow}>
       <span className={styles.tagLabel}>{label}</span>
-      <ul className={styles.tagPills}>
-        {items.map((item) => (
-          <li key={item}>{item}</li>
+      <ul className={styles.tagPills} role="list">
+        {items.map((item, index) => (
+          <li key={`${item}-${index}`}>{item}</li>
         ))}
       </ul>
     </div>
