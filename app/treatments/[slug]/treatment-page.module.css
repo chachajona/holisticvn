@@ -36,6 +36,9 @@
   outline: 2px solid var(--clay-deep);
   outline-offset: 3px;
 }
+.heroCard :focus-visible {
+  outline-color: #f7f3f0;
+}
 
 /* ---------- Buttons: full pills ---------- */
 .btn {
@@ -138,7 +141,7 @@
   line-height: 1.1;
   color: #f7f3f0;
 }
-.subtitle {
+.root .subtitle {
   margin-top: -6px;
   font: 300 clamp(1.1rem, 2.2vw, 24px) / 1.2 var(--font-display);
   color: var(--hero-emphasis);
@@ -222,7 +225,8 @@
   transform: rotate(-8deg);
   font: 300 15.5px/1.15 var(--font-display);
 }
-.badgeNew {
+.badgeNew,
+.badgeChip.badgeNew {
   background: var(--sage);
 }
 .badge svg,
@@ -278,7 +282,7 @@
 .factCta {
   padding-left: 24px;
 }
-.cert {
+.root .cert {
   margin: 14px var(--frame) 0;
   padding: 14px 22px;
   border-radius: 14px;
@@ -325,7 +329,7 @@
   .factCell:nth-child(2n) {
     border-right: 0;
   }
-  .factCell:last-of-type {
+  .factCell:nth-last-child(2):nth-child(odd) {
     grid-column: 1 / -1;
     border-right: 0;
   }

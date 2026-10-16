@@ -74,6 +74,15 @@ describe("TreatmentHero", () => {
     expect(plain).not.toContain("<img");
   });
 
+  it("renders only the stamp over a photo and only the chip without one", () => {
+    const withImage = hero({ badge: "popular" });
+    expect(withImage).toContain('data-variant="stamp"');
+    expect(withImage).not.toContain('data-variant="chip"');
+    const plain = hero({ badge: "popular", image: undefined });
+    expect(plain).toContain('data-variant="chip"');
+    expect(plain).not.toContain('data-variant="stamp"');
+  });
+
   it("shows no badge by default", () => {
     expect(hero()).not.toContain("data-badge");
   });

@@ -104,7 +104,7 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
           </div>
           {badge && image ? <BadgeMark badge={badge} variant="stamp" /> : null}
           {stages.length ? (
-            <div className={styles.ribbon} aria-label="Lộ trình">
+            <div className={styles.ribbon} role="group" aria-label="Lộ trình">
               <span className={styles.ribbonLabel}>Lộ trình</span>
               {methodStages.map((stage, index) => (
                 <span className={styles.ribbonStep} key={stage.id}>
