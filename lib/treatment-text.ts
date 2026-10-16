@@ -10,8 +10,9 @@ const MAX_STATEMENT = 220;
 // Index just after the first sentence's full stop, or -1 when there is no reliable end.
 function firstSentenceEnd(text: string) {
   for (const match of text.matchAll(/\.\s+(?=\p{Lu})/gu)) {
+    // Only the part after the last "." or "(" counts, so "(TP." and "PGS.TS." are abbreviations too.
     const word = /(\S+)$/.exec(text.slice(0, match.index))?.[1] ?? "";
-    if (ABBREVIATIONS.has(word)) continue;
+    if (ABBREVIATIONS.has(word.split(/[.(]/).pop()!)) continue;
     return match.index + 1;
   }
   return text.endsWith(".") ? text.length : -1;

@@ -11,3 +11,15 @@ export function dockVisible({
 }) {
   return markerBottom < 0 && panelTop > viewportHeight - 40;
 }
+
+// Once the visitor has reached the form the dock stays away for the rest of the page's life, so
+// scrolling back up does not bring it back. A page that loads already past the form counts too.
+export function nextDockState(input: {
+  reached: boolean;
+  markerBottom: number;
+  panelTop: number;
+  viewportHeight: number;
+}) {
+  const reached = input.reached || input.panelTop <= input.viewportHeight - 40;
+  return { reached, visible: !reached && dockVisible(input) };
+}

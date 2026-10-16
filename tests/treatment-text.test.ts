@@ -59,6 +59,21 @@ describe("introParts", () => {
     expect(rest).toEqual(["Xin chào bạn."]);
   });
 
+  it("does not cut a sentence after a parenthesised abbreviation like (TP.", () => {
+    const sentence = "Phòng khám của chúng tôi (TP. Hồ Chí Minh) phục vụ nhiều người mỗi ngày.";
+    const { statement, rest } = introParts(`${sentence} Xin chào bạn.`, "Holistic");
+    expect(statement?.map((part) => part.text).join("")).toBe(sentence);
+    expect(rest).toEqual(["Xin chào bạn."]);
+  });
+
+  it("does not cut a sentence after a dotted title like PGS.TS.", () => {
+    const sentence =
+      "Liệu pháp này được hướng dẫn bởi PGS.TS. Nguyễn Văn A tại phòng khám của chúng tôi.";
+    const { statement, rest } = introParts(`${sentence} Xin chào bạn.`, "Holistic");
+    expect(statement?.map((part) => part.text).join("")).toBe(sentence);
+    expect(rest).toEqual(["Xin chào bạn."]);
+  });
+
   it("skips the statement style when the first sentence is under 40 characters", () => {
     const text = "Giác hơi là liệu pháp cổ xưa. Nhiều người biết đến nó từ lâu đời.";
     expect(introParts(text, "Giác hơi")).toEqual({ rest: [text] });

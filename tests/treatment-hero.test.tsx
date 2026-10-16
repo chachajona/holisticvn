@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { CertifiedNote, TreatmentFacts } from "@/app/treatments/[slug]/treatment-facts";
 import { TreatmentHero } from "@/app/treatments/[slug]/treatment-hero";
-import { type Treatment } from "@/lib/content";
+import { type MethodStageId, type Treatment } from "@/lib/content";
 import { factCells } from "@/lib/treatment-display";
 
 const base: Treatment = {
@@ -14,11 +14,14 @@ const base: Treatment = {
   benefits: [],
   image: "https://cdn.sanity.io/images/p/d/a.jpg",
 };
-const hero = (treatment: Partial<Treatment> = {}, props: { showPrimaryCta?: boolean } = {}) =>
+const hero = (
+  treatment: Partial<Treatment> = {},
+  props: { showPrimaryCta?: boolean; stages?: MethodStageId[] } = {},
+) =>
   renderToStaticMarkup(
     <TreatmentHero
       treatment={{ ...base, ...treatment }}
-      stages={["therapy"]}
+      stages={props.stages ?? ["therapy"]}
       phone="082 895 9598"
       showPrimaryCta={props.showPrimaryCta ?? false}
     />,
@@ -50,6 +53,14 @@ describe("TreatmentHero", () => {
     );
     expect(html).not.toContain('lang="en"');
     expect(html).not.toContain("Lộ trình");
+    expect(html).toContain("heroCardNoRibbon");
+    expect(hero()).not.toContain("heroCardNoRibbon");
+  });
+
+  it("names the active pathway stages for screen readers", () => {
+    expect(hero()).toContain('aria-label="Lộ trình: Trị liệu"');
+    const two = hero({}, { stages: ["therapy", "training"] });
+    expect(two).toContain('aria-label="Lộ trình: Trị liệu, Tập luyện"');
   });
 
   it("falls back to the description as the lede when there is no short description", () => {

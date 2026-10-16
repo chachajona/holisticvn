@@ -50,6 +50,9 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
   const subtitle = englishSubtitle(treatment);
   const lede = paragraphs(treatment.shortDescription || treatment.description);
   const { badge, image } = treatment;
+  const activeTitles = methodStages
+    .filter((stage) => stages.includes(stage.id))
+    .map((s) => s.title);
   return (
     <>
       <Link className={styles.back} href="/treatments">
@@ -60,7 +63,7 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
         aria-label={treatment.title}
         data-plain={image ? undefined : ""}
       >
-        <div className={styles.heroCard}>
+        <div className={`${styles.heroCard} ${stages.length ? "" : styles.heroCardNoRibbon}`}>
           {image ? (
             <>
               <div className={styles.heroPhoto}>
@@ -104,10 +107,16 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
           </div>
           {badge && image ? <BadgeMark badge={badge} variant="stamp" /> : null}
           {stages.length ? (
-            <div className={styles.ribbon} role="group" aria-label="Lộ trình">
-              <span className={styles.ribbonLabel}>Lộ trình</span>
+            <div
+              className={styles.ribbon}
+              role="group"
+              aria-label={`Lộ trình: ${activeTitles.join(", ")}`}
+            >
+              <span className={styles.ribbonLabel} aria-hidden="true">
+                Lộ trình
+              </span>
               {methodStages.map((stage, index) => (
-                <span className={styles.ribbonStep} key={stage.id}>
+                <span className={styles.ribbonStep} key={stage.id} aria-hidden="true">
                   {index > 0 ? <span className={styles.ribbonLine} aria-hidden="true" /> : null}
                   <span className={stages.includes(stage.id) ? styles.stageOn : styles.stage}>
                     <span className={styles.stageDot} aria-hidden="true" />

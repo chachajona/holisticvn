@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { dockVisible } from "@/lib/dock-visibility";
+import { nextDockState } from "@/lib/dock-visibility";
 import styles from "./treatment-page.module.css";
 
 type Props = { markerId: string; title: string; price?: string; duration?: string };
@@ -15,15 +15,17 @@ export function TreatmentDock({ markerId, title, price, duration }: Props) {
     const panel = document.getElementById("yeu-cau");
     if (!marker || !panel) return;
     let frame = 0;
+    let reached = false; // once the form was reached the dock stays hidden until the page reloads
     const update = () => {
       frame = 0;
-      setShown(
-        dockVisible({
-          markerBottom: marker.getBoundingClientRect().bottom,
-          panelTop: panel.getBoundingClientRect().top,
-          viewportHeight: window.innerHeight,
-        }),
-      );
+      const next = nextDockState({
+        reached,
+        markerBottom: marker.getBoundingClientRect().bottom,
+        panelTop: panel.getBoundingClientRect().top,
+        viewportHeight: window.innerHeight,
+      });
+      reached = next.reached;
+      setShown(next.visible);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
