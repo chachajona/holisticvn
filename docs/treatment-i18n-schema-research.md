@@ -25,29 +25,29 @@ Quyết định cần owner (đầy đủ ở mục 8): có làm trang tiếng A
 
 Bảng 1: bốn hướng cho dữ liệu `treatment`. Phương án D (chỉ trường `language` thuần, không plugin) là cách được mô tả trong trang Localization ("The simplest way to achieve this is to have a language field on documents"); nó gặp cùng các vấn đề của A (nhiều document, tham chiếu, slug) mà không có giao diện dịch, nên tôi gộp vào A.
 
-| Tiêu chí                       | A. Document-level (`@sanity/document-internationalization`)                                                                         | B1. Field-level, `sanity-plugin-internationalized-array`                                                              | B2. Field-level, object `en` cùng tài liệu, không plugin (thiết kế của tôi)                                  | C. Chỉ `englishTitle`                       |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
-| Migration 3 document production | Nhẹ: `patch` `language: "vi"` vào 3 document, `_id` giữ nguyên; thêm 11 document `en` và 11 `translation.metadata`                  | Nặng: `title` (string) thành mảng `{language, value}`; sửa GROQ, zod, `slug.source`, `preview`, quy tắc 120 ký tự      | Không: trường `vi` giữ nguyên; `en` là trường mới                                                             | Không                                       |
-| Strong reference trong 2 trang  | Vẫn trỏ về bản `vi`; trang `en` phải nối qua `translation.metadata`                                                                 | Không đổi (cùng document)                                                                                              | Không đổi                                                                                                    | Không đổi                                   |
-| Mức đụng `app/` (routing)       | Như B; thêm `$lang` vào mọi truy vấn                                                                                                | Như A, B2 nếu có trang `en`                                                                                            | Chỉ khi có trang `en` (3.4)                                                                                  | Không                                       |
-| SEO/hreflang                    | Tồn tại bản `en` = có document `en` đã publish                                                                                      | Tồn tại bản `en` = có giá trị `en` đầy đủ                                                                             | Tồn tại bản `en` = `en.title` và `en.description` có chữ                                                      | Không áp dụng                               |
-| Chi phí editor                  | Cao nhất: hai document mỗi liệu pháp, sửa `price` hai lần; được hỗ trợ giao diện "Translations" và badge                            | Vừa: một form, có nút thêm ngôn ngữ; nhưng phải publish mọi ngôn ngữ cùng lúc                                         | Thấp: một form, nhóm "Tiếng Anh" thu gọn; cũng publish cùng lúc                                              | Rất thấp                                    |
-| Rủi ro thiếu/lệch bản dịch      | Bản dịch mới nhân bản chữ tiếng Việt (xem `exclude`); giá lệch giữa hai bản                                                         | Giá trị `en` thiếu thì trống; cần quy tắc                                                                              | Cần quy tắc "đủ tên và mô tả hoặc để trống" (đã thử, mục 4)                                                  | Không có                                    |
-| Khớp zod `treatmentSchema`      | Thêm `language`; `getTreatments` lọc theo `language`                                                                                | Phải viết lại gần hết schema zod                                                                                       | Thêm `en` tùy chọn; hàm `localizeTreatment` (mục 4)                                                          | Thêm `englishTitle` tùy chọn                |
-| Nâng cấp từ C                   | Tạo 11 document, đổi nhiều                                                                                                          | Đổi kiểu trường, migration                                                                                             | `englishTitle` thành `en.title`: `patch` tối đa 11 document. Nếu #10 làm `en: { title }` ngay thì không cần gì | Chính nó                                    |
-| Phụ thuộc mới                   | 2 plugin + `@sanity/language-filter`                                                                                                | 1 plugin + `@sanity/language-filter`                                                                                   | Không                                                                                                        | Không                                       |
-| Khuyến nghị                     | Hoãn; chỉ chọn nếu cần publish độc lập từng ngôn ngữ, từ 3 ngôn ngữ trở lên, dịch qua dịch vụ ngoài, hoặc nội dung dài kiểu Portable Text | Hoãn                                                                                                                   | **Chọn cho mức 2**                                                                                           | **Chọn cho #10**                            |
+| Tiêu chí                        | A. Document-level (`@sanity/document-internationalization`)                                                                               | B1. Field-level, `sanity-plugin-internationalized-array`                                                          | B2. Field-level, object `en` cùng tài liệu, không plugin (thiết kế của tôi)                                    | C. Chỉ `englishTitle`        |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Migration 3 document production | Nhẹ: `patch` `language: "vi"` vào 3 document, `_id` giữ nguyên; thêm 11 document `en` và 11 `translation.metadata`                        | Nặng: `title` (string) thành mảng `{language, value}`; sửa GROQ, zod, `slug.source`, `preview`, quy tắc 120 ký tự | Không: trường `vi` giữ nguyên; `en` là trường mới                                                              | Không                        |
+| Strong reference trong 2 trang  | Vẫn trỏ về bản `vi`; trang `en` phải nối qua `translation.metadata`                                                                       | Không đổi (cùng document)                                                                                         | Không đổi                                                                                                      | Không đổi                    |
+| Mức đụng `app/` (routing)       | Như B; thêm `$lang` vào mọi truy vấn                                                                                                      | Như A, B2 nếu có trang `en`                                                                                       | Chỉ khi có trang `en` (3.4)                                                                                    | Không                        |
+| SEO/hreflang                    | Tồn tại bản `en` = có document `en` đã publish                                                                                            | Tồn tại bản `en` = có giá trị `en` đầy đủ                                                                         | Tồn tại bản `en` = `en.title` và `en.description` có chữ                                                       | Không áp dụng                |
+| Chi phí editor                  | Cao nhất: hai document mỗi liệu pháp, sửa `price` hai lần; được hỗ trợ giao diện "Translations" và badge                                  | Vừa: một form, có nút thêm ngôn ngữ; nhưng phải publish mọi ngôn ngữ cùng lúc                                     | Thấp: một form, nhóm "Tiếng Anh" thu gọn; cũng publish cùng lúc                                                | Rất thấp                     |
+| Rủi ro thiếu/lệch bản dịch      | Bản dịch mới nhân bản chữ tiếng Việt (xem `exclude`); giá lệch giữa hai bản                                                               | Giá trị `en` thiếu thì trống; cần quy tắc                                                                         | Cần quy tắc "đủ tên và mô tả hoặc để trống" (đã thử, mục 4)                                                    | Không có                     |
+| Khớp zod `treatmentSchema`      | Thêm `language`; `getTreatments` lọc theo `language`                                                                                      | Phải viết lại gần hết schema zod                                                                                  | Thêm `en` tùy chọn; hàm `localizeTreatment` (mục 4)                                                            | Thêm `englishTitle` tùy chọn |
+| Nâng cấp từ C                   | Tạo 11 document, đổi nhiều                                                                                                                | Đổi kiểu trường, migration                                                                                        | `englishTitle` thành `en.title`: `patch` tối đa 11 document. Nếu #10 làm `en: { title }` ngay thì không cần gì | Chính nó                     |
+| Phụ thuộc mới                   | 2 plugin + `@sanity/language-filter`                                                                                                      | 1 plugin + `@sanity/language-filter`                                                                              | Không                                                                                                          | Không                        |
+| Khuyến nghị                     | Hoãn; chỉ chọn nếu cần publish độc lập từng ngôn ngữ, từ 3 ngôn ngữ trở lên, dịch qua dịch vụ ngoài, hoặc nội dung dài kiểu Portable Text | Hoãn                                                                                                              | **Chọn cho mức 2**                                                                                             | **Chọn cho #10**             |
 
 Bảng 2: routing Next.js khi có trang `en` (chi tiết 3.4).
 
-| Tiêu chí                    | R0. Không routing (C)  | R1. `app/[lang]` + `proxy.ts` rewrite                                              | R2. Route group, hai root layout (`(vi)` và `en/`)                                          |
-| --------------------------- | ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| URL tiếng Việt hiện có      | Giữ nguyên             | Giữ nếu rewrite `/x` thành `/vi/x` nội bộ; nếu tiền tố `/vi` thì đổi mọi URL        | Giữ nguyên                                                                                  |
-| `html lang`                 | `vi` cố định           | Động theo `lang` ở root layout                                                     | Mỗi root layout có `lang` riêng                                                             |
-| Tệp phải di chuyển          | 0                      | Mọi trang công khai (10 `page.tsx`, `layout.tsx`, `not-found.tsx`); tách `studio`   | Chuyển trang `vi` vào `(vi)`; thêm `en/` chỉ với các trang đã dịch                            |
-| `proxy.ts`                  | Không                  | Cần                                                                                | Không                                                                                       |
-| Bám guide chính thức        | Không áp dụng          | Có (`internationalization.md`), trừ phần redirect theo `Accept-Language` (3.4)     | Dùng tính năng route group chính thức; không phải mẫu i18n trong guide                       |
-| Chuyển ngôn ngữ             | Không có               | Điều hướng client trong cùng layout                                                | Tải lại toàn trang giữa hai root layout (docs nêu rõ)                                        |
+| Tiêu chí               | R0. Không routing (C) | R1. `app/[lang]` + `proxy.ts` rewrite                                             | R2. Route group, hai root layout (`(vi)` và `en/`)                     |
+| ---------------------- | --------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| URL tiếng Việt hiện có | Giữ nguyên            | Giữ nếu rewrite `/x` thành `/vi/x` nội bộ; nếu tiền tố `/vi` thì đổi mọi URL      | Giữ nguyên                                                             |
+| `html lang`            | `vi` cố định          | Động theo `lang` ở root layout                                                    | Mỗi root layout có `lang` riêng                                        |
+| Tệp phải di chuyển     | 0                     | Mọi trang công khai (10 `page.tsx`, `layout.tsx`, `not-found.tsx`); tách `studio` | Chuyển trang `vi` vào `(vi)`; thêm `en/` chỉ với các trang đã dịch     |
+| `proxy.ts`             | Không                 | Cần                                                                               | Không                                                                  |
+| Bám guide chính thức   | Không áp dụng         | Có (`internationalization.md`), trừ phần redirect theo `Accept-Language` (3.4)    | Dùng tính năng route group chính thức; không phải mẫu i18n trong guide |
+| Chuyển ngôn ngữ        | Không có              | Điều hướng client trong cùng layout                                               | Tải lại toàn trang giữa hai root layout (docs nêu rõ)                  |
 
 ## 3. Phát hiện theo chủ đề
 
@@ -145,7 +145,11 @@ const treatment = defineType({
       type: "string",
       validation: (rule) => [
         rule.required(),
-        rule.custom((v) => (leadSchema.shape.treatment.safeParse(v).success ? true : "Tên liệu pháp không được dài quá 120 ký tự.")),
+        rule.custom((v) =>
+          leadSchema.shape.treatment.safeParse(v).success
+            ? true
+            : "Tên liệu pháp không được dài quá 120 ký tự.",
+        ),
         rule.custom((v) => (v?.includes("*") ? "Bỏ dấu *, dùng ô chọn bên dưới." : true)),
       ],
     }),
@@ -154,7 +158,10 @@ const treatment = defineType({
       title: "Tên tiếng Anh (dòng phụ)",
       description: "Chỉ dùng tên owner đã cung cấp trong bảng giá. Bỏ trống để ẩn dòng phụ.",
       type: "string",
-      validation: (rule) => [rule.max(80), rule.custom((v) => (v?.includes("*") ? "Bỏ dấu *." : true))],
+      validation: (rule) => [
+        rule.max(80),
+        rule.custom((v) => (v?.includes("*") ? "Bỏ dấu *." : true)),
+      ],
     }),
     defineField({
       name: "requiresCertifiedPractitioner",
@@ -242,8 +249,14 @@ export type Locale = "vi" | "en";
 export const defaultLocale: Locale = "vi";
 
 const translationSchema = z.object({
-  title: optionalText, shortDescription: text, description: text, duration: text,
-  imageAlt: optionalText, benefits: strings, protocols, seo,
+  title: optionalText,
+  shortDescription: text,
+  description: text,
+  duration: text,
+  imageAlt: optionalText,
+  benefits: strings,
+  protocols,
+  seo,
 });
 // thêm vào treatmentSchema hiện có:
 //   requiresCertifiedPractitioner: z.boolean().catch(false),
@@ -255,13 +268,24 @@ export function localizeTreatment(raw: RawTreatment, locale: Locale) {
   const { en, ...shared } = raw;
   if (locale === defaultLocale) return shared;
   if (!en?.title || !en.description) return null; // thiếu bản dịch: không có trang /en/...
-  return { ...shared, title: en.title, shortDescription: en.shortDescription, description: en.description,
-    duration: en.duration, imageAlt: en.imageAlt, benefits: en.benefits, protocols: en.protocols, seo: en.seo };
+  return {
+    ...shared,
+    title: en.title,
+    shortDescription: en.shortDescription,
+    description: en.description,
+    duration: en.duration,
+    imageAlt: en.imageAlt,
+    benefits: en.benefits,
+    protocols: en.protocols,
+    seo: en.seo,
+  };
 }
 
 export const formatVnd = (value: number, locale: Locale) =>
   new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en", {
-    style: "currency", currency: "VND", maximumFractionDigits: 0,
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
     ...(locale === "en" ? { currencyDisplay: "code" } : {}),
   }).format(value);
 ```
@@ -270,11 +294,14 @@ Với phương án A (nếu sau này chọn), truy vấn thay bằng `*[_type ==
 
 ```ts
 documentInternationalization({
-  supportedLanguages: [{ id: "vi", title: "Tiếng Việt" }, { id: "en", title: "English" }],
+  supportedLanguages: [
+    { id: "vi", title: "Tiếng Việt" },
+    { id: "en", title: "English" },
+  ],
   schemaTypes: ["treatment"],
   weakReferences: true, // cho phép xoá một bản mà không gỡ metadata
   addTemplates: false,
-})
+});
 // treatment cần thêm: defineField({ name: "language", type: "string", readOnly: true, hidden: true })
 // và slug.options.isUnique = isUniqueOtherThanLanguage (docs/05 của plugin);
 // price, benefits, protocols, seo, description: options.documentInternationalization.exclude = true
@@ -353,15 +380,15 @@ Dry Needling mức 2 tương tự với `en.title` = "Dry Needling" và `en.desc
 
 Dùng vitest hiện có; không cần Studio hay mạng trừ dòng cuối.
 
-| Test                                      | Nội dung chính                                                                                                                                                                                                                                      |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tests/treatment-schema.test.ts` (mức 1)  | `validateDocument` (khuôn `tests/methods-schema.test.ts`, đọc `markers[].level`): `price` 99 là `warning`, 1000.5 là `error`; `title`/`englishTitle` có `*` là `error`; dữ liệu Giác hơi hợp lệ                                                      |
-| `tests/treatment-i18n.test.ts` (mức 2)    | `localizeTreatment`: `vi` không lộ `en`; `en` dùng `en.*` và giữ `price`/`slug` chung; `en` thiếu mô tả hoặc không có thì `null`; `benefits`/`protocols` không rơi về tiếng Việt; `formatVnd` ra `299.000 ₫` và `VND 299,000` (NBSP)                  |
-| `tests/treatment-schema.test.ts` (mức 2)  | `en` đủ tên và mô tả hợp lệ; `en` chỉ có tên thì `error` ở `en.description`; `en` rỗng hợp lệ                                                                                                                                                       |
-| `tests/sanity.test.ts` (render trang)     | Mức 1: dòng phụ có `lang="en"`, chú thích `*` khi cờ bật, không `*` trong `<h1>`. Mức 2: `generateStaticParams` chỉ phát `(en, slug)` cho liệu pháp có bản dịch; `notFound()` khi `null`; `alternates.languages` có `vi`, `en` (tự tham chiếu) chỉ khi đủ bản dịch |
-| `tests/email.test.ts`                     | `source` `/en/treatments/cupping` vẫn ra nhãn "Liệu pháp"; `treatment` là tên tiếng Việt                                                                                                                                                             |
-| Sitemap                                   | Mỗi URL có đủ mục `vi`/`en` và mục tự tham chiếu; liệu pháp chưa dịch không có `en`                                                                                                                                                                  |
-| Kiểm tay trên staging                     | Google Search Console (báo cáo quốc tế hoá) hoặc kiểm hreflang hai chiều bằng `curl`; mở `/en/treatments/<slug>` của liệu pháp chưa dịch phải 404; nút đổi ngôn ngữ ẩn đúng                                                                        |
+| Test                                     | Nội dung chính                                                                                                                                                                                                                                                     |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tests/treatment-schema.test.ts` (mức 1) | `validateDocument` (khuôn `tests/methods-schema.test.ts`, đọc `markers[].level`): `price` 99 là `warning`, 1000.5 là `error`; `title`/`englishTitle` có `*` là `error`; dữ liệu Giác hơi hợp lệ                                                                    |
+| `tests/treatment-i18n.test.ts` (mức 2)   | `localizeTreatment`: `vi` không lộ `en`; `en` dùng `en.*` và giữ `price`/`slug` chung; `en` thiếu mô tả hoặc không có thì `null`; `benefits`/`protocols` không rơi về tiếng Việt; `formatVnd` ra `299.000 ₫` và `VND 299,000` (NBSP)                               |
+| `tests/treatment-schema.test.ts` (mức 2) | `en` đủ tên và mô tả hợp lệ; `en` chỉ có tên thì `error` ở `en.description`; `en` rỗng hợp lệ                                                                                                                                                                      |
+| `tests/sanity.test.ts` (render trang)    | Mức 1: dòng phụ có `lang="en"`, chú thích `*` khi cờ bật, không `*` trong `<h1>`. Mức 2: `generateStaticParams` chỉ phát `(en, slug)` cho liệu pháp có bản dịch; `notFound()` khi `null`; `alternates.languages` có `vi`, `en` (tự tham chiếu) chỉ khi đủ bản dịch |
+| `tests/email.test.ts`                    | `source` `/en/treatments/cupping` vẫn ra nhãn "Liệu pháp"; `treatment` là tên tiếng Việt                                                                                                                                                                           |
+| Sitemap                                  | Mỗi URL có đủ mục `vi`/`en` và mục tự tham chiếu; liệu pháp chưa dịch không có `en`                                                                                                                                                                                |
+| Kiểm tay trên staging                    | Google Search Console (báo cáo quốc tế hoá) hoặc kiểm hreflang hai chiều bằng `curl`; mở `/en/treatments/<slug>` của liệu pháp chưa dịch phải 404; nút đổi ngôn ngữ ẩn đúng                                                                                        |
 
 ## 7. Điều chưa kiểm chứng
 
