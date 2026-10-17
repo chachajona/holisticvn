@@ -6,17 +6,26 @@ export type ProtocolStep = {
   description: string;
 };
 
+export type TreatmentBadge = "popular" | "new";
+export type TreatmentFaq = { question: string; answer: string };
+
 export type Treatment = {
   slug: string;
   title: string;
+  englishTitle?: string;
+  requiresCertifiedPractitioner?: boolean;
   shortDescription: string;
   description: string;
-  duration: string;
-  image: string;
+  duration?: string;
+  image?: string;
+  imageAlt?: string;
   benefits: string[];
   price?: number;
   isPopular?: boolean;
+  badge?: TreatmentBadge;
+  faqs?: TreatmentFaq[];
   protocols?: ProtocolStep[];
+  seo?: { title?: string; description?: string; ogImage?: string };
 };
 
 export const serviceGroups = ["therapy", "training", "recovery"] as const;
@@ -152,9 +161,15 @@ export const services: Service[] = [
     image: serviceFallbackImage.therapy,
     imageAlt: "Trị liệu bằng tay",
     treatments: [
-      { slug: "dry-needling", title: "Dry Needling" },
-      { slug: "cupping", title: "Cupping Therapy" },
+      { slug: "dry-needling", title: "Châm khô" },
+      { slug: "cupping", title: "Giác hơi" },
       { slug: "iastm", title: "IASTM" },
+      { slug: "tapping", title: "Tapping" },
+      { slug: "chiropractic-adjustment", title: "Nắn chỉnh cột sống" },
+      { slug: "shockwave", title: "Xung kích" },
+      { slug: "bio-electric", title: "Điện xung" },
+      { slug: "therapeutic-ultrasound", title: "Sóng siêu âm" },
+      { slug: "electroacupuncture", title: "Điện châm" },
     ],
   },
   {
@@ -186,8 +201,8 @@ export const services: Service[] = [
     image: serviceFallbackImage.recovery,
     imageAlt: "Ngâm lạnh & đèn hồng ngoại",
     treatments: [
-      { slug: "heat-light", title: "Heat & Light" },
-      { slug: "cold-plunge", title: "Cold Plunge" },
+      { slug: "heat-light", title: "Đèn hồng ngoại" },
+      { slug: "cold-plunge", title: "Ngâm lạnh" },
     ],
   },
 ];
@@ -213,9 +228,11 @@ export const methods: Method[] = [
     image: methodFallbackImage.manual,
     imageAlt: "Trị liệu thủ công",
     treatments: [
-      { slug: "dry-needling", title: "Dry Needling" },
-      { slug: "cupping", title: "Cupping Therapy" },
+      { slug: "dry-needling", title: "Châm khô" },
+      { slug: "cupping", title: "Giác hơi" },
       { slug: "iastm", title: "IASTM" },
+      { slug: "tapping", title: "Tapping" },
+      { slug: "chiropractic-adjustment", title: "Nắn chỉnh cột sống" },
     ],
   },
   {
@@ -227,7 +244,12 @@ export const methods: Method[] = [
     filterTags: ["muscle-stiffness", "pain-relief"],
     image: methodFallbackImage.electro,
     imageAlt: "Trị liệu bằng thiết bị",
-    treatments: [],
+    treatments: [
+      { slug: "shockwave", title: "Xung kích" },
+      { slug: "bio-electric", title: "Điện xung" },
+      { slug: "therapeutic-ultrasound", title: "Sóng siêu âm" },
+      { slug: "electroacupuncture", title: "Điện châm" },
+    ],
   },
   {
     group: "rehab",
@@ -255,7 +277,7 @@ export const methods: Method[] = [
     filterTags: ["post-workout-recovery"],
     image: methodFallbackImage.cold,
     imageAlt: "Ngâm lạnh",
-    treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }],
+    treatments: [{ slug: "cold-plunge", title: "Ngâm lạnh" }],
   },
   {
     group: "infrared",
@@ -266,65 +288,116 @@ export const methods: Method[] = [
     filterTags: ["muscle-stiffness"],
     image: methodFallbackImage.infrared,
     imageAlt: "Đèn hồng ngoại",
-    treatments: [{ slug: "heat-light", title: "Heat & Light" }],
+    treatments: [{ slug: "heat-light", title: "Đèn hồng ngoại" }],
   },
 ];
 
-export const treatments: Treatment[] = [
+// Owner price list (Vietnamese and English), supplied 2026-10-09: names, one-sentence descriptions
+// and prices are verbatim. The price list gives no duration, benefits or steps, so none are shown.
+// A treatment without a photo renders without one; only photos that fit are listed.
+const catalogue: Array<{
+  slug: string;
+  title: string;
+  englishTitle?: string;
+  text: string;
+  price: number;
+  certified?: true;
+  image?: string;
+}> = [
   {
     slug: "dry-needling",
-    title: "Dry Needling",
-    shortDescription:
-      "Giải phóng điểm kích hoạt cơ, hỗ trợ giảm đau và cải thiện biên độ vận động.",
-    description:
-      "Kỹ thuật can thiệp vào mô cơ chuyên sâu, kết hợp đánh giá vận động để xử lý căng cứng kéo dài và đau cơ xương khớp.",
-    duration: "45–60 phút",
+    title: "Châm khô",
+    englishTitle: "Dry Needling",
+    text: "Tác động vào các điểm co cứng (trigger point) để giải phóng căng thẳng, giảm đau và phục hồi chức năng thần kinh – cơ.",
+    price: 299000,
+    certified: true,
     image: "/images/TreatmentBeds.jpg",
-    benefits: ["Giảm căng cơ", "Hỗ trợ phục hồi", "Tăng biên độ vận động"],
   },
   {
     slug: "cupping",
-    title: "Cupping Therapy",
-    shortDescription: "Giác hơi hiện đại để thư giãn mô mềm và hỗ trợ tuần hoàn.",
-    description:
-      "Liệu pháp áp lực âm được sử dụng có mục tiêu, phù hợp trong lộ trình hồi phục và chăm sóc cơ thể sau vận động.",
-    duration: "30–45 phút",
+    title: "Giác hơi",
+    englishTitle: "Cupping",
+    text: "Dùng áp suất trong ống giác hơi gây xung huyết tại chỗ để giải độc cơ thể và giải quyết một số cơn đau.",
+    price: 99000,
     image: "/images/Cupping.jpg",
-    benefits: ["Thư giãn mô mềm", "Hỗ trợ tuần hoàn", "Cảm nhận cơ thể tốt hơn"],
   },
   {
     slug: "iastm",
     title: "IASTM",
-    shortDescription:
-      "Can thiệp mô mềm bằng dụng cụ, hướng tới chuyển động mượt mà và hiệu quả hơn.",
-    description:
-      "Kỹ thuật hỗ trợ xử lý vùng mô hạn chế vận động, luôn được kết hợp cùng bài tập và hướng dẫn tự chăm sóc.",
-    duration: "45 phút",
+    text: "Dùng dụng cụ chuyên dụng tác động lên mô mềm nhằm giải phóng, tăng lưu thông máu và cải thiện độ đàn hồi của cơ – fascia.",
+    price: 199000,
     image: "/images/Iastm.jpg",
-    benefits: ["Cải thiện mô mềm", "Tối ưu chuyển động", "Kết hợp bài tập phục hồi"],
   },
   {
     slug: "heat-light",
-    title: "Heat & Light",
-    shortDescription:
-      "Nhiệt và ánh sáng trị liệu hỗ trợ thư giãn, giảm khó chịu trong giai đoạn hồi phục.",
-    description:
-      "Phương pháp bổ trợ nhẹ nhàng được điều chỉnh theo tình trạng và mục tiêu phục hồi của từng khách hàng.",
-    duration: "30 phút",
+    title: "Đèn hồng ngoại",
+    englishTitle: "Heat Light",
+    text: "Thư giãn cơ, giảm căng thẳng, thúc đẩy quá trình tự chữa lành của cơ thể.",
+    price: 99000,
     image: "/images/Infrared.jpg",
-    benefits: ["Thư giãn", "Hỗ trợ giảm khó chịu", "Phục hồi có kiểm soát"],
   },
   {
     slug: "cold-plunge",
-    title: "Cold Plunge",
-    shortDescription: "Phục hồi sau vận động bằng liệu pháp lạnh có hướng dẫn.",
-    description:
-      "Phiên trị liệu lạnh được thiết kế với thời lượng phù hợp, ưu tiên an toàn và đáp ứng thực tế của cơ thể.",
-    duration: "15–20 phút",
+    title: "Ngâm lạnh",
+    englishTitle: "Cold Plunge",
+    text: "Giúp giảm viêm, sưng và phục hồi sau vận động cường độ cao và cải thiện khả năng chịu đựng của hệ thần kinh.",
+    price: 149000,
     image: "/images/ColdPlungeTub.jpg",
-    benefits: ["Hồi phục sau vận động", "Tăng tỉnh táo", "Xây dựng thói quen phục hồi"],
+  },
+  {
+    slug: "tapping",
+    title: "Tapping",
+    text: "Hỗ trợ giúp điều chỉnh trương lực cơ, giảm sưng, cải thiện cảm nhận vận động và ổn định khớp trong quá trình phục hồi.",
+    price: 99000,
+  },
+  {
+    slug: "shockwave",
+    title: "Xung kích",
+    englishTitle: "Shockwave Therapy",
+    text: "Tái tạo mô, giảm đau tại chỗ nhanh chóng.",
+    price: 349000,
+  },
+  {
+    slug: "bio-electric",
+    title: "Điện xung",
+    englishTitle: "Bio-electric",
+    text: "Kích thích thần kinh – cơ bằng xung điện nhẹ nhằm giảm đau, tăng kích hoạt cơ và phục hồi kiểm soát vận động.",
+    price: 349000,
+  },
+  {
+    slug: "therapeutic-ultrasound",
+    title: "Sóng siêu âm",
+    englishTitle: "Therapeutic Ultrasound",
+    text: "Giảm đau, giải toả căng cơ, tăng tuần hoàn máu và thúc đẩy quá trình tự chữa lành của cơ thể.",
+    price: 349000,
+  },
+  {
+    slug: "electroacupuncture",
+    title: "Điện châm",
+    englishTitle: "Electroacupuncture",
+    text: "Kết hợp châm kim với dòng điện nhẹ nhằm tăng hiệu quả giảm đau, thư giãn cơ và cải thiện lưu thông tuần hoàn.",
+    price: 249000,
+    certified: true,
+  },
+  {
+    slug: "chiropractic-adjustment",
+    title: "Nắn chỉnh cột sống",
+    englishTitle: "Chiropractic Adjustment",
+    text: "Kỹ thuật huy động và nắn chỉnh khớp cột sống giúp cải thiện cân bằng, giảm chèn ép, tăng khả năng linh hoạt và tối ưu cảm nhận cơ thể.",
+    price: 299000,
+    certified: true,
   },
 ];
+
+export const treatments: Treatment[] = catalogue.map(
+  ({ text, certified, ...treatment }): Treatment => ({
+    ...treatment,
+    shortDescription: text,
+    description: text,
+    requiresCertifiedPractitioner: certified ?? false,
+    benefits: [],
+  }),
+);
 
 export const posts: Post[] = [
   {

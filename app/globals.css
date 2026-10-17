@@ -747,106 +747,11 @@ body:has(.cookie) footer {
   font-size: 1.3rem;
   font-weight: 400;
 }
-.treatment-detail-hero {
-  background: var(--ink);
-  color: var(--milk);
-  padding: 42px 0 0;
-}
-.treatment-detail-hero__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 570px;
-  align-items: center;
-  gap: 68px;
-}
 .back-link {
   font:
     0.7rem var(--font-mono),
     monospace;
   color: #cdd9c6;
-}
-.treatment-detail-hero .eyebrow {
-  margin-top: 60px;
-  color: #a9c292;
-}
-.treatment-detail-hero h1 {
-  font-size: clamp(3.7rem, 6vw, 6.8rem);
-  line-height: 1.1;
-  margin: 15px 0 22px;
-}
-.treatment-detail-hero p:not(.eyebrow) {
-  color: #d4d7ce;
-  max-width: 540px;
-  line-height: 1.75;
-}
-.treatment-duration {
-  display: inline-block;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  margin-top: 25px;
-  padding-top: 12px;
-  font:
-    0.7rem var(--font-mono),
-    monospace;
-}
-.treatment-detail-hero__image {
-  position: relative;
-  height: 570px;
-  align-self: flex-end;
-}
-.treatment-detail-hero__image img {
-  object-fit: cover;
-  filter: saturate(0.75);
-}
-.treatment-detail-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 100px;
-}
-.treatment-detail-grid h2 {
-  font-size: clamp(2.5rem, 4.5vw, 5rem);
-  line-height: 1.1;
-  margin: 13px 0 20px;
-}
-.treatment-detail-grid p:not(.eyebrow) {
-  max-width: 490px;
-  color: var(--muted);
-  line-height: 1.75;
-}
-.treatment-detail-grid ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border-top: 1px solid var(--line);
-}
-.treatment-detail-grid li {
-  padding: 23px 0;
-  border-bottom: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  font:
-    400 1.2rem var(--font-display),
-    serif;
-}
-.treatment-detail-grid li span {
-  color: var(--coral);
-  font:
-    0.65rem var(--font-mono),
-    monospace;
-}
-.booking-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 100px;
-}
-.booking-split h2 {
-  font-size: clamp(2.8rem, 4.3vw, 5.2rem);
-  line-height: 1.1;
-  margin: 14px 0 20px;
-}
-.booking-split p:not(.eyebrow) {
-  max-width: 460px;
-  color: var(--muted);
-  line-height: 1.7;
 }
 .about-story {
   display: grid;
@@ -918,9 +823,6 @@ body:has(.cookie) footer {
     padding-top: 45px;
   }
   .page-hero__grid,
-  .treatment-detail-hero__grid,
-  .treatment-detail-grid,
-  .booking-split,
   .about-story {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -948,18 +850,6 @@ body:has(.cookie) footer {
   }
   .treatment-index p {
     font-size: 0.7rem;
-  }
-  .treatment-detail-hero__grid {
-    padding-top: 10px;
-  }
-  .treatment-detail-hero .eyebrow {
-    margin-top: 40px;
-  }
-  .treatment-detail-hero__image {
-    height: 330px;
-  }
-  .treatment-detail-grid {
-    gap: 40px;
   }
   .about-story__image {
     height: 380px;
