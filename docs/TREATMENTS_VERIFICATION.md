@@ -1,5 +1,11 @@
 # Treatment catalogue verification (#10)
 
+Historical checklist started on 15–16 October. The current keyboard/dock, content,
+staging preview and automatic CMS lifecycle results are recorded in
+[Treatment acceptance — 22 October](TREATMENT_ACCEPTANCE.md). That record also
+documents the owner's form/email testing waiver; older unchecked items below are
+not a substitute for the newer evidence.
+
 Spec: `docs/superpowers/specs/2026-10-15-treatment-catalog-design.md`. Mark an item only after it has been checked; attach the evidence (command output, screenshot path, staging URL).
 
 The sync script needs `SANITY_AUTH_TOKEN` (write access) in the environment, even for a dry run. Set it privately; never commit it or paste it into chat, logs or this file. Every `--apply` writes its own backup to `.context/treatments-before-<dataset>-<UTC timestamp>.json` (one file per apply, never overwritten).
