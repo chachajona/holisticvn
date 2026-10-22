@@ -202,6 +202,15 @@ export const getTreatments = cache(async (): Promise<Treatment[]> => {
   return fetchRecords(
     `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,englishTitle,requiresCertifiedPractitioner,shortDescription,description,duration,price,isPopular,badge,"faqs":faqs[]{question,answer},"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
     treatmentSchema,
+  ).then((records) =>
+    // A treatment without a CMS photo uses the bundled one until an editor uploads its own.
+    records.map((record) => {
+      if (record.image) return record;
+      const bundled = fallbackTreatments.find((item) => item.slug === record.slug);
+      return bundled?.image
+        ? { ...record, image: bundled.image, imageAlt: bundled.imageAlt }
+        : record;
+    }),
   );
 });
 export const getPosts = cache(async (): Promise<Post[]> => {

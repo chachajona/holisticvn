@@ -304,6 +304,7 @@ const catalogue: Array<{
   price: number;
   certified?: true;
   image?: string;
+  imageAlt?: string;
   // Researched patient information; `text` is the short description.
   intro?: string;
   faqs?: TreatmentFaq[];
@@ -361,7 +362,8 @@ const catalogue: Array<{
           "Bạn nên đi khám nếu bị bỏng, đau nhiều, sốt hoặc vùng da đỏ đau kèm dịch vàng. Đây là những dấu hiệu cần được kiểm tra, không nên coi là phản ứng thải độc.",
       },
     ],
-    image: "/images/Cupping.jpg",
+    // Wide crop of the same clinic photo, selected for the split hero and photo dock.
+    image: "/images/HeroTreatments.jpg",
   },
   {
     slug: "iastm",
@@ -453,6 +455,9 @@ const catalogue: Array<{
     title: "Tapping",
     text: "Dán băng đàn hồi lên da để hỗ trợ cảm nhận vận động; lợi ích giảm đau còn thay đổi theo tình trạng.",
     price: 99000,
+    // Temporary stock photo (Pexels licence), see PRODUCT.md. Replace with a clinic photo.
+    image: "/images/stock/tapping.jpg",
+    imageAlt: "Băng dính đàn hồi dán trên vai và lưng (ảnh minh hoạ)",
     intro:
       "Tapping là kỹ thuật dán băng đàn hồi, thường gọi là kinesiology taping. Băng co giãn theo chuyển động và tạo thêm cảm giác từ vùng da được dán. Cách cắt, vị trí và độ căng của băng được chọn theo mục tiêu hỗ trợ.\n\nBăng dán có thể được dùng như một biện pháp bổ trợ trong phục hồi. Bằng chứng về giảm đau và cải thiện chức năng còn chưa thống nhất; với bệnh lý gân chóp xoay ở vai, tổng quan nghiên cứu chưa xác định rõ lợi ích. Bạn nên được hướng dẫn cách sử dụng phù hợp với vùng cần hỗ trợ và tình trạng da của mình.",
     faqs: [
@@ -558,6 +563,9 @@ const catalogue: Array<{
     englishTitle: "Electroacupuncture",
     text: "Kết hợp kim châm với kích thích điện, được cân nhắc để hỗ trợ giảm đau tùy tình trạng và mức độ phù hợp của người bệnh.",
     price: 249000,
+    // Temporary stock photo (Pexels licence), see PRODUCT.md. Replace with a clinic photo.
+    image: "/images/stock/electroacupuncture.jpg",
+    imageAlt: "Kim châm trên vùng cổ vai (ảnh minh hoạ)",
     intro:
       "Điện châm kết hợp châm kim với kích thích điện truyền qua các kim được nối với thiết bị. Bạn có thể cảm thấy châm nhẹ, tức tại vị trí kim hoặc tê râm ran khi có kích thích điện. Cảm giác cần được theo dõi và trao đổi trong lúc thực hiện.\n\nMột số nghiên cứu về điện châm ở người thoái hoá khớp gối ghi nhận cải thiện đau và chức năng, nhưng kết quả này không áp dụng chung cho mọi loại đau. Khi cân nhắc phương pháp, cần trao đổi về lợi ích dự kiến cho đúng tình trạng của bạn, các nguy cơ liên quan đến kim và dòng điện, cùng những lựa chọn điều trị khác.",
     certified: true,
@@ -590,6 +598,9 @@ const catalogue: Array<{
     englishTitle: "Chiropractic Adjustment",
     text: "Tác động lên các khớp cột sống nhằm hỗ trợ giảm đau và cải thiện vận động ở người phù hợp.",
     price: 299000,
+    // Temporary stock photo (Pexels licence), see PRODUCT.md. Replace with a clinic photo.
+    image: "/images/stock/chiropractic-adjustment.jpg",
+    imageAlt: "Dụng cụ trị liệu cột sống đặt trên lưng (ảnh minh hoạ)",
     intro:
       "Các kỹ thuật tác động lên khớp cột sống được dùng để hỗ trợ giảm đau và cải thiện vận động. Với đau thắt lưng, mức cải thiện thường không lớn và còn tùy tình trạng của từng người.\n\nTrước khi thực hiện, cần đánh giá triệu chứng, bệnh nền và giải thích kỹ thuật dự định dùng. Với đau thắt lưng, trị liệu bằng tay nên nằm trong kế hoạch có tập luyện phục hồi để hỗ trợ việc trở lại sinh hoạt và vận động.",
     certified: true,
