@@ -4,7 +4,7 @@ import styles from "./treatment-page.module.css";
 
 export function BookingPanel({ title, phone }: { title: string; phone?: string }) {
   return (
-    <section className={styles.panel} id="yeu-cau" aria-labelledby="yeu-cau-title">
+    <section className={styles.panel} id="yeu-cau" aria-labelledby="yeu-cau-title" tabIndex={-1}>
       <div className={styles.panelCopy}>
         <h2 id="yeu-cau-title">Muốn biết liệu pháp này có phù hợp với bạn?</h2>
         <p>
