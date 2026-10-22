@@ -2,7 +2,7 @@
 // docs/superpowers/specs/2026-10-15-treatment-catalog-design.md section 7.
 
 // Content the owner has not reviewed (spec decision 4) and the unused duration field.
-const UNSET = ["seo", "benefits", "protocols", "duration"];
+const UNSET = ["benefits", "protocols", "duration"];
 
 /**
  * @param seed        documents from scripts/seed/treatments.json

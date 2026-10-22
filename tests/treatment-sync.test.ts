@@ -53,8 +53,30 @@ describe("planSync", () => {
       requiresCertifiedPractitioner: false,
       faqs: expect.any(Array),
     });
-    expect(cupping.unset).toEqual(["seo", "benefits", "protocols", "duration"]);
+    expect(cupping.unset).toEqual(["benefits", "protocols", "duration"]);
     expect(cupping.set).not.toHaveProperty("slug");
+  });
+
+  it("preserves editorial SEO and OG media on existing documents", () => {
+    const seo = {
+      title: "Editor title",
+      description: "Editor description",
+      ogImage: { _type: "image", asset: { _type: "reference", _ref: "image-editor" } },
+    };
+    const existing = { ...production[0], seo, image: { asset: { _ref: "image-treatment" } } };
+    const { mutations } = run({ treatments: [existing, ...production.slice(1)] });
+    const patch = mutations.find(
+      (m: { patch?: { id: string } }) => m.patch?.id === existing._id,
+    ).patch;
+    expect(patch.ifRevisionID).toBe(existing._rev);
+    expect(patch.set).not.toHaveProperty("seo");
+    expect(patch.set).not.toHaveProperty("image");
+    expect(patch.unset).not.toContain("seo");
+    expect(patch.unset).not.toContain("image");
+    const after = { ...existing, ...patch.set };
+    for (const key of patch.unset) delete after[key];
+    expect(after.seo).toEqual(seo);
+    expect(after.image).toEqual(existing.image);
   });
 
   it("clears a stale English title when the seed has none", () => {
