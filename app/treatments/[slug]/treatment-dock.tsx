@@ -35,7 +35,11 @@ export function TreatmentDock({ markerId, title, image, price, duration }: Props
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    // Disclosures and late-loading content can move the panel without a scroll/resize event.
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onScroll) : null;
+    observer?.observe(panel.closest("main") ?? document.body);
     return () => {
+      observer?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) cancelAnimationFrame(frame);
