@@ -2,8 +2,8 @@ import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { methods, services, treatments } from "@/lib/content";
 
-// The owner's price list (supplied 2026-10-09). Descriptions are checked against the seed in
-// tests/treatments-seed.test.ts and by eye against the price-list image.
+// Names, prices and certification marks follow the owner's price list (2026-10-09).
+// Researched descriptions are kept in sync with the seed by tests/treatments-seed.test.ts.
 const priceList = [
   ["dry-needling", "Châm khô", "Dry Needling", 299000, true],
   ["cupping", "Giác hơi", "Cupping", 99000, false],
@@ -31,10 +31,10 @@ describe("treatment catalogue (fallback)", () => {
     ).toEqual(priceList.map((row) => [...row]));
   });
 
-  it("has one description per treatment, no duration, benefits or protocols", () => {
+  it("has a description per treatment, no duration, benefits or protocols", () => {
     for (const t of treatments) {
       expect(t.description, t.slug).not.toBe("");
-      expect(t.shortDescription, t.slug).toBe(t.description);
+      expect(t.shortDescription, t.slug).not.toBe("");
       expect(t.duration, t.slug).toBeUndefined();
       expect(t.benefits, t.slug).toEqual([]);
       expect(t.protocols, t.slug).toBeUndefined();
@@ -57,7 +57,7 @@ describe("treatment catalogue (fallback)", () => {
 
   it("keeps the owner's orthography (toả, hoá), never the new-style tỏa", () => {
     for (const t of treatments) expect(t.description, t.slug).not.toContain("tỏa");
-    const ultrasound = treatments.find((t) => t.slug === "therapeutic-ultrasound");
-    expect(ultrasound?.description).toContain("giải toả căng cơ");
+    for (const t of treatments) expect(t.shortDescription, t.slug).not.toContain("tỏa");
+    for (const t of treatments) expect(t.description, t.slug).not.toContain("hóa");
   });
 });

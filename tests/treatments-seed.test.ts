@@ -58,6 +58,13 @@ describe("treatments seed", () => {
     }
   });
 
+  it("carries the approved questions and answers of the bundled catalogue", () => {
+    for (const [i, t] of treatments.entries()) {
+      const seeded = (seed[i] as { faqs?: Array<{ question: string; answer: string }> }).faqs;
+      expect(seeded?.map(({ question, answer }) => ({ question, answer }))).toEqual(t.faqs);
+    }
+  });
+
   it("only uses fields the treatment schema defines, and leaves photos, steps and SEO to editors", () => {
     const treatment = schemaTypes.find((t) => t.name === "treatment") as unknown as {
       fields: Array<{ name: string }>;

@@ -68,7 +68,6 @@ export default async function TreatmentDetailPage({
       <TreatmentAudience
         conditions={detail.conditions}
         benefits={treatment.benefits}
-        groupNames={detail.groups.map((group) => group.title)}
       />
       <TreatmentSteps protocols={treatment.protocols ?? []} />
       <TreatmentFaqList faqs={treatment.faqs ?? []} />

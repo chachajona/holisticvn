@@ -101,7 +101,8 @@ describe("treatment detail page", () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
     expect(html).toContain("<b>Giác hơi</b>");
-    expect(html).toContain("Đau lưng");
+    expect(html).not.toContain("Đau lưng");
+    expect(html).not.toContain("Khi bạn gặp");
     expect(html).toContain("Hỏi một?");
     expect(html).not.toContain("Thiếu đáp án?");
     expect(html).toContain('href="/treatments/iastm"');
@@ -133,6 +134,14 @@ describe("treatment detail page", () => {
     // With no facts strip the primary call to action sits in the hero (plus the dock).
     expect(html.match(/Gửi yêu cầu tư vấn/g)!.length).toBeGreaterThanOrEqual(2);
     expect(html).toContain('id="yeu-cau"');
+  });
+
+  it("does not recommend a treatment based only on its group's symptom filters", async () => {
+    serve({ treatments: [{ slug: "cupping", title: "Giác hơi" }], methods: [manual] });
+    const html = await render();
+    expect(html).not.toContain("Đau lưng");
+    expect(html).not.toContain('id="danh-cho-ai"');
+    expect(html).not.toContain('href="#danh-cho-ai"');
   });
 
   it("leaves the primary call to action to the facts strip when there is one", async () => {

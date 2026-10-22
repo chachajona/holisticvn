@@ -1,4 +1,3 @@
-import { audienceNote } from "@/lib/treatment-detail";
 import { SectionHead } from "./section-head";
 import styles from "./treatment-page.module.css";
 
@@ -16,9 +15,9 @@ function TagRow({ label, items }: { label: string; items: string[] }) {
   );
 }
 
-type Props = { conditions: string[]; benefits: string[]; groupNames: string[] };
+type Props = { conditions: string[]; benefits: string[] };
 
-export function TreatmentAudience({ conditions, benefits, groupNames }: Props) {
+export function TreatmentAudience({ conditions, benefits }: Props) {
   if (!conditions.length && !benefits.length) return null;
   return (
     <section className={styles.sec} aria-labelledby="danh-cho-ai">
@@ -27,7 +26,6 @@ export function TreatmentAudience({ conditions, benefits, groupNames }: Props) {
         <TagRow label="Khi bạn gặp" items={conditions} />
         <TagRow label="Hướng tới" items={benefits} />
       </div>
-      <p className={styles.note}>{audienceNote(groupNames, conditions.length > 0)}</p>
     </section>
   );
 }

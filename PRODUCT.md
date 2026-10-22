@@ -55,6 +55,8 @@ Homepage "Dịch vụ nổi bật" photos, recorded 2026-10-09. Owner-supplied o
 
 ## Product Principles
 
+Treatment content was audited on 2026-10-22 at the owner's request with parallel medical-source research and the Humanizer editing skill. The 11 treatment introductions, short descriptions and FAQs now use the scoped evidence recorded in `docs/TREATMENT_CONTENT_AUDIT.md` and its linked research notes. Names, prices and certification markers still follow the owner's price list. General education does not verify the clinic's device model, treatment settings, durations, protocols or individual qualifications. The old cupping, cold-plunge and heat-light durations/protocols/benefits are unconfirmed and must not be restored from legacy CMS fields or historical drafts. Group discovery filters are not individual treatment indications. Clinic questions and remaining photo gaps are recorded in the audit.
+
 - One continuous pathway beats fragmented care: every surface should reinforce consultation → therapy → training as one program, not separable services.
 - Non-drug, non-surgical is core to trust: avoid copy or imagery implying medication or surgical intervention.
 - Three audiences, no default hierarchy: office workers, recreational athletes, and professional athletes are equally core; don't let content default to privileging one.

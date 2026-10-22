@@ -51,6 +51,7 @@ describe("planSync", () => {
       description: expect.any(String),
       price: 99000,
       requiresCertifiedPractitioner: false,
+      faqs: expect.any(Array),
     });
     expect(cupping.unset).toEqual(["seo", "benefits", "protocols", "duration"]);
     expect(cupping.set).not.toHaveProperty("slug");

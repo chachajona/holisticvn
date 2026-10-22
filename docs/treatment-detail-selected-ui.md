@@ -20,12 +20,12 @@ Owner chọn bản kết hợp ngày 20/10/2026 sau demo đối chiếu A/B, ch�
 
 Các component nằm tại `app/treatments/[slug]/`, CSS chỉ scope vào trang chi tiết. Giữ server components cho phần nội dung; dock và form sử dụng client components sẵn có. Không thêm thư viện, route public, schema hay phương thức gửi yêu cầu mới.
 
-`buildTreatmentDetail` tiếp tục suy ra nhóm, nhãn và các liệu pháp cùng nhóm từ dữ liệu hiện có; mỗi kết quả liên quan nay mang thêm ảnh, alt và mô tả ngắn của chính document đó. Nút của form chi tiết dùng nhãn “Gửi yêu cầu tư vấn” qua prop tùy chọn; các trang dùng chung form giữ nhãn mặc định. Endpoint, treatment/source trong payload, honeypot, consent analytics và trạng thái thành công/thất bại vẫn do luồng hiện có xử lý.
+`buildTreatmentDetail` suy ra nhóm và các liệu pháp cùng nhóm từ dữ liệu hiện có; mỗi kết quả liên quan nay mang thêm ảnh, alt và mô tả ngắn của chính document đó. Theo rà soát nội dung ngày 22/10/2026, nhãn lọc cấp nhóm không còn được suy ra thành chỉ định của từng liệu pháp. Nút của form chi tiết dùng nhãn “Gửi yêu cầu tư vấn” qua prop tùy chọn; các trang dùng chung form giữ nhãn mặc định. Endpoint, treatment/source trong payload, honeypot, consent analytics và trạng thái thành công/thất bại vẫn do luồng hiện có xử lý.
 
 ## Nội dung và khả năng hiển thị
 
 - Sanity vẫn là nguồn nội dung khi đã cấu hình. Bản local không có Sanity dùng catalogue từ bảng giá owner cung cấp.
-- Catalogue đó chưa cung cấp mô tả dài riêng, thời lượng, lợi ích, quy trình hoặc FAQ cho các liệu pháp. Các phần này chỉ hiện khi document có dữ liệu; không đưa nội dung mô phỏng vào catalogue.
+- Catalogue hiện có mô tả dài và FAQ được nghiên cứu ngày 22/10/2026; nguồn và giới hạn nằm trong `docs/TREATMENT_CONTENT_AUDIT.md`. Thời lượng, lợi ích và quy trình riêng của phòng khám vẫn chờ xác nhận. Các phần chỉ hiện khi document có dữ liệu; không đưa nội dung mô phỏng vào catalogue.
 - Mục lục theo cùng điều kiện render của từng phần, tránh neo trống.
 - Ảnh hero/dock dùng ảnh của liệu pháp; Giác hơi local dùng crop ngang `HeroTreatments.jpg` của cùng ảnh clinic theo demo đã chọn; liệu pháp thiếu ảnh có bố cục chữ. Ảnh phòng trị liệu là asset clinic hiện có, được crop như bản demo.
 - Metadata SEO, not-found, ISR và form yêu cầu tư vấn dùng logic hiện hành.

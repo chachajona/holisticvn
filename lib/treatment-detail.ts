@@ -1,5 +1,4 @@
 import { methodStages, type Method, type MethodStageId, type Treatment } from "@/lib/content";
-import { methodTagLabel, methodTags } from "@/lib/method-tags";
 
 export type RelatedTreatment = { slug: string; title: string; price?: number };
 export type TreatmentDetail = {
@@ -10,10 +9,8 @@ export type TreatmentDetail = {
 };
 
 const MAX_RELATED = 6;
-const closing =
-  "Mỗi người một khác: chuyên viên sẽ đánh giá tình trạng của bạn trước khi chọn kỹ thuật phù hợp.";
 
-// Everything the page reads from the methods: groups, pathway stages, condition labels, siblings.
+// Methods supply navigation context and siblings, not individual clinical indications.
 export function buildTreatmentDetail(
   treatment: Treatment,
   treatments: Treatment[],
@@ -25,13 +22,6 @@ export function buildTreatmentDetail(
       own.some((method) => (stage.groups as readonly string[]).includes(method.group)),
     )
     .map((stage) => stage.id);
-  const conditions = [
-    ...new Set(
-      own
-        .flatMap((method) => method.filterTags)
-        .filter((id) => methodTags.find((tag) => tag.id === id)?.category === "condition"),
-    ),
-  ].map(methodTagLabel);
 
   const documents = new Map(treatments.map((item) => [item.slug, item]));
   const seen = new Set([treatment.slug]);
@@ -52,17 +42,8 @@ export function buildTreatmentDetail(
   return {
     groups: own.map(({ group, title }) => ({ group, title })),
     stages,
-    conditions,
+    // A group's discovery filters do not establish suitability for every treatment in it.
+    conditions: [],
     related: related.slice(0, MAX_RELATED),
   };
-}
-
-// Footnote under the "Khi bạn gặp" and "Hướng tới" rows (spec 4.5).
-export function audienceNote(groupNames: string[], hasConditions: boolean) {
-  if (!hasConditions || !groupNames.length) return closing;
-  const source =
-    groupNames.length === 1
-      ? `nhóm ${groupNames[0]}`
-      : `các nhóm ${groupNames.slice(0, -1).join(", ")} và ${groupNames.at(-1)}`;
-  return `Nhãn "Khi bạn gặp" theo ${source}. ${closing}`;
 }

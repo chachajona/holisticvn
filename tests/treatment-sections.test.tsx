@@ -47,12 +47,11 @@ describe("TreatmentIntro", () => {
 });
 
 describe("TreatmentAudience", () => {
-  it("shows both rows as tags with the group footnote", () => {
+  it("shows both rows as tags", () => {
     const html = renderToStaticMarkup(
       <TreatmentAudience
         conditions={["Đau lưng", "Căng cứng cơ"]}
         benefits={["Giảm đau tự nhiên"]}
-        groupNames={["Trị liệu thủ công"]}
       />,
     );
     expect(html).toContain("Dành cho ai, hướng tới gì");
@@ -60,24 +59,19 @@ describe("TreatmentAudience", () => {
     expect(html).toContain("Đau lưng");
     expect(html).toContain("Hướng tới");
     expect(html).toContain("Giảm đau tự nhiên");
-    expect(html).toContain("Nhãn &quot;Khi bạn gặp&quot; theo nhóm Trị liệu thủ công.");
-    expect(html).toContain("Mỗi người một khác");
+    expect(html).not.toContain("Mỗi người một khác");
   });
 
-  it("omits an empty row and the group sentence", () => {
+  it("omits an empty row", () => {
     const html = renderToStaticMarkup(
-      <TreatmentAudience conditions={[]} benefits={["Thư giãn"]} groupNames={["Ngâm lạnh"]} />,
+      <TreatmentAudience conditions={[]} benefits={["Thư giãn"]} />,
     );
     expect(html).not.toContain("Khi bạn gặp");
-    expect(html).not.toContain("Nhãn");
     expect(html).toContain("Hướng tới");
-    expect(html).toContain("Mỗi người một khác");
   });
 
   it("renders nothing without conditions and benefits", () => {
-    expect(
-      renderToStaticMarkup(<TreatmentAudience conditions={[]} benefits={[]} groupNames={[]} />),
-    ).toBe("");
+    expect(renderToStaticMarkup(<TreatmentAudience conditions={[]} benefits={[]} />)).toBe("");
   });
 });
 
