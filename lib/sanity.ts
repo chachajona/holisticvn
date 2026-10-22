@@ -81,20 +81,70 @@ const methodSchema = z
       (treatment, i, links) => links.findIndex((link) => link.slug === treatment.slug) === i,
     ),
   }));
-const treatmentSchema = z.object({
-  ...record,
-  shortDescription: text,
+const optionalText = z.string().trim().min(1).optional().catch(undefined);
+const protocolStepSchema = z.object({
+  step: z.number(),
+  title: z.string().trim().min(1),
   description: text,
-  duration: text,
-  image: z
-    .string()
-    .regex(/^https:\/\/cdn\.sanity\.io\//)
-    .catch("/images/Iastm.jpg"),
-  benefits: strings,
-  price: z.number().nonnegative().optional().catch(undefined),
-  isPopular: z.boolean().catch(false),
-  protocols: z.array(z.object({ step: z.number(), title: text, description: text })).catch([]),
 });
+const faqSchema = z.object({
+  question: z.string().trim().min(1),
+  answer: z.string().trim().min(1),
+});
+const treatmentSchema = z
+  .object({
+    ...record,
+    englishTitle: optionalText,
+    requiresCertifiedPractitioner: z.boolean().catch(false),
+    shortDescription: text,
+    description: text,
+    duration: text,
+    image: cdnImage.optional().catch(undefined),
+    imageAlt: optionalText,
+    benefits: strings,
+    price: z.number().int().nonnegative().optional().catch(undefined),
+    isPopular: z.boolean().catch(false),
+    badge: z.enum(["popular", "new", "none"]).optional().catch(undefined),
+    // One malformed entry is dropped, not the whole list.
+    faqs: z
+      .array(z.unknown())
+      .catch([])
+      .transform((items) =>
+        items.flatMap((item) => {
+          const parsed = faqSchema.safeParse(item);
+          return parsed.success ? [parsed.data] : [];
+        }),
+      ),
+    // One malformed step is dropped, not the whole list; steps follow their CMS number.
+    protocols: z
+      .array(z.unknown())
+      .catch([])
+      .transform((items) =>
+        items
+          .flatMap((item) => {
+            const parsed = protocolStepSchema.safeParse(item);
+            return parsed.success ? [parsed.data] : [];
+          })
+          .sort((a, b) => a.step - b.step),
+      ),
+    seo: z
+      .object({
+        title: optionalText,
+        description: optionalText,
+        ogImage: cdnImage.optional().catch(undefined),
+      })
+      .nullish()
+      .catch(undefined)
+      .transform((seo) => seo ?? undefined),
+  })
+  .transform((treatment) => ({
+    ...treatment,
+    // An explicit opt-out wins over the hidden legacy flag; untouched records stay compatible.
+    badge:
+      treatment.badge === "none"
+        ? undefined
+        : (treatment.badge ?? (treatment.isPopular ? ("popular" as const) : undefined)),
+  }));
 const postSchema = z.object({
   ...record,
   excerpt: text,
@@ -115,7 +165,11 @@ const testimonialSchema = z.object({
 
 async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]> {
   // A configured dataset (including an empty one) is authoritative; samples are local-only.
-  const value: unknown = await client.fetch(query, {}, { next: { revalidate: 3600 } });
+  const value: unknown = await client.fetch(
+    query,
+    {},
+    { next: { revalidate: 3600, tags: ["sanity"] } },
+  );
   // A singleton query returns null until the document is first published: no records, not an outage.
   if (value === null) return [];
   if (!Array.isArray(value)) throw new Error("Invalid Sanity response");
@@ -153,8 +207,17 @@ export const getMethods = cache(async (): Promise<Method[]> => {
 export const getTreatments = cache(async (): Promise<Treatment[]> => {
   if (!enabled) return fallbackTreatments;
   return fetchRecords(
-    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,shortDescription,description,duration,price,isPopular,"image":image.asset->url,benefits,protocols}`,
+    `*[_type == "treatment"] | order(title asc){"slug":slug.current,title,englishTitle,requiresCertifiedPractitioner,shortDescription,description,duration,price,isPopular,badge,"faqs":faqs[]{question,answer},"image":image.asset->url,"imageAlt":image.alt,benefits,protocols,"seo":seo{title,description,"ogImage":ogImage.asset->url}}`,
     treatmentSchema,
+  ).then((records) =>
+    // A treatment without a CMS photo uses the bundled one until an editor uploads its own.
+    records.map((record) => {
+      if (record.image) return record;
+      const bundled = fallbackTreatments.find((item) => item.slug === record.slug);
+      return bundled?.image
+        ? { ...record, image: bundled.image, imageAlt: bundled.imageAlt }
+        : record;
+    }),
   );
 });
 export const getPosts = cache(async (): Promise<Post[]> => {
@@ -202,7 +265,7 @@ export const getSiteSettings = cache(async () => {
   const value = await client.fetch(
     `*[_type == "siteSettings"][0]{contactPhone,contactEmail,locations,socialMedia}`,
     {},
-    { next: { revalidate: 3600 } },
+    { next: { revalidate: 3600, tags: ["sanity"] } },
   );
   return value ? settingsSchema.parse(value) : null;
 });

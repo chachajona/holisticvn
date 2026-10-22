@@ -39,13 +39,13 @@ describe("method groups", () => {
     }
   });
 
-  it("maps the owner's price list: only treatments with a document are linked", () => {
+  it("maps the owner's price list: every treatment is linked to its group", () => {
     const linked = Object.fromEntries(
       methods.map((m) => [m.group, m.treatments.map((t) => t.slug)]),
     );
     expect(linked).toEqual({
-      manual: ["dry-needling", "cupping", "iastm"],
-      electro: [],
+      manual: ["dry-needling", "cupping", "iastm", "tapping", "chiropractic-adjustment"],
+      electro: ["shockwave", "bio-electric", "therapeutic-ultrasound", "electroacupuncture"],
       rehab: [],
       cold: ["cold-plunge"],
       infrared: ["heat-light"],

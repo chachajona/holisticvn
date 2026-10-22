@@ -3,13 +3,27 @@
 import { FormEvent, useState } from "react";
 import { track } from "@/components/gtm";
 import { useSiteData } from "@/components/site-data";
+import styles from "./lead-form.module.css";
 
-type Props = { kind: "contact" | "booking"; treatment?: string };
+type Props = {
+  kind: "contact" | "booking";
+  treatment?: string;
+  submitLabel?: string;
+  successMessage?: string;
+  motion?: boolean;
+};
 
-export function LeadForm({ kind, treatment }: Props) {
+export function LeadForm({
+  kind,
+  treatment,
+  submitLabel = "Gửi yêu cầu",
+  successMessage,
+  motion = false,
+}: Props) {
   const { site } = useSiteData();
   const [error, setError] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [motionInput, setMotionInput] = useState<"pointer" | "keyboard">("keyboard");
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,7 +62,11 @@ export function LeadForm({ kind, treatment }: Props) {
 
   return (
     <form
-      className="lead-form"
+      className={`lead-form${motion ? ` ${styles.motion}` : ""}`}
+      data-state={state}
+      data-motion-input={motion ? motionInput : undefined}
+      onPointerDownCapture={motion ? () => setMotionInput("pointer") : undefined}
+      onKeyDownCapture={motion ? () => setMotionInput("keyboard") : undefined}
       onSubmit={submit}
       onChange={() => {
         if (state !== "sending") setState("idle");
@@ -87,6 +105,7 @@ export function LeadForm({ kind, treatment }: Props) {
       {kind === "booking" ? (
         <details className="lead-form__details">
           <summary>
+            {motion ? <span className={styles.noteChevron} aria-hidden="true" /> : null}
             Thêm ghi chú <small>(không bắt buộc)</small>
           </summary>
           <label>
@@ -111,22 +130,35 @@ export function LeadForm({ kind, treatment }: Props) {
         </label>
       )}
       <button className="button" disabled={state === "sending"}>
-        {state === "sending" ? "Đang gửi…" : "Gửi yêu cầu"} <span>→</span>
+        {motion ? (
+          <span className={styles.buttonLabels}>
+            <span aria-hidden={state === "sending"}>{submitLabel}</span>
+            <span aria-hidden={state !== "sending"}>Đang gửi…</span>
+          </span>
+        ) : state === "sending" ? (
+          "Đang gửi…"
+        ) : (
+          submitLabel
+        )}{" "}
+        <span aria-hidden="true">→</span>
       </button>
       <div
         aria-live="polite"
         className={state === "sent" ? "form-message form-message--success" : "form-message"}
       >
-        {state === "sent"
-          ? kind === "booking"
-            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian tại cơ sở Lê Quốc Hưng; đây chưa phải lịch hẹn."
-            : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn."
-          : null}
-        {state === "error" ? (
-          <>
-            {error} Bạn có thể <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.
-          </>
-        ) : null}
+        <span key={state} className={motion ? styles.statusContent : undefined}>
+          {state === "sent"
+            ? (successMessage ??
+              (kind === "booking"
+                ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian tại cơ sở Lê Quốc Hưng; đây chưa phải lịch hẹn."
+                : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn."))
+            : null}
+          {state === "error" ? (
+            <>
+              {error} Bạn có thể <a href={`tel:${site.phone.replaceAll(" ", "")}`}>gọi Holistic</a>.
+            </>
+          ) : null}
+        </span>
       </div>
     </form>
   );

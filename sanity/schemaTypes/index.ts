@@ -13,14 +13,14 @@ const seo = defineType({
       name: "title",
       title: "SEO title",
       type: "string",
-      validation: (rule) => rule.max(60),
+      validation: (rule) => rule.max(60).warning("Nên giữ SEO title trong 60 ký tự."),
     }),
     defineField({
       name: "description",
       title: "SEO description",
       type: "text",
       rows: 3,
-      validation: (rule) => rule.max(160),
+      validation: (rule) => rule.max(160).warning("Nên giữ SEO description trong 160 ký tự."),
     }),
     defineField({ name: "ogImage", title: "OG image", type: "image", options: { hotspot: true } }),
   ],
@@ -31,6 +31,23 @@ const image = defineField({
   type: "image",
   options: { hotspot: true },
   fields: [defineField({ name: "alt", title: "Alt text", type: "string" })],
+});
+// Treatment photos need alt text once an image is chosen (same rule as service and method groups).
+const treatmentImage = defineField({
+  ...image,
+  fields: [
+    defineField({
+      name: "alt",
+      title: "Alt text",
+      type: "string",
+      validation: (rule) =>
+        rule.custom((value, context) =>
+          (context.parent as { asset?: unknown } | undefined)?.asset && !value
+            ? "Cần alt text khi có ảnh."
+            : true,
+        ),
+    }),
+  ],
 });
 const protocolStep = defineType({
   name: "protocolStep",
@@ -55,6 +72,27 @@ const protocolStep = defineType({
     select: { step: "step", title: "title" },
     prepare: ({ step, title }) => ({ title: `${step}. ${title}` }),
   },
+});
+const treatmentFaq = defineType({
+  name: "treatmentFaq",
+  title: "Câu hỏi thường gặp",
+  type: "object",
+  fields: [
+    defineField({
+      name: "question",
+      title: "Câu hỏi",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "answer",
+      title: "Câu trả lời",
+      type: "text",
+      rows: 4,
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: { select: { title: "question" } },
 });
 const location = defineType({
   name: "location",
@@ -359,14 +397,37 @@ const treatment = defineType({
       name: "title",
       title: "Tên liệu pháp",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (rule) => [
+        rule.required(),
+        // Reuse the booking limit: the title travels with the callback request.
+        rule.custom((value) =>
+          leadSchema.shape.treatment.safeParse(value).success
+            ? true
+            : "Tên liệu pháp không được dài quá 120 ký tự.",
+        ),
+      ],
+    }),
+    defineField({
+      name: "englishTitle",
+      title: "Tên tiếng Anh",
+      description:
+        "Tên quốc tế của kỹ thuật, hiện làm dòng phụ dưới tên tiếng Việt. Bỏ trống nếu trùng tên tiếng Việt.",
+      type: "string",
     }),
     defineField({
       name: "slug",
       title: "URL slug",
       type: "slug",
       options: { source: "title" },
-      validation: (rule) => rule.required(),
+      validation: (rule) => [
+        rule.required(),
+        rule.custom((value) => {
+          const current = (value as { current?: string } | undefined)?.current;
+          return !current || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(current)
+            ? true
+            : "Slug chỉ gồm chữ thường không dấu, số và dấu gạch ngang.";
+        }),
+      ],
     }),
     defineField({ name: "shortDescription", title: "Mô tả ngắn", type: "text", rows: 3 }),
     defineField({ name: "description", title: "Mô tả chi tiết", type: "text", rows: 5 }),
@@ -374,16 +435,40 @@ const treatment = defineType({
     defineField({
       name: "price",
       title: "Giá (VNĐ)",
+      description: "Số nguyên, ví dụ 149000. Hiển thị trên trang liệu pháp.",
       type: "number",
-      validation: (rule) => rule.min(0),
+      validation: (rule) => rule.integer().min(0),
     }),
     defineField({
       name: "isPopular",
       title: "Liệu pháp phổ biến",
+      description: "Trường cũ, đã thay bằng Huy hiệu.",
+      type: "boolean",
+      initialValue: false,
+      hidden: true,
+    }),
+    defineField({
+      name: "badge",
+      title: "Huy hiệu",
+      description:
+        "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chọn Không hiển thị huy hiệu để tắt cả nhãn phổ biến cũ; để trống vẫn đọc cờ phổ biến cũ nếu có.",
+      type: "string",
+      options: {
+        list: [
+          { title: "Được chọn nhiều", value: "popular" },
+          { title: "Mới", value: "new" },
+          { title: "Không hiển thị huy hiệu", value: "none" },
+        ],
+      },
+    }),
+    defineField({
+      name: "requiresCertifiedPractitioner",
+      title: "Chỉ chuyên viên có chứng nhận thực hiện (*)",
+      description: "Hiện câu chú thích trên trang liệu pháp.",
       type: "boolean",
       initialValue: false,
     }),
-    image,
+    treatmentImage,
     defineField({
       name: "benefits",
       title: "Lợi ích",
@@ -395,6 +480,14 @@ const treatment = defineType({
       title: "Quy trình thực hiện",
       type: "array",
       of: [defineArrayMember({ type: "protocolStep" })],
+    }),
+    defineField({
+      name: "faqs",
+      title: "Câu hỏi thường gặp",
+      description: "Tùy chọn. Chỉ hiện trên trang khi có ít nhất một câu hỏi.",
+      type: "array",
+      of: [defineArrayMember({ type: "treatmentFaq" })],
+      validation: (rule) => rule.max(10).warning("Nên giữ tối đa 10 câu hỏi."),
     }),
     defineField({ name: "seo", title: "SEO", type: "seo" }),
   ],
@@ -510,6 +603,7 @@ const siteSettings = defineType({
 export const schemaTypes = [
   seo,
   protocolStep,
+  treatmentFaq,
   location,
   siteSettings,
   serviceGroup,

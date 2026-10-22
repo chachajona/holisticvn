@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getPosts, getTreatments } from "@/lib/sanity";
 
-export const revalidate = 3600;
+// Metadata route output must not retain removed/renamed CMS URLs in a separate static cache.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, treatments] = await Promise.all([getPosts(), getTreatments()]);

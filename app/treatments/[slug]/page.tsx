@@ -1,9 +1,19 @@
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LeadForm } from "@/components/lead-form";
 import { createMetadata } from "@/lib/seo";
-import { getTreatments } from "@/lib/sanity";
+import { resolveTreatmentSeo } from "@/lib/treatment-seo";
+import { getMethods, getPublicSiteData, getTreatments } from "@/lib/sanity";
+import { buildTreatmentDetail } from "@/lib/treatment-detail";
+import { factCells, formatPrice } from "@/lib/treatment-display";
+import { BookingPanel } from "./booking-panel";
+import { TreatmentAudience } from "./treatment-audience";
+import { TreatmentDock } from "./treatment-dock";
+import { TreatmentFaqList } from "./treatment-faq";
+import { CertifiedNote, TreatmentFacts } from "./treatment-facts";
+import { TreatmentHero } from "./treatment-hero";
+import { TreatmentIntro } from "./treatment-intro";
+import { TreatmentRelated } from "./treatment-related";
+import { TreatmentSteps } from "./treatment-steps";
+import styles from "./treatment-page.module.css";
 
 export const revalidate = 3600;
 
@@ -15,8 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const treatment = (await getTreatments()).find((item) => item.slug === slug);
   return treatment
     ? createMetadata({
-        title: treatment.title,
-        description: treatment.shortDescription,
+        ...resolveTreatmentSeo(treatment),
         path: `/treatments/${treatment.slug}`,
       })
     : {};
@@ -27,62 +36,68 @@ export default async function TreatmentDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const treatment = (await getTreatments()).find((item) => item.slug === slug);
+  const [treatments, methods, { site }] = await Promise.all([
+    getTreatments(),
+    // The groups only add context; the page must not go down with them.
+    getMethods().catch(() => []),
+    getPublicSiteData(),
+  ]);
+  const treatment = treatments.find((item) => item.slug === slug);
   if (!treatment) notFound();
+
+  const detail = buildTreatmentDetail(treatment, treatments, methods);
+  const cells = factCells(treatment);
+  const lede = treatment.shortDescription.trim() || treatment.description.trim();
+  const showIntro = Boolean(treatment.description.trim()) && treatment.description.trim() !== lede;
+  const hasFacts = cells.length > 0;
+  const sections = [
+    { id: "gioi-thieu", label: "Giới thiệu", visible: showIntro },
+    {
+      id: "danh-cho-ai",
+      label: "Dành cho ai",
+      visible: detail.conditions.length > 0 || treatment.benefits.length > 0,
+    },
+    { id: "buoi-tri-lieu", label: "Quy trình", visible: Boolean(treatment.protocols?.length) },
+    { id: "cau-hoi", label: "Câu hỏi thường gặp", visible: Boolean(treatment.faqs?.length) },
+    { id: "co-the-ban-quan-tam", label: "Liệu pháp liên quan", visible: detail.related.length > 0 },
+    { id: "yeu-cau", label: "Tư vấn", visible: true },
+  ].filter((section) => section.visible);
+
   return (
-    <main id="main">
-      <section className="treatment-detail-hero">
-        <div className="shell treatment-detail-hero__grid">
-          <div>
-            <Link className="back-link" href="/treatments">
-              ← Tất cả liệu pháp
-            </Link>
-            <p className="eyebrow">Liệu pháp</p>
-            <h1 className="display">{treatment.title}</h1>
-            <p>{treatment.description}</p>
-            <span className="treatment-duration">Thời lượng gợi ý · {treatment.duration}</span>
-          </div>
-          <div className="treatment-detail-hero__image">
-            <Image
-              src={treatment.image}
-              alt={treatment.title}
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 50vw"
-            />
-          </div>
-        </div>
-      </section>
-      <section className="section section--paper">
-        <div className="shell treatment-detail-grid">
-          <div>
-            <p className="eyebrow">Điều bạn có thể mong đợi</p>
-            <h2 className="display">Một phiên trị liệu có chủ đích.</h2>
-            <p>
-              Chuyên gia sẽ trao đổi về tình trạng hiện tại, giải thích hướng can thiệp và điều
-              chỉnh theo phản hồi của cơ thể trong suốt buổi trị liệu.
-            </p>
-          </div>
-          <ul>
-            {treatment.benefits.map((benefit, index) => (
-              <li key={benefit}>
-                <span>0{index + 1}</span>
-                {benefit}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-      <section className="section">
-        <div className="shell booking-split">
-          <div>
-            <p className="eyebrow">Bắt đầu lộ trình</p>
-            <h2 className="display">Muốn biết liệu pháp này có phù hợp với bạn?</h2>
-            <p>Gửi yêu cầu, HolisticVN sẽ liên hệ để trao đổi trước khi xác nhận lịch hẹn.</p>
-          </div>
-          <LeadForm kind="booking" treatment={treatment.title} />
-        </div>
-      </section>
+    <main id="main" className={styles.root}>
+      <TreatmentHero
+        treatment={treatment}
+        stages={detail.stages}
+        phone={site.phone}
+        groups={detail.groups}
+      />
+      <TreatmentFacts cells={cells} />
+      {treatment.requiresCertifiedPractitioner ? <CertifiedNote /> : null}
+      <nav className={styles.pageNav} aria-label="Nội dung trang">
+        <ul role="list">
+          {sections.map((section) => (
+            <li key={section.id}>
+              <a href={`#${section.id}`}>{section.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {showIntro ? (
+        <TreatmentIntro title={treatment.title} description={treatment.description} />
+      ) : null}
+      <TreatmentAudience conditions={detail.conditions} benefits={treatment.benefits} />
+      <TreatmentSteps protocols={treatment.protocols ?? []} duration={treatment.duration} />
+      <TreatmentFaqList faqs={treatment.faqs ?? []} />
+      <TreatmentRelated related={detail.related} groups={detail.groups} />
+      <BookingPanel title={treatment.title} phone={site.phone} />
+      <TreatmentDock
+        key={treatment.slug}
+        markerId={hasFacts ? "treatment-facts" : "treatment-hero-actions"}
+        title={treatment.title}
+        image={treatment.image}
+        price={treatment.price && treatment.price > 0 ? formatPrice(treatment.price) : undefined}
+        duration={treatment.duration?.trim() || undefined}
+      />
     </main>
   );
 }

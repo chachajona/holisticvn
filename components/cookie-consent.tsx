@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 
 const key = "holisticvn-cookie-consent-v1";
@@ -41,13 +42,17 @@ function CookieBanner() {
   };
   return (
     <aside ref={ref} className="cookie" aria-label="Tùy chọn cookie">
-      <p>Chúng tôi chỉ dùng analytics khi bạn đồng ý, để hiểu các trang và CTA hữu ích hơn.</p>
+      <p>
+        Chúng tôi sử dụng cookie để trang web hoạt động ổn định và cải thiện trải nghiệm của bạn.
+        Cookie phân tích lượt truy cập chỉ được bật khi bạn đồng ý.{" "}
+        <Link href="/cookie-policy">Chính sách cookie</Link>.
+      </p>
       <div>
         <button className="cookie__text" onClick={() => setConsent("rejected")}>
           Từ chối
         </button>
         <button className="button" onClick={() => setConsent("accepted")}>
-          Đồng ý analytics
+          Chấp nhận
         </button>
       </div>
     </aside>

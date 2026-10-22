@@ -1,0 +1,170 @@
+{
+  "selectedAt": "2026-10-22",
+  "contentStatus": "owner_authorized_common_steps",
+  "clinicProtocolVerified": false,
+  "scope": "Chỉ các bước cốt lõi phù hợp giữa ít nhất hai cơ sở y tế; không khẳng định mọi phòng khám có phác đồ giống nhau hoặc đã kiểm chứng quy trình riêng của Holistic.",
+  "target": "yjzexxml/staging",
+  "researchNote": "docs/treatment-protocols-selection.md",
+  "sources": {
+    "dry-cleveland": "https://my.clevelandclinic.org/health/treatments/16542-dry-needling",
+    "dry-ohio": "https://wexnermedical.osu.edu/orthopedics/sports-medicine/treatments/dry-needling",
+    "dry-consent": "https://mobilityphysiotherapy.co.uk/wp-content/uploads/2021/10/Acupuncture-and-Dry-Needling-Consent-form.pdf",
+    "iastm-northwestern": "https://www.nm.org/conditions-and-care-areas/rehabilitation-services/physical-therapy/instrument-assisted-graston-technique",
+    "iastm-daviess": "https://www.dchosp.org/our-services/rehabilitation-therapies-outpatient-/manual-therapy/graston-technique-/",
+    "shockwave-devon": "https://www.royaldevon.nhs.uk/media/ktffxirh/extracorporeal-shockwave-therapy-eswt-rd-e-20-022-005.pdf",
+    "shockwave-oxford": "https://www.ouh.nhs.uk/patient-guide/leaflets/files/86722shockwave.pdf",
+    "electro-wolverhampton": "https://www.royalwolverhampton.nhs.uk/wp-content/uploads/2025/05/Accupuncture.pdf",
+    "electro-northtees": "https://www.nth.nhs.uk/resources/acupunture/"
+  },
+  "treatments": [
+    {
+      "slug": "dry-needling",
+      "title": "Châm khô",
+      "sourceIds": ["dry-cleveland", "dry-ohio", "dry-consent"],
+      "protocols": [
+        {
+          "_key": "common-dry-needling-1",
+          "_type": "protocolStep",
+          "step": 1,
+          "title": "Trao đổi và đánh giá",
+          "description": "Buổi châm thường bắt đầu bằng trao đổi triệu chứng, sức khỏe và thuốc đang dùng. Chuyên viên đánh giá vùng cần châm, giải thích phương pháp để bạn quyết định thực hiện."
+        },
+        {
+          "_key": "common-dry-needling-2",
+          "_type": "protocolStep",
+          "step": 2,
+          "title": "Chuẩn bị vùng châm",
+          "description": "Bạn được bố trí tư thế phù hợp. Vùng da được làm sạch và kim vô khuẩn dùng một lần được chuẩn bị."
+        },
+        {
+          "_key": "common-dry-needling-3",
+          "_type": "protocolStep",
+          "step": 3,
+          "title": "Châm và theo dõi cảm giác",
+          "description": "Chuyên viên đưa kim mảnh vào vùng đã lựa chọn. Bạn có thể thấy nhói hoặc cơ co giật; hãy báo ngay nếu đau nhiều, khó chịu hoặc chóng mặt."
+        },
+        {
+          "_key": "common-dry-needling-4",
+          "_type": "protocolStep",
+          "step": 4,
+          "title": "Kết thúc và hướng dẫn sau châm",
+          "description": "Kim được rút khi kết thúc châm. Bạn trao đổi phản ứng sau buổi và nhận hướng dẫn vận động phù hợp; nếu đau ngực hoặc khó thở sau châm, hãy đi cấp cứu ngay."
+        }
+      ]
+    },
+    {
+      "slug": "iastm",
+      "title": "IASTM",
+      "sourceIds": ["iastm-northwestern", "iastm-daviess"],
+      "protocols": [
+        {
+          "_key": "common-iastm-1",
+          "_type": "protocolStep",
+          "step": 1,
+          "title": "Đánh giá vùng cần trị liệu",
+          "description": "Buổi trị liệu thường bắt đầu bằng đánh giá triệu chứng, vận động và mục tiêu của bạn để cân nhắc IASTM trong kế hoạch phục hồi."
+        },
+        {
+          "_key": "common-iastm-2",
+          "_type": "protocolStep",
+          "step": 2,
+          "title": "Chuẩn bị vùng da",
+          "description": "Vùng cần trị liệu được bộc lộ. Sản phẩm bôi da có thể được sử dụng để dụng cụ di chuyển thuận lợi trên da."
+        },
+        {
+          "_key": "common-iastm-3",
+          "_type": "protocolStep",
+          "step": 3,
+          "title": "Thực hiện với dụng cụ",
+          "description": "Chuyên viên di chuyển dụng cụ trên vùng đã đánh giá. Bạn báo nếu đau hoặc khó chịu để chuyên viên điều chỉnh."
+        },
+        {
+          "_key": "common-iastm-4",
+          "_type": "protocolStep",
+          "step": 4,
+          "title": "Hướng dẫn vận động",
+          "description": "Bài tập vận động và tăng sức mạnh được lựa chọn theo tình trạng và nhu cầu phục hồi của bạn."
+        }
+      ]
+    },
+    {
+      "slug": "shockwave",
+      "title": "Xung kích",
+      "sourceIds": ["shockwave-devon", "shockwave-oxford"],
+      "protocols": [
+        {
+          "_key": "common-shockwave-1",
+          "_type": "protocolStep",
+          "step": 1,
+          "title": "Trao đổi trước trị liệu",
+          "description": "Buổi trị liệu thường bắt đầu bằng trao đổi sức khỏe, thuốc đang dùng và vùng đau. Chuyên viên giải thích phương pháp trước khi bạn đồng ý thực hiện."
+        },
+        {
+          "_key": "common-shockwave-2",
+          "_type": "protocolStep",
+          "step": 2,
+          "title": "Xác định vùng và thoa gel",
+          "description": "Vùng cần tác động được xác định qua thăm khám và phản hồi của bạn. Gel được thoa lên da trước khi đặt đầu máy."
+        },
+        {
+          "_key": "common-shockwave-3",
+          "_type": "protocolStep",
+          "step": 3,
+          "title": "Thực hiện xung kích",
+          "description": "Chuyên viên đặt đầu máy lên vùng đã chọn để truyền xung kích. Bạn có thể nghe tiếng máy và thấy khó chịu tại chỗ; hãy báo lại cảm giác trong buổi."
+        },
+        {
+          "_key": "common-shockwave-4",
+          "_type": "protocolStep",
+          "step": 4,
+          "title": "Nhận hướng dẫn sau buổi",
+          "description": "Bạn được trao đổi cách theo dõi phản ứng và vận động sau trị liệu. Hướng dẫn được điều chỉnh theo tình trạng của bạn."
+        }
+      ]
+    },
+    {
+      "slug": "electroacupuncture",
+      "title": "Điện châm",
+      "sourceIds": ["electro-wolverhampton", "electro-northtees"],
+      "protocols": [
+        {
+          "_key": "common-electroacupuncture-1",
+          "_type": "protocolStep",
+          "step": 1,
+          "title": "Trao đổi và sàng lọc",
+          "description": "Buổi trị liệu thường bắt đầu bằng trao đổi bệnh sử, thuốc đang dùng và thiết bị cấy ghép. Chuyên viên giải thích việc châm kim kết hợp kích thích điện trước khi bạn đồng ý."
+        },
+        {
+          "_key": "common-electroacupuncture-2",
+          "_type": "protocolStep",
+          "step": 2,
+          "title": "Chuẩn bị tư thế và đặt kim",
+          "description": "Bạn được bố trí tư thế phù hợp. Chuyên viên đặt kim vô khuẩn dùng một lần tại các vị trí đã lựa chọn."
+        },
+        {
+          "_key": "common-electroacupuncture-3",
+          "_type": "protocolStep",
+          "step": 3,
+          "title": "Kích thích điện qua kim",
+          "description": "Kim được nối với máy điện châm để nhận kích thích điện. Bạn có thể thấy râm ran; hãy báo ngay nếu đau, chóng mặt hoặc có cảm giác bất thường."
+        },
+        {
+          "_key": "common-electroacupuncture-4",
+          "_type": "protocolStep",
+          "step": 4,
+          "title": "Kết thúc và theo dõi phản ứng",
+          "description": "Chuyên viên kết thúc kích thích và rút kim. Bạn trao đổi cảm giác sau buổi, nhận hướng dẫn theo dõi và vận động phù hợp."
+        }
+      ]
+    }
+  ],
+  "skipped": {
+    "cupping": "Chưa xác định loại giác hơi; thao tác khác theo loại.",
+    "heat-light": "Chưa xác định loại đèn và điều kiện sử dụng theo thiết bị.",
+    "cold-plunge": "Điều kiện ngâm, theo dõi và hỗ trợ khác nhau; chưa rõ quy trình cơ sở.",
+    "tapping": "Tên dịch vụ chưa xác định chắc loại băng/kỹ thuật.",
+    "bio-electric": "Chưa xác định thiết bị, chế độ hoặc đường truyền điện.",
+    "therapeutic-ultrasound": "Có nhiều cách áp đầu phát; chưa xác định nhánh Holistic sử dụng.",
+    "chiropractic-adjustment": "Chưa xác định huy động chậm, lực đẩy nhanh hay dụng cụ và vùng cột sống."
+  }
+}
