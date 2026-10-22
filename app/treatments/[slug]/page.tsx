@@ -47,8 +47,8 @@ export default async function TreatmentDetailPage({
 
   const detail = buildTreatmentDetail(treatment, treatments, methods);
   const cells = factCells(treatment);
-  const lede = treatment.shortDescription || treatment.description;
-  const showIntro = Boolean(treatment.description) && treatment.description.trim() !== lede.trim();
+  const lede = treatment.shortDescription.trim() || treatment.description.trim();
+  const showIntro = Boolean(treatment.description.trim()) && treatment.description.trim() !== lede;
   const hasFacts = cells.length > 0;
   const sections = [
     { id: "gioi-thieu", label: "Giới thiệu", visible: showIntro },

@@ -150,6 +150,17 @@ describe("treatment detail page", () => {
     expect(html).toContain('id="yeu-cau"');
   });
 
+  it.each([" ", "\n\t"])(
+    "omits the intro link and section for blank copy %j",
+    async (description) => {
+      serve({ treatments: [{ ...full, description }] });
+      const html = await render();
+      expect(html).toContain(full.shortDescription);
+      expect(html).not.toContain('href="#gioi-thieu"');
+      expect(html).not.toContain('id="gioi-thieu"');
+    },
+  );
+
   it("does not recommend a treatment based only on its group's symptom filters", async () => {
     serve({ treatments: [{ slug: "cupping", title: "Giác hơi" }], methods: [manual] });
     const html = await render();

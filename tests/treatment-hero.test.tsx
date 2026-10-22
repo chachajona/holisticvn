@@ -63,8 +63,8 @@ describe("TreatmentHero", () => {
     expect(two).toContain('aria-label="Lộ trình: Trị liệu, Tập luyện"');
   });
 
-  it("falls back to the description as the lede when there is no short description", () => {
-    expect(hero({ shortDescription: "" })).toContain("Mô tả dài.");
+  it.each(["", " \n\t"])("uses long copy for a blank short description %j", (shortDescription) => {
+    expect(hero({ shortDescription })).toContain("Mô tả dài.");
   });
 
   it("puts the primary call to action in the hero only when asked to", () => {

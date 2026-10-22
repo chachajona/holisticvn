@@ -58,7 +58,7 @@ export function TreatmentHero({
   groups = [],
 }: Props) {
   const subtitle = englishSubtitle(treatment);
-  const lede = paragraphs(treatment.shortDescription || treatment.description);
+  const lede = paragraphs(treatment.shortDescription.trim() || treatment.description);
   const { badge, image } = treatment;
   const activeTitles = methodStages
     .filter((stage) => stages.includes(stage.id))
