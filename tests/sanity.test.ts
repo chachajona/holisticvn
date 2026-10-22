@@ -108,6 +108,13 @@ describe("configured Sanity content", () => {
     const query = String(fetch.mock.calls.at(-1)?.[0]);
     expect(query).toContain("englishTitle");
     expect(query).toContain("requiresCertifiedPractitioner");
+    expect(fetch).toHaveBeenLastCalledWith(
+      expect.any(String),
+      {},
+      {
+        next: { revalidate: 3600, tags: ["sanity"] },
+      },
+    );
   });
   it("maps the badge, falling back to the legacy isPopular flag", async () => {
     fetch.mockResolvedValue([

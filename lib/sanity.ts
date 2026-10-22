@@ -162,7 +162,11 @@ const testimonialSchema = z.object({
 
 async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]> {
   // A configured dataset (including an empty one) is authoritative; samples are local-only.
-  const value: unknown = await client.fetch(query, {}, { next: { revalidate: 3600 } });
+  const value: unknown = await client.fetch(
+    query,
+    {},
+    { next: { revalidate: 3600, tags: ["sanity"] } },
+  );
   // A singleton query returns null until the document is first published: no records, not an outage.
   if (value === null) return [];
   if (!Array.isArray(value)) throw new Error("Invalid Sanity response");
@@ -258,7 +262,7 @@ export const getSiteSettings = cache(async () => {
   const value = await client.fetch(
     `*[_type == "siteSettings"][0]{contactPhone,contactEmail,locations,socialMedia}`,
     {},
-    { next: { revalidate: 3600 } },
+    { next: { revalidate: 3600, tags: ["sanity"] } },
   );
   return value ? settingsSchema.parse(value) : null;
 });

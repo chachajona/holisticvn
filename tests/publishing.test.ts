@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn(), revalidateTag: vi.fn() }));
 vi.mock("@/lib/sanity", () => ({ getPosts: vi.fn(), getTreatments: vi.fn() }));
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getPosts, getTreatments } from "@/lib/sanity";
 import sitemap from "@/app/sitemap";
 import { POST } from "@/app/api/revalidate/route";
@@ -28,6 +28,7 @@ describe("publishing routes", () => {
       }),
     );
     expect(response.status).toBe(200);
+    expect(revalidateTag).toHaveBeenCalledWith("sanity", { expire: 0 });
     expect(revalidatePath).toHaveBeenCalledWith("/", "layout");
     expect(revalidatePath).toHaveBeenCalledWith("/sitemap.xml");
   });
@@ -37,6 +38,7 @@ describe("publishing routes", () => {
       (await POST(new Request("http://localhost/api/revalidate", { method: "POST" }))).status,
     ).toBe(401);
     expect(revalidatePath).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
   });
   it.each(["privacy-policy", "terms-conditions", "cookie-policy"])(
     "adds distinct policy metadata for %s",
