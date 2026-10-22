@@ -51,6 +51,18 @@ export default async function TreatmentDetailPage({
   const lede = treatment.shortDescription || treatment.description;
   const showIntro = Boolean(treatment.description) && treatment.description.trim() !== lede.trim();
   const hasFacts = cells.length > 0;
+  const sections = [
+    { id: "gioi-thieu", label: "Giới thiệu", visible: showIntro },
+    {
+      id: "danh-cho-ai",
+      label: "Dành cho ai",
+      visible: detail.conditions.length > 0 || treatment.benefits.length > 0,
+    },
+    { id: "buoi-tri-lieu", label: "Quy trình", visible: Boolean(treatment.protocols?.length) },
+    { id: "cau-hoi", label: "Câu hỏi thường gặp", visible: Boolean(treatment.faqs?.length) },
+    { id: "co-the-ban-quan-tam", label: "Liệu pháp liên quan", visible: detail.related.length > 0 },
+    { id: "yeu-cau", label: "Gửi yêu cầu tư vấn", visible: true },
+  ].filter((section) => section.visible);
 
   return (
     <main id="main" className={styles.root}>
@@ -58,24 +70,32 @@ export default async function TreatmentDetailPage({
         treatment={treatment}
         stages={detail.stages}
         phone={site.phone}
-        showPrimaryCta={!hasFacts}
+        groups={detail.groups}
       />
       <TreatmentFacts cells={cells} />
       {treatment.requiresCertifiedPractitioner ? <CertifiedNote /> : null}
+      <nav className={styles.pageNav} aria-label="Nội dung trang">
+        <ul role="list">
+          {sections.map((section) => (
+            <li key={section.id}>
+              <a href={`#${section.id}`}>{section.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
       {showIntro ? (
         <TreatmentIntro title={treatment.title} description={treatment.description} />
       ) : null}
-      <TreatmentAudience
-        conditions={detail.conditions}
-        benefits={treatment.benefits}
-      />
-      <TreatmentSteps protocols={treatment.protocols ?? []} />
+      <TreatmentAudience conditions={detail.conditions} benefits={treatment.benefits} />
+      <TreatmentSteps protocols={treatment.protocols ?? []} duration={treatment.duration} />
       <TreatmentFaqList faqs={treatment.faqs ?? []} />
-      <TreatmentRelated related={detail.related} />
-      <BookingPanel title={treatment.title} />
+      <TreatmentRelated related={detail.related} groups={detail.groups} />
+      <BookingPanel title={treatment.title} phone={site.phone} />
       <TreatmentDock
+        key={treatment.slug}
         markerId={hasFacts ? "treatment-facts" : "treatment-hero-actions"}
         title={treatment.title}
+        image={treatment.image}
         price={treatment.price && treatment.price > 0 ? formatPrice(treatment.price) : undefined}
         duration={treatment.duration?.trim() || undefined}
       />

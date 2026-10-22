@@ -1,12 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { nextDockState } from "@/lib/dock-visibility";
+import { ArrowIcon } from "./treatment-icons";
 import styles from "./treatment-page.module.css";
 
-type Props = { markerId: string; title: string; price?: string; duration?: string };
+type Props = { markerId: string; title: string; image?: string; price?: string; duration?: string };
 
-export function TreatmentDock({ markerId, title, price, duration }: Props) {
+export function TreatmentDock({ markerId, title, image, price, duration }: Props) {
   const [shown, setShown] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
@@ -48,7 +50,7 @@ export function TreatmentDock({ markerId, title, price, duration }: Props) {
       root.style.removeProperty("--dock-h");
       return;
     }
-    const measure = () => root.style.setProperty("--dock-h", `${dock.offsetHeight + 12}px`);
+    const measure = () => root.style.setProperty("--dock-h", `${dock.offsetHeight + 20}px`);
     measure();
     const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
     observer?.observe(dock);
@@ -63,17 +65,30 @@ export function TreatmentDock({ markerId, title, price, duration }: Props) {
       ref={ref}
       className={`${styles.dock} ${shown ? styles.dockShown : ""}`}
       aria-label="Tóm tắt và gửi yêu cầu tư vấn"
+      data-plain={image ? undefined : ""}
       inert={!shown}
     >
-      <span className={styles.dockTitle}>{title}</span>
-      {price || duration ? (
-        <span className={styles.dockPrice}>
-          {price ?? duration}
-          {price && duration ? <small>{duration}</small> : null}
-        </span>
+      {image ? (
+        <Image
+          className={styles.dockImage}
+          src={image}
+          alt=""
+          width={70}
+          height={70}
+          sizes="(max-width: 600px) 58px, 70px"
+        />
       ) : null}
+      <div className={styles.dockInfo}>
+        <span className={styles.dockTitle}>{title}</span>
+        {price || duration ? (
+          <div className={styles.dockStats}>
+            {price ? <span>{price}</span> : null}
+            {duration ? <span>{duration}</span> : null}
+          </div>
+        ) : null}
+      </div>
       <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
-        Gửi yêu cầu tư vấn →
+        Gửi yêu cầu tư vấn <ArrowIcon />
       </a>
     </aside>
   );

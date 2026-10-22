@@ -1,6 +1,11 @@
 import { methodStages, type Method, type MethodStageId, type Treatment } from "@/lib/content";
 
-export type RelatedTreatment = { slug: string; title: string; price?: number };
+export type RelatedTreatment = Pick<
+  Treatment,
+  "slug" | "title" | "price" | "image" | "imageAlt"
+> & {
+  shortDescription?: string;
+};
 export type TreatmentDetail = {
   groups: Array<{ group: Method["group"]; title: string }>;
   stages: MethodStageId[];
@@ -36,6 +41,9 @@ export function buildTreatmentDetail(
         slug: document.slug,
         title: document.title,
         price: document.price && document.price > 0 ? document.price : undefined,
+        image: document.image,
+        imageAlt: document.imageAlt,
+        shortDescription: document.shortDescription,
       });
     }
   }

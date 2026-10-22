@@ -90,13 +90,13 @@ describe("treatment detail page", () => {
     expect(html).toContain("45 phút");
     expect(html).toContain("2 bước");
     const order = [
-      "Giới thiệu",
-      "Dành cho ai, hướng tới gì",
-      "Một buổi diễn ra thế nào",
-      "Câu hỏi thường gặp",
-      "Có thể bạn quan tâm",
-      "Muốn biết liệu pháp này có phù hợp với bạn?",
-    ].map((heading) => html.indexOf(`>${heading}</h2>`));
+      "gioi-thieu",
+      "danh-cho-ai",
+      "buoi-tri-lieu",
+      "cau-hoi",
+      "co-the-ban-quan-tam",
+      "yeu-cau-title",
+    ].map((id) => html.indexOf(`<h2 id="${id}"`));
     expect(order.every((index) => index > -1)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
@@ -144,11 +144,11 @@ describe("treatment detail page", () => {
     expect(html).not.toContain('href="#danh-cho-ai"');
   });
 
-  it("leaves the primary call to action to the facts strip when there is one", async () => {
+  it("keeps the primary call to action and the phone link in the hero", async () => {
     serve();
     const html = await render();
     const hero = html.slice(0, html.indexOf('id="treatment-facts"'));
-    expect(hero).not.toContain("Gửi yêu cầu tư vấn");
+    expect(hero).toContain("Gửi yêu cầu tư vấn");
     expect(hero).toContain("Gọi ");
   });
 

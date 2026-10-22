@@ -38,7 +38,7 @@ describe("TreatmentHero", () => {
     expect(html).toContain("Gọi 082 895 9598");
     expect(html).toContain("Lộ trình");
     expect(html).toContain("Trị liệu");
-    expect(html).toContain("← Tất cả phương pháp");
+    expect(html).toContain('href="/treatments"');
     expect(html).toContain("<img");
   });
 
@@ -53,8 +53,8 @@ describe("TreatmentHero", () => {
     );
     expect(html).not.toContain('lang="en"');
     expect(html).not.toContain("Lộ trình");
-    expect(html).toContain("heroCardNoRibbon");
-    expect(hero()).not.toContain("heroCardNoRibbon");
+    expect(html).not.toContain('aria-label="Lộ trình:');
+    expect(hero()).toContain('aria-label="Lộ trình: Trị liệu"');
   });
 
   it("names the active pathway stages for screen readers", () => {
@@ -100,7 +100,7 @@ describe("TreatmentHero", () => {
 });
 
 describe("TreatmentFacts", () => {
-  it("renders one cell per fact and the call to action", () => {
+  it("renders one definition-list cell per fact without duplicating the hero call to action", () => {
     const html = renderToStaticMarkup(
       <TreatmentFacts
         cells={factCells({
@@ -114,7 +114,7 @@ describe("TreatmentFacts", () => {
     expect(html).toContain("Giá");
     expect(html).toContain("Thời lượng gợi ý");
     expect(html).toContain("1 bước");
-    expect(html).toContain('href="#yeu-cau"');
+    expect(html).not.toContain('href="#yeu-cau"');
     expect(html).toContain("--cells:3");
   });
 

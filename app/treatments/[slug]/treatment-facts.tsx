@@ -5,7 +5,7 @@ import styles from "./treatment-page.module.css";
 export function TreatmentFacts({ cells }: { cells: FactCell[] }) {
   if (!cells.length) return null;
   return (
-    <section
+    <dl
       className={styles.facts}
       id="treatment-facts"
       aria-label="Thông tin nhanh"
@@ -13,16 +13,11 @@ export function TreatmentFacts({ cells }: { cells: FactCell[] }) {
     >
       {cells.map((cell) => (
         <div className={styles.factCell} key={cell.label}>
-          <span className={styles.factLabel}>{cell.label}</span>
-          <span className={styles.factValue}>{cell.value}</span>
+          <dt className={styles.factLabel}>{cell.label}</dt>
+          <dd className={styles.factValue}>{cell.value}</dd>
         </div>
       ))}
-      <div className={styles.factCta}>
-        <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
-          Gửi yêu cầu tư vấn →
-        </a>
-      </div>
-    </section>
+    </dl>
   );
 }
 

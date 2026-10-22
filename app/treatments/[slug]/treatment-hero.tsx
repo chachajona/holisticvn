@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  methodAnchor,
   methodStages,
   type MethodStageId,
   type Treatment,
   type TreatmentBadge,
 } from "@/lib/content";
 import { englishSubtitle, paragraphs } from "@/lib/treatment-display";
+import type { TreatmentDetail } from "@/lib/treatment-detail";
+import { ArrowIcon, ChevronIcon } from "./treatment-icons";
 import styles from "./treatment-page.module.css";
 
 const badgeText: Record<TreatmentBadge, string> = { popular: "Được chọn nhiều", new: "Mới" };
@@ -43,10 +46,17 @@ type Props = {
   treatment: Treatment;
   stages: MethodStageId[];
   phone: string;
-  showPrimaryCta: boolean;
+  showPrimaryCta?: boolean;
+  groups?: TreatmentDetail["groups"];
 };
 
-export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Props) {
+export function TreatmentHero({
+  treatment,
+  stages,
+  phone,
+  showPrimaryCta = true,
+  groups = [],
+}: Props) {
   const subtitle = englishSubtitle(treatment);
   const lede = paragraphs(treatment.shortDescription || treatment.description);
   const { badge, image } = treatment;
@@ -55,29 +65,30 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
     .map((s) => s.title);
   return (
     <>
-      <Link className={styles.back} href="/treatments">
-        ← Tất cả phương pháp
-      </Link>
+      <nav className={styles.breadcrumb} aria-label="Đường dẫn">
+        <ol role="list">
+          <li>
+            <Link href="/treatments">Phương pháp</Link>
+          </li>
+          {groups.map((group) => (
+            <li key={group.group}>
+              <ChevronIcon />
+              <Link href={`/treatments#${methodAnchor[group.group]}`}>{group.title}</Link>
+            </li>
+          ))}
+          <li>
+            <ChevronIcon />
+            <span aria-current="page">{treatment.title}</span>
+          </li>
+        </ol>
+      </nav>
       <section
+        id="treatment-hero"
         className={styles.hero}
         aria-label={treatment.title}
         data-plain={image ? undefined : ""}
       >
-        <div className={`${styles.heroCard} ${stages.length ? "" : styles.heroCardNoRibbon}`}>
-          {image ? (
-            <>
-              <div className={styles.heroPhoto}>
-                <Image
-                  src={image}
-                  alt={treatment.imageAlt ?? treatment.title}
-                  fill
-                  priority
-                  sizes="(max-width: 760px) 100vw, 1360px"
-                />
-              </div>
-              <div className={styles.heroScrim} aria-hidden="true" />
-            </>
-          ) : null}
+        <div className={styles.heroCard}>
           <div className={styles.heroContent}>
             {badge && !image ? <BadgeMark badge={badge} variant="chip" /> : null}
             <h1>{treatment.title}</h1>
@@ -93,37 +104,48 @@ export function TreatmentHero({ treatment, stages, phone, showPrimaryCta }: Prop
             ))}
             <div className={styles.heroActions} id="treatment-hero-actions">
               {showPrimaryCta ? (
-                <a className={`${styles.btn} ${styles.btnLight}`} href="#yeu-cau">
-                  Gửi yêu cầu tư vấn →
+                <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
+                  Gửi yêu cầu tư vấn <ArrowIcon />
                 </a>
               ) : null}
-              <a
-                className={`${styles.btn} ${styles.btnOutline}`}
-                href={`tel:${phone.replaceAll(" ", "")}`}
-              >
+              <a className={styles.textLink} href={`tel:${phone.replaceAll(" ", "")}`}>
                 Gọi {phone}
               </a>
             </div>
-          </div>
-          {badge && image ? <BadgeMark badge={badge} variant="stamp" /> : null}
-          {stages.length ? (
-            <div
-              className={styles.ribbon}
-              role="group"
-              aria-label={`Lộ trình: ${activeTitles.join(", ")}`}
-            >
-              <span className={styles.ribbonLabel} aria-hidden="true">
-                Lộ trình
-              </span>
-              {methodStages.map((stage, index) => (
-                <span className={styles.ribbonStep} key={stage.id} aria-hidden="true">
-                  {index > 0 ? <span className={styles.ribbonLine} aria-hidden="true" /> : null}
-                  <span className={stages.includes(stage.id) ? styles.stageOn : styles.stage}>
-                    <span className={styles.stageDot} aria-hidden="true" />
-                    {stage.title}
+            {stages.length ? (
+              <div
+                className={styles.ribbon}
+                role="group"
+                aria-label={`Lộ trình: ${activeTitles.join(", ")}`}
+              >
+                {methodStages.map((stage, index) => (
+                  <span className={styles.ribbonStep} key={stage.id} aria-hidden="true">
+                    {index > 0 ? <ArrowIcon /> : null}
+                    <span className={stages.includes(stage.id) ? styles.stageOn : styles.stage}>
+                      <span className={styles.stageDot} aria-hidden="true" />
+                      {stage.title}
+                    </span>
                   </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          {image ? (
+            <div className={styles.heroPhoto}>
+              <Image
+                src={image}
+                alt={treatment.imageAlt ?? treatment.title}
+                fill
+                loading="eager"
+                fetchPriority="high"
+                sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1080px) 48vw, (max-width: 1440px) 44vw, 600px"
+              />
+              {badge ? <BadgeMark badge={badge} variant="stamp" /> : null}
+              {!badge && image.startsWith("/images/") ? (
+                <span className={styles.heroCaption}>
+                  {image.startsWith("/images/stock/") ? "Ảnh minh hoạ" : "Hình ảnh tại Holistic"}
                 </span>
-              ))}
+              ) : null}
             </div>
           ) : null}
         </div>

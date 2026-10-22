@@ -76,7 +76,7 @@ describe("TreatmentAudience", () => {
 });
 
 describe("TreatmentSteps", () => {
-  it("renders an ordered list of cards in the given order with two-digit numerals", () => {
+  it("renders a vertical sequence in the given order with two-digit numerals", () => {
     const html = renderToStaticMarkup(
       <TreatmentSteps
         protocols={[
@@ -85,14 +85,14 @@ describe("TreatmentSteps", () => {
         ]}
       />,
     );
-    expect(html).toContain("Một buổi diễn ra thế nào");
+    expect(html).toContain("diễn ra thế nào");
     expect(html).toContain("<ol");
     expect(html).toContain("01");
     expect(html).toContain("02");
     expect(html).toContain("Bước một");
     expect(html).toContain("Mô tả một");
     expect(html.indexOf("Bước một")).toBeLessThan(html.indexOf("Bước hai"));
-    expect(html.match(/<p/g)).toHaveLength(1);
+    expect(html.match(/<p/g)).toHaveLength(2);
   });
 
   it("renders nothing without steps", () => {
@@ -101,13 +101,13 @@ describe("TreatmentSteps", () => {
 });
 
 describe("TreatmentFaqList", () => {
-  it("renders closed details with a question and a paragraph per line of the answer", () => {
+  it("opens the first disclosure with a question and a paragraph per line of the answer", () => {
     const html = renderToStaticMarkup(
       <TreatmentFaqList faqs={[{ question: "Hỏi?", answer: "Đáp một.\n\nĐáp hai." }]} />,
     );
-    expect(html).toContain("Câu hỏi thường gặp");
+    expect(html).toContain("đang băn khoăn");
     expect(html).toContain("<details");
-    expect(html).not.toContain("<details open");
+    expect(html).toContain("<details open");
     expect(html).toContain("<summary");
     expect(html).toContain("Hỏi?");
     expect(html).toContain("Đáp một.");
@@ -129,7 +129,7 @@ describe("TreatmentRelated", () => {
         ]}
       />,
     );
-    expect(html).toContain("Có thể bạn quan tâm");
+    expect(html).toContain("Liệu pháp cùng nhóm");
     expect(html).toContain('href="/treatments/iastm"');
     expect(html).toContain('href="/treatments/tapping"');
     expect(html.match(/199\.000/g)).toHaveLength(1);

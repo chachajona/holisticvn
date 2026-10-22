@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 import { track } from "@/components/gtm";
 import { useSiteData } from "@/components/site-data";
 
-type Props = { kind: "contact" | "booking"; treatment?: string };
+type Props = { kind: "contact" | "booking"; treatment?: string; submitLabel?: string };
 
-export function LeadForm({ kind, treatment }: Props) {
+export function LeadForm({ kind, treatment, submitLabel = "Gửi yêu cầu" }: Props) {
   const { site } = useSiteData();
   const [error, setError] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -111,7 +111,7 @@ export function LeadForm({ kind, treatment }: Props) {
         </label>
       )}
       <button className="button" disabled={state === "sending"}>
-        {state === "sending" ? "Đang gửi…" : "Gửi yêu cầu"} <span>→</span>
+        {state === "sending" ? "Đang gửi…" : submitLabel} <span aria-hidden="true">→</span>
       </button>
       <div
         aria-live="polite"
