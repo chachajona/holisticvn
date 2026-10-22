@@ -140,4 +140,20 @@ describe("TreatmentRelated", () => {
   it("renders nothing without siblings", () => {
     expect(renderToStaticMarkup(<TreatmentRelated related={[]} />)).toBe("");
   });
+
+  it("visibly discloses stock thumbnails without labelling clinic photos as stock", () => {
+    const html = renderToStaticMarkup(
+      <TreatmentRelated
+        related={[
+          { slug: "tapping", title: "Tapping", image: "/images/stock/tapping.jpg" },
+          { slug: "cupping", title: "Giác hơi", image: "/images/Cupping.jpg" },
+          { slug: "shockwave", title: "Xung kích" },
+        ]}
+      />,
+    );
+    expect(html.match(/<figcaption[^>]*>Ảnh minh hoạ<\/figcaption>/g)).toHaveLength(1);
+    expect(html).toContain('href="/treatments/tapping"');
+    expect(html).toContain('href="/treatments/cupping"');
+    expect(html).toContain('href="/treatments/shockwave"');
+  });
 });

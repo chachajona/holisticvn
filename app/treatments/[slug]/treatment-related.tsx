@@ -34,13 +34,18 @@ export function TreatmentRelated({
               data-plain={item.image ? undefined : ""}
             >
               {item.image ? (
-                <Image
-                  src={item.image}
-                  alt={item.imageAlt ?? item.title}
-                  width={290}
-                  height={290}
-                  sizes="(max-width: 760px) 95px, (max-width: 1080px) 100px, 145px"
-                />
+                <figure className={styles.relatedMedia}>
+                  <Image
+                    src={item.image}
+                    alt={item.imageAlt ?? item.title}
+                    width={290}
+                    height={290}
+                    sizes="(max-width: 760px) 95px, (max-width: 1080px) 100px, 145px"
+                  />
+                  {item.image.startsWith("/images/stock/") ? (
+                    <figcaption>Ảnh minh hoạ</figcaption>
+                  ) : null}
+                </figure>
               ) : null}
               <div>
                 <h3>

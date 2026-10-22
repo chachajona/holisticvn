@@ -649,6 +649,16 @@
 .related[data-plain] {
   grid-template-columns: minmax(0, 1fr);
 }
+.relatedMedia {
+  min-width: 0;
+  margin: 0;
+}
+.relatedMedia figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
 .related img {
   display: block;
   width: 145px;
