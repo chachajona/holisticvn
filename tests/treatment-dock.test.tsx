@@ -12,10 +12,10 @@ describe("TreatmentDock", () => {
         duration="45 phút"
       />,
     );
-    expect(html).toContain('aria-label="Tóm tắt và gửi yêu cầu tư vấn"');
+    expect(html).toContain('aria-label="Tóm tắt và tư vấn"');
     expect(html).toMatch(/<aside[^>]*\binert\b/);
     expect(html).toContain('href="#yeu-cau"');
-    expect(html).toContain("Gửi yêu cầu tư vấn");
+    expect(html).toContain("Nhận tư vấn");
     expect(html).toContain("99.000 ₫");
     expect(html).toContain("45 phút");
   });

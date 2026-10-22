@@ -68,8 +68,8 @@ describe("TreatmentHero", () => {
   });
 
   it("puts the primary call to action in the hero only when asked to", () => {
-    expect(hero({}, { showPrimaryCta: true })).toContain("Gửi yêu cầu tư vấn");
-    expect(hero({}, { showPrimaryCta: false })).not.toContain("Gửi yêu cầu tư vấn");
+    expect(hero({}, { showPrimaryCta: true })).toContain("Nhận tư vấn");
+    expect(hero({}, { showPrimaryCta: false })).not.toContain("Nhận tư vấn");
   });
 
   it("shows the badge as a stamp over a photo and as a chip without one", () => {

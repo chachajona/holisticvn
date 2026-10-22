@@ -110,7 +110,7 @@ describe("treatment detail page", () => {
     expect(html).toContain('href="/treatments/iastm"');
     expect(html).not.toContain("Không có document");
     expect(html).toContain('id="yeu-cau"');
-    expect(html).toContain('aria-label="Tóm tắt và gửi yêu cầu tư vấn"');
+    expect(html).toContain('aria-label="Tóm tắt và tư vấn"');
     expect(html.match(/<h1/g)).toHaveLength(1);
   });
 
@@ -146,7 +146,7 @@ describe("treatment detail page", () => {
     expect(html).not.toContain("<img");
     expect(html).toContain("data-plain");
     // With no facts strip the primary call to action sits in the hero (plus the dock).
-    expect(html.match(/Gửi yêu cầu tư vấn/g)!.length).toBeGreaterThanOrEqual(2);
+    expect(html.match(/Nhận tư vấn/g)!.length).toBeGreaterThanOrEqual(2);
     expect(html).toContain('id="yeu-cau"');
   });
 
@@ -173,7 +173,7 @@ describe("treatment detail page", () => {
     serve();
     const html = await render();
     const hero = html.slice(0, html.indexOf('id="treatment-facts"'));
-    expect(hero).toContain("Gửi yêu cầu tư vấn");
+    expect(hero).toContain("Nhận tư vấn");
     expect(hero).toContain("Gọi ");
   });
 

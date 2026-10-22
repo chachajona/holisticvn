@@ -1,0 +1,77 @@
+.buttonLabels {
+  display: grid;
+}
+.buttonLabels > span {
+  grid-area: 1 / 1;
+}
+.buttonLabels > span:last-child {
+  opacity: 0;
+}
+.motion[data-state="sending"] .buttonLabels > span:first-child {
+  opacity: 0;
+}
+.motion[data-state="sending"] .buttonLabels > span:last-child {
+  opacity: 1;
+}
+.motion[data-motion-input="pointer"] .buttonLabels > span {
+  transition: opacity 120ms ease;
+}
+.statusContent {
+  display: block;
+}
+.motion[data-motion-input="pointer"]:is([data-state="sent"], [data-state="error"]) .statusContent {
+  animation: statusEnter 180ms ease;
+}
+@keyframes statusEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.motion :global(.lead-form__details) summary {
+  list-style: none;
+}
+.motion :global(.lead-form__details) summary::-webkit-details-marker {
+  display: none;
+}
+.noteChevron {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 160ms ease;
+}
+.motion :global(.lead-form__details)[open] .noteChevron {
+  transform: rotate(45deg);
+}
+.motion summary:focus-visible .noteChevron {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion[data-motion-input="pointer"] .buttonLabels > span {
+    transition-duration: 80ms;
+  }
+  .motion[data-motion-input="pointer"]:is([data-state="sent"], [data-state="error"])
+    .statusContent {
+    animation-name: statusFade;
+    animation-duration: 80ms;
+  }
+  .noteChevron {
+    transition: none;
+  }
+}
+@keyframes statusFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

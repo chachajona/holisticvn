@@ -14,15 +14,20 @@ const find = (node: unknown): ReactElement<{ treatment?: string; kind?: string }
 describe("BookingPanel", () => {
   it("hands the treatment title to the callback form", () => {
     const form = find(BookingPanel({ title: "Giác hơi" }));
-    expect(form?.props).toMatchObject({ kind: "booking", treatment: "Giác hơi" });
+    expect(form?.props).toMatchObject({
+      kind: "booking",
+      treatment: "Giác hơi",
+      submitLabel: "Gọi lại cho tôi",
+      successMessage: "Đã gửi yêu cầu. Holistic sẽ gọi lại cho bạn.",
+    });
   });
 
   it("is the anchor target with the approved wording and no booking promise", () => {
     const html = renderToStaticMarkup(<BookingPanel title="Giác hơi" />);
     expect(html).toContain('id="yeu-cau"');
-    expect(html).toContain("Muốn biết liệu pháp này có phù hợp với bạn?");
+    expect(html).toContain("Bạn cần trao đổi thêm?");
     expect(html).toContain(
-      "Để lại tên và số điện thoại. Holistic sẽ gọi lại để trao đổi và xác nhận thời gian; đây chưa phải lịch hẹn.",
+      "Để lại số điện thoại. Holistic sẽ gọi lại để trao đổi và xác nhận lịch hẹn với bạn.",
     );
   });
 });

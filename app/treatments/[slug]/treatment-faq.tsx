@@ -17,7 +17,10 @@ export function TreatmentFaqList({ faqs }: { faqs: TreatmentFaq[] }) {
       <div className={styles.faq}>
         {faqs.map((faq, index) => (
           <details key={index} open={index === 0}>
-            <summary>{faq.question}</summary>
+            <summary>
+              {faq.question}
+              <span className={styles.faqIndicator} aria-hidden="true" />
+            </summary>
             {paragraphs(faq.answer).map((text, line) => (
               <p key={line}>{text}</p>
             ))}

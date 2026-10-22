@@ -68,7 +68,7 @@ export function TreatmentDock({ markerId, title, image, price, duration }: Props
     <aside
       ref={ref}
       className={`${styles.dock} ${shown ? styles.dockShown : ""}`}
-      aria-label="Tóm tắt và gửi yêu cầu tư vấn"
+      aria-label="Tóm tắt và tư vấn"
       data-plain={image ? undefined : ""}
       inert={!shown}
     >
@@ -92,7 +92,7 @@ export function TreatmentDock({ markerId, title, image, price, duration }: Props
         ) : null}
       </div>
       <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
-        Gửi yêu cầu tư vấn <ArrowIcon />
+        Nhận tư vấn <ArrowIcon />
       </a>
     </aside>
   );

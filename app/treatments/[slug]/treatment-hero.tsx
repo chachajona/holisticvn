@@ -105,7 +105,7 @@ export function TreatmentHero({
             <div className={styles.heroActions} id="treatment-hero-actions">
               {showPrimaryCta ? (
                 <a className={`${styles.btn} ${styles.btnPrimary}`} href="#yeu-cau">
-                  Gửi yêu cầu tư vấn <ArrowIcon />
+                  Nhận tư vấn <ArrowIcon />
                 </a>
               ) : null}
               <a className={styles.textLink} href={`tel:${phone.replaceAll(" ", "")}`}>

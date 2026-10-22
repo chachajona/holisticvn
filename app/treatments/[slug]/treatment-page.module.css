@@ -11,6 +11,8 @@
   --line: rgba(58, 42, 36, 0.16);
   --strong-line: #bfaa99;
   --frame: max(48px, calc((100vw - 1240px) / 2));
+  /* Keep the callback panel's outer spacing on the page background through to the footer. */
+  display: flow-root;
   min-width: 0;
   color: var(--ink);
   background: var(--card);
@@ -62,7 +64,11 @@
   text-decoration: none;
   transition:
     background 0.18s ease,
-    color 0.18s ease;
+    color 0.18s ease,
+    transform 120ms ease;
+}
+.btn:active:not(:focus-visible) {
+  transform: scale(0.98);
 }
 .btnPrimary {
   background: var(--clay-deep);
@@ -578,16 +584,37 @@
 .faq summary::-webkit-details-marker {
   display: none;
 }
-.faq summary::after {
-  content: "+";
-  content: "+" / "";
+.faqIndicator {
+  position: relative;
   flex-shrink: 0;
+  width: 16px;
+  height: 16px;
   color: var(--clay-deep);
-  font: 300 25px/1 var(--font-display);
 }
-.faq details[open] summary::after {
-  content: "−";
-  content: "−" / "";
+.faqIndicator::before,
+.faqIndicator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+.faqIndicator::before {
+  width: 12px;
+  height: 1px;
+}
+.faqIndicator::after {
+  width: 1px;
+  height: 12px;
+  transform: translate(-50%, -50%) scaleY(1);
+  transition: transform 160ms ease;
+}
+.faq details[open] .faqIndicator::after {
+  transform: translate(-50%, -50%) scaleY(0);
+}
+.faq summary:focus-visible .faqIndicator::after {
+  transition: none;
 }
 .faq details p {
   padding-right: 40px;
@@ -752,6 +779,9 @@
   background: var(--clay-deep);
   color: var(--card);
   font-size: 14px;
+  transition:
+    background 0.2s ease,
+    transform 120ms ease;
 }
 .root :global(.lead-form) :global(.button:hover) {
   border-color: var(--clay-hover);
@@ -761,6 +791,9 @@
 .root :global(.lead-form) :global(.button:disabled) {
   opacity: 0.6;
   cursor: wait;
+}
+.root :global(.lead-form) :global(.button:active:not(:focus-visible):not(:disabled)) {
+  transform: scale(0.98);
 }
 .root :global(.lead-form) input,
 .root :global(.lead-form) textarea,
@@ -1232,7 +1265,13 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .btn,
-  .dock {
+  .dock,
+  .faqIndicator::after,
+  .root :global(.lead-form) :global(.button) {
     transition: none;
+  }
+  .btn:active:not(:focus-visible),
+  .root :global(.lead-form) :global(.button:active:not(:focus-visible):not(:disabled)) {
+    transform: none;
   }
 }

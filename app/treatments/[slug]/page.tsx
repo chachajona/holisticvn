@@ -60,7 +60,7 @@ export default async function TreatmentDetailPage({
     { id: "buoi-tri-lieu", label: "Quy trình", visible: Boolean(treatment.protocols?.length) },
     { id: "cau-hoi", label: "Câu hỏi thường gặp", visible: Boolean(treatment.faqs?.length) },
     { id: "co-the-ban-quan-tam", label: "Liệu pháp liên quan", visible: detail.related.length > 0 },
-    { id: "yeu-cau", label: "Gửi yêu cầu tư vấn", visible: true },
+    { id: "yeu-cau", label: "Tư vấn", visible: true },
   ].filter((section) => section.visible);
 
   return (
