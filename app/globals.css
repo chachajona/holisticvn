@@ -156,6 +156,10 @@ body:has(.cookie) footer {
   font-size: 0.82rem;
   line-height: 1.55;
 }
+.cookie p a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .cookie div {
   display: flex;
   justify-content: flex-end;
