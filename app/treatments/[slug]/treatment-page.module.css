@@ -185,6 +185,10 @@
   color: var(--card);
   font: 400 10px/1.6 var(--font-mono);
 }
+.badge + .heroCaption {
+  top: 18px;
+  bottom: auto;
+}
 .hero[data-plain] .heroCard {
   grid-template-columns: minmax(0, 1fr);
 }

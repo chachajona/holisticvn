@@ -114,13 +114,17 @@ describe("treatment detail page", () => {
     expect(html.match(/<h1/g)).toHaveLength(1);
   });
 
-  it("shows a bundled stock photo with an illustration caption when the CMS has none", async () => {
-    serve({ treatments: [{ slug: "tapping", title: "Tapping" }], methods: [] });
-    const html = await render("tapping");
-    expect(html).toContain("images%2Fstock%2Ftapping.jpg");
-    expect(html).toContain("Ảnh minh hoạ");
-    expect(html).not.toContain("Hình ảnh tại Holistic");
-  });
+  it.each([undefined, "popular", "new"] as const)(
+    "keeps the bundled stock photo caption with CMS badge %s",
+    async (badge) => {
+      serve({ treatments: [{ slug: "tapping", title: "Tapping", badge }], methods: [] });
+      const html = await render("tapping");
+      expect(html).toContain("images%2Fstock%2Ftapping.jpg");
+      expect(html).toContain("Ảnh minh hoạ");
+      expect(html).not.toContain("Hình ảnh tại Holistic");
+      if (badge) expect(html).toContain(`data-badge="${badge}"`);
+    },
+  );
 
   it("never uses italics or boxes with shadows in the markup", async () => {
     serve();

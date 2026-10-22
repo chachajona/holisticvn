@@ -141,7 +141,7 @@ export function TreatmentHero({
                 sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1080px) 48vw, (max-width: 1440px) 44vw, 600px"
               />
               {badge ? <BadgeMark badge={badge} variant="stamp" /> : null}
-              {!badge && image.startsWith("/images/") ? (
+              {image.startsWith("/images/") && (!badge || image.startsWith("/images/stock/")) ? (
                 <span className={styles.heroCaption}>
                   {image.startsWith("/images/stock/") ? "Ảnh minh hoạ" : "Hình ảnh tại Holistic"}
                 </span>
