@@ -9,7 +9,11 @@ export function resolveTreatmentSeo(treatment: Treatment) {
   return {
     title: nonblank(treatment.seo?.title) ?? reviewed?.title ?? treatment.title,
     description:
-      nonblank(treatment.seo?.description) ?? reviewed?.description ?? treatment.shortDescription,
+      nonblank(treatment.seo?.description) ??
+      reviewed?.description ??
+      nonblank(treatment.shortDescription) ??
+      nonblank(treatment.description) ??
+      "",
     image: nonblank(treatment.seo?.ogImage) ?? treatment.image,
   };
 }

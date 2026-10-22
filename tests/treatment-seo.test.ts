@@ -69,4 +69,22 @@ describe("reviewed treatment SEO", () => {
       resolveTreatmentSeo({ ...future, seo: { description: "Editor description" } }),
     ).toMatchObject({ title: future.title, description: "Editor description" });
   });
+
+  it.each(["", " \n\t"])(
+    "uses long copy when a future treatment's short copy is blank: %j",
+    (shortDescription) => {
+      const treatment: Treatment = {
+        slug: "future-treatment",
+        title: "Future treatment",
+        shortDescription,
+        description: "  Its educational content.  ",
+        benefits: [],
+      };
+      expect(resolveTreatmentSeo(treatment).description).toBe("Its educational content.");
+      expect(resolveTreatmentSeo({ ...treatment, description: " \n " }).description).toBe("");
+      expect(
+        resolveTreatmentSeo({ ...treatment, shortDescription: " Short copy " }).description,
+      ).toBe("Short copy");
+    },
+  );
 });
