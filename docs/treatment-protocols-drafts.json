@@ -1,0 +1,806 @@
+{
+  "purpose": "Hồ sơ nghiên cứu và bản nháp protocols để đối chiếu; không import toàn bộ file vào Sanity.",
+  "researchedAt": "2026-10-22",
+  "reviewStatus": "pending_clinic_verification",
+  "clinicVerified": false,
+  "liveCmsUpdated": false,
+  "notes": [
+    "Chỉ nội dung protocols đã được phòng khám xác nhận mới phù hợp đưa vào trường Quy trình thực hiện.",
+    "Nguồn chung không xác minh quy trình Holistic; mã nguồn trong stepSources được giải thích tại researchNote.",
+    "Không thêm duration, thông số hoặc lịch điều trị từ tài liệu bên ngoài.",
+    "Luồng sync-treatments hiện xóa protocols/duration; xem tài liệu tổng hợp trước triển khai nhập."
+  ],
+  "treatments": [
+    {
+      "slug": "dry-needling",
+      "title": "Châm khô",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Khung trải nghiệm châm khô; cần xác nhận kỹ thuật, vùng châm, chuẩn bị, theo dõi và hướng dẫn sau buổi tại Holistic.",
+      "researchNote": "docs/treatment-protocol-research-manual.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-1",
+          "step": 1,
+          "title": "Đánh giá trước châm",
+          "description": "Trao đổi triệu chứng, thuốc đang dùng, thai kỳ, phẫu thuật gần đây hoặc sợ kim; chuyên viên đánh giá vùng dự kiến điều trị."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-2",
+          "step": 2,
+          "title": "Thống nhất việc điều trị",
+          "description": "Chuyên viên giải thích mục tiêu, rủi ro và lựa chọn khác; bạn đặt câu hỏi, đồng ý hoặc từ chối trước khi châm."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-3",
+          "step": 3,
+          "title": "Chuẩn bị vùng châm",
+          "description": "Bạn được bố trí tư thế phù hợp; vùng da được làm sạch và kim vô khuẩn dùng một lần được chuẩn bị."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-4",
+          "step": 4,
+          "title": "Châm và theo dõi cảm giác",
+          "description": "Chuyên viên đưa kim mảnh vào vùng đã đánh giá. Bạn có thể thấy nhói hoặc cơ co giật; hãy báo ngay nếu khó chịu hoặc chóng mặt."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-5",
+          "step": 5,
+          "title": "Rút kim và kiểm tra",
+          "description": "Kim được rút bỏ và vùng da được kiểm tra; chuyên viên đánh giá tình trạng của bạn trước khi kết thúc buổi."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-dry-needling-6",
+          "step": 6,
+          "title": "Nhận hướng dẫn sau châm",
+          "description": "Bạn được hướng dẫn theo dõi phản ứng và cách liên hệ. Nếu xuất hiện khó thở sau châm, cần được đánh giá cấp cứu."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[D1](https://my.clevelandclinic.org/health/treatments/16542-dry-needling), mục trước điều trị và đối tượng cần trao đổi bác sĩ."
+        },
+        {
+          "step": 2,
+          "evidence": "[D2](https://www.ausport.gov.au/ais/position_statements/dry_needling), Treatment consent; [G1](https://www.nhs.uk/tests-and-treatments/consent-to-treatment/), Defining consent."
+        },
+        {
+          "step": 3,
+          "evidence": "[D1](https://my.clevelandclinic.org/health/treatments/16542-dry-needling), Treatment Details; [D2](https://www.ausport.gov.au/ais/position_statements/dry_needling), Sharps and body penetration procedures."
+        },
+        {
+          "step": 4,
+          "evidence": "[D1](https://my.clevelandclinic.org/health/treatments/16542-dry-needling), trong điều trị và tác dụng không mong muốn; [G2](https://www.cpta.ab.ca/news-and-updates/news/conduct-matters-september-2025/), Case 6, theo dõi trong buổi."
+        },
+        {
+          "step": 5,
+          "evidence": "[D1](https://my.clevelandclinic.org/health/treatments/16542-dry-needling), What happens after a dry needling procedure."
+        },
+        {
+          "step": 6,
+          "evidence": "[D2](https://www.ausport.gov.au/ais/position_statements/dry_needling), cảnh báo và thông tin sau điều trị; [D1](https://my.clevelandclinic.org/health/treatments/16542-dry-needling), rủi ro hô hấp."
+        }
+      ],
+      "clinicQuestions": [
+        "Người thực hiện và người duyệt quy trình; kỹ thuật sử dụng, vùng được điều trị và tiêu chí chuyển khám khi chưa phù hợp.",
+        "Mẫu giải thích rủi ro, đồng ý điều trị và cách người bệnh yêu cầu dừng. Đặc biệt cần nội dung riêng cho vùng gần phổi.",
+        "Kim dùng một lần, vệ sinh da, thu gom kim, cách giám sát và xử trí phản ứng thực tế.",
+        "Hướng dẫn sau buổi, thông tin liên hệ và đường chuyển cấp cứu. Bước 6 chỉ giữ cảnh báo cơ bản; không thay thế tài liệu an toàn riêng đã duyệt."
+      ]
+    },
+    {
+      "slug": "cupping",
+      "title": "Giác hơi",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Chỉ mô tả đặt cốc tạo lực hút; chưa xác nhận loại giác. Không giả định dùng lửa, di chuyển cốc hoặc trích lể. Nếu xuyên da cần nghiên cứu riêng.",
+      "researchNote": "docs/treatment-protocol-research-manual.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-cupping-1",
+          "step": 1,
+          "title": "Trao đổi và kiểm tra da",
+          "description": "Bạn báo bệnh nền và thuốc đang dùng; chuyên viên kiểm tra vùng da để cân nhắc mức độ phù hợp trước khi giác hơi."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cupping-2",
+          "step": 2,
+          "title": "Giải thích phương pháp sẽ dùng",
+          "description": "Chuyên viên giải thích loại giác hơi được lựa chọn, cảm giác dự kiến và rủi ro để bạn quyết định trước khi thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cupping-3",
+          "step": 3,
+          "title": "Đặt cốc tạo lực hút",
+          "description": "Cốc được đặt lên vùng đã đánh giá để tạo lực hút trên da. Cách thực hiện phụ thuộc loại giác hơi đã thống nhất."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cupping-4",
+          "step": 4,
+          "title": "Theo dõi mức dễ chịu",
+          "description": "Bạn báo nếu thấy đau hoặc khó chịu; chuyên viên theo dõi phản ứng và điều chỉnh hoặc dừng khi cần."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cupping-5",
+          "step": 5,
+          "title": "Kết thúc và theo dõi da",
+          "description": "Sau khi tháo cốc, vùng da được kiểm tra. Bạn nhận hướng dẫn liên hệ nếu đau nhiều, sốt hoặc có dấu hiệu nhiễm trùng."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[C1](https://www.nccih.nih.gov/health/cupping), Safety; [C2](https://my.clevelandclinic.org/health/treatments/16554-cupping), Who shouldn’t get cupping."
+        },
+        {
+          "step": 2,
+          "evidence": "[C2](https://my.clevelandclinic.org/health/treatments/16554-cupping), các phương pháp; [G2](https://www.cpta.ab.ca/news-and-updates/news/conduct-matters-september-2025/), Case 6 về đồng ý riêng cho giác hơi."
+        },
+        {
+          "step": 3,
+          "evidence": "[C1](https://www.nccih.nih.gov/health/cupping), mô tả lực hút; [C2](https://my.clevelandclinic.org/health/treatments/16554-cupping), How do healthcare providers perform cupping."
+        },
+        {
+          "step": 4,
+          "evidence": "[C2](https://my.clevelandclinic.org/health/treatments/16554-cupping), Does cupping hurt; [G2](https://www.cpta.ab.ca/news-and-updates/news/conduct-matters-september-2025/), Case 4 và Case 6."
+        },
+        {
+          "step": 5,
+          "evidence": "[C1](https://www.nccih.nih.gov/health/cupping), dấu da và rủi ro; [C2](https://my.clevelandclinic.org/health/treatments/16554-cupping), When should I call my healthcare provider."
+        }
+      ],
+      "clinicQuestions": [
+        "Loại giác hơi; loại cốc, cách tạo lực hút, có dùng sản phẩm tiếp xúc da hay không. Nếu có giác di chuyển hoặc xuyên da, cần bản nháp đúng kỹ thuật đó.",
+        "Tiêu chí sàng lọc, vùng tránh thực hiện, cách kiểm tra da trước/sau và tiêu chí dừng.",
+        "Dụng cụ dùng một lần hay tái sử dụng; quy trình xử lý giữa hai người bệnh và người chịu trách nhiệm kiểm soát nhiễm khuẩn.",
+        "Nội dung giải thích dấu da, hướng dẫn chăm sóc và nơi tiếp nhận phản ứng sau buổi. Không khôi phục bảy bước cũ hoặc thời lượng cũ từ CMS."
+      ]
+    },
+    {
+      "slug": "iastm",
+      "title": "IASTM",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Khung dùng dụng cụ tác động trên da; không xác nhận thương hiệu, vật liệu hay sản phẩm bôi da của Holistic.",
+      "researchNote": "docs/treatment-protocol-research-manual.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-iastm-1",
+          "step": 1,
+          "title": "Đánh giá vùng điều trị",
+          "description": "Bạn báo thuốc chống đông, dị ứng kim loại hoặc sản phẩm bôi da. Chuyên viên kiểm tra da và cảm giác vùng dự kiến điều trị."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-iastm-2",
+          "step": 2,
+          "title": "Thống nhất mục tiêu và cách làm",
+          "description": "Chuyên viên giải thích việc dùng dụng cụ trên da, rủi ro và lựa chọn khác; bạn đặt câu hỏi và đồng ý trước khi bắt đầu."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-iastm-3",
+          "step": 3,
+          "title": "Thực hiện với dụng cụ",
+          "description": "Chuyên viên di chuyển dụng cụ trên vùng đã đánh giá; sản phẩm bôi da, nếu sử dụng, cần phù hợp với tình trạng da của bạn."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-iastm-4",
+          "step": 4,
+          "title": "Theo dõi và điều chỉnh",
+          "description": "Bạn báo đau tăng hoặc khó chịu bất thường. Chuyên viên theo dõi phản ứng để điều chỉnh hoặc dừng khi cần."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-iastm-5",
+          "step": 5,
+          "title": "Đánh giá lại và hướng dẫn vận động",
+          "description": "Chuyên viên kiểm tra phản ứng sau thực hiện và hướng dẫn vận động phù hợp với kế hoạch phục hồi của bạn."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[I1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11941819/), Table 6 và Practice Implications."
+        },
+        {
+          "step": 2,
+          "evidence": "[I1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11941819/), Practice Implications; [G1](https://www.nhs.uk/tests-and-treatments/consent-to-treatment/), informed consent."
+        },
+        {
+          "step": 3,
+          "evidence": "[I2](https://www.nm.org/conditions-and-care-areas/rehabilitation-services/physical-therapy/instrument-assisted-graston-technique), How It Works; [I1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11941819/), dị ứng sản phẩm tiếp xúc."
+        },
+        {
+          "step": 4,
+          "evidence": "[I1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11941819/), Discussion, theo dõi trong/sau điều trị; [G2](https://www.cpta.ab.ca/news-and-updates/news/conduct-matters-september-2025/), Case 4."
+        },
+        {
+          "step": 5,
+          "evidence": "[I1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11941819/), Discussion; [I2](https://www.nm.org/conditions-and-care-areas/rehabilitation-services/physical-therapy/instrument-assisted-graston-technique), bài tập theo nhu cầu cá nhân."
+        }
+      ],
+      "clinicQuestions": [
+        "Dụng cụ và sản phẩm thực dùng; cách kiểm tra tiền sử dị ứng, vệ sinh dụng cụ và điều kiện da phù hợp.",
+        "Mục tiêu cá nhân, tiêu chí dừng, điều gì được kiểm tra trước/sau; có bài tập ngay trong buổi hay hướng dẫn trong chương trình khác.",
+        "Hướng dẫn theo dõi sau buổi và cách tiếp nhận phản ứng da hoặc đau tăng. Chưa có nguồn đủ để công khai aftercare riêng của Holistic."
+      ]
+    },
+    {
+      "slug": "heat-light",
+      "title": "Đèn hồng ngoại",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Chỉ áp dụng nếu xác nhận thiết bị là đèn tạo nhiệt; không áp dụng mặc định cho sauna, laser/LED hoặc thiết bị quang sinh học.",
+      "researchNote": "docs/treatment-protocol-research-recovery-spinal.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-heat-light-1",
+          "step": 1,
+          "title": "Kiểm tra vùng cần chiếu",
+          "description": "Chuyên viên kiểm tra da và cảm giác ở vùng dự kiến chiếu, rồi giải thích phương pháp trước khi thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-heat-light-2",
+          "step": 2,
+          "title": "Chuẩn bị tư thế và đèn",
+          "description": "Bạn được bố trí tư thế thoải mái, bộc lộ vùng da cần chiếu. Đèn được đặt theo yêu cầu của thiết bị."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-heat-light-3",
+          "step": 3,
+          "title": "Chiếu và theo dõi cảm giác",
+          "description": "Trong khi chiếu, bạn báo lại cảm giác. Nếu thấy nóng rát hoặc choáng, hãy báo ngay để dừng và kiểm tra."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-heat-light-4",
+          "step": 4,
+          "title": "Kiểm tra sau khi chiếu",
+          "description": "Chuyên viên kết thúc chiếu, kiểm tra lại da và trao đổi cảm giác của bạn trước khi hướng dẫn sau buổi."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "H1: kiểm tra da, mất cảm giác và giải thích."
+        },
+        {
+          "step": 2,
+          "evidence": "H1: tư thế, bộc lộ da và thông số theo chỉ định; cần xác nhận thiết bị Holistic."
+        },
+        {
+          "step": 3,
+          "evidence": "H1: cảm giác, bỏng, choáng; H2: mức ấm dễ chịu, kiểm tra da. Việc dừng cần xác nhận trong quy trình thực tế."
+        },
+        {
+          "step": 4,
+          "evidence": "H1: kết thúc chiếu, kiểm tra da, thăm hỏi, dặn dò."
+        }
+      ],
+      "clinicQuestions": [
+        "Hãng/model và hướng dẫn sử dụng: có đúng là đèn tạo nhiệt không?",
+        "Khoảng cách, thời gian, bảo vệ mắt/vùng không chiếu được quyết định theo thiết bị nào?",
+        "Kiểm tra cảm giác và da, người theo dõi, tiêu chí dừng và xử trí bỏng/choáng?",
+        "Thời lượng cả lượt so với thời gian chiếu và lời dặn/liên hệ sau buổi?"
+      ]
+    },
+    {
+      "slug": "cold-plunge",
+      "title": "Ngâm lạnh",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Khung trải nghiệm ngâm lạnh cần xác nhận đầy đủ điều kiện vận hành và hỗ trợ tại Holistic.",
+      "researchNote": "docs/treatment-protocol-research-recovery-spinal.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-cold-plunge-1",
+          "step": 1,
+          "title": "Trao đổi trước khi ngâm",
+          "description": "Bạn trao đổi về mục tiêu buổi ngâm, bệnh nền và phản ứng từng gặp với lạnh để đánh giá mức phù hợp."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cold-plunge-2",
+          "step": 2,
+          "title": "Chuẩn bị trước khi vào bồn",
+          "description": "Nhiệt độ nước được kiểm tra. Bạn được hướng dẫn cách gọi hỗ trợ và chuẩn bị khăn, quần áo khô sau ngâm."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cold-plunge-3",
+          "step": 3,
+          "title": "Vào nước theo hướng dẫn",
+          "description": "Bạn vào nước từ từ theo hướng dẫn và báo lại cảm giác để được hỗ trợ khi cần."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cold-plunge-4",
+          "step": 4,
+          "title": "Theo dõi phản ứng với lạnh",
+          "description": "Báo ngay nếu thấy khó thở, choáng hoặc rét bất thường để dừng và được hỗ trợ. Không cần cố chịu lạnh."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-cold-plunge-5",
+          "step": 5,
+          "title": "Ra bồn và làm ấm",
+          "description": "Sau khi ra bồn, bạn lau khô, thay đồ khô và làm ấm từ từ. Hãy báo nếu vẫn thấy không khỏe."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "C1: sức khỏe; mục tiêu buổi là đề xuất biên tập cần xác nhận."
+        },
+        {
+          "step": 2,
+          "evidence": "C1: kiểm tra nước; C2: chuẩn bị đồ khô và hỗ trợ."
+        },
+        {
+          "step": 3,
+          "evidence": "C2: nguyên tắc vào nước từ từ trong phần cold-water dips; cách áp dụng ở bồn cần xác nhận."
+        },
+        {
+          "step": 4,
+          "evidence": "C1, C2: phản ứng và dừng khi bất thường."
+        },
+        {
+          "step": 5,
+          "evidence": "C2: lau khô, mặc đồ khô, làm ấm từ từ và báo khi không khỏe."
+        }
+      ],
+      "clinicQuestions": [
+        "Ai đánh giá phù hợp; sàng lọc bệnh nền, thuốc và phản ứng với lạnh ra sao?",
+        "Nhiệt độ, thời gian trong nước, thời lượng cả lượt, mức ngập và cách hỗ trợ vào/ra bồn thực tế?",
+        "Ai theo dõi, tiêu chí dừng/chuyển khám và cách hỗ trợ khẩn cấp?",
+        "Kiểm soát nước, vệ sinh bồn và hướng dẫn làm ấm/liên hệ sau buổi?"
+      ]
+    },
+    {
+      "slug": "tapping",
+      "title": "Tapping",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Chỉ áp dụng nếu dịch vụ Tapping được xác nhận là kinesiology taping bằng băng đàn hồi; nếu loại khác phải viết lại.",
+      "researchNote": "docs/treatment-protocol-research-manual.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-tapping-1",
+          "step": 1,
+          "title": "Kiểm tra da và tiền sử",
+          "description": "Bạn báo tiền sử kích ứng băng dán và bệnh nền; chuyên viên kiểm tra da trước khi quyết định sử dụng băng."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-tapping-2",
+          "step": 2,
+          "title": "Thống nhất cách hỗ trợ",
+          "description": "Chuyên viên giải thích mục đích dùng băng và rủi ro kích ứng; bạn đặt câu hỏi và đồng ý trước khi dán."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-tapping-3",
+          "step": 3,
+          "title": "Chuẩn bị da và dán băng",
+          "description": "Da được chuẩn bị sạch, khô; chuyên viên dán băng theo vùng và mục tiêu đã lựa chọn cho bạn."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-tapping-4",
+          "step": 4,
+          "title": "Kiểm tra cảm giác sau dán",
+          "description": "Bạn báo nếu ngứa, đỏ da hoặc khó chịu. Chuyên viên kiểm tra lại vùng dán trước khi kết thúc."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-tapping-5",
+          "step": 5,
+          "title": "Nhận hướng dẫn chăm sóc băng",
+          "description": "Bạn được hướng dẫn tháo băng an toàn và khi cần liên hệ. Nếu băng gây đỏ, ngứa hoặc khó chịu, cần tháo băng."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[T1](https://www.royalberkshire.nhs.uk/media/ao0ealui/kinesiology-tape-for-hand-therapy_mar26.pdf), Is KT suitable for everyone; [T2](https://abuhb.nhs.wales/files/patient-information-leaflets1/physiotherapy/taping-advice-pdf/), tiền sử dị ứng."
+        },
+        {
+          "step": 2,
+          "evidence": "[T1](https://www.royalberkshire.nhs.uk/media/ao0ealui/kinesiology-tape-for-hand-therapy_mar26.pdf), mục purpose/use và phản ứng da; [G1](https://www.nhs.uk/tests-and-treatments/consent-to-treatment/), consent."
+        },
+        {
+          "step": 3,
+          "evidence": "[T1](https://www.royalberkshire.nhs.uk/media/ao0ealui/kinesiology-tape-for-hand-therapy_mar26.pdf), trang 2–3; không chuyển mẫu dán tại nhà sang hướng dẫn thủ thuật."
+        },
+        {
+          "step": 4,
+          "evidence": "[T2](https://abuhb.nhs.wales/files/patient-information-leaflets1/physiotherapy/taping-advice-pdf/), phản ứng da; kiểm tra ngay là đề xuất tổ chức buổi cần xác nhận."
+        },
+        {
+          "step": 5,
+          "evidence": "[T2](https://abuhb.nhs.wales/files/patient-information-leaflets1/physiotherapy/taping-advice-pdf/), lời khuyên tháo băng và trao đổi chuyên viên; đối chiếu [T1](https://www.royalberkshire.nhs.uk/media/ao0ealui/kinesiology-tape-for-hand-therapy_mar26.pdf), trang 4."
+        }
+      ],
+      "clinicQuestions": [
+        "“Tapping” là kỹ thuật nào, có gồm băng cứng hay không; tên sản phẩm và vật liệu thực tế.",
+        "Cách hỏi tiền sử dị ứng, có thử phản ứng da hay không, cách quyết định phù hợp và kiểm tra sau dán.",
+        "Hướng dẫn riêng về giữ băng, sinh hoạt, tháo băng và liên hệ; ai hỗ trợ nếu người bệnh không thể tự tháo.",
+        "Có cần kiểm tra vận động sau dán và đánh giá thay đổi triệu chứng hay không. Nguồn đã đọc không xác nhận trình tự này tại Holistic nên chưa đưa thành khẳng định trong nháp."
+      ]
+    },
+    {
+      "slug": "shockwave",
+      "title": "Xung kích",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Mô tả chung ESWT; cần xác nhận máy, mục tiêu và quy trình tại Holistic.",
+      "researchNote": "docs/treatment-protocol-research-devices.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-shockwave-1",
+          "step": 1,
+          "title": "Trao đổi trước trị liệu",
+          "description": "Chuyên viên hỏi về sức khỏe, thuốc đang dùng và vùng cần trị liệu trước khi thống nhất thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-shockwave-2",
+          "step": 2,
+          "title": "Xác định vùng tác động",
+          "description": "Chuyên viên kiểm tra vùng đau và trao đổi với bạn để xác định vị trí tác động."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-shockwave-3",
+          "step": 3,
+          "title": "Chuẩn bị bề mặt da",
+          "description": "Gel được thoa lên vùng trị liệu trước khi đặt đầu máy lên da."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-shockwave-4",
+          "step": 4,
+          "title": "Thực hiện xung kích",
+          "description": "Đầu máy đưa xung kích đến vùng đã chọn. Bạn có thể nghe tiếng máy và cảm thấy khó chịu tại chỗ."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-shockwave-5",
+          "step": 5,
+          "title": "Theo dõi đáp ứng",
+          "description": "Chuyên viên hỏi lại triệu chứng và trao đổi cách theo dõi sau buổi trị liệu."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[D1], “Contraindications”, “Prior to ESWT”, “How is ESWT carried out?”."
+        },
+        {
+          "step": 2,
+          "evidence": "[D1], “How is ESWT carried out?”, thăm khám bằng tay với phản hồi người bệnh."
+        },
+        {
+          "step": 3,
+          "evidence": "[D9], tr. 3, gel và đầu máy cầm tay."
+        },
+        {
+          "step": 4,
+          "evidence": "[D9], tr. 3, tiếng gõ và khó chịu trong buổi."
+        },
+        {
+          "step": 5,
+          "evidence": "[D1], “What happens after the procedure?”, theo dõi và bảng đánh giá đáp ứng."
+        }
+      ],
+      "clinicQuestions": [
+        "Hãng/model, hướng tâm hay hội tụ; quy trình có thêm định vị bằng hình ảnh hay chỉ khám bằng tay?",
+        "Tiêu chí lựa chọn, sàng lọc và đồng ý thực hiện; ai được phép vận hành thiết bị?",
+        "Cách tiếp nhận phản hồi trong buổi, tiêu chí điều chỉnh/dừng và đánh giá đau/chức năng sau buổi?",
+        "Lời dặn vận động, xử trí phản ứng và đầu mối liên hệ sau buổi của phòng khám là gì?"
+      ]
+    },
+    {
+      "slug": "bio-electric",
+      "title": "Điện xung",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Chỉ là khung trao đổi; chưa đủ dữ liệu để mô tả thao tác hoặc xuất bản quy trình của dịch vụ. Chốt loại máy và cách truyền điện trước.",
+      "researchNote": "docs/treatment-protocol-research-devices.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-bio-electric-1",
+          "step": 1,
+          "title": "Làm rõ phương pháp",
+          "description": "Chuyên viên giải thích thiết bị và mục tiêu sử dụng trước khi bạn quyết định thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-bio-electric-2",
+          "step": 2,
+          "title": "Đánh giá mức phù hợp",
+          "description": "Tình trạng sức khỏe và vùng dự kiến trị liệu được kiểm tra theo yêu cầu của thiết bị đã xác nhận."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-bio-electric-3",
+          "step": 3,
+          "title": "Theo dõi trong buổi",
+          "description": "Chuyên viên giải thích cảm giác dự kiến và tiếp nhận phản hồi của bạn trong quá trình thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-bio-electric-4",
+          "step": 4,
+          "title": "Đánh giá sau buổi",
+          "description": "Bạn cùng chuyên viên trao đổi đáp ứng và bước tiếp theo theo mục tiêu đã thống nhất."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "Đề xuất biên tập; [D2] và [D3] cho thấy TENS và EMS có mục tiêu khác nhau. Chưa biết Holistic thuộc nhóm nào."
+        },
+        {
+          "step": 2,
+          "evidence": "Khung có điều kiện từ [D2] và [D3]; danh sách sàng lọc cụ thể phải theo máy và chuyên môn phòng khám."
+        },
+        {
+          "step": 3,
+          "evidence": "[D2] mô tả râm ran của TENS; [D3] mô tả kích thích co cơ của EMS. Chưa chọn cảm giác nào cho Holistic."
+        },
+        {
+          "step": 4,
+          "evidence": "Đề xuất biên tập cần xác nhận, không suy ra hiệu quả hoặc lịch điều trị từ hai nguồn."
+        }
+      ],
+      "clinicQuestions": [
+        "Ảnh nhãn máy, hãng/model, hướng dẫn sử dụng, chế độ và mục tiêu lâm sàng thực tế?",
+        "Điện được truyền bằng cách nào? Có cơ chế người thực hiện tham gia truyền dòng hay không?",
+        "Sàng lọc thiết bị tim cấy ghép, thai kỳ, động kinh, tình trạng da/cảm giác được thực hiện theo tài liệu nào?",
+        "Cảm giác dự kiến, cách giám sát, tiêu chí dừng, kiểm tra sau buổi và người phụ trách?"
+      ]
+    },
+    {
+      "slug": "therapeutic-ultrasound",
+      "title": "Sóng siêu âm",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Nhánh đầu phát tiếp xúc trực tiếp với da qua gel; phải xác nhận Holistic dùng nhánh này và có chỉ định phù hợp.",
+      "researchNote": "docs/treatment-protocol-research-devices.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-therapeutic-ultrasound-1",
+          "step": 1,
+          "title": "Đánh giá trước trị liệu",
+          "description": "Chuyên viên trao đổi triệu chứng, khám vùng cần trị liệu và kiểm tra mức phù hợp của phương pháp."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-therapeutic-ultrasound-2",
+          "step": 2,
+          "title": "Chuẩn bị vùng da",
+          "description": "Vùng cần trị liệu được bộc lộ để kiểm tra. Chuyên viên thoa gel hỗ trợ truyền sóng giữa đầu máy và da."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-therapeutic-ultrasound-3",
+          "step": 3,
+          "title": "Di chuyển đầu máy",
+          "description": "Chuyên viên di chuyển đầu siêu âm trên vùng đã chọn trong khi theo dõi cảm giác của bạn."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-therapeutic-ultrasound-4",
+          "step": 4,
+          "title": "Phản hồi trong buổi",
+          "description": "Bạn có thể cảm nhận rất ít khi máy hoạt động. Nếu thấy nóng, đau hoặc khó chịu, hãy báo ngay cho chuyên viên."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-therapeutic-ultrasound-5",
+          "step": 5,
+          "title": "Trao đổi sau trị liệu",
+          "description": "Sau buổi, chuyên viên hỏi lại cảm giác và trao đổi bước tiếp theo theo tình trạng của bạn."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[D4], “Is it safe?”, đánh giá bằng hỏi bệnh và khám trước lựa chọn."
+        },
+        {
+          "step": 2,
+          "evidence": "[D4], “Will I have to get undressed?”, “Does ultrasound hurt?”."
+        },
+        {
+          "step": 3,
+          "evidence": "[D5], mục 4.1.4: đầu phát được di chuyển và người vận hành hiện diện để theo dõi."
+        },
+        {
+          "step": 4,
+          "evidence": "[D4], cảm giác thường rất ít và cần báo khó chịu; [D5], mục 4.1.4, đau/cảm giác khó chịu cần được xử lý."
+        },
+        {
+          "step": 5,
+          "evidence": "Đề xuất biên tập từ nguyên tắc theo dõi và ghi nhận ở [D5]; Holistic cần xác nhận thao tác kết thúc và đánh giá."
+        }
+      ],
+      "clinicQuestions": [
+        "Model và chế độ siêu âm trị liệu, vùng/chẩn đoán và mục tiêu sử dụng? Không nhầm với siêu âm chẩn đoán hoặc HIFU.",
+        "Kiểm tra da, cảm giác nhiệt/đau, bệnh sử và tiêu chí loại trừ theo thiết bị hiện dùng?",
+        "Phòng khám dùng tiếp xúc trực tiếp với gel hay phương thức truyền sóng khác? Bản nháp hiện chỉ là nhánh trực tiếp với gel.",
+        "Cách theo dõi trong buổi, dừng khi có khó chịu, vệ sinh gel và đánh giá sau buổi?"
+      ]
+    },
+    {
+      "slug": "electroacupuncture",
+      "title": "Điện châm",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Châm kim kết hợp kích thích điện; cần xác nhận kim, máy, sàng lọc và trình tự kết thúc theo thiết bị tại Holistic.",
+      "researchNote": "docs/treatment-protocol-research-devices.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-1",
+          "step": 1,
+          "title": "Trao đổi và sàng lọc",
+          "description": "Chuyên viên hỏi bệnh sử, thuốc đang dùng và thiết bị cấy ghép, rồi giải thích việc châm kim kết hợp kích thích điện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-2",
+          "step": 2,
+          "title": "Chuẩn bị tư thế",
+          "description": "Bạn được bố trí tư thế thoải mái để thực hiện liệu pháp."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-3",
+          "step": 3,
+          "title": "Đặt kim châm",
+          "description": "Chuyên viên đặt kim vô khuẩn dùng một lần tại các vị trí đã lựa chọn. Cảm giác có thể là châm nhẹ hoặc ê tại chỗ."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-4",
+          "step": 4,
+          "title": "Kết nối bộ kích thích điện",
+          "description": "Kim được nối với máy điện châm để nhận kích thích điện. Bạn có thể cảm thấy râm ran ở vị trí kim."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-5",
+          "step": 5,
+          "title": "Phản hồi trong buổi",
+          "description": "Bạn báo cho chuyên viên nếu thấy đau hoặc có cảm giác bất thường trong quá trình thực hiện."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-electroacupuncture-6",
+          "step": 6,
+          "title": "Kết thúc và kiểm tra",
+          "description": "Chuyên viên kết thúc kích thích, rút kim và kiểm tra tình trạng của bạn trước khi ra về."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "[D6], “Is acupuncture safe?”, “What will happen?”; [D7], mục 9–10, giải thích điện và lưu ý riêng máy tạo nhịp/AICD."
+        },
+        {
+          "step": 2,
+          "evidence": "[D6], “What will happen?”; [D7], mục 9, bố trí tư thế và bảo đảm riêng tư."
+        },
+        {
+          "step": 3,
+          "evidence": "[D6], “What will happen?”; [D8], “What does acupuncture involve?”. Đây là yêu cầu cần xác nhận tại Holistic."
+        },
+        {
+          "step": 4,
+          "evidence": "[D8], đoạn riêng về electro-acupuncture xác nhận kết nối máy với kim; [D6] xác nhận râm ran."
+        },
+        {
+          "step": 5,
+          "evidence": "[D6], “Are there any risks or side effects?”; [D8], mục tác dụng phụ và liên hệ chuyên viên khi có phản ứng."
+        },
+        {
+          "step": 6,
+          "evidence": "[D6] có rút kim; [D7], mục 9, kiểm đếm kim và kiểm tra phản ứng trước khi rời khoa. Trình tự kết thúc điện cần xác nhận theo máy."
+        }
+      ],
+      "clinicQuestions": [
+        "Người phụ trách, phạm vi hành nghề và chứng nhận có thể công khai? Không suy từ bằng cấp nhân viên NHS sang Holistic.",
+        "Máy/model, cách nối kim, quy trình kết thúc kích thích trước rút kim và cách kiểm tra thiết bị?",
+        "Tiêu chí sàng lọc thiết bị tim cấy ghép, thuốc chống đông, thai kỳ, tiền sử ngất và vùng da bất thường?",
+        "Xác nhận kim vô khuẩn dùng một lần, kiểm đếm kim, xử trí phản ứng và hướng dẫn liên hệ sau buổi?"
+      ]
+    },
+    {
+      "slug": "chiropractic-adjustment",
+      "title": "Nắn chỉnh cột sống",
+      "reviewStatus": "pending_clinic_verification",
+      "clinicVerified": false,
+      "applicability": "Khung trao đổi chung; chưa mô tả một thao tác cụ thể vì kỹ thuật và vùng cột sống tại Holistic chưa được xác nhận.",
+      "researchNote": "docs/treatment-protocol-research-recovery-spinal.md",
+      "protocols": [
+        {
+          "_type": "protocolStep",
+          "_key": "research-chiropractic-adjustment-1",
+          "step": 1,
+          "title": "Trao đổi và đánh giá vận động",
+          "description": "Chuyên viên hỏi triệu chứng, bệnh nền, thuốc đang dùng và đánh giá vận động trước khi lựa chọn kỹ thuật."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-chiropractic-adjustment-2",
+          "step": 2,
+          "title": "Thống nhất kỹ thuật thực hiện",
+          "description": "Bạn được giải thích vùng tác động, cách thực hiện, lợi ích dự kiến và rủi ro để quyết định có đồng ý hay không."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-chiropractic-adjustment-3",
+          "step": 3,
+          "title": "Thực hiện và tiếp nhận phản hồi",
+          "description": "Chuyên viên thực hiện kỹ thuật đã thống nhất. Hãy báo ngay nếu đau hoặc có cảm giác bất thường; bạn có thể yêu cầu dừng."
+        },
+        {
+          "_type": "protocolStep",
+          "_key": "research-chiropractic-adjustment-4",
+          "step": 4,
+          "title": "Trao đổi sau buổi",
+          "description": "Bạn cùng chuyên viên trao đổi cảm giác sau thao tác và hướng dẫn vận động phù hợp với kế hoạch phục hồi."
+        }
+      ],
+      "stepSources": [
+        {
+          "step": 1,
+          "evidence": "S1: bệnh nền/thuốc; S2: đánh giá qua trao đổi và khám; cách đánh giá vận động là đề xuất cần xác nhận."
+        },
+        {
+          "step": 2,
+          "evidence": "S1: kỹ thuật/rủi ro; S2, S3: đồng ý có thông tin."
+        },
+        {
+          "step": 3,
+          "evidence": "S1: kỹ thuật chung; S2: phản hồi; S3: quyền rút đồng ý. Kỹ thuật Holistic còn chờ xác nhận."
+        },
+        {
+          "step": 4,
+          "evidence": "S2: phối hợp bài tập; S1: phản ứng sau buổi. Trao đổi đáp ứng là đề xuất biên tập cần xác nhận."
+        }
+      ],
+      "clinicQuestions": [
+        "Dùng huy động chậm, lực đẩy nhanh, dụng cụ hay phối hợp; tên dịch vụ có phản ánh đúng chuyên môn?",
+        "Tác động vùng nào; có thao tác nhanh vùng cổ không; giải thích rủi ro và đồng ý như thế nào?",
+        "Ai thực hiện, phạm vi hành nghề và chứng nhận có thể công khai?",
+        "Cách đánh giá, tiêu chí chuyển khám/dừng và hướng dẫn vận động/liên hệ sau buổi?"
+      ]
+    }
+  ]
+}

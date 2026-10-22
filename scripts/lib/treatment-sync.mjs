@@ -1,8 +1,9 @@
 // Pure planning for scripts/sync-treatments.mjs: no network, no files. See
 // docs/superpowers/specs/2026-10-15-treatment-catalog-design.md section 7.
 
-// Content the owner has not reviewed (spec decision 4) and the unused duration field.
-const UNSET = ["benefits", "protocols", "duration"];
+// Benefits and durations remain unreviewed. Protocols are now edited separately in
+// the CMS; catalogue sync must preserve them. See docs/treatment-protocols-research.md.
+const UNSET = ["benefits", "duration"];
 
 /**
  * @param seed        documents from scripts/seed/treatments.json

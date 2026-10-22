@@ -53,7 +53,7 @@ describe("planSync", () => {
       requiresCertifiedPractitioner: false,
       faqs: expect.any(Array),
     });
-    expect(cupping.unset).toEqual(["benefits", "protocols", "duration"]);
+    expect(cupping.unset).toEqual(["benefits", "duration"]);
     expect(cupping.set).not.toHaveProperty("slug");
   });
 
@@ -77,6 +77,26 @@ describe("planSync", () => {
     for (const key of patch.unset) delete after[key];
     expect(after.seo).toEqual(seo);
     expect(after.image).toEqual(existing.image);
+  });
+
+  it("keeps CMS protocols when resyncing catalogue content", () => {
+    const protocols = [
+      {
+        _key: "editor-step-1",
+        _type: "protocolStep",
+        step: 1,
+        title: "Trao đổi trước trị liệu",
+        description: "Quy trình đã được biên tập trong CMS.",
+      },
+    ];
+    const existing = { _id: "editor-shockwave", _rev: "editor-rev", slug: "shockwave", protocols };
+    const { mutations } = run({ treatments: [...production, existing] });
+    const patch = mutations.find(
+      (m: { patch?: { id: string } }) => m.patch?.id === existing._id,
+    ).patch;
+    const after = { ...existing, ...patch.set };
+    for (const key of patch.unset) delete after[key];
+    expect(after.protocols).toEqual(protocols);
   });
 
   it("clears a stale English title when the seed has none", () => {
