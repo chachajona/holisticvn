@@ -8,6 +8,8 @@ vi.mock("@/sanity/env", () => ({
 }));
 import { renderToStaticMarkup } from "react-dom/server";
 import TreatmentPage, { generateMetadata } from "@/app/treatments/[slug]/page";
+import { treatments } from "@/lib/content";
+import reviewedSeo from "@/lib/treatment-seo.json";
 
 const cdn = "https://cdn.sanity.io/images/p/d/";
 const sentence =
@@ -198,6 +200,67 @@ describe("treatment detail page", () => {
     await expect(render("missing")).rejects.toMatchObject({
       digest: "NEXT_HTTP_ERROR_FALLBACK;404",
     });
+    expect(await generateMetadata({ params: Promise.resolve({ slug: "missing" }) })).toEqual({});
+  });
+
+  it.each(Object.entries(reviewedSeo))(
+    "uses reviewed metadata and the unchanged canonical for CMS treatment %s without SEO",
+    async (slug, reviewed) => {
+      serve({ treatments: [{ ...full, slug, seo: undefined }] });
+      const metadata = await generateMetadata({ params: Promise.resolve({ slug }) });
+      const canonical = new URL(
+        `/treatments/${slug}`,
+        process.env.NEXT_PUBLIC_SITE_URL || "https://holisticvn.com",
+      ).toString();
+      expect(metadata).toMatchObject({
+        ...reviewed,
+        alternates: { canonical },
+        openGraph: { ...reviewed, url: canonical, images: [full.image] },
+      });
+    },
+  );
+
+  it("resolves partial and blank CMS SEO independently without changing visible copy", async () => {
+    serve({ treatments: [{ ...full, seo: { title: " Editor title ", description: " " } }] });
+    expect(await generateMetadata({ params: Promise.resolve({ slug: "cupping" }) })).toMatchObject({
+      title: "Editor title",
+      description: reviewedSeo.cupping.description,
+    });
+    serve({ treatments: [{ ...full, seo: { title: " ", description: " Editor description " } }] });
+    expect(await generateMetadata({ params: Promise.resolve({ slug: "cupping" }) })).toMatchObject({
+      title: reviewedSeo.cupping.title,
+      description: "Editor description",
+    });
+    const html = await render();
+    expect(html).toContain("<h1>Giác hơi</h1>");
+    expect(html).toContain(full.shortDescription);
+  });
+
+  it("uses reviewed defaults and bundled images during an unconfigured-CMS fallback", async () => {
+    vi.resetModules();
+    vi.doMock("@/sanity/env", () => ({
+      projectId: "missing-project-id",
+      dataset: "production",
+      apiVersion: "2025-01-01",
+    }));
+    try {
+      const fallbackPage = await import("@/app/treatments/[slug]/page");
+      for (const treatment of treatments) {
+        const metadata = await fallbackPage.generateMetadata({
+          params: Promise.resolve({ slug: treatment.slug }),
+        });
+        expect(metadata).toMatchObject(new Map(Object.entries(reviewedSeo)).get(treatment.slug)!);
+        if (treatment.image) {
+          expect(metadata.openGraph).toMatchObject({ images: [treatment.image] });
+        } else {
+          expect(metadata.openGraph).not.toHaveProperty("images");
+        }
+      }
+      expect(fetch).not.toHaveBeenCalled();
+    } finally {
+      vi.doUnmock("@/sanity/env");
+      vi.resetModules();
+    }
   });
 
   it("uses the CMS SEO fields and falls back to the treatment's own", async () => {

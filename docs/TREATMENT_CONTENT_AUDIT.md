@@ -25,7 +25,7 @@ Ba nhóm nghiên cứu và một lượt đối chiếu chéo kiểm tra định
 - Nội dung giáo dục dựa trên nguồn bên ngoài không xác nhận loại máy, thông số, số buổi, thời lượng hoặc phác đồ riêng của Holistic.
 - Bỏ thời lượng, quy trình và danh sách lợi ích chưa xác minh ở ba bản ghi CMS cũ: Giác hơi, Ngâm lạnh, Đèn hồng ngoại. Không lấy quy trình bệnh viện khác để lấp các trường này. Các trường legacy không được ứng dụng đọc, như fullDescription, được giữ làm dữ liệu lưu trữ và không dùng để khôi phục nội dung công khai.
 - Nhãn lọc của cả nhóm phương pháp không còn được suy ra thành chỉ định của từng liệu pháp. Catalogue vẫn giữ nhóm và liên kết điều hướng.
-- SEO tiếng Việt đã nghiên cứu được nhập vào CMS. Seed/fallback dùng tên và mô tả ngắn mới làm metadata mặc định; SEO biên tập vẫn là trường do CMS quản lý.
+- SEO tiếng Việt đã nghiên cứu được nhập vào CMS. Fallback dùng metadata đã biên tập trong `lib/treatment-seo.json`; từng trường SEO không rỗng trong CMS được ưu tiên. Seed không ghi SEO để giữ quyền biên tập; chi tiết nằm trong `docs/TREATMENT_SEO_AUDIT.md`.
 - Ảnh thiếu hoặc không thể hiện chính xác thao tác được ghi ở danh sách câu hỏi. Không tải thêm ảnh sai kỹ thuật để làm đầy trang.
 - Các bản nháp trước đây ở treatment-copy-drafts.md là lịch sử biên tập, không phải nội dung để nhập lại. Thông tin giáo dục chung mới không có nghĩa phòng khám đã duyệt phác đồ hoặc tất cả FAQ an toàn.
 

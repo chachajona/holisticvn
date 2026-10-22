@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createMetadata } from "@/lib/seo";
+import { resolveTreatmentSeo } from "@/lib/treatment-seo";
 import { getMethods, getPublicSiteData, getTreatments } from "@/lib/sanity";
 import { buildTreatmentDetail } from "@/lib/treatment-detail";
 import { factCells, formatPrice } from "@/lib/treatment-display";
@@ -24,10 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const treatment = (await getTreatments()).find((item) => item.slug === slug);
   return treatment
     ? createMetadata({
-        title: treatment.seo?.title ?? treatment.title,
-        description: treatment.seo?.description ?? treatment.shortDescription,
+        ...resolveTreatmentSeo(treatment),
         path: `/treatments/${treatment.slug}`,
-        image: treatment.seo?.ogImage ?? treatment.image,
       })
     : {};
 }

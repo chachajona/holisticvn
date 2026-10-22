@@ -28,7 +28,7 @@ Các component nằm tại `app/treatments/[slug]/`, CSS chỉ scope vào trang 
 - Catalogue hiện có mô tả dài và FAQ được nghiên cứu ngày 22/10/2026; nguồn và giới hạn nằm trong `docs/TREATMENT_CONTENT_AUDIT.md`. Thời lượng, lợi ích và quy trình riêng của phòng khám vẫn chờ xác nhận. Các phần chỉ hiện khi document có dữ liệu; không đưa nội dung mô phỏng vào catalogue.
 - Mục lục theo cùng điều kiện render của từng phần, tránh neo trống.
 - Ảnh hero/dock dùng ảnh của liệu pháp; Giác hơi local dùng crop ngang `HeroTreatments.jpg` của cùng ảnh clinic theo demo đã chọn; liệu pháp thiếu ảnh có bố cục chữ. Ảnh phòng trị liệu là asset clinic hiện có, được crop như bản demo.
-- Metadata SEO, not-found, ISR và form yêu cầu tư vấn dùng logic hiện hành.
+- Metadata SEO ưu tiên từng trường CMS, rồi bản biên tập mặc định trong `lib/treatment-seo.json`, rồi nội dung liệu pháp; xem `docs/TREATMENT_SEO_AUDIT.md`. Not-found, ISR và form yêu cầu tư vấn dùng logic hiện hành.
 
 ## Bằng chứng trong workspace
 
