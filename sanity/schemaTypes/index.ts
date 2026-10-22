@@ -451,12 +451,13 @@ const treatment = defineType({
       name: "badge",
       title: "Huy hiệu",
       description:
-        "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chữ hiển thị cố định, không nhập tự do. Bỏ chọn để không có huy hiệu.",
+        "Chỉ bật khi có căn cứ thực tế (ví dụ số liệu lượt đặt). Chọn Không hiển thị huy hiệu để tắt cả nhãn phổ biến cũ; để trống vẫn đọc cờ phổ biến cũ nếu có.",
       type: "string",
       options: {
         list: [
           { title: "Được chọn nhiều", value: "popular" },
           { title: "Mới", value: "new" },
+          { title: "Không hiển thị huy hiệu", value: "none" },
         ],
       },
     }),

@@ -104,7 +104,7 @@ const treatmentSchema = z
     benefits: strings,
     price: z.number().int().nonnegative().optional().catch(undefined),
     isPopular: z.boolean().catch(false),
-    badge: z.enum(["popular", "new"]).optional().catch(undefined),
+    badge: z.enum(["popular", "new", "none"]).optional().catch(undefined),
     // One malformed entry is dropped, not the whole list.
     faqs: z
       .array(z.unknown())
@@ -139,8 +139,11 @@ const treatmentSchema = z
   })
   .transform((treatment) => ({
     ...treatment,
-    // The legacy isPopular flag reads as the "popular" badge until editors pick one.
-    badge: treatment.badge ?? (treatment.isPopular ? ("popular" as const) : undefined),
+    // An explicit opt-out wins over the hidden legacy flag; untouched records stay compatible.
+    badge:
+      treatment.badge === "none"
+        ? undefined
+        : (treatment.badge ?? (treatment.isPopular ? ("popular" as const) : undefined)),
   }));
 const postSchema = z.object({
   ...record,

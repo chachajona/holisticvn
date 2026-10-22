@@ -134,6 +134,14 @@ describe("configured Sanity content", () => {
       undefined,
     ]);
   });
+  it("lets an explicit no-badge selection override the hidden legacy popular flag", async () => {
+    fetch.mockResolvedValue([
+      { slug: "legacy", title: "Legacy", badge: "none", isPopular: true },
+      { slug: "plain", title: "Plain", badge: "none" },
+      { slug: "untouched", title: "Untouched", isPopular: true },
+    ]);
+    expect((await getTreatments()).map((t) => t.badge)).toEqual([undefined, undefined, "popular"]);
+  });
   it("keeps only FAQ entries that have both a question and an answer", async () => {
     fetch.mockResolvedValue([
       {

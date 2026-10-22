@@ -89,7 +89,7 @@ describe("treatment schema", () => {
     expect(warnings).toHaveLength(2);
   });
 
-  it("offers exactly two badges and hides the legacy popular flag", () => {
+  it("offers two badges and an explicit opt-out while hiding the legacy popular flag", () => {
     const badge = (
       treatment.fields as unknown as Array<{
         name: string;
@@ -102,6 +102,7 @@ describe("treatment schema", () => {
     expect(badge?.options?.list).toEqual([
       { title: "Được chọn nhiều", value: "popular" },
       { title: "Mới", value: "new" },
+      { title: "Không hiển thị huy hiệu", value: "none" },
     ]);
     const popular = (treatment.fields as unknown as Array<{ name: string; hidden?: unknown }>).find(
       (f) => f.name === "isPopular",
