@@ -7,6 +7,10 @@ import { SiteChrome } from "@/components/site-chrome";
 import { SiteDataProvider } from "@/components/site-data";
 import { getPublicSiteData } from "@/lib/sanity";
 
+// A failed settings read may prerender approved contacts without a successful cached fetch.
+// Keep that HTML on the same finite recovery schedule as published settings.
+export const revalidate = 3600;
+
 const navDisplay = localFont({
   src: "./fonts/RobotoSlab.woff2",
   weight: "200 500",

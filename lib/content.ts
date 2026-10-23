@@ -93,7 +93,8 @@ export const site = {
   hoursNote: "Tất cả các ngày",
   facebookUrl: "https://www.facebook.com/holisticrep/",
   instagramUrl: "https://www.instagram.com/holisticrep/",
-  zaloId: process.env.NEXT_PUBLIC_ZALO_ID,
+  // Owner supplied the clinic's production identifier on 2026-10-23 (PRODUCT.md).
+  zaloId: process.env.NEXT_PUBLIC_ZALO_ID || "4411042584729737012",
   messengerId: process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ID,
 };
 
