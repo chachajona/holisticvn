@@ -307,8 +307,10 @@ export const getSiteSettings = cache(async () => {
       );
       return value === null ? null : settingsSchema.parse(value);
     });
-  } catch {
+  } catch (error) {
     // Only the transport response is cached by Next. Never persist this error fallback as settings.
+    // Log so schema drift or an outage is visible instead of silently looking like "no settings".
+    console.error("[sanity] siteSettings unavailable, using fallback:", error);
     return null;
   }
 });
