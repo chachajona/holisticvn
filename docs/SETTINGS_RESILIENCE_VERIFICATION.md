@@ -146,3 +146,33 @@ keyboard submissions and direct contact links, and persistent cookie rejection.
 Representative screenshots were inspected across all three widths. Fresh results
 and nine screenshots are in `.context/settings-resilience/`; `/api/leads` remained
 mocked, so this run does not establish email delivery.
+
+## Review follow-up — 2026-10-23
+
+Verified all six supplied review attachments against application head `137627e`,
+the installed Sanity client's error implementation, and repository checks.
+
+| Review                                                                                                                                                                                                                           | Verdict and change                                                                                                                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Greptile [provider errors reach logs](https://github.com/chachajona/holisticvn/pull/53#discussion_r4360343182) and CodeRabbit [sanitized error summary](https://github.com/chachajona/holisticvn/pull/53#discussion_r4360361890) | Confirmed duplicate findings. Log only a fixed message, a fixed `Error`/`ZodError`/`UnknownError` classification, and an integer HTTP error status from 400–599. Provider messages, bodies, headers, causes, mutable names and schema issue data are omitted.           |
+| Greptile [cancelled fixtures keep running](https://github.com/chachajona/holisticvn/pull/53#discussion_r4360343198)                                                                                                              | Confirmed. Register SIGINT/SIGTERM cleanup immediately after acquiring the lock, track build and server children, await their termination before releasing the lock, and escalate an unresponsive child to SIGKILL after five seconds. Cancellation exits with 130/143. |
+| Vercel deployment comment                                                                                                                                                                                                        | Informational deployment status; no code issue.                                                                                                                                                                                                                         |
+| CodeRabbit docstring warning and ESLint installation timeout                                                                                                                                                                     | The 80% docstring threshold is not required by repository instructions, ESLint or CI. The bot sandbox installation timeout is separate from the passing repository lint check. No dependency or quality-gate changes are needed.                                        |
+
+**Regression evidence:** all 17 new cases failed before the fixes; the final
+suite passes **404 tests / 51 files**. Twelve cases check provider/schema data,
+invalid status metadata and non-Error rejections. Five real-process cases execute
+the actual harness in temporary synthetic repositories: SIGINT/SIGTERM during
+build and server startup, lock retention while a child stops, and forced cleanup
+of a child that ignores SIGTERM. They require neither Next compilation nor CMS.
+Lint, typecheck and changed-file Prettier checks pass.
+
+**Actual process verification:** sending SIGTERM to the harness during a real
+Next production build stopped its child, removed the lock and exited 143. A fresh
+isolated production build then passed all 15 failure/cache/recovery checks, and
+all nine browser cases passed again at 320/768/1440 px. Representative screenshots
+were inspected at all three widths. Sending SIGINT after browser verification
+stopped the served fixture, released its lock and exited 130 without an exception.
+Cancellation records: `.context/settings-review-cancellation.json`; fresh browser
+results/screenshots: `.context/settings-resilience/`. Browser lead submissions
+remain mocked; this does not establish email delivery or inbox receipt.

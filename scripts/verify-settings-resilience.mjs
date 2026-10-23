@@ -12,7 +12,7 @@ import {
   utimes,
   writeFile,
 } from "node:fs/promises";
-import { createWriteStream, rmSync } from "node:fs";
+import { createWriteStream } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
@@ -30,6 +30,9 @@ const report = {
     "Synthetic CMS transport and browser API; no production dataset, Redis or email access.",
 };
 let server;
+const children = new Set();
+let cancelled = false;
+let cleanupTask;
 
 await mkdir(evidence, { recursive: true });
 const lock = path.join(evidence, "run.lock");
@@ -42,7 +45,39 @@ try {
     );
   throw error;
 }
-process.once("exit", () => rmSync(lock, { recursive: true, force: true }));
+async function terminate(child) {
+  if (child.exitCode !== null || child.signalCode !== null) return;
+  const closed = new Promise((resolve) => child.once("close", resolve));
+  // Reap even an unresponsive child before releasing the run lock.
+  const timer = setTimeout(() => child.kill("SIGKILL"), 5000);
+  child.kill("SIGTERM");
+  try {
+    await closed;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+function cleanup() {
+  cleanupTask ??= (async () => {
+    await Promise.all([...children].map(terminate));
+    await rm(lock, { recursive: true, force: true });
+  })();
+  return cleanupTask;
+}
+function interrupt(signal) {
+  if (cancelled) return;
+  cancelled = true;
+  void cleanup().then(
+    () => process.exit(signal === "SIGINT" ? 130 : 143),
+    (error) => {
+      console.error("Fixture cleanup failed:", error);
+      process.exit(1);
+    },
+  );
+}
+// Install immediately after acquiring the lock, including setup, build and verification phases.
+process.on("SIGINT", interrupt);
+process.on("SIGTERM", interrupt);
 try {
   for (const name of await readdir(evidence)) {
     if (
@@ -100,11 +135,14 @@ try {
       .filter(Boolean)
       .map((line) => JSON.parse(line));
   function run(args, logName) {
+    if (cancelled) throw new Error("Verification cancelled");
     const child = spawn(process.execPath, args, {
       cwd: fixture,
       env,
       stdio: ["ignore", "pipe", "pipe"],
     });
+    children.add(child);
+    child.once("close", () => children.delete(child));
     const log = createWriteStream(path.join(evidence, logName), { flags: "a" });
     log.write(
       `\nFixture process started ${new Date().toISOString()}: ${args.slice(1).join(" ")}\n`,
@@ -116,7 +154,8 @@ try {
   function exited(child, terminating = false) {
     if (child.exitCode !== null || child.signalCode !== null) {
       return child.exitCode === 0 ||
-        (terminating && (child.exitCode === 143 || child.signalCode === "SIGTERM"))
+        (terminating &&
+          ([130, 143].includes(child.exitCode) || ["SIGINT", "SIGTERM"].includes(child.signalCode)))
         ? Promise.resolve()
         : Promise.reject(
             new Error(
@@ -127,7 +166,8 @@ try {
     return new Promise((resolve, reject) => {
       child.once("error", reject);
       child.once("exit", (code, signal) =>
-        code === 0 || (terminating && (code === 143 || signal === "SIGTERM"))
+        code === 0 ||
+        (terminating && ([130, 143].includes(code) || ["SIGINT", "SIGTERM"].includes(signal)))
           ? resolve()
           : reject(
               new Error(`Fixture process exited ${code}; see .context/settings-resilience logs`),
@@ -139,22 +179,7 @@ try {
     if (server) {
       const active = server;
       server = undefined;
-      const done = exited(active, true);
-      active.kill("SIGTERM");
-      let timer;
-      try {
-        await Promise.race([
-          done,
-          new Promise((_, reject) => {
-            timer = setTimeout(() => {
-              active.kill("SIGKILL");
-              reject(new Error("Fixture server exceeded its 5s shutdown grace period"));
-            }, 5000);
-          }),
-        ]);
-      } finally {
-        clearTimeout(timer);
-      }
+      await Promise.all([exited(active, true), terminate(active)]);
     }
   }
   const listener = createServer();
@@ -413,17 +438,15 @@ try {
       console.log(
         `Browser fixture ready at ${origin}; run .context/settings-resilience/browser-check.cjs with Playwright MCP.`,
       );
-      const finish = async () => {
-        await stop();
-        process.exit(0);
-      };
-      process.once("SIGINT", finish);
-      process.once("SIGTERM", finish);
       await new Promise(() => {});
     }
   } finally {
     await stop();
   }
+} catch (error) {
+  if (!cancelled) throw error;
 } finally {
-  await rm(lock, { recursive: true, force: true });
+  await cleanup();
+  process.off("SIGINT", interrupt);
+  process.off("SIGTERM", interrupt);
 }
