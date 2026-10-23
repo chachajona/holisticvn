@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 const { fetch, createClient, configs } = vi.hoisted(() => {
   const fetch = vi.fn();
+  // Vitest clears mock calls before each test; retain configs created during module import.
   const configs: unknown[] = [];
   return {
     fetch,

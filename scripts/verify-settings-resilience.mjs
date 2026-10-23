@@ -15,6 +15,7 @@ import {
 import { createWriteStream, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { setTimeout as delay } from "node:timers/promises";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const evidence = path.join(repo, ".context/settings-resilience");
@@ -178,7 +179,7 @@ try {
       try {
         if ((await fetch(origin + "/icon.svg", { signal: AbortSignal.timeout(1000) })).ok) return;
       } catch {}
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await delay(100);
     }
     throw new Error("Fixture server did not start");
   }
@@ -194,7 +195,16 @@ try {
       cache: response.headers.get("x-nextjs-cache"),
     };
   }
-  function fallback(html) {
+  async function pollPage(route, matches) {
+    let result;
+    for (let attempt = 0; attempt < 80; attempt++) {
+      result = await page(route);
+      if (matches(result)) return result;
+      await delay(100);
+    }
+    return result;
+  }
+  function assertFallback(html) {
     assert(html.includes("082 895 9598"));
     assert(html.includes("Holisticrep9@gmail.com"));
     assert(html.includes("4411042584729737012"));
@@ -231,15 +241,15 @@ try {
       await readFile(path.join(fixture, ".next/prerender-manifest.json"), "utf8"),
     );
     assert.equal(manifest.routes["/contact"].initialRevalidateSeconds, 3600);
-    fallback(await readFile(path.join(fixture, ".next/server/app/contact.html"), "utf8"));
+    assertFallback(await readFile(path.join(fixture, ".next/server/app/contact.html"), "utf8"));
     report.checks.push({
       check: "cold build rejection",
       result: "approved fallback; /contact revalidate=3600",
     });
     await start();
     const beforeWarm = (await events()).length;
-    fallback((await page("/contact")).html);
-    fallback((await page("/contact")).html);
+    assertFallback((await page("/contact")).html);
+    assertFallback((await page("/contact")).html);
     assert.equal((await events()).length, beforeWarm);
     report.checks.push({
       check: "warm prerender",
@@ -263,7 +273,7 @@ try {
       const from = (await events()).length;
       await start();
       const result = await page("/booking?service=training");
-      fallback(result.html);
+      assertFallback(result.html);
       assert(!result.html.replaceAll("<!-- -->", "").includes("Dịch vụ: Fixture"));
       const reads = (await events()).slice(from);
       const settingsReads = reads.filter((e) => e.target === "settings" && !e.aborted);
@@ -290,7 +300,7 @@ try {
     await setState("reject", "valid");
     await start();
     const healthyContext = await page("/booking?service=training");
-    fallback(healthyContext.html);
+    assertFallback(healthyContext.html);
     assert(
       healthyContext.html
         .replaceAll("<!-- -->", "")
@@ -307,12 +317,7 @@ try {
     await ageCaches();
     await start();
     const stale = await page("/contact");
-    let recovered;
-    for (let attempt = 0; attempt < 80; attempt++) {
-      recovered = await page("/contact");
-      if (recovered.html.includes("0901112233")) break;
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    let recovered = await pollPage("/contact", ({ html }) => html.includes("0901112233"));
     assert(
       recovered.html.includes("0901112233"),
       "expired fallback route must recover published settings",
@@ -338,17 +343,13 @@ try {
     await rm(path.join(fixture, ".next/cache/fetch-cache"), { recursive: true, force: true });
     await setState("invalid-result");
     await start();
-    fallback((await page("/booking")).html);
+    assertFallback((await page("/booking")).html);
     await setState("valid");
-    fallback((await page("/booking")).html);
+    assertFallback((await page("/booking")).html);
     await stop();
     await ageCaches();
     await start();
-    for (let attempt = 0; attempt < 80; attempt++) {
-      recovered = await page("/booking");
-      if (recovered.html.includes("0901112233")) break;
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    recovered = await pollPage("/booking", ({ html }) => html.includes("0901112233"));
     assert(recovered.html.includes("0901112233"));
     report.checks.push({
       check: "expired malformed HTTP-200 data recovery",
@@ -361,14 +362,10 @@ try {
     await ageCaches();
     await setState("invalid-result");
     await start();
-    for (let attempt = 0; attempt < 80; attempt++) {
-      recovered = await page("/contact");
-      if (recovered.html.includes("082 895 9598")) break;
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    fallback(recovered.html);
+    recovered = await pollPage("/contact", ({ html }) => html.includes("082 895 9598"));
+    assertFallback(recovered.html);
     await setState("valid");
-    fallback((await page("/contact")).html);
+    assertFallback((await page("/contact")).html);
     let staticCycles = 0;
     while (staticCycles < 2) {
       await stop();
@@ -376,13 +373,9 @@ try {
       await start();
       staticCycles++;
       await page("/contact");
-      for (let attempt = 0; attempt < 80; attempt++) {
-        recovered = await page("/contact");
-        if (recovered.cache === "HIT") break;
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
+      recovered = await pollPage("/contact", ({ cache }) => cache === "HIT");
       if (recovered.html.includes("0901112233")) break;
-      fallback(recovered.html);
+      assertFallback(recovered.html);
     }
     assert(
       recovered.html.includes("0901112233"),

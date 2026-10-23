@@ -12,9 +12,9 @@ export default async function checkSettingsBrowser(page) {
         .browser()
         .newContext({ viewport: { width, height: 1000 } });
       const tab = await context.newPage();
-      const errors = [],
-        trackers = [],
-        submissions = [];
+      const errors = [];
+      const trackers = [];
+      const submissions = [];
       tab.on("pageerror", (error) => errors.push(error.message));
       tab.on("console", (message) => {
         if (["error", "warning"].includes(message.type())) errors.push(message.text());
@@ -27,15 +27,15 @@ export default async function checkSettingsBrowser(page) {
         )
           trackers.push(request.url());
       });
-      await tab.route("**/api/leads", async (request) => {
-        const lead = request.request().postDataJSON();
+      await tab.route("**/api/leads", async (leadRoute) => {
+        const lead = leadRoute.request().postDataJSON();
         assert(
           lead.kind === (route.startsWith("/contact") ? "contact" : "booking"),
           "submission kind must match route",
         );
         assert(lead.treatment === undefined, "unavailable context must omit treatment");
         submissions.push({ kind: lead.kind, treatmentAbsent: lead.treatment === undefined });
-        await request.fulfill({
+        await leadRoute.fulfill({
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({ success: true }),

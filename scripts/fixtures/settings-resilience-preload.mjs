@@ -1,10 +1,17 @@
 // Test-only transport. Loaded with --import inside the isolated verification copy.
 import { appendFileSync, readFileSync } from "node:fs";
+
 const stateFile = process.env.SETTINGS_FIXTURE_STATE;
 const eventsFile = process.env.SETTINGS_FIXTURE_EVENTS;
 const originalFetch = globalThis.fetch;
 const event = (target, mode, extra = {}) =>
   appendFileSync(eventsFile, JSON.stringify({ target, mode, ...extra }) + "\n");
+
+function queryTarget(query) {
+  if (query.includes('"siteSettings"')) return "settings";
+  if (query.includes('"servicesPage"')) return "services";
+  return "content";
+}
 
 globalThis.fetch = async function fixtureFetch(input, init = {}) {
   const url = new URL(typeof input === "string" ? input : input.url || String(input));
@@ -22,13 +29,8 @@ globalThis.fetch = async function fixtureFetch(input, init = {}) {
   }
   const state = JSON.parse(readFileSync(stateFile, "utf8"));
   const query = url.searchParams.get("query") || JSON.parse(init.body || "{}").query || "";
-  const target = query.includes('"siteSettings"')
-    ? "settings"
-    : query.includes('"servicesPage"')
-      ? "services"
-      : "content";
-  const mode =
-    target === "settings" ? state.settings : target === "services" ? state.services : "empty";
+  const target = queryTarget(query);
+  const mode = target === "content" ? "empty" : state[target];
   event(target, mode);
   if (mode === "reject") throw new TypeError("Synthetic network failure");
   if (mode === "stall") {
@@ -67,16 +69,9 @@ globalThis.fetch = async function fixtureFetch(input, init = {}) {
     bullets: [],
     treatments: [],
   };
-  const result =
-    mode === "valid"
-      ? target === "settings"
-        ? settings
-        : [service]
-      : mode === "invalid-result"
-        ? "invalid"
-        : target === "settings"
-          ? null
-          : [];
+  let result = target === "settings" ? null : [];
+  if (mode === "valid") result = target === "settings" ? settings : [service];
+  else if (mode === "invalid-result") result = "invalid";
   return new Response(JSON.stringify({ result }), {
     headers: { "content-type": "application/json" },
   });

@@ -32,18 +32,23 @@ const clientConfig = {
   token: process.env.SANITY_API_READ_TOKEN,
 };
 const client = createClient(clientConfig);
-// Shared contacts and optional booking context must finish within one total deadline.
+// Each shared-settings or optional booking-context read has a total deadline.
 // Retries belong to client configuration; ordinary content readers keep their existing policy.
-const resilientClient = createClient({ ...clientConfig, maxRetries: 0, timeout: 5000 });
+const CMS_READ_DEADLINE_MS = 5000;
+const resilientClient = createClient({
+  ...clientConfig,
+  maxRetries: 0,
+  timeout: CMS_READ_DEADLINE_MS,
+});
 
-async function withinSettingsDeadline<T>(read: (signal: AbortSignal) => Promise<T>): Promise<T> {
+async function withinCmsDeadline<T>(read: (signal: AbortSignal) => Promise<T>): Promise<T> {
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => {
     timer = setTimeout(() => {
       reject(new Error("CMS read deadline exceeded"));
       controller.abort();
-    }, 5000);
+    }, CMS_READ_DEADLINE_MS);
   });
   try {
     // Race also bounds transports that ignore abort; late settlements remain handled.
@@ -52,6 +57,7 @@ async function withinSettingsDeadline<T>(read: (signal: AbortSignal) => Promise<
     clearTimeout(timer);
   }
 }
+
 const text = z.string().catch("");
 const strings = z.array(z.string()).catch([]);
 const record = { slug: z.string().min(1), title: z.string().min(1) };
@@ -184,16 +190,21 @@ const testimonialSchema = z.object({
   avatar: z.string().optional().catch(undefined),
 });
 
+type SanityReadOptions = { client: typeof client; signal: AbortSignal };
+
 async function fetchRecords<T>(
   query: string,
   schema: z.ZodType<T>,
-  signal?: AbortSignal,
+  options?: SanityReadOptions,
 ): Promise<T[]> {
   // A configured dataset (including an empty one) is authoritative; samples are local-only.
-  const value: unknown = await (signal ? resilientClient : client).fetch(
+  const value: unknown = await (options?.client ?? client).fetch(
     query,
     {},
-    { next: { revalidate: 3600, tags: ["sanity"] }, ...(signal ? { signal } : {}) },
+    {
+      next: { revalidate: 3600, tags: ["sanity"] },
+      ...(options ? { signal: options.signal } : {}),
+    },
   );
   // A singleton query returns null until the document is first published: no records, not an outage.
   if (value === null) return [];
@@ -203,13 +214,13 @@ async function fetchRecords<T>(
     return parsed.success ? [parsed.data] : [];
   });
 }
-async function readServices(signal?: AbortSignal): Promise<Service[]> {
+async function readServices(options?: SanityReadOptions): Promise<Service[]> {
   if (!enabled) return fallbackServices;
   // groups[] order is the editor's drag-and-drop order; defined(group) skips half-filled items.
   const services = await fetchRecords(
     `*[_id == "servicesPage"][0].groups[defined(group)]{group,title,shortTitle,summary,body,bullets,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
     serviceSchema,
-    signal,
+    options,
   );
   // One section per group: anchors and booking context are keyed by group.
   return services.filter((s, i) => services.findIndex((o) => o.group === s.group) === i);
@@ -218,7 +229,9 @@ export const getServices = cache(() => readServices());
 export const getBookingService = cache(async (group: string): Promise<Service | undefined> => {
   if (!serviceGroups.some((valid) => valid === group)) return undefined;
   try {
-    const services = await withinSettingsDeadline((signal) => readServices(signal));
+    const services = await withinCmsDeadline((signal) =>
+      readServices({ client: resilientClient, signal }),
+    );
     return services.find((service) => service.group === group);
   } catch {
     return undefined;
@@ -299,7 +312,7 @@ const settingsSchema = z.object({
 export const getSiteSettings = cache(async () => {
   if (!enabled) return null;
   try {
-    return await withinSettingsDeadline(async (signal) => {
+    return await withinCmsDeadline(async (signal) => {
       const value: unknown = await resilientClient.fetch(
         `*[_type == "siteSettings"][0]{contactPhone,contactEmail,locations,socialMedia}`,
         {},

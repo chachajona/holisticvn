@@ -135,3 +135,14 @@ Screenshots and browser machine evidence are saved under
 `booking-context-error-{320,768,1440}.png`, and
 `browser-results.json`. This directory is intentionally ignored by git; rerun the
 tracked harness and browser fixture to regenerate it.
+
+## Post-refactor browser rerun
+
+Reran on 2026-10-23 at 13:08 UTC using Chromium 155.0.8059.85 and the current
+working tree. All 15 isolated production checks and all nine browser cases passed.
+The browser cases covered the same three routes at 320, 768 and 1440 px, with zero
+console errors/warnings and tracking requests, no horizontal overflow, working
+keyboard submissions and direct contact links, and persistent cookie rejection.
+Representative screenshots were inspected across all three widths. Fresh results
+and nine screenshots are in `.context/settings-resilience/`; `/api/leads` remained
+mocked, so this run does not establish email delivery.
