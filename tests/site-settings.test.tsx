@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { z } from "zod";
 
 const { fetch, createClient, configs } = vi.hoisted(() => {
   const fetch = vi.fn();
@@ -89,6 +90,73 @@ describe("resilient shared site settings", () => {
     });
     expect(await getPublicSiteData()).toEqual({ site, branches });
   });
+
+  it("logs only a safe summary for provider errors carrying private data", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const error = Object.assign(new Error("private provider message"), {
+      name: "private error name",
+      statusCode: 403,
+      responseBody: "private provider body",
+      response: { headers: { authorization: "private token" } },
+      cause: new Error("private nested error"),
+    });
+    try {
+      fetch.mockRejectedValue(error);
+      expect(await getPublicSiteData()).toEqual({ site, branches });
+      expect(log.mock.calls).toEqual([
+        ["[sanity] siteSettings unavailable, using fallback:", { name: "Error", status: 403 }],
+      ]);
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it("does not log schema issue messages or inputs", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      fetch.mockRejectedValue(
+        new z.ZodError([{ code: "custom", path: [], message: "private settings data" }]),
+      );
+      expect(await getSiteSettings()).toBeNull();
+      expect(log.mock.calls).toEqual([
+        ["[sanity] siteSettings unavailable, using fallback:", { name: "ZodError" }],
+      ]);
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it.each(["403", NaN, Infinity, 399, 600, 403.5])(
+    "omits invalid HTTP status metadata (%s)",
+    async (statusCode) => {
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        fetch.mockRejectedValue(Object.assign(new Error("private message"), { statusCode }));
+        expect(await getSiteSettings()).toBeNull();
+        expect(log.mock.calls).toEqual([
+          ["[sanity] siteSettings unavailable, using fallback:", { name: "Error" }],
+        ]);
+      } finally {
+        log.mockRestore();
+      }
+    },
+  );
+
+  it.each([null, undefined, "private error", { message: "private error" }])(
+    "handles non-Error rejection values without logging their contents (%s)",
+    async (error) => {
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        fetch.mockRejectedValue(error);
+        expect(await getSiteSettings()).toBeNull();
+        expect(log.mock.calls).toEqual([
+          ["[sanity] siteSettings unavailable, using fallback:", { name: "UnknownError" }],
+        ]);
+      } finally {
+        log.mockRestore();
+      }
+    },
+  );
 
   it.each(["network", "401", "403", "500", "invalid JSON"])(
     "renders async consumers and approved direct channels during %s failure",

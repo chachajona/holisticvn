@@ -322,8 +322,20 @@ export const getSiteSettings = cache(async () => {
     });
   } catch (error) {
     // Only the transport response is cached by Next. Never persist this error fallback as settings.
-    // Log so schema drift or an outage is visible instead of silently looking like "no settings".
-    console.error("[sanity] siteSettings unavailable, using fallback:", error);
+    // Never log provider messages, bodies, headers, causes or mutable error names.
+    let name = "UnknownError";
+    if (error instanceof Error) name = "Error";
+    if (error instanceof z.ZodError) name = "ZodError";
+    const status =
+      typeof error === "object" && error !== null && "statusCode" in error
+        ? error.statusCode
+        : undefined;
+    console.error("[sanity] siteSettings unavailable, using fallback:", {
+      name,
+      ...(typeof status === "number" && Number.isInteger(status) && status >= 400 && status <= 599
+        ? { status }
+        : {}),
+    });
     return null;
   }
 });
