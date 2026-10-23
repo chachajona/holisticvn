@@ -1,6 +1,6 @@
 import { LeadForm } from "@/components/lead-form";
 import { createMetadata } from "@/lib/seo";
-import { getServices } from "@/lib/sanity";
+import { getBookingService } from "@/lib/sanity";
 
 export const metadata = createMetadata({
   title: "Đặt lịch tư vấn",
@@ -14,10 +14,7 @@ export default async function BookingPage({
 }) {
   // Context is optional: unknown/repeated ?service values and a CMS outage must not block booking.
   const { service: group } = await searchParams;
-  const service =
-    typeof group === "string"
-      ? (await getServices().catch(() => [])).find((s) => s.group === group)
-      : undefined;
+  const service = typeof group === "string" ? await getBookingService(group) : undefined;
   return (
     <main id="main">
       <section className="booking-page booking-page--compact">

@@ -2,6 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/rate-limit", () => ({ checkLeadRateLimit: vi.fn() }));
 vi.mock("@/lib/email", () => ({ sendLeadNotification: vi.fn() }));
+const { cmsFetch } = vi.hoisted(() => ({
+  cmsFetch: vi.fn(() => {
+    throw new Error("CMS unavailable");
+  }),
+}));
+vi.mock("@sanity/client", () => ({ createClient: () => ({ fetch: cmsFetch }) }));
 
 import { checkLeadRateLimit } from "@/lib/rate-limit";
 import { sendLeadNotification } from "@/lib/email";
@@ -59,6 +65,16 @@ describe("POST /api/leads", () => {
     expect(await res.json()).toEqual({ success: true });
     expect(sendLeadNotification).toHaveBeenCalledWith(expect.objectContaining(validLead));
   });
+  it.each(["contact", "booking"])(
+    "accepts %s independently of unavailable settings",
+    async (kind) => {
+      vi.mocked(sendLeadNotification).mockResolvedValue({ ok: true });
+      const res = await POST(req({ ...validLead, kind, source: `/${kind}` }));
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual({ success: true });
+      expect(cmsFetch).not.toHaveBeenCalled();
+    },
+  );
   it("blocks email when the shared rate limit is exceeded", async () => {
     vi.mocked(checkLeadRateLimit).mockResolvedValue("limited");
     const response = await POST(req(validLead));

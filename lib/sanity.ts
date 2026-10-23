@@ -23,14 +23,41 @@ import {
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 
 const enabled = projectId !== "missing-project-id";
-const client = createClient({
+const clientConfig = {
   projectId,
   dataset,
   apiVersion,
-  perspective: "published",
+  perspective: "published" as const,
   useCdn: false,
   token: process.env.SANITY_API_READ_TOKEN,
+};
+const client = createClient(clientConfig);
+// Each shared-settings or optional booking-context read has a total deadline.
+// Retries belong to client configuration; ordinary content readers keep their existing policy.
+const CMS_READ_DEADLINE_MS = 5000;
+const resilientClient = createClient({
+  ...clientConfig,
+  maxRetries: 0,
+  timeout: CMS_READ_DEADLINE_MS,
 });
+
+async function withinCmsDeadline<T>(read: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error("CMS read deadline exceeded"));
+      controller.abort();
+    }, CMS_READ_DEADLINE_MS);
+  });
+  try {
+    // Race also bounds transports that ignore abort; late settlements remain handled.
+    return await Promise.race([Promise.resolve().then(() => read(controller.signal)), deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const text = z.string().catch("");
 const strings = z.array(z.string()).catch([]);
 const record = { slug: z.string().min(1), title: z.string().min(1) };
@@ -163,12 +190,21 @@ const testimonialSchema = z.object({
   avatar: z.string().optional().catch(undefined),
 });
 
-async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]> {
+type SanityReadOptions = { client: typeof client; signal: AbortSignal };
+
+async function fetchRecords<T>(
+  query: string,
+  schema: z.ZodType<T>,
+  options?: SanityReadOptions,
+): Promise<T[]> {
   // A configured dataset (including an empty one) is authoritative; samples are local-only.
-  const value: unknown = await client.fetch(
+  const value: unknown = await (options?.client ?? client).fetch(
     query,
     {},
-    { next: { revalidate: 3600, tags: ["sanity"] } },
+    {
+      next: { revalidate: 3600, tags: ["sanity"] },
+      ...(options ? { signal: options.signal } : {}),
+    },
   );
   // A singleton query returns null until the document is first published: no records, not an outage.
   if (value === null) return [];
@@ -178,15 +214,28 @@ async function fetchRecords<T>(query: string, schema: z.ZodType<T>): Promise<T[]
     return parsed.success ? [parsed.data] : [];
   });
 }
-export const getServices = cache(async (): Promise<Service[]> => {
+async function readServices(options?: SanityReadOptions): Promise<Service[]> {
   if (!enabled) return fallbackServices;
   // groups[] order is the editor's drag-and-drop order; defined(group) skips half-filled items.
   const services = await fetchRecords(
     `*[_id == "servicesPage"][0].groups[defined(group)]{group,title,shortTitle,summary,body,bullets,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
     serviceSchema,
+    options,
   );
   // One section per group: anchors and booking context are keyed by group.
   return services.filter((s, i) => services.findIndex((o) => o.group === s.group) === i);
+}
+export const getServices = cache(() => readServices());
+export const getBookingService = cache(async (group: string): Promise<Service | undefined> => {
+  if (!serviceGroups.some((valid) => valid === group)) return undefined;
+  try {
+    const services = await withinCmsDeadline((signal) =>
+      readServices({ client: resilientClient, signal }),
+    );
+    return services.find((service) => service.group === group);
+  } catch {
+    return undefined;
+  }
 });
 export const getMethods = cache(async (): Promise<Method[]> => {
   if (!enabled) return fallbackMethods;
@@ -262,12 +311,33 @@ const settingsSchema = z.object({
 });
 export const getSiteSettings = cache(async () => {
   if (!enabled) return null;
-  const value = await client.fetch(
-    `*[_type == "siteSettings"][0]{contactPhone,contactEmail,locations,socialMedia}`,
-    {},
-    { next: { revalidate: 3600, tags: ["sanity"] } },
-  );
-  return value ? settingsSchema.parse(value) : null;
+  try {
+    return await withinCmsDeadline(async (signal) => {
+      const value: unknown = await resilientClient.fetch(
+        `*[_type == "siteSettings"][0]{contactPhone,contactEmail,locations,socialMedia}`,
+        {},
+        { signal, next: { revalidate: 3600, tags: ["sanity"] } },
+      );
+      return value === null ? null : settingsSchema.parse(value);
+    });
+  } catch (error) {
+    // Only the transport response is cached by Next. Never persist this error fallback as settings.
+    // Never log provider messages, bodies, headers, causes or mutable error names.
+    let name = "UnknownError";
+    if (error instanceof Error) name = "Error";
+    if (error instanceof z.ZodError) name = "ZodError";
+    const status =
+      typeof error === "object" && error !== null && "statusCode" in error
+        ? error.statusCode
+        : undefined;
+    console.error("[sanity] siteSettings unavailable, using fallback:", {
+      name,
+      ...(typeof status === "number" && Number.isInteger(status) && status >= 400 && status <= 599
+        ? { status }
+        : {}),
+    });
+    return null;
+  }
 });
 export type PublicSiteData = { site: typeof fallbackSite; branches: typeof fallbackBranches };
 export const getPublicSiteData = cache(async (): Promise<PublicSiteData> => {

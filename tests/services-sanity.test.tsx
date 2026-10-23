@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const { fetch, leadForm } = vi.hoisted(() => ({ fetch: vi.fn(), leadForm: vi.fn() }));
 vi.mock("@sanity/client", () => ({ createClient: () => ({ fetch }) }));
 vi.mock("@/sanity/env", () => ({
@@ -129,6 +129,7 @@ describe("services from Sanity", () => {
 });
 
 describe("booking context", () => {
+  afterEach(() => vi.useRealTimers());
   beforeEach(() => {
     fetch.mockReset();
     leadForm.mockReset();
@@ -151,6 +152,29 @@ describe("booking context", () => {
       );
       expect(html).not.toContain("Dịch vụ:");
       expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+      expect(fetch).not.toHaveBeenCalled();
     },
   );
+
+  it("does not substitute another published service for a missing group", async () => {
+    fetch.mockResolvedValue([service("therapy")]);
+    renderToStaticMarkup(
+      await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
+    );
+    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+  });
+
+  it("bounds stalled optional context, aborts it and omits treatment", async () => {
+    vi.useFakeTimers();
+    fetch.mockReturnValue(new Promise(() => {}));
+    const page = BookingPage({ searchParams: Promise.resolve({ service: "training" }) });
+    await vi.advanceTimersByTimeAsync(4999);
+    const signal = fetch.mock.calls[0][2].signal as AbortSignal;
+    expect(signal.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(renderToStaticMarkup(await page)).not.toContain("Dịch vụ:");
+    expect(signal.aborted).toBe(true);
+    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+    expect(vi.getTimerCount()).toBe(0);
+  });
 });
