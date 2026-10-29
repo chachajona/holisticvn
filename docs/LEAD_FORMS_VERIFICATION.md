@@ -124,8 +124,9 @@ other errors offer a retry without repeating the adjacent call link.
   delayed success kept the button disabled, blocked another Enter submission and
   reset only after success. Cookies were rejected. All six valid requests were
   intercepted locally; no email was sent.
-- Contact desktop/mobile and the hero inline-error state are published as review
-  evidence in `docs/review-evidence/pr-55/`. These are local production captures,
+- Contact desktop/mobile and the hero inline-error state are uploaded directly to
+  [PR #55](https://github.com/chachajona/holisticvn/pull/55) as GitHub attachments.
+  These are local production captures,
   not authenticated Vercel Preview screenshots. Physical-device autofill, actual
   screen-reader behavior and final-page real-Sanity coverage remain unverified;
   the existing shared cookie-banner observation remains recorded separately.
