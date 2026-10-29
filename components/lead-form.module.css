@@ -1,3 +1,13 @@
+.validationStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .buttonLabels {
   display: grid;
 }
@@ -15,22 +25,6 @@
 }
 .motion[data-motion-input="pointer"] .buttonLabels > span {
   transition: opacity 120ms ease;
-}
-.statusContent {
-  display: block;
-}
-.motion[data-motion-input="pointer"]:is([data-state="sent"], [data-state="error"]) .statusContent {
-  animation: statusEnter 180ms ease;
-}
-@keyframes statusEnter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 .motion :global(.lead-form__details) summary {
   list-style: none;
@@ -58,20 +52,7 @@
   .motion[data-motion-input="pointer"] .buttonLabels > span {
     transition-duration: 80ms;
   }
-  .motion[data-motion-input="pointer"]:is([data-state="sent"], [data-state="error"])
-    .statusContent {
-    animation-name: statusFade;
-    animation-duration: 80ms;
-  }
   .noteChevron {
     transition: none;
-  }
-}
-@keyframes statusFade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/app/globals.css";
 import { GoogleTagManager } from "@/components/gtm";
 import { HolisticFooter } from "@/components/holistic-footer";
+import { LeadToaster } from "@/components/lead-toast";
 import { SiteChrome } from "@/components/site-chrome";
 import { SiteDataProvider } from "@/components/site-data";
 import { getPublicSiteData } from "@/lib/sanity";
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <GoogleTagManager />
           <SiteChrome footer={<HolisticFooter />}>{children}</SiteChrome>
         </SiteDataProvider>
+        <LeadToaster />
       </body>
     </html>
   );

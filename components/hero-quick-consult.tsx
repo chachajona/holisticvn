@@ -1,68 +1,59 @@
 "use client";
 
-import { FormEvent, useEffect, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
+import { useId, useLayoutEffect, useRef, useState, type SubmitEvent } from "react";
 import { track } from "@/components/gtm";
+import { leadToast } from "@/components/lead-toast";
+import { submitLead, validateLead, type LeadErrors, type LeadPayload } from "@/lib/lead-client";
 import styles from "./hero-quick-consult.module.css";
 
 type Props = { hours: string; phone: string };
-const subscribeToHydration = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
 
 export function HeroQuickConsult({ hours, phone }: Props) {
   const [sending, setSending] = useState(false);
   const [digits, setDigits] = useState(0);
-  const [toast, setToast] = useState<{ kind: "success" | "error"; text: string } | null>(null);
-  const mounted = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot);
+  const [errors, setErrors] = useState<LeadErrors>({});
+  const errorId = useId();
+  const phoneInput = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!toast || toast.kind === "error") return;
-    const timer = setTimeout(() => setToast(null), 5000);
-    return () => clearTimeout(timer);
-  }, [toast]);
+  useLayoutEffect(() => {
+    // Commit the error text and description before focusing the invalid field.
+    if (errors.phone) phoneInput.current?.focus();
+  }, [errors]);
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formEl = event.currentTarget;
+    const form = event.currentTarget;
+    if (sending) return;
+    const fields = new FormData(form);
+    // name is required by leadSchema; quick consult only collects a phone number
+    const payload = {
+      kind: "contact",
+      name: "Khách tư vấn nhanh",
+      phone: String(fields.get("phone") ?? ""),
+      source: "home-hero",
+      website: String(fields.get("website") ?? ""),
+    } satisfies LeadPayload;
+    const validationErrors = validateLead(payload);
+    setErrors(validationErrors);
+    if (validationErrors.phone) return;
     setSending(true);
-    const form = new FormData(formEl);
-    const response = await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // name is required by leadSchema; quick consult only collects a phone number
-      body: JSON.stringify({
-        kind: "contact",
-        name: "Khách tư vấn nhanh",
-        phone: form.get("phone"),
-        source: "home-hero",
-        website: form.get("website"),
-      }),
-    }).catch(() => null);
+    const result = await submitLead(payload);
     setSending(false);
-    if (response?.ok) {
+    if (result.ok) {
       track("contact_submit", { source: "home-hero" });
-      formEl.reset();
+      form.reset();
       setDigits(0);
-      setToast({
-        kind: "success",
-        text: "Đã nhận yêu cầu. Holistic sẽ gọi lại để tư vấn; lịch hẹn sẽ được xác nhận sau.",
-      });
-      return;
+      leadToast.success(
+        "Đã gửi yêu cầu tư vấn. Holistic sẽ gọi lại để trao đổi và xác nhận lịch hẹn.",
+      );
+    } else {
+      leadToast.error(result.message, phone);
     }
-    const body = await response?.json().catch(() => null);
-    setToast({
-      kind: "error",
-      text:
-        response?.status === 400 && body?.error
-          ? body.error
-          : "Chưa thể gửi yêu cầu. Vui lòng thử lại hoặc gọi Holistic.",
-    });
   };
 
   return (
     <div className={styles.wrap}>
-      <form className={styles.form} onSubmit={submit} data-chat-exclusion>
+      <form className={styles.form} onSubmit={submit} noValidate data-chat-exclusion>
         <input
           name="website"
           tabIndex={-1}
@@ -71,6 +62,7 @@ export function HeroQuickConsult({ hours, phone }: Props) {
           className={styles.honeypot}
         />
         <input
+          ref={phoneInput}
           required
           name="phone"
           type="tel"
@@ -79,7 +71,12 @@ export function HeroQuickConsult({ hours, phone }: Props) {
           aria-label="Số điện thoại"
           placeholder="Số điện thoại"
           className={styles.input}
-          onChange={(event) => setDigits(event.target.value.replace(/\D/g, "").length)}
+          aria-invalid={errors.phone ? true : undefined}
+          aria-describedby={errors.phone ? errorId : undefined}
+          onChange={(event) => {
+            setDigits(event.target.value.replace(/\D/g, "").length);
+            setErrors({});
+          }}
         />
         {/* on mobile the label collapses to an arrow once the user starts typing, giving the input more room */}
         <button
@@ -98,34 +95,12 @@ export function HeroQuickConsult({ hours, phone }: Props) {
           </span>
         </button>
       </form>
-      <p className={styles.note}>Holistic gọi lại {hours}; lịch hẹn được xác nhận sau.</p>
-      {mounted &&
-        createPortal(
-          <div
-            className={styles.toastRegion}
-            role="status"
-            aria-live={toast?.kind === "error" ? "assertive" : "polite"}
-          >
-            {toast && (
-              <div className={styles.toast} data-kind={toast.kind}>
-                <span>{toast.text}</span>
-                {toast.kind === "error" && (
-                  <>
-                    <a href={`tel:${phone.replaceAll(" ", "")}`}>Gọi ngay</a>
-                    <button
-                      type="button"
-                      onClick={() => setToast(null)}
-                      aria-label="Đóng thông báo"
-                    >
-                      ×
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>,
-          document.body,
-        )}
+      <p className={styles.error} id={errorId} role="alert" aria-atomic="true">
+        {errors.phone}
+      </p>
+      <p className={styles.note}>
+        Holistic gọi lại trong khung giờ {hours} để tư vấn và xác nhận lịch hẹn.
+      </p>
     </div>
   );
 }

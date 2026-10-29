@@ -20,8 +20,8 @@ export async function POST(request: Request) {
       {
         error:
           limit === "limited"
-            ? "Đã nhận nhiều yêu cầu. Vui lòng thử lại sau hoặc gọi Holistic."
-            : "Chưa thể gửi yêu cầu. Vui lòng gọi Holistic để được hỗ trợ.",
+            ? "Có quá nhiều yêu cầu gửi đến. Vui lòng thử lại sau."
+            : "Chưa gửi được yêu cầu. Vui lòng thử lại sau.",
       },
       {
         status: limit === "limited" ? 429 : 503,
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   const delivery = await sendLeadNotification(input);
   if (!delivery.ok) {
     return NextResponse.json(
-      { error: "Chưa thể gửi yêu cầu. Vui lòng gọi Holistic để được hỗ trợ." },
+      { error: "Chưa gửi được yêu cầu. Vui lòng thử lại sau." },
       { status: delivery.reason === "unconfigured" ? 503 : 502 },
     );
   }

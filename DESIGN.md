@@ -312,6 +312,12 @@ Issue #10. The owner approved the combined design on 2026-10-20 and requested pr
 
 The demo establishes visual direction, not missing clinical data: no demo duration, benefit, protocol or FAQ is copied into the bundled catalogue. CMS content is authoritative; sections and their contents links are omitted together when optional content is absent. See `docs/treatment-detail-selected-ui.md` for the decision and implementation boundary.
 
+### Contact (`/contact`)
+
+Implemented refresh proposal (2026-10-30; final visual acceptance pending): a standalone mono marker and hairline introduce the two-column contact area. The left column pairs an ink/sage Roboto Slab heading with full-row phone, Zalo and email links separated by rules; the right holds the shared callback form on linen (`#f6efe6`, 18px radius). Form fields use paper, 10px corners and 16px text, with sage focus outlines and a clay pill submit action. Below, the approved clinic entrance photo sits beside the address, Google Maps link and opening hours in one linen band. At 700px and below, both sections stack in reading order. No new animation, client component or map embed. Contact values still come from `getPublicSiteData()`. Sources and verification: `docs/contact-page-awwwards-inspiration.md`.
+
+The subsequent copy-preserving critique/polish uses clay (`#90776e`) for resting field borders, the treatment form's warm placeholder color (`#75645b`), Roboto Slab 300 at 20px for the clinic title, and a 13px/400 privacy note. Keyboard focus keeps the submit pill's shape. The channel list uses the existing chat-exclusion mechanism so floating phone/Zalo controls step aside while the direct links are visible. No section spacing or page composition changed. Review, measurements and the inherited consent-layout observation: `docs/contact-page-polish-review.md`.
+
 ### Homepage comparison table
 
 The same native table stays visible at every viewport. The criteria and Holistic columns stay fixed during horizontal scrolling, with opaque backgrounds. Desktop uses a 26% criteria column and 14% Holistic column; mobile uses 136px and 88px (112px and 80px below 360px). Each mobile comparison column fills the remaining visible width, so a complete provider column is readable at either end of the scroll area. Header/body text stays at 16px/15.5px on mobile.

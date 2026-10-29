@@ -234,20 +234,18 @@ body:has(.cookie) footer {
   position: absolute !important;
   left: -10000px;
 }
-.form-message {
-  min-height: 20px;
-  margin: -6px 0 0;
-  color: var(--coral);
+/* keeps a focused invalid field clear of the sticky nav */
+.lead-form :is(input, textarea) {
+  scroll-margin-top: 120px;
+}
+.lead-form__error {
+  margin: -8px 0 0;
+  color: var(--clay-deep, #744d40);
   font-size: 0.78rem;
 }
-.form-message a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.lead-form [aria-invalid="true"] {
+  border-color: var(--coral);
 }
-.form-message--success {
-  color: var(--moss);
-}
-
 .hero {
   min-height: calc(100svh - 74px);
   display: grid;
