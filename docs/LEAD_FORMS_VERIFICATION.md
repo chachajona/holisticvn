@@ -17,13 +17,13 @@ Recorded 2026-10-29. Tracking: GitHub #12, child of #1.
 
 ## Behavior
 
-| State                    | `LeadForm` (contact, booking, treatment)                   | Hero quick consult                    |
-| ------------------------ | ---------------------------------------------------------- | ------------------------------------- |
-| Invalid input            | Inline error per field, `aria-invalid`, focus on first one | Toast, `aria-invalid`, focus on phone |
-| Pending                  | Button disabled; second submit ignored                     | Button disabled                       |
-| Network, 429, 502, 503   | Persistent toast with the server message and a `tel:` link | Same                                  |
-| Success                  | Toast explaining staff will call back; form resets         | Same                                  |
-| Data after failed submit | Kept                                                       | Kept                                  |
+| State                    | `LeadForm` (contact, booking, treatment)                   | Hero quick consult                                     |
+| ------------------------ | ---------------------------------------------------------- | ------------------------------------------------------ |
+| Invalid input            | Inline error per field, `aria-invalid`, focus on first one | Inline phone error, `aria-describedby`, focus on phone |
+| Pending                  | Button disabled; second submit ignored                     | Button disabled                                        |
+| Network, 429, 502, 503   | Persistent toast with the server message and a `tel:` link | Same                                                   |
+| Success                  | Toast explaining staff will call back; form resets         | Same                                                   |
+| Data after failed submit | Kept                                                       | Kept                                                   |
 
 Contact shows the Lê Quốc Hưng address with a Google Maps link, phone, email and
 09:00–21:00 daily hours. Direct phone and chat links load nothing third-party and
@@ -103,3 +103,29 @@ other errors offer a retry without repeating the adjacent call link.
   preload warnings for prefetched services/treatments routes, whose styles are
   unchanged by this refactor. No application exceptions were observed. The
   physical-device and screen-reader checks above remain outstanding.
+
+## PR #55 readiness follow-up — 2026-10-30
+
+- Fixed the hero phone-validation gap identified by the independent spec review.
+  Invalid input now has a persistent inline alert associated with the phone field
+  through `aria-describedby`. Focus moves after the error text has rendered;
+  editing clears the error without stealing focus. Submit results still use the
+  shared success/error toasts; the unused timed validation-toast helper was removed.
+- Three regression tests failed against the old component, then passed after the
+  fix. They cover persistence beyond the old six-second timeout, the description
+  available at focus, correction/repeated invalid submission, pending protection,
+  quick-consult payload context and successful reset.
+- Format, lint, typecheck, **420 tests in 54 files**, production build and fallback
+  smoke pass. A focused independent follow-up found the original P2 resolved and
+  no new concrete regression.
+- Production Chromium at 320/390/1440px verified the linked error, focus and edit
+  clearing without horizontal overflow. At 390px it remained visible after seven
+  seconds. Mock 503 failures retained the phone and offered the direct call link;
+  delayed success kept the button disabled, blocked another Enter submission and
+  reset only after success. Cookies were rejected. All six valid requests were
+  intercepted locally; no email was sent.
+- Contact desktop/mobile and the hero inline-error state are published as review
+  evidence in `docs/review-evidence/pr-55/`. These are local production captures,
+  not authenticated Vercel Preview screenshots. Physical-device autofill, actual
+  screen-reader behavior and final-page real-Sanity coverage remain unverified;
+  the existing shared cookie-banner observation remains recorded separately.

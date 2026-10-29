@@ -36,6 +36,4 @@ export const leadToast = {
       </>,
       { id: toastId, duration: Infinity, closeButton: true },
     ),
-  // Field-level problems are fixable in place, so they time out.
-  invalid: (message: string) => toast.error(message, { id: toastId, duration: 6_000 }),
 };
