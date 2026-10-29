@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Toaster } from "sonner";
 import "@/app/globals.css";
 import { GoogleTagManager } from "@/components/gtm";
 import { HolisticFooter } from "@/components/holistic-footer";
@@ -59,6 +60,24 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <GoogleTagManager />
           <SiteChrome footer={<HolisticFooter />}>{children}</SiteChrome>
         </SiteDataProvider>
+        <Toaster
+          position="top-center"
+          richColors
+          closeButton
+          offset={{ top: 96 }}
+          mobileOffset={{ top: 80, left: 16, right: 16 }}
+          style={
+            {
+              "--success-bg": "var(--ink)",
+              "--success-text": "#f7f3f0",
+              "--success-border": "rgba(247, 243, 240, 0.25)",
+              "--error-bg": "var(--clay-deep)",
+              "--error-text": "#f7f3f0",
+              "--error-border": "rgba(247, 243, 240, 0.25)",
+            } as React.CSSProperties
+          }
+          toastOptions={{ style: { fontFamily: "var(--font-accent), sans-serif" } }}
+        />
       </body>
     </html>
   );

@@ -830,11 +830,8 @@
 .root :global(.lead-form__details) summary:focus-visible {
   outline-color: var(--clay-deep);
 }
-.root :global(.form-message) {
+.root :global(.lead-form__error) {
   color: var(--clay-deep);
-}
-.root :global(.form-message--success) {
-  color: var(--sage);
 }
 
 /* Selected dock C: photo, treatment summary, CTA; solid paper and a single hairline. */

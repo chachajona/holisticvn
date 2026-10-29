@@ -234,18 +234,17 @@ body:has(.cookie) footer {
   position: absolute !important;
   left: -10000px;
 }
-.form-message {
-  min-height: 20px;
-  margin: -6px 0 0;
+/* keeps a focused invalid field clear of the sticky nav */
+.lead-form :is(input, textarea) {
+  scroll-margin-top: 120px;
+}
+.lead-form__error {
+  margin: -8px 0 0;
   color: var(--coral);
   font-size: 0.78rem;
 }
-.form-message a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.form-message--success {
-  color: var(--moss);
+.lead-form [aria-invalid="true"] {
+  border-color: var(--coral);
 }
 
 .hero {

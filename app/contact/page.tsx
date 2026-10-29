@@ -1,5 +1,6 @@
 import { LeadForm } from "@/components/lead-form";
 import { getPublicSiteData } from "@/lib/sanity";
+import { mapsHref, noBreakAddress } from "@/lib/content";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -24,8 +25,18 @@ export default async function ContactPage() {
               <a href={`tel:${site.phone.replaceAll(" ", "")}`}>{site.phone}</a>
               <a href={`mailto:${site.email}`}>{site.email}</a>
               {branches.map((branch) => (
-                <span key={branch.address}>{branch.address}</span>
+                <a
+                  key={branch.address}
+                  href={mapsHref(branch.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {noBreakAddress(branch.address)} (xem bản đồ)
+                </a>
               ))}
+              <span>
+                Giờ mở cửa: {site.hours} · {site.hoursNote}
+              </span>
             </div>
           </div>
           <div className="booking-page__form">
