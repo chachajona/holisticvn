@@ -240,13 +240,12 @@ body:has(.cookie) footer {
 }
 .lead-form__error {
   margin: -8px 0 0;
-  color: var(--coral);
+  color: var(--clay-deep, #744d40);
   font-size: 0.78rem;
 }
 .lead-form [aria-invalid="true"] {
   border-color: var(--coral);
 }
-
 .hero {
   min-height: calc(100svh - 74px);
   display: grid;

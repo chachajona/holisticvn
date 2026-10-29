@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { submitLead, validateLead } from "@/lib/lead-client";
+import { submitLead, validateLead, type LeadPayload } from "@/lib/lead-client";
 
-const valid = { kind: "contact", name: "An", phone: "0828 959 598", email: "", message: "" };
+const valid = {
+  kind: "contact",
+  name: "An",
+  phone: "0828 959 598",
+  email: "",
+  message: "",
+} satisfies LeadPayload;
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -20,7 +26,7 @@ describe("validateLead", () => {
       treatment: "y".repeat(121),
     });
     expect(errors).toEqual({
-      name: "Vui lòng nhập họ tên",
+      name: "Vui lòng nhập họ và tên",
       phone: "Số điện thoại chưa hợp lệ",
       email: "Email chưa hợp lệ",
       message: "Ghi chú tối đa 1000 ký tự",
@@ -53,7 +59,7 @@ describe("submitLead", () => {
     );
     expect(await submitLead(valid)).toEqual({
       ok: false,
-      message: "Chưa gửi được yêu cầu. Vui lòng thử lại.",
+      message: "Chưa gửi được yêu cầu. Vui lòng thử lại sau.",
     });
   });
 
@@ -64,7 +70,7 @@ describe("submitLead", () => {
     );
     expect(await submitLead(valid)).toEqual({
       ok: false,
-      message: "Không kết nối được. Vui lòng kiểm tra mạng.",
+      message: "Chưa gửi được yêu cầu. Bạn kiểm tra kết nối mạng rồi thử lại.",
     });
   });
 });

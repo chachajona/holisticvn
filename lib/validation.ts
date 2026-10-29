@@ -8,7 +8,7 @@ const phone = z
 
 export const leadSchema = z.object({
   kind: z.enum(["contact", "booking"]),
-  name: z.string().trim().min(2, "Vui lòng nhập họ tên").max(100, "Họ tên tối đa 100 ký tự"),
+  name: z.string().trim().min(2, "Vui lòng nhập họ và tên").max(100, "Họ và tên tối đa 100 ký tự"),
   phone,
   email: z
     .string()
@@ -22,4 +22,5 @@ export const leadSchema = z.object({
   website: z.string().optional().default(""),
 });
 
+export type LeadPayload = z.input<typeof leadSchema>;
 export type LeadInput = z.infer<typeof leadSchema>;

@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { useRef, useState, type SubmitEvent } from "react";
 import { track } from "@/components/gtm";
 import { leadToast } from "@/components/lead-toast";
-import { submitLead, validateLead } from "@/lib/lead-client";
+import { submitLead, validateLead, type LeadPayload } from "@/lib/lead-client";
 import styles from "./hero-quick-consult.module.css";
 
 type Props = { hours: string; phone: string };
@@ -12,26 +12,26 @@ export function HeroQuickConsult({ hours, phone }: Props) {
   const [sending, setSending] = useState(false);
   const [digits, setDigits] = useState(0);
   const [invalid, setInvalid] = useState(false);
-  const input = useRef<HTMLInputElement>(null);
+  const phoneInput = useRef<HTMLInputElement>(null);
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formEl = event.currentTarget;
+    const form = event.currentTarget;
     if (sending) return;
-    const form = new FormData(formEl);
+    const fields = new FormData(form);
     // name is required by leadSchema; quick consult only collects a phone number
     const payload = {
       kind: "contact",
       name: "Khách tư vấn nhanh",
-      phone: String(form.get("phone") ?? ""),
+      phone: String(fields.get("phone") ?? ""),
       source: "home-hero",
-      website: String(form.get("website") ?? ""),
-    };
-    const problem = validateLead(payload).phone;
-    setInvalid(Boolean(problem));
-    if (problem) {
-      leadToast.invalid(problem);
-      input.current?.focus();
+      website: String(fields.get("website") ?? ""),
+    } satisfies LeadPayload;
+    const phoneError = validateLead(payload).phone;
+    setInvalid(Boolean(phoneError));
+    if (phoneError) {
+      leadToast.invalid(phoneError);
+      phoneInput.current?.focus();
       return;
     }
     setSending(true);
@@ -39,10 +39,10 @@ export function HeroQuickConsult({ hours, phone }: Props) {
     setSending(false);
     if (result.ok) {
       track("contact_submit", { source: "home-hero" });
-      formEl.reset();
+      form.reset();
       setDigits(0);
       leadToast.success(
-        "Đã nhận yêu cầu. Holistic sẽ gọi lại để tư vấn; lịch hẹn sẽ được xác nhận sau.",
+        "Đã gửi yêu cầu tư vấn. Holistic sẽ gọi lại để trao đổi và xác nhận lịch hẹn.",
       );
     } else {
       leadToast.error(result.message, phone);
@@ -60,7 +60,7 @@ export function HeroQuickConsult({ hours, phone }: Props) {
           className={styles.honeypot}
         />
         <input
-          ref={input}
+          ref={phoneInput}
           required
           name="phone"
           type="tel"
@@ -92,7 +92,9 @@ export function HeroQuickConsult({ hours, phone }: Props) {
           </span>
         </button>
       </form>
-      <p className={styles.note}>Holistic gọi lại {hours}; lịch hẹn được xác nhận sau.</p>
+      <p className={styles.note}>
+        Holistic gọi lại trong khung giờ {hours} để tư vấn và xác nhận lịch hẹn.
+      </p>
     </div>
   );
 }

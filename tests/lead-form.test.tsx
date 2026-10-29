@@ -51,17 +51,40 @@ const render = (kind: "contact" | "booking" = "booking") =>
 
 it("shows inline errors, focuses the first invalid field and sends nothing", async () => {
   render();
+  const focusedErrors: { invalid: string | null; description: string | null | undefined }[] = [];
+  field("name").addEventListener("focus", () => {
+    const described = field("name").getAttribute("aria-describedby");
+    focusedErrors.push({
+      invalid: field("name").getAttribute("aria-invalid"),
+      description: described ? document.getElementById(described)?.textContent : null,
+    });
+  });
   fill("phone", "12");
   await submit();
   expect(fetchMock).not.toHaveBeenCalled();
   expect(field("name").getAttribute("aria-invalid")).toBe("true");
-  expect(host.textContent).toContain("Vui lòng nhập họ tên");
+  expect(host.textContent).toContain("Vui lòng nhập họ và tên");
   expect(host.textContent).toContain("Số điện thoại chưa hợp lệ");
   expect(document.activeElement).toBe(field("name"));
+  expect(focusedErrors).toEqual([{ invalid: "true", description: "Vui lòng nhập họ và tên" }]);
   const described = field("phone").getAttribute("aria-describedby")!;
   expect(document.getElementById(described)?.textContent).toBe("Số điện thoại chưa hợp lệ");
   fill("name", "An");
   expect(field("name").getAttribute("aria-invalid")).toBeNull();
+  expect(document.activeElement).toBe(field("name"));
+});
+
+it("announces validation errors and clears corrected errors without moving focus", async () => {
+  render();
+  const announcement = host.querySelector('[role="alert"]');
+  expect(announcement?.textContent).toBe("");
+  await submit();
+  expect(announcement?.textContent).toContain("Vui lòng nhập họ và tên");
+  expect(announcement?.textContent).toContain("Số điện thoại chưa hợp lệ");
+  field("phone").focus();
+  fill("name", "An");
+  expect(announcement?.textContent).not.toContain("Vui lòng nhập họ và tên");
+  expect(document.activeElement).toBe(field("phone"));
 });
 
 it("keeps the entered data and offers the call link when the network fails", async () => {

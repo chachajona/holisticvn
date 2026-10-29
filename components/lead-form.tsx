@@ -1,14 +1,14 @@
 "use client";
 
-import { FormEvent, useId, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState, type SubmitEvent } from "react";
 import { track } from "@/components/gtm";
 import { leadToast } from "@/components/lead-toast";
 import { useSiteData } from "@/components/site-data";
-import { submitLead, validateLead, type LeadErrors } from "@/lib/lead-client";
+import { submitLead, validateLead, type LeadErrors, type LeadPayload } from "@/lib/lead-client";
 import styles from "./lead-form.module.css";
 
 type Props = {
-  kind: "contact" | "booking";
+  kind: LeadPayload["kind"];
   treatment?: string;
   submitLabel?: string;
   successMessage?: string;
@@ -25,13 +25,21 @@ export function LeadForm({
   const { site } = useSiteData();
   const id = useId();
   const [errors, setErrors] = useState<LeadErrors>({});
+  const focusTarget = useRef<HTMLElement | null>(null);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [motionInput, setMotionInput] = useState<"pointer" | "keyboard">("keyboard");
+  const sending = state === "sending";
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
+  useLayoutEffect(() => {
+    // Focus only after the error descriptions and ARIA attributes are in the DOM.
+    focusTarget.current?.focus();
+    focusTarget.current = null;
+  }, [errors]);
+
+  const submit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (state === "sending") return;
+    if (sending) return;
     const fields = new FormData(form);
     const text = (name: string) => String(fields.get(name) ?? "");
     const payload = {
@@ -43,13 +51,14 @@ export function LeadForm({
       treatment,
       source: window.location.pathname,
       website: text("website"),
-    };
-    const invalid = validateLead(payload);
-    setErrors(invalid);
-    const first = Object.keys(invalid)[0];
-    if (first) {
+    } satisfies LeadPayload;
+    const validationErrors = validateLead(payload);
+    setErrors(validationErrors);
+    const firstInvalidField = Object.keys(validationErrors)[0];
+    if (firstInvalidField) {
       setState("error");
-      (form.elements.namedItem(first) as HTMLElement | null)?.focus();
+      const target = form.elements.namedItem(firstInvalidField);
+      focusTarget.current = target instanceof HTMLElement ? target : null;
       return;
     }
     setState("sending");
@@ -61,8 +70,8 @@ export function LeadForm({
       leadToast.success(
         successMessage ??
           (kind === "booking"
-            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận thời gian tại cơ sở Lê Quốc Hưng; đây chưa phải lịch hẹn."
-            : "Đã gửi lời nhắn. Holistic sẽ liên hệ lại với bạn."),
+            ? "Đã gửi yêu cầu. Holistic sẽ gọi lại để xác nhận lịch hẹn tại cơ sở Lê Quốc Hưng."
+            : "Đã gửi lời nhắn. Holistic sẽ gọi lại để trao đổi với bạn."),
       );
     } else {
       setState("error");
@@ -70,16 +79,17 @@ export function LeadForm({
     }
   };
 
-  const fieldProps = (name: string) => ({
+  const fieldProps = (name: keyof LeadPayload) => ({
     "aria-invalid": errors[name] ? true : undefined,
     "aria-describedby": errors[name] ? `${id}-${name}-error` : undefined,
   });
-  const fieldError = (name: string) =>
+  const fieldError = (name: keyof LeadPayload) =>
     errors[name] ? (
       <p className="lead-form__error" id={`${id}-${name}-error`}>
         {errors[name]}
       </p>
     ) : null;
+  const buttonLabel = sending ? "Đang gửi…" : submitLabel;
 
   return (
     <form
@@ -91,11 +101,17 @@ export function LeadForm({
       noValidate
       onSubmit={submit}
       onChange={(event) => {
-        const name = (event.target as Element).getAttribute("name") ?? "";
-        setErrors((current) => ({ ...current, [name]: undefined }));
-        if (state !== "sending") setState("idle");
+        const target = event.target;
+        if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+          const { name } = target;
+          setErrors((current) => (current[name] ? { ...current, [name]: undefined } : current));
+        }
+        if (!sending) setState("idle");
       }}
     >
+      <span role="alert" aria-atomic="true" className={styles.validationStatus}>
+        {Object.values(errors).filter(Boolean).join(". ")}
+      </span>
       <input
         name="website"
         tabIndex={-1}
@@ -172,16 +188,14 @@ export function LeadForm({
           />
         </label>
       )}
-      <button className="button" disabled={state === "sending"}>
+      <button className="button" disabled={sending}>
         {motion ? (
           <span className={styles.buttonLabels}>
-            <span aria-hidden={state === "sending"}>{submitLabel}</span>
-            <span aria-hidden={state !== "sending"}>Đang gửi…</span>
+            <span aria-hidden={sending}>{submitLabel}</span>
+            <span aria-hidden={!sending}>Đang gửi…</span>
           </span>
-        ) : state === "sending" ? (
-          "Đang gửi…"
         ) : (
-          submitLabel
+          buttonLabel
         )}{" "}
         <span aria-hidden="true">→</span>
       </button>
