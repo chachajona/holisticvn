@@ -23,7 +23,7 @@ const contentSecurityPolicy = [
   `style-src 'self' 'unsafe-inline'${toolbar}`,
   `img-src 'self' data: blob: https://images.unsplash.com https://cdn.sanity.io https://www.googletagmanager.com ${googleAnalytics}${toolbar}${isPreview ? " https://vercel.com" : ""}`,
   `font-src 'self'${toolbar}${isPreview ? " https://assets.vercel.com" : ""}`,
-  `connect-src 'self' https://www.googletagmanager.com ${googleAnalytics}${isDev ? " ws:" : ""}${toolbar}${isPreview ? " wss://ws-us3.pusher.com" : ""}`,
+  `connect-src 'self' https://www.googletagmanager.com ${googleAnalytics} https://vitals.vercel-insights.com${isDev ? " ws:" : ""}${toolbar}${isPreview ? " wss://ws-us3.pusher.com" : ""}`,
   ...(isPreview ? [`frame-src 'self'${toolbar}`] : []),
   "object-src 'none'",
   "base-uri 'self'",

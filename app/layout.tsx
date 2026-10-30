@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/app/globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleTagManager } from "@/components/gtm";
 import { HolisticFooter } from "@/components/holistic-footer";
 import { SiteChrome } from "@/components/site-chrome";
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <GoogleTagManager />
           <SiteChrome footer={<HolisticFooter />}>{children}</SiteChrome>
         </SiteDataProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
