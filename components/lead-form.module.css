@@ -8,22 +8,169 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+.field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.field :global(.lead-form__error) {
+  margin: 0;
+}
+.page {
+  gap: 20px;
+}
+.page label {
+  font-size: 14px;
+  font-weight: 400;
+}
+.page :is(input, textarea, button, summary, a),
+.status {
+  scroll-margin-bottom: calc(var(--cookie-h, 0px) + 24px);
+}
+.page :is(input, textarea) {
+  min-width: 0;
+  width: 100%;
+  border-color: var(--clay);
+  border-radius: 10px;
+  background: var(--card);
+  padding: 12px 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  caret-color: var(--clay-deep);
+}
+.page :is(input, textarea)::placeholder {
+  color: #75645b;
+  opacity: 1;
+}
+.page :is(input, textarea):focus {
+  border-color: var(--sage);
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.page :is(input, textarea)[aria-invalid="true"] {
+  border-color: var(--clay-deep);
+}
+.page :is(input, textarea)[readonly] {
+  color: var(--muted);
+}
+.page :global(.button) {
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--clay-deep);
+  color: var(--milk);
+  font-size: 15px;
+  font-weight: 400;
+  transition: none;
+}
+/* Override the legacy global hover rule even on a touch browser that emulates :hover. */
+.page :global(.button):hover {
+  background: var(--clay-deep);
+  transform: none;
+}
+.page :is(button, summary) {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.page :global(.button):not(:disabled):active {
+  background: var(--clay-hover);
+  transform: scale(0.98);
+}
+@media (hover: hover) and (pointer: fine) {
+  .page :global(.button):not(:disabled):hover {
+    background: var(--clay-hover);
+  }
+}
+.page :global(.button):disabled {
+  background: var(--clay);
+  cursor: wait;
+}
+.page :is(button, summary, a):focus-visible,
+.status:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 5px;
+}
+.page :global(.lead-form__details) summary {
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+.page :global(.lead-form__details) label {
+  margin-top: 8px;
+}
+.page :global(.lead-form__error),
+.hint,
+.status {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.hint {
+  margin: 0;
+  color: var(--muted);
+}
+.status:empty {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.status p {
+  margin: 0;
+}
+.status {
+  overflow-wrap: anywhere;
+  scroll-margin-top: 120px;
+}
+.success {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--sage);
+}
+.success svg {
+  flex: none;
+}
+.failure {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--clay-deep);
+}
+.failure a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .buttonLabels {
   display: grid;
 }
 .buttonLabels > span {
   grid-area: 1 / 1;
 }
+/* Keep the grid's width without painting two different labels over each other. */
+.page .buttonLabels > span[aria-hidden="true"] {
+  visibility: hidden;
+}
 .buttonLabels > span:last-child {
   opacity: 0;
 }
-.motion[data-state="sending"] .buttonLabels > span:first-child {
+:is(.motion, .page)[data-state="sending"] .buttonLabels > span:first-child {
   opacity: 0;
 }
-.motion[data-state="sending"] .buttonLabels > span:last-child {
+:is(.motion, .page)[data-state="sending"] .buttonLabels > span:last-child {
   opacity: 1;
 }
-.motion[data-motion-input="pointer"] .buttonLabels > span {
+:is(.motion, .page)[data-motion-input="pointer"] .buttonLabels > span {
   transition: opacity 120ms ease;
 }
 .motion :global(.lead-form__details) summary {
@@ -49,7 +196,7 @@
   transition: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .motion[data-motion-input="pointer"] .buttonLabels > span {
+  :is(.motion, .page)[data-motion-input="pointer"] .buttonLabels > span {
     transition-duration: 80ms;
   }
   .noteChevron {

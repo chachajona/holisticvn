@@ -37,6 +37,9 @@ export default async function ContactPage() {
               Bạn muốn hỏi về trị liệu, tập luyện hay lịch hẹn? Chia sẻ với Holistic qua cách thuận
               tiện nhất cho bạn.
             </p>
+            <a className={styles.callbackLink} href="#callback">
+              Để Holistic gọi lại <span aria-hidden="true">↓</span>
+            </a>
 
             <div className={styles.channels} data-chat-exclusion>
               <a className={styles.channel} href={`tel:${site.phone.replaceAll(" ", "")}`}>
@@ -73,12 +76,17 @@ export default async function ContactPage() {
             </a>
           </div>
 
-          <section className={styles.formPanel} aria-labelledby="callback-heading">
+          <section
+            id="callback"
+            tabIndex={-1}
+            className={styles.formPanel}
+            aria-labelledby="callback-heading"
+          >
             <h2 id="callback-heading">Để Holistic gọi lại</h2>
             <p>
               Để lại thông tin cùng điều bạn muốn trao đổi. Nhân viên Holistic sẽ gọi lại cho bạn.
             </p>
-            <LeadForm kind="contact" submitLabel="Gửi lời nhắn" />
+            <LeadForm kind="contact" submitLabel="Gửi lời nhắn" variant="page" />
             <p className={styles.privacy}>
               Thông tin được gửi đến đội ngũ Holistic để liên hệ lại.{" "}
               <Link href="/privacy-policy">Chính sách bảo mật</Link>.
