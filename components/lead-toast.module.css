@@ -1,0 +1,17 @@
+.toast {
+  --success-bg: var(--ink);
+  --success-text: #f7f3f0;
+  --success-border: rgba(247, 243, 240, 0.25);
+  --error-bg: var(--clay-deep, #744d40);
+  --error-text: #f7f3f0;
+  --error-border: rgba(247, 243, 240, 0.25);
+  font-family: var(--font-accent), sans-serif;
+}
+.call {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.call:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

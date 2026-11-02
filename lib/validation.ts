@@ -8,7 +8,7 @@ const phone = z
 
 export const leadSchema = z.object({
   kind: z.enum(["contact", "booking"]),
-  name: z.string().trim().min(2, "Vui lòng nhập họ tên").max(100),
+  name: z.string().trim().min(2, "Vui lòng nhập họ và tên").max(100, "Họ và tên tối đa 100 ký tự"),
   phone,
   email: z
     .string()
@@ -16,10 +16,11 @@ export const leadSchema = z.object({
     .pipe(z.email({ error: "Email chưa hợp lệ" }))
     .optional()
     .or(z.literal("")),
-  message: z.string().trim().max(1000).optional().or(z.literal("")),
-  treatment: z.string().trim().max(120).optional().or(z.literal("")),
-  source: z.string().trim().max(200).optional().default("website"),
+  message: z.string().trim().max(1000, "Ghi chú tối đa 1000 ký tự").optional().or(z.literal("")),
+  treatment: z.string().trim().max(120, "Tên liệu pháp quá dài").optional().or(z.literal("")),
+  source: z.string().trim().max(200, "Dữ liệu chưa hợp lệ").optional().default("website"),
   website: z.string().optional().default(""),
 });
 
+export type LeadPayload = z.input<typeof leadSchema>;
 export type LeadInput = z.infer<typeof leadSchema>;

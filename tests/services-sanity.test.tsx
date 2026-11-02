@@ -119,7 +119,11 @@ describe("services from Sanity", () => {
       await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
     );
     expect(html).not.toContain("Dịch vụ:");
-    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: undefined,
+      variant: "page",
+    });
   });
 
   it("does not query Sanity for a plain /booking visit", async () => {
@@ -140,8 +144,13 @@ describe("booking context", () => {
     const html = renderToStaticMarkup(
       await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
     );
-    expect(html).toContain("Dịch vụ: Dịch vụ training");
-    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: "Dịch vụ training" });
+    expect(html).toContain("Dịch vụ:");
+    expect(html).toContain("Dịch vụ training");
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: "Dịch vụ training",
+      variant: "page",
+    });
   });
 
   it.each([undefined, "unknown", ["therapy", "training"]])(
@@ -151,7 +160,11 @@ describe("booking context", () => {
         await BookingPage({ searchParams: Promise.resolve({ service: value }) }),
       );
       expect(html).not.toContain("Dịch vụ:");
-      expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+      expect(leadForm).toHaveBeenCalledWith({
+        kind: "booking",
+        treatment: undefined,
+        variant: "page",
+      });
       expect(fetch).not.toHaveBeenCalled();
     },
   );
@@ -161,7 +174,11 @@ describe("booking context", () => {
     renderToStaticMarkup(
       await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
     );
-    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: undefined,
+      variant: "page",
+    });
   });
 
   it("bounds stalled optional context, aborts it and omits treatment", async () => {
@@ -174,7 +191,11 @@ describe("booking context", () => {
     await vi.advanceTimersByTimeAsync(1);
     expect(renderToStaticMarkup(await page)).not.toContain("Dịch vụ:");
     expect(signal.aborted).toBe(true);
-    expect(leadForm).toHaveBeenCalledWith({ kind: "booking", treatment: undefined });
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: undefined,
+      variant: "page",
+    });
     expect(vi.getTimerCount()).toBe(0);
   });
 });

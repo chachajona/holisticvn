@@ -18,6 +18,7 @@ Install with `npm ci` on Node.js 24; `.nvmrc` and CI use the same runtime.
 | `sanity`                  | `^3.61.0`  | `6.17.0`                            |
 | `zod`                     | `^3.23.8`  | `4.6.5`                             |
 | `styled-components`       | `added`    | `6.5.3`                             |
+| `sonner`                  | `added`    | `2.0.8`                             |
 | `@types/node`             | `^22.10.2` | `26.6.4`                            |
 | `@types/react`            | `^19.0.2`  | `19.3.0`                            |
 | `@types/react-dom`        | `^19.0.2`  | `19.3.0`                            |

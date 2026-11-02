@@ -20,7 +20,7 @@ export function BookingPanel({ title, phone }: { title: string; phone?: string }
           kind="booking"
           treatment={title}
           submitLabel="Gọi lại cho tôi"
-          successMessage="Đã gửi yêu cầu. Holistic sẽ gọi lại cho bạn."
+          successMessage="Đã gửi yêu cầu. Holistic sẽ gọi lại để tư vấn và xác nhận lịch hẹn."
           motion
         />
         <p className={styles.formContext}>Phương pháp: {title}</p>

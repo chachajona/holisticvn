@@ -18,7 +18,7 @@ describe("BookingPanel", () => {
       kind: "booking",
       treatment: "Giác hơi",
       submitLabel: "Gọi lại cho tôi",
-      successMessage: "Đã gửi yêu cầu. Holistic sẽ gọi lại cho bạn.",
+      successMessage: "Đã gửi yêu cầu. Holistic sẽ gọi lại để tư vấn và xác nhận lịch hẹn.",
     });
   });
 
