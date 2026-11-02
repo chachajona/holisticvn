@@ -2,6 +2,7 @@
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const toast = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn() }));
@@ -26,6 +27,7 @@ afterEach(() => {
   act(() => root.unmount());
   document.body.replaceChildren();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   vi.clearAllMocks();
   fetchMock.mockReset();
 });
@@ -46,8 +48,48 @@ const submit = () =>
       .querySelector("form")!
       .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
   });
-const render = (kind: "contact" | "booking" = "booking") =>
-  act(() => root.render(<LeadForm kind={kind} treatment="Giác hơi" />));
+const render = (
+  kind: "contact" | "booking" = "booking",
+  treatment = "Giác hơi",
+  variant?: "page",
+) => act(() => root.render(<LeadForm kind={kind} treatment={treatment} variant={variant} />));
+
+it.each([
+  { metadata: "treatment", variant: undefined },
+  { metadata: "source", variant: undefined },
+  { metadata: "treatment", variant: "page" },
+  { metadata: "source", variant: "page" },
+] as const)(
+  "offers visible recovery for invalid $metadata with variant=$variant",
+  async ({ metadata, variant }) => {
+    if (metadata === "source") {
+      vi.spyOn(window.location, "pathname", "get").mockReturnValue(`/${"x".repeat(200)}`);
+    }
+    render("booking", metadata === "treatment" ? "x".repeat(121) : "Giác hơi", variant);
+    fill("name", "An");
+    fill("phone", "0828 959 598");
+    await submit();
+
+    const message = metadata === "treatment" ? "Tên liệu pháp quá dài" : "Dữ liệu chưa hợp lệ";
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(field("name").value).toBe("An");
+    expect(field("phone").value).toBe("0828 959 598");
+    expect(host.querySelector("button")!.disabled).toBe(false);
+    if (variant === "page") {
+      const call = host.querySelector('[role="alert"] a[href="tel:0828959598"]');
+      const feedback = call?.closest('[role="alert"]');
+      expect(call).not.toBeNull();
+      expect(feedback?.textContent).toContain(message);
+      expect(document.activeElement).toBe(feedback);
+      expect(toast.error).not.toHaveBeenCalled();
+    } else {
+      expect(toast.error).toHaveBeenCalledOnce();
+      const feedback = renderToStaticMarkup(toast.error.mock.calls[0][0]);
+      expect(feedback).toContain(message);
+      expect(feedback).toContain('href="tel:0828959598"');
+    }
+  },
+);
 
 it("shows inline errors, focuses the first invalid field and sends nothing", async () => {
   render();

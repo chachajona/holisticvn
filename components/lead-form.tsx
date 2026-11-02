@@ -90,12 +90,30 @@ export function LeadForm({
     } satisfies LeadPayload;
     const validationErrors = validateLead(payload);
     setErrors(validationErrors);
-    const firstInvalidField = Object.keys(validationErrors)[0];
-    if (firstInvalidField) {
+    const invalidFields = Object.keys(validationErrors);
+    if (invalidFields.length) {
       setState("error");
-      const target = form.elements.namedItem(firstInvalidField);
-      if (firstInvalidField === "message") form.querySelector("details")?.setAttribute("open", "");
-      focusTarget.current = target instanceof HTMLElement ? target : null;
+      const firstInvalidField = invalidFields.find((name) => {
+        const control = form.elements.namedItem(name);
+        return (
+          (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) &&
+          !control.disabled &&
+          !control.readOnly &&
+          control.type !== "hidden" &&
+          control.tabIndex >= 0
+        );
+      });
+      if (firstInvalidField) {
+        const target = form.elements.namedItem(firstInvalidField);
+        if (firstInvalidField === "message")
+          form.querySelector("details")?.setAttribute("open", "");
+        focusTarget.current = target instanceof HTMLElement ? target : null;
+      } else {
+        // Context fields such as treatment/source have no control the visitor can correct.
+        const message = Object.values(validationErrors).filter(Boolean).join(". ");
+        if (isPage) setResponseMessage(message);
+        else leadToast.error(message, site.phone);
+      }
       return;
     }
     inFlight.current = true;
