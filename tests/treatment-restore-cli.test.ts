@@ -1,6 +1,14 @@
 import { createClient, type ClientConfig, type Mutation as SanityMutation } from "@sanity/client";
 import { evaluate, parse } from "groq-js";
-import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -28,6 +36,7 @@ afterEach(() => {
   for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 
+/** Creates an isolated checkout and controlled dataset with real GROQ and SDK serialization. */
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), "treatment-restore-cli-"));
   temporary.push(root);
@@ -159,7 +168,7 @@ function fixture() {
             const pending = read(receipts("-pending.json").at(-1)!);
             expect(pending.transactionId).toBe(id); // Durable before remote commit.
             expect(pending.status).toBe("pending");
-            expect(pending.snapshotSha256).toBe(snapshotHash);
+            expect(pending.snapshotSha256).toBe(sha256(readFileSync(join(root, beforePath))));
             state.commits++;
             state.transactionIds.push(id);
             const next = structuredClone(state.dataset);
@@ -355,6 +364,20 @@ describe("actual restoration CLI orchestration with controlled GROQ/SDK transpor
     expect(f.state.commits).toBe(1);
   });
 
+  it("rejects an occupied seed ID in the reviewed snapshot even when its slug exists elsewhere", async () => {
+    const f = fixture();
+    const occupied: Doc = { _id: "treatment-cupping", _type: "other" };
+    f.before.push(occupied);
+    f.state.dataset.push(structuredClone(occupied));
+    f.write(f.beforePath, f.before);
+    f.args[f.args.indexOf("--snapshot-sha256") + 1] = sha256(
+      readFileSync(join(f.root, f.beforePath)),
+    );
+    await expect(f.apply()).rejects.toThrow(/Occupied document ID/);
+    expect(f.state.commits).toBe(0);
+    expect(f.state.dataset).toEqual(f.before);
+  });
+
   it.each(["lost-response", "failed-read", "unchanged-post-read"])(
     "recovers %s through read-only reconciliation",
     async (kind) => {
@@ -434,6 +457,42 @@ describe("actual restoration CLI orchestration with controlled GROQ/SDK transpor
     expect(f.state.commits).toBe(2);
     expect(f.state.dataset).toHaveLength(f.before.length);
   });
+
+  it.each(["absolute", "checkout-relative"])(
+    "reconciles rollback after moving the checkout when the origin path was %s",
+    async (kind) => {
+      const f = fixture();
+      await f.apply();
+      const origin = f.receipts("-verified.json")[0];
+      f.state.responseLoss = true;
+      await expect(
+        f.run([
+          "--rollback",
+          kind === "absolute" ? join(f.root, origin) : origin,
+          "--apply",
+          "--confirm",
+          "yjzexxml/production",
+        ]),
+      ).rejects.toThrow(/uncertain/);
+      const pending = f.receipts("-pending.json").find((path) => path.includes("rollback-"))!;
+      const container = mkdtempSync(join(tmpdir(), "treatment-recovery-moved-"));
+      temporary.push(container);
+      const movedRoot = join(container, "checkout");
+      renameSync(f.root, movedRoot);
+      const result = await runRestore([...f.args, "--reconcile", join(movedRoot, pending)], {
+        ...f.dependencies,
+        root: movedRoot,
+      });
+      expect(result.receipt).toMatchObject({
+        verified: true,
+        operation: "rollback",
+        transactionId: "fixture-transaction-2",
+      });
+      expect(result.mutations).toBe(0);
+      expect(f.state.commits).toBe(2);
+      expect(f.state.dataset).toHaveLength(f.before.length);
+    },
+  );
 
   it("prohibits reconciliation combined with any write flag", async () => {
     const f = fixture();

@@ -37,6 +37,7 @@ const content = (document) =>
     Object.entries(document).filter(([key]) => !["_rev", "_createdAt", "_updatedAt"].includes(key)),
   );
 
+/** Rejects a target or live deployment that differs from the reviewed production identity. */
 export function assertTarget(target, deployment) {
   for (const [key, value] of Object.entries(RESTORE_TARGET)) {
     if (target[key] !== value) fail(`Unapproved target: ${key}`);
@@ -53,7 +54,10 @@ export function assertTarget(target, deployment) {
   }
 }
 
-/** Full raw scoped documents, including drafts/releases and any occupied seed IDs. */
+/**
+ * Plans missing documents and narrow catalogue patches without modifying the inputs.
+ * Requires raw scoped documents, including drafts/releases and all occupied seed IDs.
+ */
 export function planRestore({ seed, seo, links, documents }) {
   if (documents.some((doc) => /^(drafts|versions)\./.test(doc._id))) {
     fail("Open draft or release conflicts with restoration");
@@ -81,11 +85,13 @@ export function planRestore({ seed, seo, links, documents }) {
     }
     seedIds.add(doc._id);
     const existing = bySlug.get(slug);
+    if (byId.has(doc._id) && existing?._id !== doc._id) {
+      fail(`Occupied document ID: ${doc._id}`);
+    }
     if (existing) {
       idBySlug.set(slug, existing._id);
       continue;
     }
-    if (byId.has(doc._id)) fail(`Occupied document ID: ${doc._id}`);
     if (!seo[slug]?.title || !seo[slug]?.description) fail(`Missing reviewed SEO: ${slug}`);
     const create = {
       ...doc,
@@ -161,6 +167,7 @@ export function planRestore({ seed, seo, links, documents }) {
   return { mutations, changes, rollback };
 }
 
+/** Builds expected scoped content; Sanity supplies transaction revisions and timestamps. */
 export function expectedAfter(before, manifest) {
   const docs = structuredClone(before);
   for (const mutation of manifest.mutations) {
@@ -178,6 +185,7 @@ export function expectedAfter(before, manifest) {
   return docs;
 }
 
+/** Regenerates mutations and rollback values to reject source or reviewed-payload drift. */
 export function assertApprovedManifest({ manifest, before, seed, seo, links, sourceHashes }) {
   if (manifest.issue !== 58) fail("Unexpected manifest issue");
   equal(sourceHashes, manifest.sources, "Approved source hashes changed");
@@ -187,11 +195,13 @@ export function assertApprovedManifest({ manifest, before, seed, seo, links, sou
   return plan;
 }
 
+/** Checks the complete backup bytes, including preserved fields and revisions. */
 export function assertSnapshotHash(bytes, reviewedHash) {
   if (!reviewedHash || sha256(bytes) !== reviewedHash)
     fail("Reviewed before-snapshot hash changed");
 }
 
+/** Includes legacy IDs as well as seed IDs so differently typed drafts cannot escape reads. */
 export function snapshotParameters({ seed, links, before }) {
   const ids = [
     ...new Set([
@@ -206,6 +216,10 @@ export function snapshotParameters({ seed, links, before }) {
 export const revisionsOf = (documents) =>
   Object.fromEntries(documents.map((doc) => [doc._id, doc._rev]));
 
+/**
+ * Requires complete restored/rolled-back content and the original changed-document revisions.
+ * Later edits cannot become a new rollback baseline through reconciliation.
+ */
 export function assertTransactionState({
   manifest,
   before,
@@ -243,6 +257,7 @@ export function assertTransactionState({
   }
 }
 
+/** Binds a receipt to the reviewed inputs, production target and supported operation. */
 export function assertReceiptIdentity({ receipt, manifestHash, snapshotHash }) {
   if (
     receipt.manifestSha256 !== manifestHash ||
@@ -254,6 +269,7 @@ export function assertReceiptIdentity({ receipt, manifestHash, snapshotHash }) {
     fail("Receipt identity mismatch");
 }
 
+/** Validates saved snapshot bytes and revision evidence before returning a rollback baseline. */
 export function assertVerifiedReceipt({
   receipt,
   manifestHash,
@@ -288,8 +304,10 @@ export function assertVerifiedReceipt({
   return postApply;
 }
 
-// A repeat run is complete only when the complete resulting documents match,
-// allowing Sanity's generated timestamps/revisions on changed documents alone.
+/**
+ * Returns ready for the exact backup, or complete for the entire expected restored content.
+ * Only changed documents may have Sanity-generated metadata; other divergence throws.
+ */
 export function assertRestoreState({ manifest, before, current }) {
   planRestoreIdentity(current);
   if (isDeepStrictEqual(sorted(current), sorted(before))) return "ready";
@@ -308,6 +326,7 @@ export function assertRestoreState({ manifest, before, current }) {
   return "complete";
 }
 
+/** Rejects unpublished identities, duplicate IDs and ambiguous published treatment slugs. */
 function planRestoreIdentity(documents) {
   const slugs = new Set();
   const ids = new Set();
@@ -323,6 +342,7 @@ function planRestoreIdentity(documents) {
   }
 }
 
+/** Plans saved-array restoration and guarded deletions only while post-apply evidence is unchanged. */
 export function planRollback({ manifest, before, postApply, current }) {
   if (assertRestoreState({ manifest, before, current: postApply }) !== "complete") {
     fail("Rollback requires a verified post-apply snapshot");

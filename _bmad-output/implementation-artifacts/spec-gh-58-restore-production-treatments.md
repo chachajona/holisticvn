@@ -92,23 +92,23 @@ The user explicitly approved this spec and its concrete production manifest by r
 **Execution boundaries**
 
 - Follow explicit hashes, read-only defaults and guarded transaction orchestration.
-  [restore-treatments.mjs:48](../../scripts/restore-treatments.mjs#L48)
+  [restore-treatments.mjs:51](../../scripts/restore-treatments.mjs#L51)
 
 - Review missing-only planning and preservation of existing treatment content.
-  [treatment-restore.mjs:57](../../scripts/lib/treatment-restore.mjs#L57)
+  [treatment-restore.mjs:61](../../scripts/lib/treatment-restore.mjs#L61)
 
 **Evidence and recovery**
 
 - Check snapshot identity, receipt integrity and original transaction revision checks.
-  [treatment-restore.mjs:190](../../scripts/lib/treatment-restore.mjs#L190)
+  [treatment-restore.mjs:199](../../scripts/lib/treatment-restore.mjs#L199)
 
 - Inspect narrow rollback patches and revision-guarded deletion.
-  [treatment-restore.mjs:326](../../scripts/lib/treatment-restore.mjs#L326)
+  [treatment-restore.mjs:346](../../scripts/lib/treatment-restore.mjs#L346)
 
 **Verification**
 
 - Trace controlled CLI failure cases through actual GROQ and SDK boundaries.
-  [treatment-restore-cli.test.ts:249](../../tests/treatment-restore-cli.test.ts#L249)
+  [treatment-restore-cli.test.ts:258](../../tests/treatment-restore-cli.test.ts#L258)
 
 - Confirm catalogue identity, preservation and idempotency edge cases.
   [treatment-restore.test.ts:90](../../tests/treatment-restore.test.ts#L90)

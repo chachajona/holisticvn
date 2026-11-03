@@ -149,6 +149,33 @@ describe("missing-only treatment restoration", () => {
     );
   });
 
+  it.each(["other", "treatment"])(
+    "rejects a seed ID occupied by an unrelated %s document even when the slug exists",
+    (type) => {
+      const source = seed.find((doc: Doc) => doc.slug?.current === "cupping");
+      const occupied: Doc = { _id: source._id, _type: type };
+      if (type === "treatment") occupied.slug = { current: "unrelated-treatment" };
+      expect(() => run([...before(), occupied])).toThrow(/Occupied document ID/);
+    },
+  );
+
+  it("accepts an occupied seed ID when it identifies the same published treatment", () => {
+    const docs = before();
+    const source = seed.find((doc: Doc) => doc.slug?.current === "cupping");
+    docs[0]._id = source._id;
+    for (const page of docs.filter((doc) => doc.groups)) {
+      for (const group of page.groups!) {
+        for (const reference of group.treatments ?? []) {
+          if (reference._ref === "legacy-cupping") reference._ref = source._id;
+        }
+      }
+    }
+    const plan = run(docs);
+    const after = expectedAfter(docs, plan);
+    expect(after.find((doc: Doc) => doc._id === source._id)).toEqual(docs[0]);
+    expect(plan.mutations.filter((mutation: Mutation) => mutation.create)).toHaveLength(8);
+  });
+
   it.each(["missing", "duplicate", "unsafe", "duplicate-key"])("rejects %s groups", (kind) => {
     const docs = before();
     const groups = pageGroups(docs);

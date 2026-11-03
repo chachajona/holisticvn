@@ -72,7 +72,7 @@ existing records and were preserved.
 
 ## Verification
 
-- Restoration tests: 61 passed (30 planner and 31 CLI orchestration), covering preservation, exact source/manifest
+- Restoration tests: 67 passed (33 planner and 34 CLI orchestration), covering preservation, exact source/manifest
   identity, drafts/releases, occupied IDs, duplicate slugs/groups/references,
   unsafe keys, revision/state changes, idempotency, rollback guards, and installed
   Sanity SDK transaction serialization. Controlled orchestration tests execute the
@@ -80,7 +80,7 @@ existing records and were preserved.
   and simulate lost commit responses, failed/unchanged post-reads, receipt tampering
   and guarded recovery without live production writes.
 - `npm run lint`, `npm run typecheck` and `npm test` passed; full suite: 56 files,
-  485 tests. These changes add operational scripts/tests/docs; no runtime source,
+  491 tests. These changes add operational scripts/tests/docs; no runtime source,
   routes, canonical settings, dependency versions or deployment changed.
 - Repeating the production command with `--apply` returned `complete` and zero
   mutations. Rollback payloads were checked without applying a rollback.
@@ -152,6 +152,8 @@ shasum -a 256 -c issue-58/RECOVERY_CHECKSUMS.sha256
 The extracted `issue-58` directory belongs under the intended checkout's `.context/`.
 Restore the archived tooling only after reviewing it against the checkout. Acquire
 production credentials separately; the archive intentionally cannot authenticate.
+The original archive preserves the tooling at restoration time. Use the current
+repository tooling for later operations, including the subsequent PR review fixes.
 
 The default invocation is read-only. It requires the approved manifest and snapshot hashes,
 explicit target, authenticated Vercel CLI, and production environment values:
@@ -185,6 +187,12 @@ original transaction ID. It cannot refresh rollback guards from later revisions.
 Verified receipts additionally require exact stored revision maps and snapshot-byte
 integrity. Reconciliation writes a new local verified receipt/snapshot only after
 these checks succeed. An unchanged pre-restoration response is never marked verified.
+New rollback receipts store their origin receipt path relative to their own directory,
+including when `--rollback` was supplied as an absolute path. Preserve that relative
+directory layout when moving recovery evidence. Regression tests move the checkout
+before read-only reconciliation and cover both absolute and checkout-relative inputs.
+Planner regression tests also reject unrelated documents occupying a seed ID even
+when the seed's slug is already published under another ID.
 
 Post-review production checks used dry-run, read-only reconciliation of the enhanced
 receipt, and rollback preview only: zero restoration mutations, successful original

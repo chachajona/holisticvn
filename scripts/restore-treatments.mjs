@@ -3,7 +3,7 @@ import { createClient } from "@sanity/client";
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, dirname, resolve } from "node:path";
+import { basename, dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import {
@@ -21,6 +21,7 @@ import {
   snapshotParameters,
 } from "./lib/treatment-restore.mjs";
 
+/** Resolves the current domain alias rather than trusting a historical deployment ID. */
 function liveDeployment(target) {
   const result = JSON.parse(
     execFileSync(
@@ -43,8 +44,10 @@ function liveDeployment(target) {
   };
 }
 
-// Tests exercise the exact argv/files/preflight/receipt orchestration through
-// controlled transports, a GROQ dataset and the installed SDK transaction API.
+/**
+ * Runs the guarded operator workflow; default and reconciliation modes never commit mutations.
+ * Optional trusted dependencies let tests exercise argv, files, GROQ and SDK boundaries locally.
+ */
 export async function runRestore(argv, dependencies = {}) {
   const {
     root = process.cwd(),
@@ -109,6 +112,7 @@ export async function runRestore(argv, dependencies = {}) {
   const seed = read("scripts/seed/treatments.json");
   const seo = read("lib/treatment-seo.json");
   const links = read("scripts/seed/treatment-links.json");
+  /** Rechecks approved file bytes immediately before any possible remote write. */
   const preflightFiles = () => {
     if (sha256(readBytes(values.manifest)) !== manifestHash)
       throw new Error("Approved manifest changed during preflight");
@@ -139,6 +143,7 @@ export async function runRestore(argv, dependencies = {}) {
   const deployment = await deploymentIdentity();
   const current = await snapshot();
   const identity = { manifestHash, snapshotHash };
+  /** Resolves snapshot paths from their receipt and checks its original integrity evidence. */
   const loadVerified = (name) => {
     const receipt = read(name);
     const bytes = receipt.postApply
@@ -163,6 +168,7 @@ export async function runRestore(argv, dependencies = {}) {
     output(
       "Follow-up required: send authenticated POST /api/revalidate, then verify all 11 treatment URLs, /services, /treatments and /sitemap.xml. Record automatic webhook delivery separately; no webhook configuration was changed.",
     );
+  /** Saves an integrity-bound receipt with portable references to its evidence files. */
   const persistVerified = (prefix, receipt, after) => {
     const postApplyBytes = save(`${prefix}-after.json`, after);
     const verified = {
@@ -189,12 +195,15 @@ export async function runRestore(argv, dependencies = {}) {
       planRollback({ manifest, before, postApply, current }); // Equality only; never commit.
     }
     if (receipt.operation === "rollback") {
+      const rollbackOriginPath = receipt.rollbackReceipt
+        ? resolve(dirname(path(values.reconcile)), receipt.rollbackReceipt)
+        : undefined;
       if (
-        !receipt.rollbackReceipt ||
-        sha256(readBytes(receipt.rollbackReceipt)) !== receipt.rollbackReceiptSha256
+        !rollbackOriginPath ||
+        sha256(readFileSync(rollbackOriginPath)) !== receipt.rollbackReceiptSha256
       )
         throw new Error("Rollback origin receipt integrity mismatch");
-      loadVerified(receipt.rollbackReceipt);
+      loadVerified(rollbackOriginPath);
     }
     assertTransactionState({
       manifest,
@@ -268,7 +277,7 @@ export async function runRestore(argv, dependencies = {}) {
     before: `${basename(prefix)}-before.json`,
     ...(values.rollback
       ? {
-          rollbackReceipt: values.rollback,
+          rollbackReceipt: relative(dirname(path(`${prefix}-pending.json`)), path(values.rollback)),
           rollbackReceiptSha256: sha256(readBytes(values.rollback)),
         }
       : {}),
