@@ -38,7 +38,7 @@ the change. The missing-header baseline cannot be rerun without removing the fix
 it is represented by those preserved artifacts, rather than a new baseline test.
 
 Before/after screenshots are presented directly in the
-[PR #64 Evidence section](https://github.com/chachajona/holisticvn/pull/64).
+[PR #65 Evidence section](https://github.com/chachajona/holisticvn/pull/65).
 Screenshot binaries are hosted as GitHub user attachments outside the repository.
 
 | Before: connection prompt                                                                                      | After: login providers (fresh recheck)                                                                        |
