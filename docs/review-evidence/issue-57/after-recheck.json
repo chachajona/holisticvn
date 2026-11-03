@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-03T03:50:17.485Z",
+  "browser": "156.0.8078.80",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "url": "https://www.holisticvn.com/studio",
+  "loginVisible": true,
+  "connectPromptVisible": false,
+  "errors": [],
+  "warnings": [],
+  "requests": [
+    {
+      "url": "https://yjzexxml.api.sanity.io/v2026-05-04/users/me?tag=sanity.studio.users.get-current.initial",
+      "status": 200,
+      "allowOrigin": "https://www.holisticvn.com",
+      "allowCredentials": "true"
+    }
+  ]
+}
