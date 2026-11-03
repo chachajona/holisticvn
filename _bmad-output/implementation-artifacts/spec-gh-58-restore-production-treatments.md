@@ -1,12 +1,14 @@
 ---
-title: 'GH-58 Restore missing production treatments'
-type: 'bugfix'
-created: '2026-11-03'
-status: 'done'
-baseline_commit: '4e53a8ac4cc1b9c9a2a76882a5b6611e729fe5c6'
+title: "GH-58 Restore missing production treatments"
+type: "bugfix"
+created: "2026-11-03"
+status: "done"
+baseline_commit: "4e53a8ac4cc1b9c9a2a76882a5b6611e729fe5c6"
 review_loop_iteration: 0
-context: ['{project-root}/PRODUCT.md']
+context: ["{project-root}/PRODUCT.md"]
 ---
+
+<!-- prettier-ignore-start -->
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
 
@@ -36,6 +38,8 @@ context: ['{project-root}/PRODUCT.md']
 | Rollback | Post-apply revisions unchanged | Restore changed arrays; delete created records | Abort on later edits |
 
 </frozen-after-approval>
+
+<!-- prettier-ignore-end -->
 
 ## Code Map
 
