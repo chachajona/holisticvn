@@ -5,7 +5,7 @@ Verified 2026-11-08 on a production build (`NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GT
 ## Rules
 
 - Consent lives in the `holisticvn-cookie-consent-v1` cookie (`accepted` / `rejected`, 12 months). No choice = rejected.
-- GTM loads only when the cookie is `accepted`. `track()` pushes only then and never receives name, phone, email or message.
+- GTM loads only when an `accepted` cookie is visible and no `rejected` cookie is visible. A rejection overrides stale acceptance at another cookie path or domain. `track()` applies the same rule and never receives name, phone, email or message.
 - The first page view of a document belongs to the GTM container. `PageViewTracker` pushes `page_view` with `page_path` for later client navigations only. Confirm the container does not also fire a History Change page view at the launch gate, or navigations will count twice.
 - Footer "Tùy chọn cookie" deletes the choice and `_ga*`/`_gid`/`_gat*` cookies, then reloads so no tag stays loaded and the banner asks again with focus on its first button. Rejecting also clears those cookies.
 - Cookies blocked: the banner hides for the current page view without reloading; nothing is pushed.
@@ -26,6 +26,13 @@ Verified 2026-11-08 on a production build (`NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GT
 | 320 px banner                              | 300 px wide, no horizontal overflow                                                         |
 
 Unit tests: `tests/consent.test.tsx` (13). Full suite 504 tests, lint, typecheck and format pass.
+
+## Review regressions (2026-11-09)
+
+- Reproduced conflicting path cookies before the fix: both `track()` and the GTM bootstrap allowed analytics despite a visible rejection. Regression tests now cover both root acceptance / narrower-path rejection and root rejection / narrower-path acceptance.
+- Added a cookie-jar test at `www.holisticvn.com` with `_ga` on both the host and `holisticvn.com`, plus host-domain `_ga_*` and parent-domain `_gid`. Withdrawal removes those identifiers and preserves unrelated cookies at both scopes. The existing domain cleanup needed no code change.
+- Verified in isolated Playwright Chromium contexts against the local production build, with a synthetic `www.holisticvn.com` origin routed locally, images stubbed and Google responses mocked. Both conflicting-consent cases generated zero Google requests and no analytics events. Footer withdrawal removed host and parent-domain Google cookies, preserved unrelated cookies, made no further Google requests and focused "Từ chối". No page errors occurred.
+- Consent tests: 19; full suite: 510. Lint, typecheck, format, production build and production smoke checks pass.
 
 ## Not verified
 

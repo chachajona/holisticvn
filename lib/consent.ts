@@ -3,8 +3,11 @@ export const consentChanged = "holisticvn:consent-changed";
 /** Hash used by the footer control; the banner focuses itself when the page loads with it. */
 export const preferencesHash = "cookie-preferences";
 
-export const hasAnalyticsConsent = () =>
-  document.cookie.split("; ").includes(`${consentKey}=accepted`);
+/** A visible rejection overrides stale acceptance at another cookie path or domain. */
+export const hasAnalyticsConsent = () => {
+  const cookies = document.cookie.split("; ");
+  return cookies.includes(`${consentKey}=accepted`) && !cookies.includes(`${consentKey}=rejected`);
+};
 
 export const hasConsentChoice = () =>
   document.cookie

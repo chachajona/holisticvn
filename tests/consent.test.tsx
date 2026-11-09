@@ -1,11 +1,19 @@
 // @vitest-environment happy-dom
 
 import { act } from "react";
+import { runInNewContext } from "node:vm";
+import { Window } from "happy-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CookieConsent, CookiePreferencesButton } from "@/components/cookie-consent";
-import { PageViewTracker, track } from "@/components/gtm";
-import { clearAnalyticsCookies, consentKey, hasAnalyticsConsent } from "@/lib/consent";
+import { GoogleTagManager, PageViewTracker, track } from "@/components/gtm";
+import {
+  clearAnalyticsCookies,
+  consentKey,
+  hasAnalyticsConsent,
+  resetConsent,
+  writeConsent,
+} from "@/lib/consent";
 import { usePathname } from "next/navigation";
 
 vi.mock("next/navigation", () => ({ usePathname: vi.fn(() => "/") }));
@@ -44,6 +52,75 @@ afterEach(() => {
   act(() => root.unmount());
   host.remove();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+});
+
+describe("consent across cookie scopes", () => {
+  let browser: Window;
+
+  beforeEach(() => {
+    browser = new Window({ url: "https://www.holisticvn.com/" });
+    vi.stubGlobal("document", browser.document);
+    vi.stubGlobal("location", browser.location);
+    vi.stubEnv("NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID", "GTM-TEST123");
+  });
+
+  afterEach(() => browser.happyDOM.close());
+
+  const runGtm = () => {
+    document.head.appendChild(document.createElement("script"));
+    runInNewContext(GoogleTagManager()!.props.children, { document, window });
+    return document.querySelector('script[src^="https://www.googletagmanager.com/gtm.js"]');
+  };
+
+  it.each(["accepted", "rejected"] as const)(
+    "blocks both tracking gates when root consent is %s and a narrower path conflicts",
+    (rootChoice) => {
+      const staleChoice = rootChoice === "accepted" ? "rejected" : "accepted";
+      document.cookie = `${consentKey}=${staleChoice}; path=/services`;
+      writeConsent(rootChoice);
+      browser.location.pathname = "/services";
+      expect(document.cookie).toContain(`${consentKey}=accepted`);
+      expect(document.cookie).toContain(`${consentKey}=rejected`);
+
+      expect.soft(hasAnalyticsConsent()).toBe(false);
+      track("contact_submit");
+      expect.soft(window.dataLayer).toEqual([]);
+      expect.soft(runGtm()).toBeNull();
+      expect(window.dataLayer).toEqual([]);
+    },
+  );
+
+  it.each([undefined, "rejected", "accepted"] as const)(
+    "loads GTM only with unopposed acceptance (%s)",
+    (choice) => {
+      if (choice) writeConsent(choice);
+      expect(Boolean(runGtm())).toBe(choice === "accepted");
+      expect(window.dataLayer?.length).toBe(choice === "accepted" ? 1 : 0);
+    },
+  );
+
+  it("withdraws host and parent-domain Google cookies while preserving unrelated cookies", () => {
+    writeConsent("accepted");
+    document.cookie = "_ga=host-id; path=/";
+    document.cookie = "_ga=parent-id; path=/; domain=holisticvn.com";
+    document.cookie = "_ga_HOST=host-domain-id; path=/; domain=www.holisticvn.com";
+    document.cookie = "_gid=parent-id; path=/; domain=holisticvn.com";
+    document.cookie = "other=host-value; path=/";
+    document.cookie = "parent_other=parent-value; path=/; domain=holisticvn.com";
+    expect(document.cookie.split("; ").filter((cookie) => cookie.startsWith("_ga="))).toHaveLength(
+      2,
+    );
+
+    resetConsent();
+
+    expect(document.cookie.split("; ").sort()).toEqual([
+      "other=host-value",
+      "parent_other=parent-value",
+    ]);
+    expect(hasAnalyticsConsent()).toBe(false);
+  });
 });
 
 describe("analytics consent gating", () => {
