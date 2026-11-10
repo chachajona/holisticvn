@@ -86,6 +86,9 @@ export type Testimonial = {
 
 export const site = {
   name: "HolisticVN",
+  // Owner-checked on masothue.com (2026-11-10); the registry spells it "HOLISITC ... PERFORMANCES".
+  legalName: "Hộ kinh doanh Holistic Rehab & Performance",
+  taxId: "8596619400-001",
   phone: "082 895 9598",
   email: "Holisticrep9@gmail.com",
   address: "109/15 Lê Quốc Hưng, P. Xóm Chiếu, TP. Hồ Chí Minh",

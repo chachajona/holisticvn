@@ -2,18 +2,25 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useSyncExternalStore } from "react";
+import {
+  consentChanged,
+  hasConsentChoice,
+  preferencesHash,
+  resetConsent,
+  writeConsent,
+} from "@/lib/consent";
 
-const key = "holisticvn-cookie-consent-v1";
-const getVisible = () =>
-  !document.cookie
-    .split("; ")
-    .some((cookie) => cookie === `${key}=accepted` || cookie === `${key}=rejected`);
+// Set when cookies are blocked: the choice cannot persist, so hide the banner for this page view only.
+let dismissed = false;
+const getVisible = () => !dismissed && !hasConsentChoice();
 const getServerVisible = () => false;
 const subscribe = (onChange: () => void) => {
+  window.addEventListener(consentChanged, onChange);
   window.addEventListener("focus", onChange);
   document.addEventListener("visibilitychange", onChange);
   const timer = window.setInterval(onChange, 30_000);
   return () => {
+    window.removeEventListener(consentChanged, onChange);
     window.removeEventListener("focus", onChange);
     document.removeEventListener("visibilitychange", onChange);
     window.clearInterval(timer);
@@ -36,19 +43,26 @@ function CookieBanner() {
       root.removeProperty("--cookie-h");
     };
   }, []);
+  // Arriving from the footer control (reload with the hash) puts keyboard focus on the choice.
+  useEffect(() => {
+    if (window.location.hash !== `#${preferencesHash}`) return;
+    ref.current?.querySelector("button")?.focus();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
   const setConsent = (value: "accepted" | "rejected") => {
-    document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
+    writeConsent(value);
+    if (hasConsentChoice()) return window.location.reload();
+    dismissed = true;
+    window.dispatchEvent(new Event(consentChanged));
   };
   return (
-    <aside ref={ref} className="cookie" aria-label="Tùy chọn cookie">
+    <aside ref={ref} id={preferencesHash} className="cookie" aria-label="Tùy chọn cookie">
       <p>
-        Chúng tôi sử dụng cookie để trang web hoạt động ổn định và cải thiện trải nghiệm của bạn.
-        Cookie phân tích lượt truy cập chỉ được bật khi bạn đồng ý.{" "}
+        Chúng tôi dùng cookie phân tích để cải thiện website, chỉ khi bạn đồng ý.{" "}
         <Link href="/cookie-policy">Chính sách cookie</Link>.
       </p>
       <div>
-        <button className="cookie__text" onClick={() => setConsent("rejected")}>
+        <button className="button" onClick={() => setConsent("rejected")}>
           Từ chối
         </button>
         <button className="button" onClick={() => setConsent("accepted")}>
@@ -62,4 +76,21 @@ function CookieBanner() {
 export function CookieConsent() {
   const visible = useSyncExternalStore(subscribe, getVisible, getServerVisible);
   return visible ? <CookieBanner /> : null;
+}
+
+/** Footer control: withdraw the saved choice and reload so the banner asks again and no tag stays loaded. */
+export function CookiePreferencesButton({ className }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      className={className}
+      onClick={() => {
+        resetConsent();
+        window.location.hash = preferencesHash;
+        window.location.reload();
+      }}
+    >
+      Tùy chọn cookie
+    </button>
+  );
 }

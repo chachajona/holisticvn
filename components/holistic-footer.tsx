@@ -3,6 +3,7 @@ import Image from "next/image";
 import { footerMethods, footerServices, mapsHref, noBreakAddress } from "@/lib/content";
 import { getPublicSiteData } from "@/lib/sanity";
 import { FacebookIcon, InstagramIcon, ZaloIcon } from "@/components/brand-icons";
+import { CookiePreferencesButton } from "@/components/cookie-consent";
 import styles from "./holistic-chrome.module.css";
 
 const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
@@ -104,6 +105,7 @@ export async function HolisticFooter() {
           <Link href="/privacy-policy">Chính sách bảo mật</Link>
           <Link href="/terms-conditions">Điều khoản</Link>
           <Link href="/cookie-policy">Cookie</Link>
+          <CookiePreferencesButton className={styles.footerLinkButton} />
         </div>
       </div>
     </footer>

@@ -657,10 +657,19 @@
   display: flex;
   gap: 28px;
 }
-.footerBottom a {
+.footerBottom a,
+.footerLinkButton {
   color: inherit;
 }
-.footerBottom a:hover {
+.footerLinkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.footerBottom a:hover,
+.footerLinkButton:hover {
   color: #fff;
 }
 
