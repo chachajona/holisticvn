@@ -3,7 +3,7 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { consentKey, hasAnalyticsConsent } from "@/lib/consent";
+import { clearAnalyticsCookies, consentKey, hasAnalyticsConsent } from "@/lib/consent";
 
 declare global {
   interface Window {
@@ -26,6 +26,11 @@ export function PageViewTracker() {
   useEffect(() => {
     if (last.current === pathname) return;
     last.current = pathname;
+    // A rejection only visible on this path cannot unload a running container: reload without it.
+    if (!hasAnalyticsConsent() && window.dataLayer?.some((e) => "gtm.start" in e)) {
+      clearAnalyticsCookies();
+      return window.location.reload();
+    }
     track("page_view", { page_path: pathname });
   }, [pathname]);
   return null;

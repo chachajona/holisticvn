@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { site } from "@/lib/content";
 import { createMetadata } from "@/lib/seo";
 
 const documents: Record<string, { title: string; intro: string; body: string[] }> = {
@@ -28,6 +29,8 @@ const documents: Record<string, { title: string; intro: string; body: string[] }
       "Chỉ khi bạn chọn Chấp nhận, website mới tải Google Tag Manager. Dịch vụ này ghi nhận lượt xem trang, lượt bấm gọi, Zalo hoặc Messenger và lượt gửi form thành công để đánh giá hiệu quả nội dung và CTA. Các sự kiện này không chứa họ tên, số điện thoại, email hoặc nội dung bạn nhập. Google là bên nhận dữ liệu và các thẻ Google có thể đặt cookie phân tích.",
       "Nếu bạn Từ chối hoặc chưa chọn, website không tải Google Tag Manager và không gửi sự kiện phân tích. Các liên kết gọi điện, Zalo và Messenger vẫn dùng được bình thường.",
       "Bạn có thể thay đổi hoặc rút lại lựa chọn bất cứ lúc nào bằng nút Tùy chọn cookie ở cuối trang. Nút này xóa lựa chọn đã lưu cùng cookie phân tích của Google rồi hỏi lại bạn.",
+      "Cookie phân tích của Google thường có tên bắt đầu bằng _ga và gắn một mã định danh ngẫu nhiên với trình duyệt của bạn; Google cũng có thể nhận địa chỉ IP và thông tin thiết bị. Dữ liệu này có thể được xử lý ở máy chủ của Google ngoài Việt Nam. Theo mặc định của Google, các cookie này tồn tại tối đa 2 năm; thời gian Google Analytics lưu dữ liệu phân tích do HolisticVN cấu hình và có thể thay đổi, nên không được nêu bằng một con số cố định ở đây.",
+      `Đơn vị kiểm soát dữ liệu là ${site.legalName} (thương hiệu ${site.name}), mã số thuế ${site.taxId}, địa chỉ ${site.address}. Để xem, cập nhật hoặc xóa dữ liệu, hoặc hỏi về chính sách này, hãy liên hệ ${site.email} hoặc xem Chính sách quyền riêng tư.`,
     ],
   },
 };

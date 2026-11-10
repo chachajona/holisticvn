@@ -101,6 +101,29 @@ describe("consent across cookie scopes", () => {
     },
   );
 
+  it("withdrawal removes acceptance stored at a narrower path", () => {
+    document.cookie = `${consentKey}=accepted; path=/services`;
+    browser.location.pathname = "/services/botox";
+    expect(hasAnalyticsConsent()).toBe(true);
+    resetConsent();
+    expect(document.cookie).not.toContain(consentKey);
+    expect(hasAnalyticsConsent()).toBe(false);
+  });
+
+  it("reloads on navigation when a path-scoped rejection appears while GTM runs", () => {
+    const reloadSpy = vi.spyOn(browser.location, "reload").mockImplementation(() => {});
+    writeConsent("accepted");
+    runGtm();
+    document.cookie = `${consentKey}=rejected; path=/services`;
+    browser.location.pathname = "/services";
+    vi.mocked(usePathname).mockReturnValue("/");
+    act(() => root.render(<PageViewTracker />));
+    vi.mocked(usePathname).mockReturnValue("/services");
+    act(() => root.render(<PageViewTracker />));
+    expect(reloadSpy).toHaveBeenCalledOnce();
+    expect(window.dataLayer?.some((e) => e.event === "page_view")).toBe(false);
+  });
+
   it("withdraws host and parent-domain Google cookies while preserving unrelated cookies", () => {
     writeConsent("accepted");
     document.cookie = "_ga=host-id; path=/";
@@ -171,6 +194,17 @@ describe("page views on client navigation", () => {
 
 describe("cookie banner", () => {
   const buttons = () => [...host.querySelectorAll("button")];
+
+  it("states the purpose in one sentence and gives Reject and Accept the same style", () => {
+    act(() => root.render(<CookieConsent />));
+    const text = host.querySelector("p")!.textContent!;
+    expect(text).toContain("cookie phân tích để cải thiện website, chỉ khi bạn đồng ý");
+    expect(host.querySelector("a")!.getAttribute("href")).toBe("/cookie-policy");
+    const [reject, accept] = buttons();
+    expect(reject.textContent).toBe("Từ chối");
+    expect(accept.textContent).toBe("Chấp nhận");
+    expect(reject.className).toBe(accept.className);
+  });
 
   it("records a rejection, clears Google IDs and reloads", () => {
     document.cookie = "_ga=GA1.1.1; path=/";

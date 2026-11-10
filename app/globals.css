@@ -175,13 +175,6 @@ body:has(.cookie) footer {
   color: var(--ink);
   font-size: 0.75rem;
 }
-.cookie__text {
-  border: 0;
-  background: transparent;
-  color: var(--milk);
-  cursor: pointer;
-  font-size: 0.75rem;
-}
 .lead-form {
   display: grid;
   gap: 16px;
@@ -1088,9 +1081,6 @@ body:has(.cookie) footer {
   .cookie .button {
     min-height: 34px;
     padding: 0.3rem 0.65rem;
-    font-size: 0.72rem;
-  }
-  .cookie__text {
     font-size: 0.72rem;
   }
 }

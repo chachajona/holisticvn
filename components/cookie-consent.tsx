@@ -58,12 +58,11 @@ function CookieBanner() {
   return (
     <aside ref={ref} id={preferencesHash} className="cookie" aria-label="Tùy chọn cookie">
       <p>
-        Chúng tôi sử dụng cookie để trang web hoạt động ổn định và cải thiện trải nghiệm của bạn.
-        Cookie phân tích lượt truy cập chỉ được bật khi bạn đồng ý.{" "}
+        Chúng tôi dùng cookie phân tích để cải thiện website, chỉ khi bạn đồng ý.{" "}
         <Link href="/cookie-policy">Chính sách cookie</Link>.
       </p>
       <div>
-        <button className="cookie__text" onClick={() => setConsent("rejected")}>
+        <button className="button" onClick={() => setConsent("rejected")}>
           Từ chối
         </button>
         <button className="button" onClick={() => setConsent("accepted")}>
