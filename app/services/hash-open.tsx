@@ -13,9 +13,17 @@ export function HashOpen() {
         row.scrollIntoView();
       }
     };
+    // A click on a link whose hash is already current fires no hashchange, so re-check after clicks too.
+    const onClick = (e: MouseEvent) => {
+      if ((e.target as Element).closest?.('a[href*="#svc-"]')) setTimeout(open);
+    };
     open();
     window.addEventListener("hashchange", open);
-    return () => window.removeEventListener("hashchange", open);
+    document.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("hashchange", open);
+      document.removeEventListener("click", onClick);
+    };
   }, []);
   return null;
 }
