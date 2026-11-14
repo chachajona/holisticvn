@@ -90,7 +90,7 @@ describe("services from Sanity", () => {
     expect(html).toContain("Nhóm recovery");
     expect(html).toContain("Tóm tắt recovery");
     expect(html).toContain('id="svc-recovery"');
-    expect(html).toContain('href="#svc-manual"');
+    expect(html).toContain('id="svc-manual"');
     expect(html).toContain('href="/treatments/cold-plunge"');
     expect(html).toContain('href="/booking?service=recovery"');
     expect(html).toContain('href="/booking?service=manual"');
@@ -163,7 +163,7 @@ describe("recovery sub-cards and legacy anchor", () => {
   });
 });
 
-describe("services page layout (#41 UX 1A/2A)", () => {
+describe("services page layout (#41 index rows)", () => {
   beforeEach(() => fetch.mockReset());
   const render = async () => {
     fetch.mockResolvedValue([
@@ -204,7 +204,16 @@ describe("services page layout (#41 UX 1A/2A)", () => {
     const html = await render();
     expect(html).not.toMatch(/style="[^"]*order:/);
     const first = html.slice(html.indexOf('id="svc-manual"'));
-    expect(first.indexOf("<h3")).toBeLessThan(first.indexOf("manual.jpg"));
+    expect(first.indexOf("<h2")).toBeLessThan(first.indexOf("manual.jpg"));
+  });
+
+  it("renders one exclusive details row per group with only the first open", async () => {
+    const html = await render();
+    const rows = html.match(/<details[^>]*>/g) ?? [];
+    expect(rows).toHaveLength(4);
+    for (const row of rows) expect(row).toContain('name="services"');
+    expect(rows.map((row) => row.includes(" open"))).toEqual([true, false, false, false]);
+    expect(html.match(/<summary/g)).toHaveLength(4);
   });
 
   it("ends with the three CTA exits and links process steps onward", async () => {
