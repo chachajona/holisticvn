@@ -195,6 +195,20 @@ describe("page views on client navigation", () => {
 describe("cookie banner", () => {
   const buttons = () => [...host.querySelectorAll("button")];
 
+  it("publishes height only for floating banners and cleans up when the layout changes", () => {
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(123);
+    act(() => root.render(<CookieConsent />));
+    expect(host.querySelector("aside")?.dataset.layout).toBe("floating");
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("123px");
+    act(() => root.render(<CookieConsent layout="inline" />));
+    expect(host.querySelector("aside")?.dataset.layout).toBe("inline");
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
+    act(() => root.render(<CookieConsent />));
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("123px");
+    act(() => root.render(null));
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
+  });
+
   it("states the purpose in one sentence and gives Reject and Accept the same style", () => {
     act(() => root.render(<CookieConsent />));
     const text = host.querySelector("p")!.textContent!;
@@ -206,30 +220,36 @@ describe("cookie banner", () => {
     expect(reject.className).toBe(accept.className);
   });
 
-  it("records a rejection, clears Google IDs and reloads", () => {
-    document.cookie = "_ga=GA1.1.1; path=/";
-    document.cookie = "_ga_ABC=GS1; path=/";
-    act(() => root.render(<CookieConsent />));
-    act(() =>
-      buttons()
-        .find((b) => b.textContent === "Từ chối")!
-        .click(),
-    );
-    expect(document.cookie).toContain(`${consentKey}=rejected`);
-    expect(document.cookie).not.toContain("_ga");
-    expect(reload).toHaveBeenCalledOnce();
-  });
+  it.each(["floating", "inline"] as const)(
+    "%s records rejection, clears Google IDs and reloads",
+    (layout) => {
+      document.cookie = "_ga=GA1.1.1; path=/";
+      document.cookie = "_ga_ABC=GS1; path=/";
+      act(() => root.render(<CookieConsent layout={layout} />));
+      act(() =>
+        buttons()
+          .find((b) => b.textContent === "Từ chối")!
+          .click(),
+      );
+      expect(document.cookie).toContain(`${consentKey}=rejected`);
+      expect(document.cookie).not.toContain("_ga");
+      expect(reload).toHaveBeenCalledOnce();
+    },
+  );
 
-  it("records acceptance and reloads so GTM loads", () => {
-    act(() => root.render(<CookieConsent />));
-    act(() =>
-      buttons()
-        .find((b) => b.textContent === "Chấp nhận")!
-        .click(),
-    );
-    expect(hasAnalyticsConsent()).toBe(true);
-    expect(reload).toHaveBeenCalledOnce();
-  });
+  it.each(["floating", "inline"] as const)(
+    "%s records acceptance and reloads so GTM loads",
+    (layout) => {
+      act(() => root.render(<CookieConsent layout={layout} />));
+      act(() =>
+        buttons()
+          .find((b) => b.textContent === "Chấp nhận")!
+          .click(),
+      );
+      expect(hasAnalyticsConsent()).toBe(true);
+      expect(reload).toHaveBeenCalledOnce();
+    },
+  );
 
   it("stays quiet when a choice is already saved", () => {
     document.cookie = `${consentKey}=accepted; path=/`;
@@ -247,30 +267,46 @@ describe("cookie banner", () => {
     expect(reload).toHaveBeenCalledOnce();
   });
 
-  it("focuses the first choice when opened from the footer control", () => {
-    window.location.hash = "#cookie-preferences";
-    vi.spyOn(history, "replaceState").mockImplementation(() => {});
-    act(() => root.render(<CookieConsent />));
-    expect(document.activeElement).toBe(buttons()[0]);
-  });
+  it.each(["floating", "inline"] as const)(
+    "%s focuses the first choice when reopened from the footer",
+    (layout) => {
+      window.location.hash = "#cookie-preferences";
+      vi.spyOn(history, "replaceState").mockImplementation(() => {});
+      act(() => root.render(<CookieConsent layout={layout} />));
+      expect(document.activeElement).toBe(buttons()[0]);
+    },
+  );
 
-  it("hides for this page view without reloading when cookies are blocked", () => {
-    const read = vi.spyOn(document, "cookie", "get").mockReturnValue("");
-    const write = vi.spyOn(document, "cookie", "set").mockImplementation(() => {});
-    try {
-      act(() => root.render(<CookieConsent />));
-      act(() =>
-        buttons()
-          .find((b) => b.textContent === "Chấp nhận")!
-          .click(),
-      );
-      expect(reload).not.toHaveBeenCalled();
-      expect(host.querySelector("aside")).toBeNull();
-    } finally {
-      read.mockRestore();
-      write.mockRestore();
-    }
-  });
+  it.each([
+    ["floating", "Chấp nhận"],
+    ["floating", "Từ chối"],
+    ["inline", "Chấp nhận"],
+    ["inline", "Từ chối"],
+  ] as const)(
+    "%s dismisses %s for this page view without reloading when cookies are blocked",
+    async (layout, choice) => {
+      // Each case represents a fresh page view: the component deliberately keeps a module-level dismissal.
+      vi.resetModules();
+      const { CookieConsent: FreshCookieConsent } = await import("@/components/cookie-consent");
+      const read = vi.spyOn(document, "cookie", "get").mockReturnValue("");
+      const write = vi.spyOn(document, "cookie", "set").mockImplementation(() => {});
+      try {
+        act(() => root.render(<FreshCookieConsent layout={layout} />));
+        expect(host.querySelector("aside")?.dataset.layout).toBe(layout);
+        act(() =>
+          buttons()
+            .find((b) => b.textContent === choice)!
+            .click(),
+        );
+        expect(reload).not.toHaveBeenCalled();
+        expect(host.querySelector("aside")).toBeNull();
+        expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
+      } finally {
+        read.mockRestore();
+        write.mockRestore();
+      }
+    },
+  );
 });
 
 describe("clearAnalyticsCookies", () => {

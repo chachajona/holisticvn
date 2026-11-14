@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
 import { serviceAnchor } from "@/lib/content";
-import { getServices } from "@/lib/sanity";
+import { getPublicSiteData, getServices } from "@/lib/sanity";
 import { HashOpen } from "./hash-open";
+import { ServicesContactLinks } from "./services-contact-links";
 import styles from "./services.module.css";
 
 /*
@@ -22,7 +23,7 @@ export const metadata = createMetadata({
 });
 
 export default async function ServicesPage() {
-  const services = await getServices();
+  const [services, { site }] = await Promise.all([getServices(), getPublicSiteData()]);
   return (
     <main id="main" className={styles.root}>
       <section className={styles.intro}>
@@ -35,87 +36,102 @@ export default async function ServicesPage() {
           <Link href="/treatments" className={styles.textLink}>
             Tìm theo triệu chứng ở Phương pháp <span aria-hidden="true">→</span>
           </Link>
+          <ServicesContactLinks site={site} tone="light" />
         </div>
       </section>
 
       {services.length ? (
-        <section className={styles.index} aria-label="Các nhóm dịch vụ">
-          <HashOpen />
-          {services.map((service, index) => (
-            <details
-              className={styles.row}
-              id={serviceAnchor[service.group]}
-              key={service.group}
-              name="services"
-              open={index === 0}
-            >
-              <summary>
-                {/* Pre-#41 bookmarks (#svc-therapy) land on the first group; static so it works without JS. */}
-                {service.group === "manual" ? (
-                  <span id="svc-therapy" className={styles.legacyAnchor} aria-hidden="true" />
-                ) : null}
-                <h2>{service.shortTitle}</h2>
-                <span className={styles.rowSummary}>{service.summary}</span>
-              </summary>
-              <div className={styles.panel}>
-                <div className={styles.panelCopy}>
-                  {service.title !== service.shortTitle ? (
-                    <p className={styles.panelTitle}>{service.title}</p>
+        <>
+          <nav aria-label="Đi nhanh đến nhóm dịch vụ" className={styles.groupNav}>
+            <p className={styles.groupNavLabel}>Đi nhanh đến nhóm dịch vụ</p>
+            <ul className={styles.groupNavLinks}>
+              {services.map((service) => (
+                <li key={service.group}>
+                  <a href={`#${serviceAnchor[service.group]}`}>
+                    <span>{service.shortTitle}</span> <span aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <section className={styles.index} aria-label="Các nhóm dịch vụ">
+            <HashOpen />
+            {services.map((service, index) => (
+              <details
+                className={styles.row}
+                id={serviceAnchor[service.group]}
+                key={service.group}
+                name="services"
+                open={index === 0}
+              >
+                <summary>
+                  {/* Pre-#41 bookmarks (#svc-therapy) land on the first group; static so it works without JS. */}
+                  {service.group === "manual" ? (
+                    <span id="svc-therapy" className={styles.legacyAnchor} aria-hidden="true" />
                   ) : null}
-                  <p>{service.body}</p>
-                  <ul className={styles.list}>
-                    {service.bullets.map((b) => (
-                      <li key={b}>{b}</li>
-                    ))}
-                  </ul>
-                  {service.group === "recovery" && service.treatments.length ? (
-                    <ul className={styles.subCards}>
-                      {service.treatments.map((t) => (
-                        <li key={t.slug}>
-                          <Link href={`/treatments/${t.slug}`} className={styles.subCard}>
-                            <strong>{t.title}</strong>
-                            {t.shortDescription ? <span>{t.shortDescription}</span> : null}
-                          </Link>
-                        </li>
+                  <h2>{service.shortTitle}</h2>
+                  <span className={styles.rowSummary}>{service.summary}</span>
+                </summary>
+                <div className={styles.panel}>
+                  <div className={styles.panelCopy}>
+                    {service.title !== service.shortTitle ? (
+                      <p className={styles.panelTitle}>{service.title}</p>
+                    ) : null}
+                    <p>{service.body}</p>
+                    <ul className={styles.list}>
+                      {service.bullets.map((b) => (
+                        <li key={b}>{b}</li>
                       ))}
                     </ul>
-                  ) : null}
-                  {service.group !== "recovery" && service.treatments.length ? (
-                    <div className={styles.methods}>
-                      {service.treatments.map((t) => (
-                        <Link key={t.slug} href={`/treatments/${t.slug}`}>
-                          {t.title}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : null}
-                  <div className={styles.actions}>
-                    <Link
-                      href={`/booking?service=${service.group}`}
-                      className={styles.primaryButton}
-                      aria-label={`Đặt lịch ${service.shortTitle}`}
-                    >
-                      Đặt lịch <span aria-hidden="true">→</span>
-                    </Link>
-                    {service.group === "training" ? (
-                      <Link href="/treatments#mtd-rehab" className={styles.textLink}>
-                        Xem phương pháp tập luyện <span aria-hidden="true">→</span>
-                      </Link>
+                    {service.group === "recovery" && service.treatments.length ? (
+                      <ul className={styles.subCards}>
+                        {service.treatments.map((t) => (
+                          <li key={t.slug}>
+                            <Link href={`/treatments/${t.slug}`} className={styles.subCard}>
+                              <strong>{t.title}</strong>
+                              {t.shortDescription ? <span>{t.shortDescription}</span> : null}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     ) : null}
+                    {service.group !== "recovery" && service.treatments.length ? (
+                      <div className={styles.methods}>
+                        {service.treatments.map((t) => (
+                          <Link key={t.slug} href={`/treatments/${t.slug}`}>
+                            {t.title}
+                          </Link>
+                        ))}
+                      </div>
+                    ) : null}
+                    <div className={styles.actions}>
+                      <Link
+                        href={`/booking?service=${service.group}`}
+                        className={styles.primaryButton}
+                        aria-label={`Đặt lịch ${service.shortTitle}`}
+                      >
+                        Đặt lịch <span aria-hidden="true">→</span>
+                      </Link>
+                      {service.group === "training" ? (
+                        <Link href="/treatments#mtd-rehab" className={styles.textLink}>
+                          Xem phương pháp tập luyện <span aria-hidden="true">→</span>
+                        </Link>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className={styles.panelMedia} data-group={service.group}>
+                    <Image
+                      src={service.image}
+                      alt={service.imageAlt}
+                      fill
+                      sizes="(max-width: 980px) 100vw, 40vw"
+                    />
                   </div>
                 </div>
-                <div className={styles.panelMedia} data-group={service.group}>
-                  <Image
-                    src={service.image}
-                    alt={service.imageAlt}
-                    fill
-                    sizes="(max-width: 980px) 100vw, 40vw"
-                  />
-                </div>
-              </div>
-            </details>
-          ))}
-        </section>
+              </details>
+            ))}
+          </section>
+        </>
       ) : null}
 
       <section className={styles.process}>
@@ -159,16 +175,19 @@ export default async function ServicesPage() {
             <h2>Tìm ngay liệu trình thích hợp dành cho bạn</h2>
             <p>Khám phá các dịch vụ vật lý trị liệu chuyên biệt của chúng tôi.</p>
           </div>
-          <div className={styles.ctaActions}>
-            <Link href="/booking" className={styles.lightButton}>
-              Đặt lịch đánh giá ban đầu
-            </Link>
-            <Link href="/treatments" className={styles.darkSolidButton}>
-              Tìm theo triệu chứng
-            </Link>
-            <Link href="/contact" className={styles.darkOutlineButton}>
-              Liên hệ
-            </Link>
+          <div className={styles.ctaActionSide}>
+            <div className={styles.ctaActions}>
+              <Link href="/booking" className={styles.lightButton}>
+                Đặt lịch đánh giá ban đầu
+              </Link>
+              <Link href="/treatments" className={styles.darkSolidButton}>
+                Tìm theo triệu chứng
+              </Link>
+              <Link href="/contact" className={styles.darkOutlineButton}>
+                Liên hệ
+              </Link>
+            </div>
+            <ServicesContactLinks site={site} tone="dark" />
           </div>
         </div>
       </section>

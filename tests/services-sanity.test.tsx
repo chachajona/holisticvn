@@ -1,6 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-const { fetch, leadForm } = vi.hoisted(() => ({ fetch: vi.fn(), leadForm: vi.fn() }));
-vi.mock("@sanity/client", () => ({ createClient: () => ({ fetch }) }));
+const { fetch, settings, leadForm } = vi.hoisted(() => ({
+  fetch: vi.fn(),
+  settings: vi.fn<() => Promise<unknown>>(() => Promise.resolve(null)),
+  leadForm: vi.fn(),
+}));
+vi.mock("@sanity/client", () => ({
+  createClient: () => ({
+    fetch: (query: string, ...args: unknown[]) =>
+      query.includes('_type == "siteSettings"') ? settings() : fetch(query, ...args),
+  }),
+}));
 vi.mock("@/sanity/env", () => ({
   projectId: "configured-project",
   dataset: "production",
@@ -16,6 +25,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import BookingPage from "@/app/booking/page";
 import ServicesPage from "@/app/services/page";
 import { getServices } from "@/lib/sanity";
+
+beforeEach(() => settings.mockResolvedValue(null));
 
 const cdn = "https://cdn.sanity.io/images/p/d/";
 const service = (group: string, extra = {}) => ({
@@ -106,6 +117,7 @@ describe("services from Sanity", () => {
     expect(html).toContain("<h1>Dịch vụ</h1>");
     expect(html).not.toContain("svc-");
     expect(html).not.toContain("/booking?service=");
+    expect(html).not.toContain('aria-label="Đi nhanh đến nhóm dịch vụ"');
   });
 
   it("drops the treatment link when the reference is removed", async () => {
@@ -187,6 +199,36 @@ describe("services page layout (#41 index rows)", () => {
     expect(html.match(/<h1[ >]/g)).toHaveLength(1);
   });
 
+  it("lists only the existing groups in CMS order before the accordion, preserving long labels", async () => {
+    const title = "Hồi phục và thư giãn sau tập luyện với hướng dẫn phù hợp";
+    fetch.mockResolvedValue([service("recovery", { shortTitle: title }), service("training")]);
+    const html = renderToStaticMarkup(await ServicesPage());
+    const nav = html.match(/<nav aria-label="Đi nhanh đến nhóm dịch vụ"[^>]*>(.*?)<\/nav>/)?.[1];
+    expect(nav).toBeDefined();
+    expect(nav?.match(/href="#svc-[^"]+"/g)).toEqual([
+      'href="#svc-recovery"',
+      'href="#svc-training"',
+    ]);
+    expect(nav).toContain(title);
+    expect(html.indexOf("</nav>")).toBeLessThan(html.indexOf("<details"));
+    for (const anchor of ["svc-recovery", "svc-training"]) {
+      expect(html).toContain(`id="${anchor}"`);
+    }
+  });
+
+  it("renders resolved public contact settings in both the intro and closing CTA", async () => {
+    settings.mockResolvedValue({
+      contactPhone: "090 123 4567",
+      contactEmail: "clinic@example.com",
+      locations: [],
+      socialMedia: { zalo: "123456789", facebook: "", instagram: "" },
+    });
+    const html = await render();
+    expect(html.match(/href="tel:0901234567"/g)).toHaveLength(2);
+    expect(html.match(/href="https:\/\/zalo.me\/123456789"/g)).toHaveLength(2);
+    expect(html).toContain("Gọi 090 123 4567");
+  });
+
   it("gives training its /treatments#mtd-rehab link and no other group", async () => {
     const html = await render();
     expect(html.split('href="/treatments#mtd-rehab"')).toHaveLength(2);
@@ -222,6 +264,14 @@ describe("services page layout (#41 index rows)", () => {
       expect(html).toContain(`href="${href}"`);
     }
     expect(html).toContain("Đặt lịch đánh giá ban đầu");
+    const actions = html.match(/<div class="[^"]*ctaActions[^"]*">(.*?)<\/div>/)?.[1];
+    expect(actions?.match(/href="[^"]+"/g)).toEqual([
+      'href="/booking"',
+      'href="/treatments"',
+      'href="/contact"',
+    ]);
+    const closing = html.slice(html.lastIndexOf("<section"));
+    expect(closing.indexOf('href="/contact"')).toBeLessThan(closing.indexOf('href="tel:'));
   });
 });
 
