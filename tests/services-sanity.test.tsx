@@ -132,6 +132,37 @@ describe("services from Sanity", () => {
   });
 });
 
+describe("recovery sub-cards and legacy anchor", () => {
+  beforeEach(() => fetch.mockReset());
+  const link = (slug: string, shortDescription?: string) => ({
+    slug,
+    title: slug,
+    ...(shortDescription === undefined ? {} : { shortDescription }),
+  });
+
+  it("fills an empty recovery shortDescription from the catalogue and leaves other groups alone", async () => {
+    fetch.mockResolvedValue([
+      service("manual", { treatments: [link("cupping", "CMS copy")] }),
+      service("recovery", {
+        treatments: [link("cold-plunge", "CMS copy"), link("infrared-heat", "  ")],
+      }),
+    ]);
+    const [manual, recovery] = await getServices();
+    expect(manual.treatments).toEqual([{ slug: "cupping", title: "cupping" }]);
+    expect(recovery.treatments[0].shortDescription).toBe("CMS copy");
+    expect(recovery.treatments[1].shortDescription).toMatch(/hơi ấm/);
+  });
+
+  it("keeps #svc-therapy as a static alias at the head of the manual group", async () => {
+    fetch.mockResolvedValue([service("manual"), service("electro")]);
+    const html = renderToStaticMarkup(await ServicesPage());
+    expect(html).toContain('id="svc-therapy"');
+    expect(html).toContain('id="svc-manual"');
+    expect(html.indexOf('id="svc-therapy"')).toBeGreaterThan(html.indexOf('id="svc-manual"'));
+    expect(html.split('id="svc-therapy"').length).toBe(2);
+  });
+});
+
 describe("booking context", () => {
   afterEach(() => vi.useRealTimers());
   beforeEach(() => {
@@ -168,6 +199,18 @@ describe("booking context", () => {
       expect(fetch).not.toHaveBeenCalled();
     },
   );
+
+  it("maps the pre-#41 therapy link onto the manual group", async () => {
+    const html = renderToStaticMarkup(
+      await BookingPage({ searchParams: Promise.resolve({ service: "therapy" }) }),
+    );
+    expect(html).toContain("Dịch vụ manual");
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: "Dịch vụ manual",
+      variant: "page",
+    });
+  });
 
   it("does not substitute another published service for a missing group", async () => {
     fetch.mockResolvedValue([service("manual")]);

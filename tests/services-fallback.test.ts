@@ -44,6 +44,7 @@ describe("services fallback (Sanity not configured)", () => {
         .toLowerCase();
     const expected: Record<string, string[]> = {
       manual: [
+        "massage trị liệu",
         "nắn chỉnh cột sống",
         "châm khô",
         "chỉ chuyên viên có chứng nhận",

@@ -24,6 +24,13 @@ const run = (overrides: object = {}) =>
   planSync({ seed, links, treatments: production, pages: pages(), draftIds: [], ...overrides });
 
 describe("planSync", () => {
+  it("refuses to run while the legacy heat-light slug exists", () => {
+    const legacy = production.map((t) =>
+      t.slug === "infrared-heat" ? { ...t, slug: "heat-light" } : t,
+    );
+    expect(() => run({ treatments: legacy })).toThrow(/heat-light/);
+  });
+
   it("creates the missing treatments and patches the existing ones by slug", () => {
     const { mutations } = run();
     const created = mutations.filter((m: object) => "createIfNotExists" in m);

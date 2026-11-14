@@ -161,10 +161,10 @@ export const services: Service[] = [
     summary: "Kỹ thuật bằng tay giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
     body: "Chuyên viên dùng tay và dụng cụ cầm tay để tác động lên cơ, mạc và khớp, không thuốc, không phẫu thuật.",
     bullets: [
-      "Châm khô (chỉ chuyên viên có chứng nhận thực hiện)",
-      "Giác hơi và tapping hỗ trợ giảm căng cơ",
+      "Massage trị liệu toàn thân hoặc cục bộ",
+      "Châm khô, nắn chỉnh cột sống (chỉ chuyên viên có chứng nhận thực hiện)",
       "IASTM – cạo mạc bằng dụng cụ",
-      "Nắn chỉnh cột sống",
+      "Giác hơi và tapping hỗ trợ giảm căng cơ",
     ],
     image: serviceFallbackImage.manual,
     imageAlt: "Trị liệu thủ công",

@@ -93,6 +93,13 @@ const applied = (docs = before(), manifest = manifestFor(docs)): Doc[] => {
 };
 
 describe("missing-only treatment restoration", () => {
+  it("refuses to run while the legacy heat-light slug exists", () => {
+    const docs = before().map((doc) =>
+      doc.slug?.current === "infrared-heat" ? { ...doc, slug: { current: "heat-light" } } : doc,
+    );
+    expect(() => run(docs)).toThrow(/heat-light/);
+  });
+
   it("creates exactly eight reviewed documents, with per-slug SEO and no protocols or assets", () => {
     const docs = before();
     const original = structuredClone(docs);
