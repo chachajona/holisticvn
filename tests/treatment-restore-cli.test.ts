@@ -49,7 +49,7 @@ function fixture() {
   const seo = JSON.parse(readFileSync("lib/treatment-seo.json", "utf8"));
   const links = JSON.parse(readFileSync("scripts/seed/treatment-links.json", "utf8"));
   // UUID identities deliberately differ from seed IDs; drafts may have other types.
-  const legacy = ["cupping", "cold-plunge", "heat-light"].map((slug, index) => ({
+  const legacy = ["cupping", "cold-plunge", "infrared-heat"].map((slug, index) => ({
     _id: `00000000-0000-4000-8000-00000000000${index}`,
     _type: "treatment",
     _rev: `preserved-${index}`,

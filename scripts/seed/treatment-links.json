@@ -3,20 +3,11 @@
     "manual": ["dry-needling", "cupping", "iastm", "tapping", "chiropractic-adjustment"],
     "electro": ["shockwave", "bio-electric", "therapeutic-ultrasound", "electroacupuncture"],
     "cold": ["cold-plunge"],
-    "infrared": ["heat-light"]
+    "infrared": ["infrared-heat"]
   },
   "servicesPage": {
-    "therapy": [
-      "dry-needling",
-      "cupping",
-      "iastm",
-      "tapping",
-      "chiropractic-adjustment",
-      "shockwave",
-      "bio-electric",
-      "therapeutic-ultrasound",
-      "electroacupuncture"
-    ],
-    "recovery": ["heat-light", "cold-plunge"]
+    "manual": ["dry-needling", "cupping", "iastm", "tapping", "chiropractic-adjustment"],
+    "electro": ["shockwave", "bio-electric", "therapeutic-ultrasound", "electroacupuncture"],
+    "recovery": ["cold-plunge", "infrared-heat"]
   }
 }

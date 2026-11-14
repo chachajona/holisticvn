@@ -56,24 +56,24 @@ describe("services from Sanity", () => {
       service("training"),
       service("nonsense"),
       service("training", { title: "Trùng" }),
-      service("therapy"),
+      service("manual"),
     ]);
-    expect((await getServices()).map((s) => s.group)).toEqual(["training", "therapy"]);
+    expect((await getServices()).map((s) => s.group)).toEqual(["training", "manual"]);
   });
 
   it("uses the group's local image when the CMS image is missing or not from Sanity", async () => {
     fetch.mockResolvedValue([
-      service("therapy", { image: null }),
+      service("manual", { image: null }),
       service("training", { image: "https://evil.example/x.jpg" }),
     ]);
-    const [therapy, training] = await getServices();
-    expect(therapy.image).toBe("/images/Iastm.jpg");
+    const [manual, training] = await getServices();
+    expect(manual.image).toBe("/images/Iastm.jpg");
     expect(training.image).toBe("/images/Coaching.jpg");
   });
 
   it("removes treatment references that no longer resolve", async () => {
     fetch.mockResolvedValue([
-      service("therapy", {
+      service("manual", {
         treatments: [{ slug: "cupping", title: "Cupping" }, null, { slug: "", title: "" }],
       }),
     ]);
@@ -83,19 +83,19 @@ describe("services from Sanity", () => {
   it("renders page content, order, treatment links and group-aware booking CTAs from the CMS", async () => {
     fetch.mockResolvedValue([
       service("recovery", { treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }] }),
-      service("therapy"),
+      service("manual"),
     ]);
     const html = renderToStaticMarkup(await ServicesPage());
-    expect(html.indexOf("Dịch vụ recovery")).toBeLessThan(html.indexOf("Dịch vụ therapy"));
+    expect(html.indexOf("Dịch vụ recovery")).toBeLessThan(html.indexOf("Dịch vụ manual"));
     expect(html).toContain("Nhóm recovery");
     expect(html).toContain("Tóm tắt recovery");
     expect(html).toContain('id="svc-recovery"');
-    expect(html).toContain('href="#svc-therapy"');
+    expect(html).toContain('id="svc-manual"');
     expect(html).toContain('href="/treatments/cold-plunge"');
     expect(html).toContain('href="/booking?service=recovery"');
-    expect(html).toContain('href="/booking?service=therapy"');
+    expect(html).toContain('href="/booking?service=manual"');
     expect(html).toContain('aria-label="Đặt lịch Nhóm recovery"');
-    expect(html).toContain('aria-label="Đặt lịch Nhóm therapy"');
+    expect(html).toContain('aria-label="Đặt lịch Nhóm manual"');
     expect(html).not.toContain("svc-training");
     expect(html).toContain("Đặt lịch");
   });
@@ -132,12 +132,105 @@ describe("services from Sanity", () => {
   });
 });
 
+describe("recovery sub-cards and legacy anchor", () => {
+  beforeEach(() => fetch.mockReset());
+  const link = (slug: string, shortDescription?: string) => ({
+    slug,
+    title: slug,
+    ...(shortDescription === undefined ? {} : { shortDescription }),
+  });
+
+  it("fills an empty recovery shortDescription from the catalogue and leaves other groups alone", async () => {
+    fetch.mockResolvedValue([
+      service("manual", { treatments: [link("cupping", "CMS copy")] }),
+      service("recovery", {
+        treatments: [link("cold-plunge", "CMS copy"), link("infrared-heat", "  ")],
+      }),
+    ]);
+    const [manual, recovery] = await getServices();
+    expect(manual.treatments).toEqual([{ slug: "cupping", title: "cupping" }]);
+    expect(recovery.treatments[0].shortDescription).toBe("CMS copy");
+    expect(recovery.treatments[1].shortDescription).toMatch(/hơi ấm/);
+  });
+
+  it("keeps #svc-therapy as a static alias at the head of the manual group", async () => {
+    fetch.mockResolvedValue([service("manual"), service("electro")]);
+    const html = renderToStaticMarkup(await ServicesPage());
+    expect(html).toContain('id="svc-therapy"');
+    expect(html).toContain('id="svc-manual"');
+    expect(html.indexOf('id="svc-therapy"')).toBeGreaterThan(html.indexOf('id="svc-manual"'));
+    expect(html.split('id="svc-therapy"').length).toBe(2);
+  });
+});
+
+describe("services page layout (#41 index rows)", () => {
+  beforeEach(() => fetch.mockReset());
+  const render = async () => {
+    fetch.mockResolvedValue([
+      service("manual"),
+      service("electro"),
+      service("training"),
+      service("recovery", {
+        treatments: [
+          { slug: "cold-plunge", title: "Ngâm lạnh", shortDescription: "Mô tả lạnh" },
+          { slug: "infrared-heat", title: "Đèn hồng ngoại", shortDescription: "Mô tả ấm" },
+        ],
+      }),
+    ]);
+    return renderToStaticMarkup(await ServicesPage());
+  };
+
+  it("links the hero to /treatments and keeps a single h1", async () => {
+    const html = await render();
+    expect(html).toContain('href="/treatments"');
+    expect(html).toContain("Tìm theo triệu chứng ở Phương pháp");
+    expect(html.match(/<h1[ >]/g)).toHaveLength(1);
+  });
+
+  it("gives training its /treatments#mtd-rehab link and no other group", async () => {
+    const html = await render();
+    expect(html.split('href="/treatments#mtd-rehab"')).toHaveLength(2);
+  });
+
+  it("renders recovery as two sub-cards with their descriptions", async () => {
+    const html = await render();
+    expect(html).toContain('href="/treatments/cold-plunge"');
+    expect(html).toContain('href="/treatments/infrared-heat"');
+    expect(html).toContain("Mô tả lạnh");
+    expect(html).toContain("Mô tả ấm");
+  });
+
+  it("keeps DOM order copy-then-image without inline order styles", async () => {
+    const html = await render();
+    expect(html).not.toMatch(/style="[^"]*order:/);
+    const first = html.slice(html.indexOf('id="svc-manual"'));
+    expect(first.indexOf("<h2")).toBeLessThan(first.indexOf("manual.jpg"));
+  });
+
+  it("renders one exclusive details row per group with only the first open", async () => {
+    const html = await render();
+    const rows = html.match(/<details[^>]*>/g) ?? [];
+    expect(rows).toHaveLength(4);
+    for (const row of rows) expect(row).toContain('name="services"');
+    expect(rows.map((row) => row.includes(" open"))).toEqual([true, false, false, false]);
+    expect(html.match(/<summary/g)).toHaveLength(4);
+  });
+
+  it("ends with the three CTA exits and links process steps onward", async () => {
+    const html = await render();
+    for (const href of ["/booking", "/treatments", "/contact", "/about"]) {
+      expect(html).toContain(`href="${href}"`);
+    }
+    expect(html).toContain("Đặt lịch đánh giá ban đầu");
+  });
+});
+
 describe("booking context", () => {
   afterEach(() => vi.useRealTimers());
   beforeEach(() => {
     fetch.mockReset();
     leadForm.mockReset();
-    fetch.mockResolvedValue([service("therapy"), service("training")]);
+    fetch.mockResolvedValue([service("manual"), service("training")]);
   });
 
   it("shows the chosen service and passes it to the lead form", async () => {
@@ -153,7 +246,7 @@ describe("booking context", () => {
     });
   });
 
-  it.each([undefined, "unknown", ["therapy", "training"]])(
+  it.each([undefined, "unknown", ["manual", "training"]])(
     "ignores a missing or invalid service (%s)",
     async (value) => {
       const html = renderToStaticMarkup(
@@ -169,8 +262,20 @@ describe("booking context", () => {
     },
   );
 
+  it("maps the pre-#41 therapy link onto the manual group", async () => {
+    const html = renderToStaticMarkup(
+      await BookingPage({ searchParams: Promise.resolve({ service: "therapy" }) }),
+    );
+    expect(html).toContain("Dịch vụ manual");
+    expect(leadForm).toHaveBeenCalledWith({
+      kind: "booking",
+      treatment: "Dịch vụ manual",
+      variant: "page",
+    });
+  });
+
   it("does not substitute another published service for a missing group", async () => {
-    fetch.mockResolvedValue([service("therapy")]);
+    fetch.mockResolvedValue([service("manual")]);
     renderToStaticMarkup(
       await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
     );

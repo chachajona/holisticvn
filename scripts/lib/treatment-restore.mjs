@@ -72,6 +72,9 @@ export function planRestore({ seed, seo, links, documents }) {
     if (!slug || bySlug.has(slug)) fail(`Missing or duplicate treatment slug: ${slug}`);
     bySlug.set(slug, doc);
   }
+  if (bySlug.has("heat-light")) {
+    fail('Legacy slug "heat-light" still exists: run migrate-services-groups.mjs (#41) first');
+  }
   const mutations = [];
   const changes = [];
   const rollback = [];
