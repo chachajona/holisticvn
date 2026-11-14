@@ -19,6 +19,14 @@ export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
     existingBySlug.set(treatment.slug, treatment);
   }
 
+  // #41 renamed heat-light to infrared-heat. Syncing before scripts/migrate-services-groups.mjs would
+  // create a second Đèn hồng ngoại document next to the old one.
+  if (existingBySlug.has("heat-light")) {
+    throw new Error(
+      'Còn liệu pháp slug "heat-light": chạy migrate-services-groups.mjs (#41) trước.',
+    );
+  }
+
   const mutations = [];
   const idBySlug = new Map();
   for (const doc of seed) {

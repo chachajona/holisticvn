@@ -117,9 +117,10 @@ const location = defineType({
   preview: { select: { title: "name", subtitle: "address" } },
 });
 const serviceGroupTitles: Record<ServiceGroup, string> = {
-  therapy: "Trị liệu",
-  training: "Tập luyện",
-  recovery: "Thư giãn & hồi phục",
+  manual: "Trị liệu thủ công",
+  electro: "Trị liệu bằng thiết bị",
+  training: "Tập luyện 1-1",
+  recovery: "Hồi phục thể chất",
 };
 const serviceGroup = defineType({
   name: "serviceGroup",
@@ -228,9 +229,9 @@ const servicesPage = defineType({
   fields: [
     defineField({
       name: "groups",
-      title: "Ba nhóm dịch vụ",
+      title: "Bốn nhóm dịch vụ",
       description:
-        "Kéo để đổi thứ tự hiển thị. Phải đủ trị liệu, tập luyện, thư giãn, mỗi nhóm một lần.",
+        "Kéo để đổi thứ tự hiển thị. Phải đủ trị liệu thủ công, trị liệu bằng thiết bị, tập luyện, hồi phục, mỗi nhóm một lần.",
       type: "array",
       of: [defineArrayMember({ type: "serviceGroup" })],
       options: { disableActions: ["add", "addBefore", "addAfter", "remove", "duplicate"] },

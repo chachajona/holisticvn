@@ -101,13 +101,13 @@
     ]
   },
   {
-    "_id": "treatment-heat-light",
+    "_id": "treatment-infrared-heat",
     "_type": "treatment",
     "title": "Đèn hồng ngoại",
     "englishTitle": "Heat Light",
     "slug": {
       "_type": "slug",
-      "current": "heat-light"
+      "current": "infrared-heat"
     },
     "shortDescription": "Đèn hồng ngoại tạo hơi ấm tại vùng được chiếu, có thể giúp bớt căng cơ và giảm đau tạm thời.",
     "description": "Đèn hồng ngoại dùng năng lượng hồng ngoại để làm ấm vùng cơ thể được chiếu. Tác dụng nhiệt có thể giúp cơ thư giãn và giảm đau tạm thời. Đây là cách hỗ trợ cảm giác dễ chịu khi cơ đang căng cứng.\n\nMức nhiệt cần phù hợp với vùng da và cảm giác của bạn. Chiếu quá nóng hoặc quá lâu có thể gây bỏng, nhất là khi da giảm cảm giác. Hiệu quả lâu dài còn tùy nguyên nhân gây đau và kế hoạch phục hồi, không thể suy ra chỉ từ cảm giác ấm sau khi chiếu đèn.",

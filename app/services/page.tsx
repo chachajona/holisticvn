@@ -33,7 +33,8 @@ export const metadata = createMetadata({
 
 function CategoryIcon({ type }: { type: ServiceGroup }) {
   const paths = {
-    therapy: <path d="M12 5v14M5 12h14" />,
+    manual: <path d="M12 5v14M5 12h14" />,
+    electro: <path d="M13 3 6 14h5l-1 7 7-11h-5z" />,
     training: <path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" />,
     recovery: (
       <>
@@ -110,6 +111,8 @@ export default async function ServicesPage() {
         const imageLeft = index % 2 === 1;
         return (
           <section className={styles.dive} id={serviceAnchor[service.group]} key={service.group}>
+            {/* Pre-#41 bookmarks (#svc-therapy) land on the first group; static so it works without JS. */}
+            {service.group === "manual" ? <span id="svc-therapy" aria-hidden="true" /> : null}
             <div className={styles.diveCopy} style={{ order: imageLeft ? 2 : 1 }}>
               <h3>{service.title}</h3>
               <p>{service.body}</p>

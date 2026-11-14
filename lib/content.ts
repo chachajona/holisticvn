@@ -28,7 +28,7 @@ export type Treatment = {
   seo?: { title?: string; description?: string; ogImage?: string };
 };
 
-export const serviceGroups = ["therapy", "training", "recovery"] as const;
+export const serviceGroups = ["manual", "electro", "training", "recovery"] as const;
 export type ServiceGroup = (typeof serviceGroups)[number];
 
 export const methodGroups = ["manual", "electro", "rehab", "cold", "infrared"] as const;
@@ -51,7 +51,8 @@ export type Service = {
   bullets: string[];
   image: string;
   imageAlt: string;
-  treatments: Array<{ slug: string; title: string }>;
+  // shortDescription feeds the two recovery sub-cards; other groups render plain links.
+  treatments: Array<{ slug: string; title: string; shortDescription?: string }>;
 };
 
 export type Method = {
@@ -111,7 +112,8 @@ export const branches = [{ name: "Cơ sở Xóm Chiếu", address: site.address 
 
 // Section ids shared by the footer links and the /services and /treatments pages, so they cannot drift apart.
 export const serviceAnchor = {
-  therapy: "svc-therapy",
+  manual: "svc-manual",
+  electro: "svc-electro",
   training: "svc-training",
   recovery: "svc-recovery",
 } as const;
@@ -123,7 +125,8 @@ export const methodAnchor = {
   infrared: "mtd-infrared",
 } as const;
 export const footerServices: Array<[string, string]> = [
-  ["Trị liệu bằng tay", `/services#${serviceAnchor.therapy}`],
+  ["Trị liệu thủ công", `/services#${serviceAnchor.manual}`],
+  ["Trị liệu bằng thiết bị", `/services#${serviceAnchor.electro}`],
   ["Tập luyện phục hồi & tăng cường", `/services#${serviceAnchor.training}`],
   ["Ngâm lạnh & đèn hồng ngoại", `/services#${serviceAnchor.recovery}`],
 ];
@@ -144,32 +147,50 @@ export const reviewSummary = {
 
 // Local image per group: fallback when a CMS service has no usable image.
 export const serviceFallbackImage: Record<ServiceGroup, string> = {
-  therapy: "/images/Iastm.jpg",
+  manual: "/images/Iastm.jpg",
+  electro: "/images/ElectroPulse.jpg",
   training: "/images/Coaching.jpg",
   recovery: "/images/Infrared.jpg",
 };
 
 export const services: Service[] = [
   {
-    group: "therapy",
-    title: "Trị liệu bằng tay",
-    shortTitle: "Trị liệu",
-    summary: "Massage trị liệu, nắn chỉnh và các phương pháp hỗ trợ giảm đau, thư giãn cơ.",
-    body: "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
+    group: "manual",
+    title: "Trị liệu thủ công",
+    shortTitle: "Trị liệu thủ công",
+    summary: "Kỹ thuật bằng tay giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
+    body: "Chuyên viên dùng tay và dụng cụ cầm tay để tác động lên cơ, mạc và khớp, không thuốc, không phẫu thuật.",
     bullets: [
       "Massage trị liệu toàn thân hoặc cục bộ",
-      "Nắn chỉnh cột sống, châm khô, điện châm (chỉ chuyên viên có chứng nhận thực hiện)",
-      "IASTM – cạo mạc, tapping, giác hơi",
-      "Xung kích, điện xung, sóng siêu âm hỗ trợ giảm đau và phục hồi mô mềm",
+      "Châm khô, nắn chỉnh cột sống (chỉ chuyên viên có chứng nhận thực hiện)",
+      "IASTM – cạo mạc bằng dụng cụ",
+      "Giác hơi và tapping hỗ trợ giảm căng cơ",
     ],
-    image: serviceFallbackImage.therapy,
-    imageAlt: "Trị liệu bằng tay",
+    image: serviceFallbackImage.manual,
+    imageAlt: "Trị liệu thủ công",
     treatments: [
       { slug: "dry-needling", title: "Châm khô" },
       { slug: "cupping", title: "Giác hơi" },
       { slug: "iastm", title: "IASTM" },
       { slug: "tapping", title: "Tapping" },
       { slug: "chiropractic-adjustment", title: "Nắn chỉnh cột sống" },
+    ],
+  },
+  {
+    group: "electro",
+    title: "Trị liệu bằng thiết bị",
+    shortTitle: "Trị liệu bằng thiết bị",
+    summary: "Thiết bị hỗ trợ giảm đau và phục hồi mô mềm, kết hợp cùng trị liệu thủ công.",
+    body: "Xung kích, điện xung, siêu âm và điện châm là các kỹ thuật dùng thiết bị, được chọn theo tình trạng của bạn sau buổi đánh giá.",
+    bullets: [
+      "Xung kích hỗ trợ mô mềm",
+      "Điện xung giảm đau tại chỗ",
+      "Sóng siêu âm trị liệu",
+      "Điện châm (chỉ chuyên viên có chứng nhận thực hiện)",
+    ],
+    image: serviceFallbackImage.electro,
+    imageAlt: "Trị liệu bằng thiết bị",
+    treatments: [
       { slug: "shockwave", title: "Xung kích" },
       { slug: "bio-electric", title: "Điện xung" },
       { slug: "therapeutic-ultrasound", title: "Sóng siêu âm" },
@@ -178,7 +199,7 @@ export const services: Service[] = [
   },
   {
     group: "training",
-    title: "Tập luyện phục hồi & tăng cường",
+    title: "Tập luyện phục hồi & tăng cường (1-1)",
     shortTitle: "Tập luyện",
     summary: "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
     body: "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
@@ -193,20 +214,29 @@ export const services: Service[] = [
   },
   {
     group: "recovery",
-    title: "Ngâm lạnh & đèn hồng ngoại",
-    shortTitle: "Thư giãn & hồi phục",
-    summary: "Ngâm lạnh, đèn hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
-    body: "Ngâm lạnh giúp giảm viêm, giảm sưng và phục hồi sau vận động cường độ cao; đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
+    title: "Hồi phục thể chất",
+    shortTitle: "Hồi phục thể chất",
+    summary: "Ngâm lạnh và đèn hồng ngoại hỗ trợ cơ thư giãn sau buổi tập hoặc trị liệu.",
+    body: "Hai lựa chọn hồi phục, thường kết hợp sau buổi trị liệu hoặc tập luyện cường độ cao.",
     bullets: [
-      "Ngâm lạnh phục hồi sau vận động cường độ cao",
+      "Ngâm lạnh sau vận động cường độ cao",
       "Đèn hồng ngoại thư giãn cơ, giảm căng thẳng",
       "Kết hợp linh hoạt trong lộ trình cá nhân",
     ],
     image: serviceFallbackImage.recovery,
-    imageAlt: "Ngâm lạnh & đèn hồng ngoại",
+    imageAlt: "Hồi phục thể chất",
     treatments: [
-      { slug: "heat-light", title: "Đèn hồng ngoại" },
-      { slug: "cold-plunge", title: "Ngâm lạnh" },
+      {
+        slug: "cold-plunge",
+        title: "Ngâm lạnh",
+        shortDescription: "Ngâm trong nước lạnh có thể giúp bớt đau mỏi cơ sau buổi vận động nặng.",
+      },
+      {
+        slug: "infrared-heat",
+        title: "Đèn hồng ngoại",
+        shortDescription:
+          "Đèn hồng ngoại tạo hơi ấm tại vùng được chiếu, có thể giúp bớt căng cơ và giảm đau tạm thời.",
+      },
     ],
   },
 ];
@@ -292,7 +322,7 @@ export const methods: Method[] = [
     filterTags: ["muscle-stiffness"],
     image: methodFallbackImage.infrared,
     imageAlt: "Đèn hồng ngoại",
-    treatments: [{ slug: "heat-light", title: "Đèn hồng ngoại" }],
+    treatments: [{ slug: "infrared-heat", title: "Đèn hồng ngoại" }],
   },
 ];
 
@@ -396,7 +426,7 @@ const catalogue: Array<{
     ],
   },
   {
-    slug: "heat-light",
+    slug: "infrared-heat",
     title: "Đèn hồng ngoại",
     englishTitle: "Heat Light",
     text: "Đèn hồng ngoại tạo hơi ấm tại vùng được chiếu, có thể giúp bớt căng cơ và giảm đau tạm thời.",
