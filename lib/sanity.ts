@@ -67,6 +67,15 @@ const treatmentLinks = z
   .array(z.object(record).nullable().catch(null))
   .catch([])
   .transform((items) => items.filter((item) => item !== null));
+const serviceTreatmentLinks = z
+  .array(
+    z
+      .object({ ...record, shortDescription: z.string().trim().optional().catch(undefined) })
+      .nullable()
+      .catch(null),
+  )
+  .catch([])
+  .transform((items) => items.filter((item) => item !== null));
 const serviceSchema = z
   .object({
     title: z.string().min(1),
@@ -77,13 +86,24 @@ const serviceSchema = z
     bullets: strings,
     image: cdnImage.optional().catch(undefined),
     imageAlt: text,
-    treatments: treatmentLinks,
+    treatments: serviceTreatmentLinks,
   })
   .transform((service) => ({
     ...service,
     shortTitle: service.shortTitle || service.title,
     image: service.image ?? serviceFallbackImage[service.group],
     imageAlt: service.imageAlt || service.title,
+    // Recovery sub-cards read this; fall back to the catalogue copy when the CMS field is empty.
+    treatments:
+      service.group === "recovery"
+        ? service.treatments.map((t) => ({
+            ...t,
+            shortDescription:
+              t.shortDescription ||
+              fallbackTreatments.find((f) => f.slug === t.slug)?.shortDescription ||
+              undefined,
+          }))
+        : service.treatments.map(({ slug, title }) => ({ slug, title })),
   }));
 const methodSchema = z
   .object({
@@ -218,7 +238,7 @@ async function readServices(options?: SanityReadOptions): Promise<Service[]> {
   if (!enabled) return fallbackServices;
   // groups[] order is the editor's drag-and-drop order; defined(group) skips half-filled items.
   const services = await fetchRecords(
-    `*[_id == "servicesPage"][0].groups[defined(group)]{group,title,shortTitle,summary,body,bullets,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title}}`,
+    `*[_id == "servicesPage"][0].groups[defined(group)]{group,title,shortTitle,summary,body,bullets,"image":image.asset->url,"imageAlt":image.alt,"treatments":treatments[]->{"slug":slug.current,title,shortDescription}}`,
     serviceSchema,
     options,
   );
@@ -226,7 +246,9 @@ async function readServices(options?: SanityReadOptions): Promise<Service[]> {
   return services.filter((s, i) => services.findIndex((o) => o.group === s.group) === i);
 }
 export const getServices = cache(() => readServices());
-export const getBookingService = cache(async (group: string): Promise<Service | undefined> => {
+export const getBookingService = cache(async (raw: string): Promise<Service | undefined> => {
+  // Pre-#41 links and bookmarks still say "therapy"; it is now the manual group.
+  const group = raw === "therapy" ? "manual" : raw;
   if (!serviceGroups.some((valid) => valid === group)) return undefined;
   try {
     const services = await withinCmsDeadline((signal) =>

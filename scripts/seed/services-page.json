@@ -3,25 +3,40 @@
   "_type": "servicesPage",
   "groups": [
     {
-      "_key": "therapy",
+      "_key": "manual",
       "_type": "serviceGroup",
-      "group": "therapy",
-      "title": "Trị liệu bằng tay",
-      "shortTitle": "Trị liệu",
-      "summary": "Massage trị liệu, nắn chỉnh và các phương pháp hỗ trợ giảm đau, thư giãn cơ.",
-      "body": "Massage trị liệu toàn thân hoặc cục bộ, nắn chỉnh cột sống và IASTM giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
+      "group": "manual",
+      "title": "Trị liệu thủ công",
+      "shortTitle": "Trị liệu thủ công",
+      "summary": "Kỹ thuật bằng tay giúp giảm căng cơ, giảm đau và phục hồi biên độ vận động.",
+      "body": "Chuyên viên dùng tay và dụng cụ cầm tay để tác động lên cơ, mạc và khớp, không thuốc, không phẫu thuật.",
       "bullets": [
-        "Massage trị liệu toàn thân hoặc cục bộ",
-        "Nắn chỉnh cột sống, châm khô, điện châm (chỉ chuyên viên có chứng nhận thực hiện)",
-        "IASTM – cạo mạc, tapping, giác hơi",
-        "Xung kích, điện xung, sóng siêu âm hỗ trợ giảm đau và phục hồi mô mềm"
+        "Châm khô (chỉ chuyên viên có chứng nhận thực hiện)",
+        "Giác hơi và tapping hỗ trợ giảm căng cơ",
+        "IASTM – cạo mạc bằng dụng cụ",
+        "Nắn chỉnh cột sống"
+      ]
+    },
+    {
+      "_key": "electro",
+      "_type": "serviceGroup",
+      "group": "electro",
+      "title": "Trị liệu bằng thiết bị",
+      "shortTitle": "Trị liệu bằng thiết bị",
+      "summary": "Thiết bị hỗ trợ giảm đau và phục hồi mô mềm, kết hợp cùng trị liệu thủ công.",
+      "body": "Xung kích, điện xung, siêu âm và điện châm là các kỹ thuật dùng thiết bị, được chọn theo tình trạng của bạn sau buổi đánh giá.",
+      "bullets": [
+        "Xung kích hỗ trợ mô mềm",
+        "Điện xung giảm đau tại chỗ",
+        "Sóng siêu âm trị liệu",
+        "Điện châm (chỉ chuyên viên có chứng nhận thực hiện)"
       ]
     },
     {
       "_key": "training",
       "_type": "serviceGroup",
       "group": "training",
-      "title": "Tập luyện phục hồi & tăng cường",
+      "title": "Tập luyện phục hồi & tăng cường (1-1)",
       "shortTitle": "Tập luyện",
       "summary": "Tập luyện phục hồi và tăng cường, cá nhân hoá theo cơ thể bạn.",
       "body": "Hai chương trình tập cá nhân hoá: tập luyện phục hồi cho chấn thương, đau mỏi hoặc hạn chế vận động; tập luyện tăng cường để phát triển sức mạnh, kiểm soát và hiệu quả chuyển động.",
@@ -35,12 +50,12 @@
       "_key": "recovery",
       "_type": "serviceGroup",
       "group": "recovery",
-      "title": "Ngâm lạnh & đèn hồng ngoại",
-      "shortTitle": "Thư giãn & hồi phục",
-      "summary": "Ngâm lạnh, đèn hồng ngoại và thư giãn cơ bắp sau tập luyện nặng.",
-      "body": "Ngâm lạnh giúp giảm viêm, giảm sưng và phục hồi sau vận động cường độ cao; đèn hồng ngoại giúp thư giãn cơ, giảm căng thẳng — thường kết hợp sau buổi trị liệu hoặc tập luyện.",
+      "title": "Hồi phục thể chất",
+      "shortTitle": "Hồi phục thể chất",
+      "summary": "Ngâm lạnh và đèn hồng ngoại hỗ trợ cơ thư giãn sau buổi tập hoặc trị liệu.",
+      "body": "Hai lựa chọn hồi phục, thường kết hợp sau buổi trị liệu hoặc tập luyện cường độ cao.",
       "bullets": [
-        "Ngâm lạnh phục hồi sau vận động cường độ cao",
+        "Ngâm lạnh sau vận động cường độ cao",
         "Đèn hồng ngoại thư giãn cơ, giảm căng thẳng",
         "Kết hợp linh hoạt trong lộ trình cá nhân"
       ]

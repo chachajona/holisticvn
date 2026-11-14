@@ -3,7 +3,7 @@ import { serviceAnchor, serviceFallbackImage, serviceGroups, services } from "@/
 
 describe("service groups", () => {
   it("is the single list behind anchors, fallback images and fallback services", () => {
-    expect(serviceGroups).toEqual(["therapy", "training", "recovery"]);
+    expect(serviceGroups).toEqual(["manual", "electro", "training", "recovery"]);
     expect(Object.keys(serviceAnchor)).toEqual([...serviceGroups]);
     expect(Object.keys(serviceFallbackImage)).toEqual([...serviceGroups]);
     expect(services.map((s) => s.group)).toEqual([...serviceGroups]);

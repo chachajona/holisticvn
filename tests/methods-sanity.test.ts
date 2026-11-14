@@ -101,7 +101,7 @@ describe("methods from Sanity", () => {
   });
 
   it("keeps the first link per slug in a group without deduping across groups", async () => {
-    const first = { slug: "heat-light", title: "Heat & Light" };
+    const first = { slug: "infrared-heat", title: "Heat & Light" };
     const second = { slug: "cupping", title: "Cupping" };
     fetch.mockResolvedValue([
       method("manual", {

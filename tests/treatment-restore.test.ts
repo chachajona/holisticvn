@@ -38,7 +38,7 @@ const ref = (slug: string): Ref => ({
   _ref: `legacy-${slug}`,
 });
 const before = (): Doc[] => [
-  ...["cupping", "cold-plunge", "heat-light"].map((slug) => ({
+  ...["cupping", "cold-plunge", "infrared-heat"].map((slug) => ({
     _id: `legacy-${slug}`,
     _type: "treatment",
     _rev: `original-${slug}`,
@@ -57,7 +57,7 @@ const before = (): Doc[] => [
       { _key: "manual", group: "manual", treatments: [ref("cupping")] },
       { _key: "electro", group: "electro", treatments: [] },
       { _key: "cold", group: "cold", treatments: [ref("cold-plunge")] },
-      { _key: "infrared", group: "infrared", treatments: [ref("heat-light")] },
+      { _key: "infrared", group: "infrared", treatments: [ref("infrared-heat")] },
       { _key: "rehab", group: "rehab", treatments: [] },
     ],
   },
@@ -66,8 +66,13 @@ const before = (): Doc[] => [
     _type: "servicesPage",
     _rev: "services-r1",
     groups: [
-      { _key: "therapy", group: "therapy", treatments: [ref("cupping")] },
-      { _key: "recovery", group: "recovery", treatments: [ref("heat-light"), ref("cold-plunge")] },
+      { _key: "manual", group: "manual", treatments: [ref("cupping")] },
+      { _key: "electro", group: "electro", treatments: [] },
+      {
+        _key: "recovery",
+        group: "recovery",
+        treatments: [ref("infrared-heat"), ref("cold-plunge")],
+      },
       { _key: "training", group: "training", treatments: [] },
     ],
   },
@@ -104,14 +109,16 @@ describe("missing-only treatment restoration", () => {
     expect(docs).toEqual(original);
   });
 
-  it("never mutates existing treatments and touches only three reference arrays", () => {
+  it("never mutates existing treatments and touches only five reference arrays", () => {
     const plan = run();
     const patches = (plan.mutations as Mutation[]).flatMap((m) => (m.patch ? [m.patch] : []));
     expect(patches.map((patch) => patch.id)).toEqual(["methodsPage", "servicesPage"]);
     expect(patches.map((patch) => Object.keys(patch.set)).flat()).toEqual([
       'groups[_key=="manual"].treatments',
       'groups[_key=="electro"].treatments',
-      'groups[_key=="therapy"].treatments',
+      'groups[_key=="manual"].treatments',
+      'groups[_key=="electro"].treatments',
+      'groups[_key=="recovery"].treatments',
     ]);
     expect(patches.map((patch) => patch.ifRevisionID)).toEqual(["methods-r1", "services-r1"]);
     const after = applied();

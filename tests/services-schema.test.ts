@@ -29,7 +29,7 @@ const group = (name: string, extra: object = {}) => ({
   ...extra,
 });
 const page = (groups?: object[]) => ({ _id: "servicesPage", _type: "servicesPage", groups });
-const three = () => serviceGroups.map((name) => group(name));
+const allGroups = () => serviceGroups.map((name) => group(name));
 
 describe("servicesPage schema", () => {
   const servicesPage = schemaTypes.find((t) => t.name === "servicesPage") as unknown as {
@@ -56,7 +56,7 @@ describe("servicesPage schema", () => {
   });
 
   it("accepts three complete groups", async () => {
-    expect((await check(page(three()))).status).toBe("passed");
+    expect((await check(page(allGroups()))).status).toBe("passed");
   });
 
   it.each([
@@ -67,7 +67,7 @@ describe("servicesPage schema", () => {
     ["120-character title surrounded by whitespace", `  ${"ị".repeat(120)}  `, true],
   ])("matches booking validation for %s", async (_label, title, accepted) => {
     const result = await check(
-      page([group("therapy", { title }), group("training"), group("recovery")]),
+      page([group("manual", { title }), group("electro"), group("training"), group("recovery")]),
     );
     expect(result.status).toBe(accepted ? "passed" : "failed");
     if (!accepted) expect(result.messages).toContain("Tên dịch vụ không được dài quá 120 ký tự.");
@@ -84,19 +84,20 @@ describe("servicesPage schema", () => {
 
   it("blocks publishing a duplicated group", async () => {
     const duplicated = [
-      group("therapy"),
-      { ...group("therapy"), _key: "again" },
+      group("manual"),
+      { ...group("manual"), _key: "again" },
+      group("electro"),
       group("training"),
     ];
     const { status, messages } = await check(page([...duplicated, group("recovery")]));
     expect(status).toBe("failed");
-    expect(messages).toContain('Nhóm "therapy" bị trùng.');
+    expect(messages).toContain('Nhóm "manual" bị trùng.');
   });
 
   it("blocks publishing with a missing group or no groups at all", async () => {
-    expect((await check(page([group("therapy"), group("training")]))).messages).toContain(
-      'Thiếu nhóm "recovery".',
-    );
+    expect(
+      (await check(page([group("manual"), group("electro"), group("training")]))).messages,
+    ).toContain('Thiếu nhóm "recovery".');
     expect((await check(page(undefined))).status).toBe("failed");
   });
 
@@ -108,7 +109,8 @@ describe("servicesPage schema", () => {
     };
     for (const missing of ["title", "summary", "body"]) {
       const groups = [
-        group("therapy", { [missing]: undefined }),
+        group("manual", { [missing]: undefined }),
+        group("electro"),
         group("training"),
         group("recovery"),
       ];
@@ -123,14 +125,20 @@ describe("servicesPage schema", () => {
       _type: "image",
       asset: { _type: "reference", _ref: "image-abc123-100x100-jpg" },
     };
-    const groups = [group("therapy", { image }), group("training"), group("recovery")];
+    const groups = [
+      group("manual", { image }),
+      group("electro"),
+      group("training"),
+      group("recovery"),
+    ];
     expect((await check(page(groups))).messages).toContain("Cần alt text khi có ảnh.");
   });
 
   it("rejects the same treatment twice in one group", async () => {
     const ref = (key: string) => ({ _key: key, _type: "reference", _ref: "treatment-cupping" });
     const groups = [
-      group("therapy", { treatments: [ref("1"), ref("2")] }),
+      group("manual", { treatments: [ref("1"), ref("2")] }),
+      group("electro"),
       group("training"),
       group("recovery"),
     ];

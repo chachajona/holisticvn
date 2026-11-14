@@ -65,6 +65,17 @@ const nextConfig: NextConfig = {
       { source: "/gioi-thieu", destination: "/about", permanent: true },
       { source: "/doi-ngu", destination: "/about", permanent: true },
       { source: "/doi-ngu/:slug*", destination: "/about", permanent: true },
+      // #41: canonical slug heat-light -> infrared-heat; one hop, listed before the generic /phuong-phap/:slug rule
+      {
+        source: "/treatments/heat-light",
+        destination: "/treatments/infrared-heat",
+        permanent: true,
+      },
+      {
+        source: "/phuong-phap/heat-light",
+        destination: "/treatments/infrared-heat",
+        permanent: true,
+      },
       { source: "/phuong-phap", destination: "/treatments", permanent: true },
       { source: "/phuong-phap/:slug", destination: "/treatments/:slug", permanent: true },
       { source: "/kien-thuc", destination: "/blog", permanent: true },

@@ -56,24 +56,24 @@ describe("services from Sanity", () => {
       service("training"),
       service("nonsense"),
       service("training", { title: "Trùng" }),
-      service("therapy"),
+      service("manual"),
     ]);
-    expect((await getServices()).map((s) => s.group)).toEqual(["training", "therapy"]);
+    expect((await getServices()).map((s) => s.group)).toEqual(["training", "manual"]);
   });
 
   it("uses the group's local image when the CMS image is missing or not from Sanity", async () => {
     fetch.mockResolvedValue([
-      service("therapy", { image: null }),
+      service("manual", { image: null }),
       service("training", { image: "https://evil.example/x.jpg" }),
     ]);
-    const [therapy, training] = await getServices();
-    expect(therapy.image).toBe("/images/Iastm.jpg");
+    const [manual, training] = await getServices();
+    expect(manual.image).toBe("/images/Iastm.jpg");
     expect(training.image).toBe("/images/Coaching.jpg");
   });
 
   it("removes treatment references that no longer resolve", async () => {
     fetch.mockResolvedValue([
-      service("therapy", {
+      service("manual", {
         treatments: [{ slug: "cupping", title: "Cupping" }, null, { slug: "", title: "" }],
       }),
     ]);
@@ -83,19 +83,19 @@ describe("services from Sanity", () => {
   it("renders page content, order, treatment links and group-aware booking CTAs from the CMS", async () => {
     fetch.mockResolvedValue([
       service("recovery", { treatments: [{ slug: "cold-plunge", title: "Cold Plunge" }] }),
-      service("therapy"),
+      service("manual"),
     ]);
     const html = renderToStaticMarkup(await ServicesPage());
-    expect(html.indexOf("Dịch vụ recovery")).toBeLessThan(html.indexOf("Dịch vụ therapy"));
+    expect(html.indexOf("Dịch vụ recovery")).toBeLessThan(html.indexOf("Dịch vụ manual"));
     expect(html).toContain("Nhóm recovery");
     expect(html).toContain("Tóm tắt recovery");
     expect(html).toContain('id="svc-recovery"');
-    expect(html).toContain('href="#svc-therapy"');
+    expect(html).toContain('href="#svc-manual"');
     expect(html).toContain('href="/treatments/cold-plunge"');
     expect(html).toContain('href="/booking?service=recovery"');
-    expect(html).toContain('href="/booking?service=therapy"');
+    expect(html).toContain('href="/booking?service=manual"');
     expect(html).toContain('aria-label="Đặt lịch Nhóm recovery"');
-    expect(html).toContain('aria-label="Đặt lịch Nhóm therapy"');
+    expect(html).toContain('aria-label="Đặt lịch Nhóm manual"');
     expect(html).not.toContain("svc-training");
     expect(html).toContain("Đặt lịch");
   });
@@ -137,7 +137,7 @@ describe("booking context", () => {
   beforeEach(() => {
     fetch.mockReset();
     leadForm.mockReset();
-    fetch.mockResolvedValue([service("therapy"), service("training")]);
+    fetch.mockResolvedValue([service("manual"), service("training")]);
   });
 
   it("shows the chosen service and passes it to the lead form", async () => {
@@ -153,7 +153,7 @@ describe("booking context", () => {
     });
   });
 
-  it.each([undefined, "unknown", ["therapy", "training"]])(
+  it.each([undefined, "unknown", ["manual", "training"]])(
     "ignores a missing or invalid service (%s)",
     async (value) => {
       const html = renderToStaticMarkup(
@@ -170,7 +170,7 @@ describe("booking context", () => {
   );
 
   it("does not substitute another published service for a missing group", async () => {
-    fetch.mockResolvedValue([service("therapy")]);
+    fetch.mockResolvedValue([service("manual")]);
     renderToStaticMarkup(
       await BookingPage({ searchParams: Promise.resolve({ service: "training" }) }),
     );
