@@ -37,7 +37,7 @@
 }
 .heroCard {
   position: relative;
-  height: 340px;
+  height: 400px;
   border-radius: 18px;
   overflow: hidden;
   background: var(--ink);
@@ -50,9 +50,9 @@
   inset: 0;
   background: linear-gradient(
     95deg,
-    rgba(58, 42, 36, 0.82) 0%,
-    rgba(58, 42, 36, 0.55) 55%,
-    rgba(58, 42, 36, 0.15) 100%
+    rgba(58, 42, 36, 0.78) 0%,
+    rgba(58, 42, 36, 0.42) 48%,
+    rgba(58, 42, 36, 0) 85%
   );
   pointer-events: none;
 }
@@ -92,10 +92,38 @@
   text-decoration-color: #f7f3f0;
 }
 
-/* ---------- Category chips ---------- */
-.categories {
-  padding: 56px max(24px, calc((100vw - 1360px) / 2)) 0;
+.heroNav {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.heroNav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid rgba(247, 243, 240, 0.55);
+  border-radius: 999px;
+  background: rgba(58, 42, 36, 0.35);
+  backdrop-filter: blur(4px);
+  color: #f7f3f0;
+  font: 400 15px var(--font-accent);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.heroNav a:hover {
+  background: rgba(58, 42, 36, 0.6);
+  border-color: #f7f3f0;
+}
+
+/* ---------- Category list (mobile only; chips in the hero cover wider screens) ---------- */
+.categories {
+  display: none;
+  padding: 56px max(24px, calc((100vw - 1360px) / 2)) 0;
+  flex-direction: column;
   flex-direction: column;
   gap: 28px;
 }
@@ -109,45 +137,51 @@
   font-size: clamp(1.6rem, 3vw, 36px);
   color: var(--sage);
 }
-.categoryGrid {
+.categoryList {
+  border-top: 1px solid rgba(58, 42, 36, 0.2);
+}
+.categoryRow {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-.categoryCard {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 32px;
-  border: 1px solid rgba(58, 42, 36, 0.14);
-  border-radius: 16px;
-  background: #fff;
+  grid-template-columns: 1fr 24px;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(58, 42, 36, 0.2);
   color: var(--ink);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
 }
-.categoryCard:hover {
-  transform: translateY(-2px);
-  border-color: var(--clay);
-}
-.categoryIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--sage);
+.categoryRowTitle {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 14px;
   color: var(--sage);
 }
-.categoryCard strong {
-  font: 400 22px var(--font-display);
+.categoryRowTitle strong {
+  font: 400 20px var(--font-display);
+  color: var(--ink);
 }
-.categoryCard span {
+.categorySummary {
+  grid-column: 1;
   font-size: 14.5px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--muted);
+}
+.categoryArrow {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 20px;
+  color: var(--clay-deep);
+  transition: transform 0.2s ease;
+}
+.categoryRow:hover .categoryArrow {
+  transform: translateX(4px);
+}
+
+/* Per-group crops keep the subject (tool, lamp) in frame instead of dead skin / wall. */
+.diveMedia[data-group="manual"] img {
+  object-position: 32% 62%;
+}
+.diveMedia[data-group="recovery"] img {
+  object-position: 50% 22%;
 }
 
 /* ---------- Deep dive ---------- */
@@ -330,18 +364,28 @@
 .processGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 40px;
 }
 .processCard {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 34px 32px;
-  border-radius: 14px;
-  background: var(--warm-band);
+  gap: 12px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(58, 42, 36, 0.22);
+}
+.processCard::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--sage);
 }
 .processNumeral {
-  font: 200 36px/1 var(--font-display);
+  font: 200 44px/1 var(--font-display);
   color: var(--numeral);
 }
 .processCard strong {
@@ -469,8 +513,8 @@
   .root a {
     transition: none;
   }
-  .categoryCard:hover,
-  .primaryButton:hover {
+  .primaryButton:hover,
+  .categoryRow:hover .categoryArrow {
     transform: none;
   }
 }
@@ -530,9 +574,17 @@
   .cta {
     padding-inline: 16px;
   }
-  .categoryGrid,
+  .heroNav {
+    display: none;
+  }
+  .categories {
+    display: flex;
+  }
   .subCards {
     grid-template-columns: 1fr;
+  }
+  .processGrid {
+    gap: 28px;
   }
   .dive {
     margin-top: 40px;

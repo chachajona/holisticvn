@@ -34,8 +34,8 @@ function CategoryIcon({ type }: { type: ServiceGroup }) {
   } as const;
   return (
     <svg
-      width="21"
-      height="21"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -73,6 +73,16 @@ export default async function ServicesPage() {
             <Link href="/treatments" className={styles.heroLink}>
               Tìm theo triệu chứng ở Phương pháp <span aria-hidden="true">→</span>
             </Link>
+            {services.length ? (
+              <nav className={styles.heroNav} aria-label="Các nhóm dịch vụ">
+                {services.map((service) => (
+                  <a href={`#${serviceAnchor[service.group]}`} key={service.group}>
+                    <CategoryIcon type={service.group} />
+                    {service.shortTitle}
+                  </a>
+                ))}
+              </nav>
+            ) : null}
           </div>
         </div>
       </section>
@@ -82,18 +92,21 @@ export default async function ServicesPage() {
           <div className={styles.categoriesHead}>
             <h2>Chọn điểm bắt đầu phù hợp với bạn</h2>
           </div>
-          <div className={styles.categoryGrid}>
+          <div className={styles.categoryList}>
             {services.map((service) => (
               <a
                 href={`#${serviceAnchor[service.group]}`}
                 key={service.group}
-                className={styles.categoryCard}
+                className={styles.categoryRow}
               >
-                <span className={styles.categoryIcon}>
+                <span className={styles.categoryRowTitle}>
                   <CategoryIcon type={service.group} />
+                  <strong>{service.shortTitle}</strong>
                 </span>
-                <strong>{service.shortTitle}</strong>
-                <span>{service.summary}</span>
+                <span className={styles.categorySummary}>{service.summary}</span>
+                <span className={styles.categoryArrow} aria-hidden="true">
+                  →
+                </span>
               </a>
             ))}
           </div>
@@ -153,7 +166,7 @@ export default async function ServicesPage() {
                 </div>
               ) : null}
             </div>
-            <div className={styles.diveMedia}>
+            <div className={styles.diveMedia} data-group={service.group}>
               <Image
                 src={service.image}
                 alt={service.imageAlt}
