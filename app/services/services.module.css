@@ -80,6 +80,18 @@
   color: rgba(247, 243, 240, 0.82);
 }
 
+.heroLink {
+  align-self: flex-start;
+  font: 400 14.5px var(--font-accent);
+  color: #f7f3f0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(247, 243, 240, 0.5);
+}
+.heroLink:hover {
+  text-decoration-color: #f7f3f0;
+}
+
 /* ---------- Category chips ---------- */
 .categories {
   padding: 56px max(24px, calc((100vw - 1360px) / 2)) 0;
@@ -140,14 +152,38 @@
 
 /* ---------- Deep dive ---------- */
 .dive {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  margin-top: 64px;
+  padding: 80px max(24px, calc((100vw - 1360px) / 2));
+}
+.dive + .dive {
+  margin-top: 0;
+}
+.diveLight {
+  background: #fdfaf6;
+}
+.diveWarm {
+  background: #f6efe6;
+}
+.diveInner {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 72px;
   align-items: center;
 }
-.dive + .dive {
-  padding-top: 80px;
+/* DOM is copy then image; even blocks swap columns here only. */
+.diveCopy {
+  grid-column: 1;
+  grid-row: 1;
+}
+.diveMedia {
+  grid-column: 2;
+  grid-row: 1;
+}
+.diveWarm .diveCopy {
+  grid-column: 2;
+}
+.diveWarm .diveMedia {
+  grid-column: 1;
 }
 .diveCopy {
   display: flex;
@@ -187,6 +223,55 @@
   flex: none;
   border-radius: 50%;
   background: var(--sage);
+}
+.diveActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+.textLink {
+  align-self: flex-start;
+  font: 400 14.5px var(--font-accent);
+  color: var(--clay-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+}
+.textLink:hover {
+  color: var(--clay-hover);
+  text-decoration-color: currentColor;
+}
+.subCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.subCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 18px 20px;
+  border: 1px solid rgba(58, 42, 36, 0.18);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  transition: border-color 0.2s ease;
+}
+.subCard:hover {
+  border-color: var(--clay-deep);
+}
+.subCard strong {
+  font: 400 18px var(--font-display);
+}
+.subCard span {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
 }
 .diveLinks {
   display: flex;
@@ -268,6 +353,9 @@
   line-height: 1.7;
   color: var(--muted);
 }
+.processCard .textLink {
+  margin-top: auto;
+}
 
 /* ---------- CTA band ---------- */
 .cta {
@@ -301,6 +389,7 @@
 }
 .ctaActions {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   flex: none;
 }
@@ -309,6 +398,7 @@
 .primaryButton,
 .lightButton,
 .outlineButton,
+.darkSolidButton,
 .darkOutlineButton {
   display: inline-flex;
   align-items: center;
@@ -348,6 +438,13 @@
   border-color: var(--clay-deep);
   color: var(--clay-deep);
 }
+.darkSolidButton {
+  background: rgba(247, 243, 240, 0.14);
+  color: #f7f3f0;
+}
+.darkSolidButton:hover {
+  background: rgba(247, 243, 240, 0.24);
+}
 .darkOutlineButton {
   border: 1px solid rgba(247, 243, 240, 0.4);
   color: #f7f3f0;
@@ -356,21 +453,50 @@
   border-color: #fff;
 }
 
+.root a:focus-visible {
+  outline: 2px solid var(--clay-deep);
+  outline-offset: 3px;
+}
+.heroCard a:focus-visible,
+.ctaCard a:focus-visible {
+  outline-color: #f7f3f0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html):has(.root) {
+    scroll-behavior: auto;
+  }
+  .root a {
+    transition: none;
+  }
+  .categoryCard:hover,
+  .primaryButton:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 980px) {
   .heroContent {
     left: 32px;
     right: 32px;
   }
-  .categoryGrid,
   .processGrid {
     grid-template-columns: 1fr;
   }
-  .dive {
+  .diveInner {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .dive .diveMedia {
-    order: -1;
+  .diveCopy,
+  .diveWarm .diveCopy {
+    grid-column: 1;
+    grid-row: 1;
+    max-width: none;
+  }
+  .diveMedia,
+  .diveWarm .diveMedia {
+    grid-column: 1;
+    grid-row: 2;
   }
   .ctaCard {
     flex-direction: column;
@@ -400,13 +526,20 @@
     font-size: 14px;
   }
   .categories,
-  .dive,
   .process,
   .cta {
     padding-inline: 16px;
   }
+  .categoryGrid,
+  .subCards {
+    grid-template-columns: 1fr;
+  }
   .dive {
-    padding-top: 40px;
+    margin-top: 40px;
+    padding: 48px 16px;
+  }
+  .dive + .dive {
+    margin-top: 0;
   }
   .diveMedia {
     height: 220px;

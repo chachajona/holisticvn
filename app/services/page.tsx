@@ -6,21 +6,10 @@ import { getServices } from "@/lib/sanity";
 import styles from "./services.module.css";
 
 /*
-DIRECTION CONTRACT (impeccable, brief-pinned — comp supplied as full desktop 1440 /
-mobile 390 mock, no concept roll).
-THESIS: Dịch vụ (Services) — three entry categories (trị liệu / tập luyện / thư
-giãn), each opened into a deep-dive section, so a visitor picks a starting point
-by what they need rather than browsing an undifferentiated list.
-OWN-WORLD: same Warm Clay Editorial v2 chrome as the homepage and Methods page —
-card ground, ink hero panel, sage/clay actions, Roboto Slab headings over
-Roboto Serif body.
-STORY: a visitor picks the category matching their need, reads the specific
-technique and its outcomes, and books that service — or follows a real
-treatment link into CMS-backed detail.
-FIRST VIEWPORT: 340px full-bleed dark hero card, "Dịch vụ" title, one clarifying line.
-FORM: comp-led, brief-pinned (no seed key) — see .context/attachments.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
-review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
+Issue #41 (UX 1A/2A, approved): hero + 2x2 start-point grid, four deep-dive blocks on
+alternating grounds (recovery splits into two sub-cards), 3-step process and a 3-exit CTA.
+All blocks are always rendered so /, footer and #svc-* anchors land on the group heading.
+DOM order is copy then image; the left/right swap is CSS grid only (no inline `order`).
 */
 
 export const revalidate = 3600;
@@ -78,8 +67,12 @@ export default async function ServicesPage() {
           <div className={styles.heroContent}>
             <h1>Dịch vụ</h1>
             <p className={styles.heroBody}>
-              Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.
+              Chọn chương trình dịch vụ theo nhu cầu — hoặc lọc kỹ thuật theo triệu chứng tại Phương
+              pháp.
             </p>
+            <Link href="/treatments" className={styles.heroLink}>
+              Tìm theo triệu chứng ở Phương pháp <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -107,13 +100,16 @@ export default async function ServicesPage() {
         </nav>
       ) : null}
 
-      {services.map((service, index) => {
-        const imageLeft = index % 2 === 1;
-        return (
-          <section className={styles.dive} id={serviceAnchor[service.group]} key={service.group}>
-            {/* Pre-#41 bookmarks (#svc-therapy) land on the first group; static so it works without JS. */}
-            {service.group === "manual" ? <span id="svc-therapy" aria-hidden="true" /> : null}
-            <div className={styles.diveCopy} style={{ order: imageLeft ? 2 : 1 }}>
+      {services.map((service, index) => (
+        <section
+          className={`${styles.dive} ${index % 2 === 0 ? styles.diveLight : styles.diveWarm}`}
+          id={serviceAnchor[service.group]}
+          key={service.group}
+        >
+          {/* Pre-#41 bookmarks (#svc-therapy) land on the first group; static so it works without JS. */}
+          {service.group === "manual" ? <span id="svc-therapy" aria-hidden="true" /> : null}
+          <div className={styles.diveInner}>
+            <div className={styles.diveCopy}>
               <h3>{service.title}</h3>
               <p>{service.body}</p>
               <ul className={styles.diveList}>
@@ -121,24 +117,43 @@ export default async function ServicesPage() {
                   <li key={b}>{b}</li>
                 ))}
               </ul>
-              <Link
-                href={`/booking?service=${service.group}`}
-                className={styles.primaryButton}
-                aria-label={`Đặt lịch ${service.shortTitle}`}
-              >
-                Đặt lịch <span aria-hidden="true">→</span>
-              </Link>
-              {service.treatments.length ? (
+              {service.group === "recovery" && service.treatments.length ? (
+                <ul className={styles.subCards}>
+                  {service.treatments.map((t) => (
+                    <li key={t.slug}>
+                      <Link href={`/treatments/${t.slug}`} className={styles.subCard}>
+                        <strong>{t.title}</strong>
+                        {t.shortDescription ? <span>{t.shortDescription}</span> : null}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <div className={styles.diveActions}>
+                <Link
+                  href={`/booking?service=${service.group}`}
+                  className={styles.primaryButton}
+                  aria-label={`Đặt lịch ${service.shortTitle}`}
+                >
+                  Đặt lịch <span aria-hidden="true">→</span>
+                </Link>
+                {service.group === "training" ? (
+                  <Link href="/treatments#mtd-rehab" className={styles.textLink}>
+                    Xem phương pháp tập luyện <span aria-hidden="true">→</span>
+                  </Link>
+                ) : null}
+              </div>
+              {service.group !== "recovery" && service.treatments.length ? (
                 <div className={styles.diveLinks}>
                   {service.treatments.map((t) => (
                     <Link key={t.slug} href={`/treatments/${t.slug}`}>
-                      {t.title} ↗
+                      {t.title}
                     </Link>
                   ))}
                 </div>
               ) : null}
             </div>
-            <div className={styles.diveMedia} style={{ order: imageLeft ? 1 : 2 }}>
+            <div className={styles.diveMedia}>
               <Image
                 src={service.image}
                 alt={service.imageAlt}
@@ -146,9 +161,9 @@ export default async function ServicesPage() {
                 sizes="(max-width: 980px) 100vw, 45vw"
               />
             </div>
-          </section>
-        );
-      })}
+          </div>
+        </section>
+      ))}
 
       <section className={styles.process}>
         <div className={styles.processHead}>
@@ -162,16 +177,25 @@ export default async function ServicesPage() {
             <span>
               Tìm hiểu tình trạng cơ thể và mục tiêu của bạn trước khi đề xuất phương pháp.
             </span>
+            <Link href="/booking" className={styles.textLink}>
+              Đặt lịch đánh giá <span aria-hidden="true">→</span>
+            </Link>
           </div>
           <div className={styles.processCard}>
             <span className={styles.processNumeral}>02</span>
             <strong>Trị liệu &amp; tập luyện</strong>
             <span>Kết hợp các dịch vụ phù hợp trên một lộ trình xuyên suốt.</span>
+            <Link href="/treatments" className={styles.textLink}>
+              Xem các phương pháp <span aria-hidden="true">→</span>
+            </Link>
           </div>
           <div className={styles.processCard}>
             <span className={styles.processNumeral}>03</span>
-            <strong>Duy trì</strong>
+            <strong>Duy trì &amp; hồi phục</strong>
             <span>Bài tập và thói quen giúp bạn giữ được sức khoẻ vận động lâu dài.</span>
+            <Link href="/about" className={styles.textLink}>
+              Cách Holistic đồng hành <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -184,7 +208,10 @@ export default async function ServicesPage() {
           </div>
           <div className={styles.ctaActions}>
             <Link href="/booking" className={styles.lightButton}>
-              Đặt lịch hẹn
+              Đặt lịch đánh giá ban đầu
+            </Link>
+            <Link href="/treatments" className={styles.darkSolidButton}>
+              Tìm theo triệu chứng
             </Link>
             <Link href="/contact" className={styles.darkOutlineButton}>
               Liên hệ

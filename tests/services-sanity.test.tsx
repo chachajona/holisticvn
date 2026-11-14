@@ -163,6 +163,59 @@ describe("recovery sub-cards and legacy anchor", () => {
   });
 });
 
+describe("services page layout (#41 UX 1A/2A)", () => {
+  beforeEach(() => fetch.mockReset());
+  const render = async () => {
+    fetch.mockResolvedValue([
+      service("manual"),
+      service("electro"),
+      service("training"),
+      service("recovery", {
+        treatments: [
+          { slug: "cold-plunge", title: "Ngâm lạnh", shortDescription: "Mô tả lạnh" },
+          { slug: "infrared-heat", title: "Đèn hồng ngoại", shortDescription: "Mô tả ấm" },
+        ],
+      }),
+    ]);
+    return renderToStaticMarkup(await ServicesPage());
+  };
+
+  it("links the hero to /treatments and keeps a single h1", async () => {
+    const html = await render();
+    expect(html).toContain('href="/treatments"');
+    expect(html).toContain("Tìm theo triệu chứng ở Phương pháp");
+    expect(html.match(/<h1[ >]/g)).toHaveLength(1);
+  });
+
+  it("gives training its /treatments#mtd-rehab link and no other group", async () => {
+    const html = await render();
+    expect(html.split('href="/treatments#mtd-rehab"')).toHaveLength(2);
+  });
+
+  it("renders recovery as two sub-cards with their descriptions", async () => {
+    const html = await render();
+    expect(html).toContain('href="/treatments/cold-plunge"');
+    expect(html).toContain('href="/treatments/infrared-heat"');
+    expect(html).toContain("Mô tả lạnh");
+    expect(html).toContain("Mô tả ấm");
+  });
+
+  it("keeps DOM order copy-then-image without inline order styles", async () => {
+    const html = await render();
+    expect(html).not.toMatch(/style="[^"]*order:/);
+    const first = html.slice(html.indexOf('id="svc-manual"'));
+    expect(first.indexOf("<h3")).toBeLessThan(first.indexOf("manual.jpg"));
+  });
+
+  it("ends with the three CTA exits and links process steps onward", async () => {
+    const html = await render();
+    for (const href of ["/booking", "/treatments", "/contact", "/about"]) {
+      expect(html).toContain(`href="${href}"`);
+    }
+    expect(html).toContain("Đặt lịch đánh giá ban đầu");
+  });
+});
+
 describe("booking context", () => {
   afterEach(() => vi.useRealTimers());
   beforeEach(() => {
