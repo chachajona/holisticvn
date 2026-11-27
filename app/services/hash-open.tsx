@@ -19,7 +19,12 @@ function syncHash(row: HTMLDetailsElement) {
 export function HashOpen() {
   useEffect(() => {
     const open = () => {
-      const id = decodeURIComponent(location.hash.slice(1));
+      let id: string;
+      try {
+        id = decodeURIComponent(location.hash.slice(1));
+      } catch {
+        return;
+      }
       const row = id ? document.getElementById(id)?.closest("details") : null;
       if (row && !row.open) {
         // The exclusive row above may collapse; skip the height transition so the scroll target holds.
