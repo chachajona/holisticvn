@@ -28,7 +28,7 @@ describe("buildTreatmentDetail", () => {
   });
 
   it("returns nothing related when the treatment is alone in its group", () => {
-    const detail = buildTreatmentDetail(find("heat-light"), treatments, methods);
+    const detail = buildTreatmentDetail(find("infrared-heat"), treatments, methods);
     expect(detail.stages).toEqual(["recovery"]);
     expect(detail.related).toEqual([]);
   });

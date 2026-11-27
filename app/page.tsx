@@ -116,7 +116,7 @@ const carouselServices = [
     copy: "Giảm căng cơ, cải thiện lưu thông máu và hỗ trợ phục hồi sau vận động hoặc stress kéo dài.",
     image: "/images/TreatmentBeds.jpg",
     tag: "Trị liệu",
-    href: "/services#svc-therapy",
+    href: "/services#svc-manual",
   },
   {
     title: "IASTM – cạo mạc",

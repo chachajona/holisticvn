@@ -9,6 +9,9 @@
   --numeral: #ab917e;
   --warm-band: #ede6dc;
   --dark-cta: #181f1a;
+  --line: rgba(58, 42, 36, 0.2);
+  /* Same exponential ease-out as the Methods page (treatments.module.css). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--ink);
   background: var(--card);
   font-family: var(--font-accent);
@@ -27,289 +30,398 @@
   font-family: var(--font-display);
   font-weight: 300;
   letter-spacing: -0.015em;
-  text-wrap: pretty;
+  text-wrap: balance;
   color: var(--ink);
 }
 
-/* ---------- Hero ---------- */
-.hero {
-  padding: 6px max(24px, calc((100vw - 1360px) / 2)) 0;
+/* ---------- Intro ---------- */
+.intro {
+  padding: 48px max(24px, calc((100vw - 1360px) / 2)) 32px;
 }
-.heroCard {
-  position: relative;
-  height: 340px;
-  border-radius: 18px;
-  overflow: hidden;
-  background: var(--ink);
+.intro h1 {
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1.05;
 }
-.heroCard img {
-  object-fit: cover;
-}
-.heroScrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    95deg,
-    rgba(58, 42, 36, 0.82) 0%,
-    rgba(58, 42, 36, 0.55) 55%,
-    rgba(58, 42, 36, 0.15) 100%
-  );
-  pointer-events: none;
-}
-.heroContent {
-  position: absolute;
-  left: 64px;
-  top: 0;
-  bottom: 0;
-  right: 64px;
+.introRail {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 16px;
-}
-.hero h1 {
-  font-size: clamp(2rem, 5vw, 52px);
-  line-height: 1.1;
-  color: #f7f3f0;
-}
-.heroBody {
-  max-width: 480px;
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-  color: rgba(247, 243, 240, 0.82);
-}
-
-/* ---------- Category chips ---------- */
-.categories {
-  padding: 56px max(24px, calc((100vw - 1360px) / 2)) 0;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-.categoriesHead {
-  max-width: 640px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.categoriesHead h2 {
-  font-size: clamp(1.6rem, 3vw, 36px);
-  color: var(--sage);
-}
-.categoryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
   gap: 24px;
+  margin-top: 16px;
 }
-.categoryCard {
+.introRule {
+  flex: 1;
+  min-width: 24px;
+  height: 1px;
+  background: rgba(58, 42, 36, 0.2);
+}
+.introRail > .introLink {
+  align-self: center;
+  font-size: 0.90625rem;
+  line-height: 1.6;
+}
+.introLink > span {
+  flex: none;
+}
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  align-self: flex-start;
+  font: 400 0.90625rem var(--font-accent);
+  color: var(--clay-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+}
+.textLink:hover {
+  color: var(--clay-hover);
+  text-decoration-color: currentColor;
+}
+.groupNav {
+  display: none;
+  margin: 0 max(24px, calc((100vw - 1360px) / 2)) 24px;
+}
+.groupPicker > summary {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding: 32px;
-  border: 1px solid rgba(58, 42, 36, 0.14);
-  border-radius: 16px;
-  background: #fff;
-  color: var(--ink);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+  min-height: 48px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--clay-deep);
+  font: 400 1rem/1.5 var(--font-accent);
+  list-style: none;
+  cursor: pointer;
 }
-.categoryCard:hover {
-  transform: translateY(-2px);
-  border-color: var(--clay);
+.groupPicker > summary::-webkit-details-marker {
+  display: none;
 }
-.categoryIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--sage);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--sage);
+.groupPicker > summary::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-inline: 4px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s var(--ease-out);
 }
-.categoryCard strong {
-  font: 400 22px var(--font-display);
+.groupPicker[open] > summary::after {
+  transform: rotate(225deg);
 }
-.categoryCard span {
-  font-size: 14.5px;
-  line-height: 1.65;
-  color: var(--muted);
+.groupPicker > summary:hover {
+  color: var(--clay-hover);
 }
-
-/* ---------- Deep dive ---------- */
-.dive {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+.groupPicker > summary:active {
+  background: var(--warm-band);
+}
+.groupPicker > summary:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 3px;
+}
+.groupNavLinks {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 72px;
-  align-items: center;
-}
-.dive + .dive {
-  padding-top: 80px;
-}
-.diveCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 480px;
-}
-.diveCopy h3 {
-  font-size: clamp(1.6rem, 3vw, 34px);
-  line-height: 1.2;
-}
-.diveCopy > p {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--muted);
-}
-.diveList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  padding: 0;
   margin: 0;
   list-style: none;
 }
-.diveList li {
+.groupNavLinks li {
+  min-width: 0;
+}
+.groupNavLinks a {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 15px;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding-block: 12px;
+  border-bottom: 1px solid rgba(58, 42, 36, 0.2);
+  color: var(--clay-deep);
+  font: 400 0.90625rem/1.6 var(--font-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.groupNavLinks a:hover {
+  color: var(--clay-hover);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Index rows ---------- */
+.index {
+  margin-inline: max(24px, calc((100vw - 1360px) / 2));
+  border-top: 1px solid var(--ink);
+}
+.row {
+  border-bottom: 1px solid rgba(58, 42, 36, 0.2);
+  scroll-margin-top: 110px;
+}
+.row summary {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+  padding: 28px 0;
+  cursor: pointer;
+  list-style: none;
+  scroll-margin-top: 110px;
+}
+/* Empty alias anchor: out of the grid flow so it does not take a column. */
+.legacyAnchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.row summary::-webkit-details-marker {
+  display: none;
+}
+.row summary::after {
+  /* Decorative: "/ \"\"" keeps the glyph out of the summary's accessible name. */
+  content: "+";
+  content: "+" / "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 200 1.75rem/1 var(--font-display);
+  color: var(--clay-deep);
+}
+.row[open] summary::after {
+  content: "–";
+  content: "–" / "";
+}
+.row summary h2 {
+  font-size: clamp(1.625rem, 3vw, 2.625rem);
+  line-height: 1.2;
+  transition: color 0.2s ease;
+}
+.row summary:hover h2,
+.row[open] summary h2 {
+  color: var(--sage);
+}
+.rowSummary {
+  padding-right: 48px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  padding: 0 0 40px;
+}
+.panelCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+.panelCopy > p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.panelCopy > .panelTitle {
+  font: 400 1.1875rem var(--font-display);
+  color: var(--ink);
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
   color: #4a3b34;
 }
-.diveList li::before {
+.list li::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 5px;
+  margin-top: 0.65em;
   flex: none;
   border-radius: 50%;
   background: var(--sage);
 }
-.diveLinks {
+.methods {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0 20px;
 }
-.diveLinks a {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.06em;
+.methods a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  font: 400 0.90625rem/1.6 var(--font-accent);
   color: var(--clay-deep);
-  border: 1px solid rgba(116, 77, 64, 0.3);
-  padding: 6px 12px;
-  border-radius: 999px;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease;
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
 }
-.diveLinks a:hover {
-  border-color: var(--clay-deep);
+.methods a:hover {
   color: var(--clay-hover);
+  text-decoration-color: currentColor;
 }
-.diveMedia {
-  height: 400px;
-  border-radius: 16px;
-  overflow: hidden;
+.subCards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.subCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 16px 0;
+  border-top: 1px solid rgba(58, 42, 36, 0.18);
+  color: var(--ink);
+  transition: border-color 0.2s ease;
+}
+.subCard:hover {
+  border-color: var(--clay-deep);
+}
+.subCard strong {
+  font: 400 1.125rem/1.4 var(--font-display);
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
+}
+.subCard span {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+.panelFigure {
+  grid-column: 2;
+  align-self: start;
+  min-width: 0;
+  margin: 0;
+}
+.panelMedia {
   position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--warm-band);
 }
-.diveMedia img {
+.panelMedia img {
   object-fit: cover;
+  object-position: center;
 }
 
 /* ---------- Process band ---------- */
 .process {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  padding: 72px max(24px, calc((100vw - 1360px) / 2)) 0;
   display: flex;
   flex-direction: column;
-  gap: 34px;
+  gap: 28px;
 }
 .processHead {
   display: flex;
-  align-items: baseline;
-  gap: 20px;
+  align-items: center;
+  gap: 24px;
 }
-.processHead span {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--clay);
+.processHead h2 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  line-height: 1.25;
+  color: var(--sage);
 }
 .processHead i {
   flex: 1;
   height: 1px;
   background: rgba(58, 42, 36, 0.16);
-  font-style: normal;
 }
 .processGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .processCard {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 34px 32px;
-  border-radius: 14px;
-  background: var(--warm-band);
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr); /* rem: grows with the numeral at larger text */
+  gap: 16px;
+  align-content: start;
+  padding: 24px 0;
+  border-top: 1px solid rgba(58, 42, 36, 0.2);
 }
 .processNumeral {
-  font: 200 36px/1 var(--font-display);
+  font: 200 1.75rem/1 var(--font-display);
   color: var(--numeral);
 }
-.processCard strong {
-  font: 400 21px var(--font-display);
-  color: var(--ink);
+.processCard h3 {
+  font: 400 1.25rem/1.35 var(--font-display);
 }
-.processCard span {
-  font-size: 15px;
+.processCard p {
+  max-width: 52ch;
+  margin: 10px 0 0;
+  font-size: 0.9375rem;
   line-height: 1.7;
   color: var(--muted);
 }
 
 /* ---------- CTA band ---------- */
 .cta {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  padding: 56px max(24px, calc((100vw - 1360px) / 2));
 }
 .ctaCard {
   background: var(--dark-cta);
-  border-radius: 18px;
-  padding: 56px;
+  border-radius: 16px;
+  padding: 28px 32px;
+  min-height: 140px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  flex-wrap: wrap;
+  gap: 24px;
 }
-.ctaCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 480px;
+.ctaCard h2 {
+  flex: 1;
+  min-width: 0;
+  font: 300 1.75rem/1.25 var(--font-display);
+  color: #f7f3f0;
+  text-wrap: balance;
 }
-.ctaCopy h2 {
-  font-size: clamp(1.5rem, 2.6vw, 32px);
-  line-height: 1.2;
-  color: #e4ebe6;
-}
-.ctaCopy p {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 300;
-  color: rgba(215, 225, 218, 0.85);
-}
-.ctaActions {
-  display: flex;
-  gap: 16px;
-  flex: none;
+.ctaCard > a {
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 /* ---------- Shared buttons ---------- */
 .primaryButton,
-.lightButton,
-.outlineButton,
-.darkOutlineButton {
+.lightButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -317,12 +429,12 @@
   min-height: 46px;
   padding: 13px 24px;
   border-radius: 999px;
-  font: 400 14.5px var(--font-accent);
+  font: 400 0.90625rem var(--font-accent);
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    transform 0.16s var(--ease-out);
 }
 .primaryButton {
   background: var(--clay-deep);
@@ -330,96 +442,191 @@
 }
 .primaryButton:hover {
   background: var(--clay-hover);
-  transform: translateY(-2px);
+}
+/* Press feedback; the hover lift and arrow nudge stay off touch screens, where hover sticks. */
+.primaryButton:active,
+.lightButton:active {
+  transform: scale(0.97);
+}
+.primaryButton > span {
+  display: inline-block;
+  transition: transform 0.2s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .primaryButton:hover {
+    transform: translateY(-2px);
+  }
+  .primaryButton:hover:active {
+    transform: translateY(-2px) scale(0.97);
+  }
+  .primaryButton:hover > span {
+    transform: translateX(3px);
+  }
 }
 .lightButton {
   background: #f7f3f0;
   color: var(--ink);
 }
 .lightButton:hover {
-  background: var(--clay-deep);
-  color: #fff;
+  background: var(--warm-band);
 }
-.outlineButton {
-  border: 1px solid rgba(58, 42, 36, 0.25);
-  color: var(--ink);
+
+.root a:focus-visible,
+.row summary:focus-visible {
+  outline: 2px solid var(--clay-deep);
+  outline-offset: 3px;
 }
-.outlineButton:hover {
-  border-color: var(--clay-deep);
-  color: var(--clay-deep);
+.ctaCard a:focus-visible {
+  outline-color: #f7f3f0;
 }
-.darkOutlineButton {
-  border: 1px solid rgba(247, 243, 240, 0.4);
-  color: #f7f3f0;
+
+/*
+Disclosure open/close: height and fade on ::details-content (verified in Chromium only).
+Browsers without the pseudo-element keep the instant native toggle. No @starting-style,
+so the first row, open in the server HTML, does not animate on load.
+*/
+@supports selector(::details-content) {
+  .row,
+  .groupPicker {
+    interpolate-size: allow-keywords;
+  }
+  .row::details-content,
+  .groupPicker::details-content {
+    block-size: 0;
+    overflow: clip;
+    /* Room for the 2px + 3px focus ring on links flush with the panel edge. */
+    overflow-clip-margin: 6px;
+    opacity: 0;
+    transition:
+      block-size 0.3s var(--ease-out),
+      opacity 0.2s var(--ease-out),
+      content-visibility 0.3s allow-discrete;
+  }
+  .row[open]::details-content,
+  .groupPicker[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+  /* HashOpen sets this while it opens a row and scrolls to it, so nothing resizes under the scroll. */
+  .index[data-jump] .row::details-content {
+    transition: none;
+  }
 }
-.darkOutlineButton:hover {
-  border-color: #fff;
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html):has(.root) {
+    scroll-behavior: auto;
+  }
+  .root a,
+  .root a > span,
+  .row summary h2,
+  .groupPicker > summary::after {
+    transition: none;
+  }
+  .root a:hover,
+  .root a:active,
+  .root a > span {
+    transform: none !important;
+  }
+  /* Panels appear at full height and only fade in. */
+  .row::details-content,
+  .groupPicker::details-content {
+    transition: opacity 0.2s ease;
+  }
 }
 
 @media (max-width: 980px) {
-  .heroContent {
-    left: 32px;
-    right: 32px;
-  }
-  .categoryGrid,
   .processGrid {
     grid-template-columns: 1fr;
+    gap: 0;
   }
-  .dive {
+  .panel {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .dive .diveMedia {
-    order: -1;
+  .panelFigure {
+    grid-column: auto;
   }
-  .ctaCard {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
+  .panelMedia {
+    aspect-ratio: 16 / 9;
+    max-height: 360px;
+  }
+  .panelCopy {
+    max-width: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .groupNav {
+    display: block;
+  }
+}
+
+@media (max-width: 860px) {
+  .row summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .row summary h2 {
+    padding-right: 44px;
+  }
+  .row summary::after {
+    top: 28px;
+    transform: none;
+  }
+  .rowSummary {
+    padding-right: 0;
   }
 }
 
 @media (max-width: 700px) {
-  .hero {
-    padding: 0 16px;
+  .intro {
+    padding: 32px 16px 28px;
   }
-  .heroCard {
-    height: 260px;
-    border-radius: 16px;
+  .introRail {
+    gap: 16px;
+    margin-top: 12px;
   }
-  .heroContent {
-    left: 20px;
-    right: 20px;
-    bottom: 22px;
-    top: auto;
+  .groupNavLinks {
+    grid-template-columns: 1fr;
   }
-  .hero h1 {
-    font-size: 34px;
+  .index,
+  .groupNav {
+    margin-inline: 16px;
   }
-  .heroBody {
-    font-size: 14px;
+  .row summary {
+    padding: 22px 0;
   }
-  .categories,
-  .dive,
+  .row summary::after {
+    top: 22px;
+  }
+  .panelMedia {
+    aspect-ratio: 4 / 3;
+  }
+  .subCards {
+    grid-template-columns: 1fr;
+  }
   .process,
   .cta {
     padding-inline: 16px;
   }
-  .dive {
-    padding-top: 40px;
+  .process {
+    padding-top: 56px;
+    gap: 24px;
   }
-  .diveMedia {
-    height: 220px;
+  .processCard {
+    padding-block: 20px;
+  }
+  .cta {
+    padding-block: 40px;
   }
   .ctaCard {
-    padding: 28px;
-    border-radius: 16px;
-  }
-  .ctaActions {
+    padding: 28px 20px;
     flex-direction: column;
-    align-self: stretch;
+    align-items: flex-start;
+    gap: 20px;
   }
-  .ctaActions a {
-    text-align: center;
+  .ctaCard > a {
+    width: 100%;
   }
 }

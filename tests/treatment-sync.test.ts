@@ -12,18 +12,34 @@ const page = (id: string, groups: string[]) => ({
 });
 const pages = () => ({
   methodsPage: page("methodsPage", ["manual", "electro", "rehab", "cold", "infrared"]),
-  servicesPage: page("servicesPage", ["therapy", "training", "recovery"]),
+  servicesPage: page("servicesPage", ["manual", "electro", "training", "recovery"]),
 });
 // Production at the time of writing: three treatments with random legacy ids.
 const production = [
   { _id: "legacy-cupping", _rev: "r1", slug: "cupping" },
   { _id: "legacy-cold", _rev: "r2", slug: "cold-plunge" },
-  { _id: "legacy-heat", _rev: "r3", slug: "heat-light" },
+  { _id: "legacy-heat", _rev: "r3", slug: "infrared-heat" },
 ];
 const run = (overrides: object = {}) =>
-  planSync({ seed, links, treatments: production, pages: pages(), draftIds: [], ...overrides });
+  planSync({ seed, links, treatments: production, pages: pages(), drafts: [], ...overrides });
 
 describe("planSync", () => {
+  it("refuses to run while the legacy heat-light slug exists", () => {
+    const legacy = production.map((t) =>
+      t.slug === "infrared-heat" ? { ...t, slug: "heat-light" } : t,
+    );
+    expect(() => run({ treatments: legacy })).toThrow(/heat-light/);
+  });
+
+  it.each(["drafts.legacy-heat", "versions.next-release.legacy-heat"])(
+    "refuses to plan infrared creation while %s still uses heat-light",
+    (_id) => {
+      expect(() =>
+        run({ treatments: production.slice(0, 2), drafts: [{ _id, slug: "heat-light" }] }),
+      ).toThrow(/heat-light.*--allow-drafts/);
+    },
+  );
+
   it("creates the missing treatments and patches the existing ones by slug", () => {
     const { mutations } = run();
     const created = mutations.filter((m: object) => "createIfNotExists" in m);
@@ -185,7 +201,9 @@ describe("planSync", () => {
   });
 
   it("warns about open drafts instead of overwriting them silently", () => {
-    const { warnings } = run({ draftIds: ["drafts.legacy-cupping", "drafts.methodsPage"] });
+    const { warnings } = run({
+      drafts: [{ _id: "drafts.legacy-cupping", slug: "cupping" }, { _id: "drafts.methodsPage" }],
+    });
     expect(warnings).toEqual([
       "Có bản nháp đang mở: drafts.legacy-cupping, drafts.methodsPage. Bản nháp sẽ không đổi; kiểm tra trước khi publish.",
     ]);

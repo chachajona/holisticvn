@@ -11,7 +11,12 @@ import { getServices } from "@/lib/sanity";
 
 describe("services fallback (Sanity not configured)", () => {
   it("covers the three groups in one pathway order", async () => {
-    expect((await getServices()).map((s) => s.group)).toEqual(["therapy", "training", "recovery"]);
+    expect((await getServices()).map((s) => s.group)).toEqual([
+      "manual",
+      "electro",
+      "training",
+      "recovery",
+    ]);
   });
 
   it("only links treatments and images that exist", () => {
@@ -38,18 +43,21 @@ describe("services fallback (Sanity not configured)", () => {
         .bullets.join(" | ")
         .toLowerCase();
     const expected: Record<string, string[]> = {
-      therapy: [
+      manual: [
         "massage trị liệu",
         "nắn chỉnh cột sống",
         "châm khô",
-        "điện châm",
         "chỉ chuyên viên có chứng nhận",
         "iastm",
         "tapping",
         "giác hơi",
+      ],
+      electro: [
         "xung kích",
         "điện xung",
         "sóng siêu âm",
+        "điện châm",
+        "chỉ chuyên viên có chứng nhận",
       ],
       training: ["tập luyện phục hồi", "tập luyện tăng cường"],
       recovery: ["ngâm lạnh", "đèn hồng ngoại"],

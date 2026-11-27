@@ -35,7 +35,9 @@ describe("validateMethodGroups", () => {
   });
 
   it("keeps the service validator unchanged", () => {
-    expect(validateServiceGroups([item("therapy"), item("training"), item("recovery")])).toBe(true);
-    expect(validateServiceGroups([item("manual")])).toHaveLength(4);
+    expect(
+      validateServiceGroups([item("manual"), item("electro"), item("training"), item("recovery")]),
+    ).toBe(true);
+    expect(validateServiceGroups([item("manual")])).toHaveLength(3);
   });
 });

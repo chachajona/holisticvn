@@ -48,7 +48,7 @@ describe("method groups", () => {
       electro: ["shockwave", "bio-electric", "therapeutic-ultrasound", "electroacupuncture"],
       rehab: [],
       cold: ["cold-plunge"],
-      infrared: ["heat-light"],
+      infrared: ["infrared-heat"],
     });
   });
 });

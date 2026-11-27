@@ -58,7 +58,7 @@ describe("/treatments from Sanity", () => {
   });
 
   it("renders a shared treatment once in each group that references it", async () => {
-    const treatment = { slug: "heat-light", title: "Heat & Light" };
+    const treatment = { slug: "infrared-heat", title: "Heat & Light" };
     fetch.mockResolvedValue([
       method("manual", { treatments: [treatment, treatment] }),
       method("electro", { treatments: [treatment] }),
@@ -70,9 +70,9 @@ describe("/treatments from Sanity", () => {
         html.indexOf(`id="${methodAnchor[group]}"`),
         html.indexOf(`id="${methodAnchor[nextGroup]}"`),
       );
-      expect(section.match(/href="\/treatments\/heat-light"/g)).toHaveLength(1);
+      expect(section.match(/href="\/treatments\/infrared-heat"/g)).toHaveLength(1);
     }
-    expect(html.match(/href="\/treatments\/heat-light"/g)).toHaveLength(2);
+    expect(html.match(/href="\/treatments\/infrared-heat"/g)).toHaveLength(2);
   });
 
   it("shows no treatment links or related-treatment label when no group has treatments", async () => {

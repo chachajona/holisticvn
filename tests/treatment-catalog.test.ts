@@ -8,7 +8,7 @@ const priceList = [
   ["dry-needling", "Châm khô", "Dry Needling", 299000, true],
   ["cupping", "Giác hơi", "Cupping", 99000, false],
   ["iastm", "IASTM", undefined, 199000, false],
-  ["heat-light", "Đèn hồng ngoại", "Heat Light", 99000, false],
+  ["infrared-heat", "Đèn hồng ngoại", "Heat Light", 99000, false],
   ["cold-plunge", "Ngâm lạnh", "Cold Plunge", 149000, false],
   ["tapping", "Tapping", undefined, 99000, false],
   ["shockwave", "Xung kích", "Shockwave Therapy", 349000, false],

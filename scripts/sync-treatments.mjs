@@ -5,7 +5,7 @@
 // Apply: add --apply --confirm <id>/staging after reviewing the dry run.
 // Needs SANITY_AUTH_TOKEN (write access). Writes a backup to .context/ before applying.
 // --apply stops when open drafts or release versions exist; pass --allow-drafts only after
-// reading the WARNING (drafts are not changed by this script).
+// reading the WARNING (drafts are not changed). The legacy heat-light slug always blocks sync.
 // Run from the repository root (seed paths and the .context/ backup are relative to it).
 
 import { createClient } from "@sanity/client";
@@ -60,11 +60,11 @@ const pages = Object.fromEntries(
     ]),
   ),
 );
-const draftIds = await client.fetch(
-  `*[(_id in path("drafts.**") || _id in path("versions.**")) && (_type == "treatment" || _type in ["methodsPage", "servicesPage"])]._id`,
+const drafts = await client.fetch(
+  `*[(_id in path("drafts.**") || _id in path("versions.**")) && (_type == "treatment" || _type in ["methodsPage", "servicesPage"])]{_id, "slug": select(_type == "treatment" => slug.current)}`,
 );
 
-const { mutations, skipped, warnings } = planSync({ seed, links, treatments, pages, draftIds });
+const { mutations, skipped, warnings } = planSync({ seed, links, treatments, pages, drafts });
 for (const warning of warnings) console.warn(`WARNING: ${warning}`);
 if (values.apply && warnings.length && !values["allow-drafts"]) {
   console.error(

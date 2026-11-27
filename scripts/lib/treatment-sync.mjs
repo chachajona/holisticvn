@@ -10,13 +10,27 @@ const UNSET = ["benefits", "duration"];
  * @param links       scripts/seed/treatment-links.json
  * @param treatments  published treatments in the dataset: { _id, _rev, slug }
  * @param pages       { methodsPage, servicesPage }: { _id, _rev, groups: [{ _key, group }] } or null
- * @param draftIds    ids of open drafts for treatments and the two pages
+ * @param drafts      open drafts and release versions for treatments and the two pages: { _id, slug }
  */
-export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
+export function planSync({ seed, links, treatments, pages, drafts = [] }) {
   const existingBySlug = new Map();
   for (const treatment of treatments) {
     if (existingBySlug.has(treatment.slug)) throw new Error(`Trùng slug "${treatment.slug}"`);
     existingBySlug.set(treatment.slug, treatment);
+  }
+
+  // #41 renamed heat-light to infrared-heat. Syncing before scripts/migrate-services-groups.mjs would
+  // create a second Đèn hồng ngoại document next to the old one.
+  if (existingBySlug.has("heat-light")) {
+    throw new Error(
+      'Còn liệu pháp slug "heat-light": chạy migrate-services-groups.mjs (#41) trước.',
+    );
+  }
+  const legacyDraft = drafts.find((draft) => draft.slug === "heat-light");
+  if (legacyDraft) {
+    throw new Error(
+      `Phiên bản "${legacyDraft._id}" còn slug "heat-light": xử lý trước khi đồng bộ, kể cả với --allow-drafts.`,
+    );
   }
 
   const mutations = [];
@@ -73,9 +87,9 @@ export function planSync({ seed, links, treatments, pages, draftIds = [] }) {
     mutations.push({ patch: { id: pageId, ifRevisionID: page._rev, set } });
   }
 
-  const warnings = draftIds.length
+  const warnings = drafts.length
     ? [
-        `Có bản nháp đang mở: ${draftIds.join(", ")}. Bản nháp sẽ không đổi; kiểm tra trước khi publish.`,
+        `Có bản nháp đang mở: ${drafts.map((draft) => draft._id).join(", ")}. Bản nháp sẽ không đổi; kiểm tra trước khi publish.`,
       ]
     : [];
   return { mutations, skipped, warnings };

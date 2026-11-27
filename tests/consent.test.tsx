@@ -195,6 +195,14 @@ describe("page views on client navigation", () => {
 describe("cookie banner", () => {
   const buttons = () => [...host.querySelectorAll("button")];
 
+  it("publishes banner height and clears it after unmounting", () => {
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(123);
+    act(() => root.render(<CookieConsent />));
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("123px");
+    act(() => root.render(null));
+    expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
+  });
+
   it("states the purpose in one sentence and gives Reject and Accept the same style", () => {
     act(() => root.render(<CookieConsent />));
     const text = host.querySelector("p")!.textContent!;
@@ -206,7 +214,7 @@ describe("cookie banner", () => {
     expect(reject.className).toBe(accept.className);
   });
 
-  it("records a rejection, clears Google IDs and reloads", () => {
+  it("records rejection, clears Google IDs and reloads", () => {
     document.cookie = "_ga=GA1.1.1; path=/";
     document.cookie = "_ga_ABC=GS1; path=/";
     act(() => root.render(<CookieConsent />));
@@ -247,30 +255,38 @@ describe("cookie banner", () => {
     expect(reload).toHaveBeenCalledOnce();
   });
 
-  it("focuses the first choice when opened from the footer control", () => {
+  it("focuses the first choice when reopened from the footer", () => {
     window.location.hash = "#cookie-preferences";
     vi.spyOn(history, "replaceState").mockImplementation(() => {});
     act(() => root.render(<CookieConsent />));
     expect(document.activeElement).toBe(buttons()[0]);
   });
 
-  it("hides for this page view without reloading when cookies are blocked", () => {
-    const read = vi.spyOn(document, "cookie", "get").mockReturnValue("");
-    const write = vi.spyOn(document, "cookie", "set").mockImplementation(() => {});
-    try {
-      act(() => root.render(<CookieConsent />));
-      act(() =>
-        buttons()
-          .find((b) => b.textContent === "Chấp nhận")!
-          .click(),
-      );
-      expect(reload).not.toHaveBeenCalled();
-      expect(host.querySelector("aside")).toBeNull();
-    } finally {
-      read.mockRestore();
-      write.mockRestore();
-    }
-  });
+  it.each(["Chấp nhận", "Từ chối"] as const)(
+    "dismisses %s for this page view without reloading when cookies are blocked",
+    async (choice) => {
+      // Each case represents a fresh page view: the component deliberately keeps a module-level dismissal.
+      vi.resetModules();
+      const { CookieConsent: FreshCookieConsent } = await import("@/components/cookie-consent");
+      const read = vi.spyOn(document, "cookie", "get").mockReturnValue("");
+      const write = vi.spyOn(document, "cookie", "set").mockImplementation(() => {});
+      try {
+        act(() => root.render(<FreshCookieConsent />));
+        expect(host.querySelector("aside")).not.toBeNull();
+        act(() =>
+          buttons()
+            .find((b) => b.textContent === choice)!
+            .click(),
+        );
+        expect(reload).not.toHaveBeenCalled();
+        expect(host.querySelector("aside")).toBeNull();
+        expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
+      } finally {
+        read.mockRestore();
+        write.mockRestore();
+      }
+    },
+  );
 });
 
 describe("clearAnalyticsCookies", () => {

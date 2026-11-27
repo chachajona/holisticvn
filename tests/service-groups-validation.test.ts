@@ -4,22 +4,26 @@ import { validateServiceGroups } from "@/sanity/serviceGroups";
 const item = (group: string | undefined, _key = group ?? "empty") => ({ _key, group });
 
 describe("validateServiceGroups", () => {
-  it("accepts the three groups in any order", () => {
-    expect(validateServiceGroups([item("recovery"), item("therapy"), item("training")])).toBe(true);
+  it("accepts the four groups in any order", () => {
+    expect(
+      validateServiceGroups([item("recovery"), item("manual"), item("training"), item("electro")]),
+    ).toBe(true);
   });
 
   it("flags the second item of a duplicated group by _key", () => {
     const result = validateServiceGroups([
-      item("therapy", "a"),
-      item("therapy", "b"),
+      item("manual", "a"),
+      item("manual", "b"),
+      item("electro"),
       item("training"),
       item("recovery"),
     ]);
-    expect(result).toEqual([{ message: 'Nhóm "therapy" bị trùng.', path: [{ _key: "b" }] }]);
+    expect(result).toEqual([{ message: 'Nhóm "manual" bị trùng.', path: [{ _key: "b" }] }]);
   });
 
   it("reports every missing group", () => {
-    expect(validateServiceGroups([item("therapy")])).toEqual([
+    expect(validateServiceGroups([item("manual")])).toEqual([
+      { message: 'Thiếu nhóm "electro".' },
       { message: 'Thiếu nhóm "training".' },
       { message: 'Thiếu nhóm "recovery".' },
     ]);
@@ -29,7 +33,8 @@ describe("validateServiceGroups", () => {
     const result = validateServiceGroups([
       item("nonsense", "u"),
       item(undefined, "e"),
-      item("therapy"),
+      item("manual"),
+      item("electro"),
       item("training"),
       item("recovery"),
     ]);
@@ -40,6 +45,6 @@ describe("validateServiceGroups", () => {
   });
 
   it("treats a missing array as all groups missing", () => {
-    expect(validateServiceGroups(undefined)).toHaveLength(3);
+    expect(validateServiceGroups(undefined)).toHaveLength(4);
   });
 });

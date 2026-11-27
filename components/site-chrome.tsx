@@ -16,12 +16,13 @@ export function SiteChrome({
   const pathname = usePathname();
   // Studio is an internal tool: no marketing nav, footer, chat or consent banner around it.
   if (pathname.startsWith("/studio")) return children;
+  const services = pathname === "/services";
   return (
     <>
       <HolisticNav />
       <div className="page">{children}</div>
       {footer}
-      <ChatWidgets key={pathname} />
+      {services ? null : <ChatWidgets key={pathname} />}
       <CookieConsent />
       <PageViewTracker />
     </>

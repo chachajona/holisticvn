@@ -13,7 +13,7 @@ describe("servicesPage seed", () => {
 
   it("passes the Studio group validator with unique _keys", () => {
     expect(validateServiceGroups(seed.groups)).toBe(true);
-    expect(new Set(seed.groups.map((g: { _key: string }) => g._key)).size).toBe(3);
+    expect(new Set(seed.groups.map((g: { _key: string }) => g._key)).size).toBe(4);
     expect(seed.groups.map((g: { group: string }) => g.group)).toEqual([...serviceGroups]);
   });
 
