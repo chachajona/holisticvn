@@ -20,11 +20,10 @@ export function SiteChrome({
   return (
     <>
       <HolisticNav />
-      {services ? <CookieConsent layout="inline" /> : null}
       <div className="page">{children}</div>
       {footer}
       {services ? null : <ChatWidgets key={pathname} />}
-      {services ? null : <CookieConsent />}
+      <CookieConsent />
       <PageViewTracker />
     </>
   );

@@ -70,26 +70,24 @@ describe("route-specific services chrome", () => {
     },
   );
 
-  it("switches from floating chrome to one inline banner and restores defaults on other routes", () => {
+  it("keeps one shared cookie banner across public routes and hides chat only on services", () => {
     for (const path of [
       "/",
+      "/services",
       "/contact",
       "/booking",
       "/treatments",
       "/treatments/cupping",
       "/services-other",
+      "/services",
     ]) {
       navigate(path);
       expect(host.querySelectorAll(".cookie")).toHaveLength(1);
-      expect(host.querySelector(".cookie")?.getAttribute("data-layout")).toBe("floating");
-      expect(host.querySelector('[aria-label="Kênh tư vấn nhanh"]')).not.toBeNull();
+      expect(host.querySelector(".page ~ .cookie")).not.toBeNull();
+      expect(host.querySelector('[aria-label="Kênh tư vấn nhanh"]') !== null).toBe(
+        path !== "/services",
+      );
       expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("140px");
-      navigate("/services");
-      expect(host.querySelectorAll(".cookie")).toHaveLength(1);
-      expect(host.querySelector("nav + .cookie + .page main")).not.toBeNull();
-      expect(host.querySelector(".cookie")?.getAttribute("data-layout")).toBe("inline");
-      expect(host.querySelector('[aria-label="Kênh tư vấn nhanh"]')).toBeNull();
-      expect(document.documentElement.style.getPropertyValue("--cookie-h")).toBe("");
     }
   });
 

@@ -27,19 +27,13 @@ const subscribe = (onChange: () => void) => {
   };
 };
 
-type CookieLayout = "floating" | "inline";
-
-function CookieBanner({ layout }: { layout: CookieLayout }) {
+function CookieBanner() {
   const ref = useRef<HTMLElement>(null);
   // Publish the banner height so the footer can reserve exactly that much room, even when text is enlarged.
   useEffect(() => {
     const banner = ref.current;
     if (!banner) return;
     const root = document.documentElement.style;
-    if (layout === "inline") {
-      root.removeProperty("--cookie-h");
-      return;
-    }
     const update = () => root.setProperty("--cookie-h", `${banner.offsetHeight}px`);
     update();
     const observer = new ResizeObserver(update);
@@ -48,7 +42,7 @@ function CookieBanner({ layout }: { layout: CookieLayout }) {
       observer.disconnect();
       root.removeProperty("--cookie-h");
     };
-  }, [layout]);
+  }, []);
   // Arriving from the footer control (reload with the hash) puts keyboard focus on the choice.
   useEffect(() => {
     if (window.location.hash !== `#${preferencesHash}`) return;
@@ -62,13 +56,7 @@ function CookieBanner({ layout }: { layout: CookieLayout }) {
     window.dispatchEvent(new Event(consentChanged));
   };
   return (
-    <aside
-      ref={ref}
-      id={preferencesHash}
-      className="cookie"
-      data-layout={layout}
-      aria-label="Tùy chọn cookie"
-    >
+    <aside ref={ref} id={preferencesHash} className="cookie" aria-label="Tùy chọn cookie">
       <p>
         Chúng tôi dùng cookie phân tích để cải thiện website, chỉ khi bạn đồng ý.{" "}
         <Link href="/cookie-policy">Chính sách cookie</Link>.
@@ -85,9 +73,9 @@ function CookieBanner({ layout }: { layout: CookieLayout }) {
   );
 }
 
-export function CookieConsent({ layout = "floating" }: { layout?: CookieLayout }) {
+export function CookieConsent() {
   const visible = useSyncExternalStore(subscribe, getVisible, getServerVisible);
-  return visible ? <CookieBanner layout={layout} /> : null;
+  return visible ? <CookieBanner /> : null;
 }
 
 /** Footer control: withdraw the saved choice and reload so the banner asks again and no tag stays loaded. */
