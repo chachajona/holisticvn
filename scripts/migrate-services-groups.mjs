@@ -2,9 +2,10 @@
 // One transaction, revision-guarded, idempotent (a second run plans nothing).
 //
 // Dry run (default): node --env-file=.env.local scripts/migrate-services-groups.mjs --project <id> --dataset staging
-// Apply: add --apply --confirm <id>/staging after reviewing the dry run.
+// Apply: add --apply --confirm <id>/staging --confirm-editing-frozen after reviewing the dry run.
 // Needs SANITY_AUTH_TOKEN (write access). Writes a backup to .context/ before applying.
 // Aborts while drafts or release versions of the touched documents exist.
+// Keep Studio edits, API writes and releases paused until the transaction completes (docs/MIGRATION.md).
 // Run staging first, check the preview, then run production together with the deploy and /api/revalidate.
 // Run from the repository root (seed paths and the .context/ backup are relative to it).
 
@@ -19,6 +20,7 @@ const { values } = parseArgs({
     dataset: { type: "string" },
     apply: { type: "boolean", default: false },
     confirm: { type: "string" },
+    "confirm-editing-frozen": { type: "boolean", default: false },
   },
 });
 if (!values.project || !values.dataset) {
@@ -28,6 +30,12 @@ if (!values.project || !values.dataset) {
 const target = `${values.project}/${values.dataset}`;
 if (values.apply && values.confirm !== target) {
   console.error(`Applying requires --confirm ${target}. Run without --apply to review first.`);
+  process.exit(1);
+}
+if (values.apply && !values["confirm-editing-frozen"]) {
+  console.error(
+    "Pause Studio edits, API writes and releases for treatment and servicesPage, then pass --confirm-editing-frozen. See docs/MIGRATION.md.",
+  );
   process.exit(1);
 }
 if (!process.env.SANITY_AUTH_TOKEN) {
@@ -46,6 +54,8 @@ const client = createClient({
 });
 const seed = JSON.parse(readFileSync("scripts/seed/services-page.json", "utf8"));
 const links = JSON.parse(readFileSync("scripts/seed/treatment-links.json", "utf8"));
+const treatmentSeed = JSON.parse(readFileSync("scripts/seed/treatments.json", "utf8"));
+const treatmentSeo = JSON.parse(readFileSync("lib/treatment-seo.json", "utf8"));
 
 const published = `!(_id in path("drafts.**")) && !(_id in path("versions.**"))`;
 const treatments = await client.fetch(
@@ -61,6 +71,8 @@ const { mutations, skipped, warnings } = planServicesMigration({
   servicesPage,
   seed,
   links,
+  treatmentSeed,
+  treatmentSeo,
   draftIds,
 });
 for (const warning of warnings) console.warn(`WARNING: ${warning}`);
@@ -69,12 +81,15 @@ if (values.apply && warnings.length) {
   process.exit(1);
 }
 for (const id of skipped) console.warn(`Skipped (not in this dataset): ${id}`);
-for (const { patch } of mutations) console.log("Would patch:", patch.id, JSON.stringify(patch.set));
+for (const { patch, create } of mutations) {
+  if (create) console.log("Would create:", create._id);
+  else console.log("Would patch:", patch.id, JSON.stringify(patch.set));
+}
 
 if (!values.apply) {
   console.log(`${mutations.length} mutations planned. Nothing written.`);
 } else if (mutations.length) {
-  const ids = mutations.map((m) => m.patch.id);
+  const ids = mutations.map((mutation) => mutation.patch?.id ?? mutation.create._id);
   const before = await client.fetch(`*[_id in $ids]`, { ids });
   mkdirSync(".context", { recursive: true });
   // unique name + "wx": never overwrite an earlier backup, it may be the only rollback copy
@@ -84,8 +99,9 @@ if (!values.apply) {
   console.log(`Backed up ${before.length} documents to ${backup}`);
 
   const transaction = client.transaction();
-  for (const { patch } of mutations) {
-    transaction.patch(patch.id, (p) => p.ifRevisionId(patch.ifRevisionID).set(patch.set));
+  for (const { patch, create } of mutations) {
+    if (create) transaction.create(create);
+    else transaction.patch(patch.id, (p) => p.ifRevisionId(patch.ifRevisionID).set(patch.set));
   }
   const result = await transaction.commit();
   console.log(`Committed transaction ${result.transactionId}: ${result.results.length} documents.`);

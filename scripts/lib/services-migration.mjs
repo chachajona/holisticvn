@@ -2,6 +2,7 @@
 // 1. treatment slug heat-light -> infrared-heat, patched in place so _id, revisions and every reference survive.
 // 2. servicesPage groups: therapy/training/recovery -> manual/electro/training/recovery, written as one
 //    guarded `set` of the whole array so the old "therapy" item cannot linger.
+// Missing linked treatments are created from the reviewed catalogue in the same transaction.
 
 const OLD_SLUG = "heat-light";
 const NEW_SLUG = "infrared-heat";
@@ -11,9 +12,19 @@ const NEW_SLUG = "infrared-heat";
  * @param servicesPage published servicesPage { _id, _rev, groups: [full items] } or null
  * @param seed         scripts/seed/services-page.json
  * @param links        scripts/seed/treatment-links.json -> servicesPage: { group: [slug] }
+ * @param treatmentSeed scripts/seed/treatments.json
+ * @param treatmentSeo  lib/treatment-seo.json
  * @param draftIds     ids of drafts/versions of treatments or servicesPage
  */
-export function planServicesMigration({ treatments, servicesPage, seed, links, draftIds = [] }) {
+export function planServicesMigration({
+  treatments,
+  servicesPage,
+  seed,
+  links,
+  treatmentSeed,
+  treatmentSeo,
+  draftIds = [],
+}) {
   const bySlug = new Map();
   for (const t of treatments) {
     if (bySlug.has(t.slug)) throw new Error(`Trùng slug "${t.slug}"`);
@@ -44,6 +55,27 @@ export function planServicesMigration({ treatments, servicesPage, seed, links, d
       groups.length === seed.groups.length &&
       seed.groups.every((s) => groups.some((g) => g.group === s.group));
     if (!done) {
+      const occupiedIds = new Set(treatments.map((treatment) => treatment._id));
+      for (const { group } of seed.groups) {
+        for (const slug of links.servicesPage[group] ?? []) {
+          if (idBySlug.has(slug)) continue;
+          const doc = treatmentSeed.find((item) => item.slug.current === slug);
+          const seo = treatmentSeo[slug];
+          if (!doc || !seo?.title || !seo.description) {
+            throw new Error(`Thiếu dữ liệu seed hoặc SEO của liệu pháp "${slug}"`);
+          }
+          if (occupiedIds.has(doc._id)) throw new Error(`_id "${doc._id}" đã được sử dụng`);
+          occupiedIds.add(doc._id);
+          idBySlug.set(slug, doc._id);
+          mutations.push({
+            create: {
+              ...doc,
+              seo: { _type: "seo", title: seo.title, description: seo.description },
+            },
+          });
+        }
+      }
+
       const slugById = new Map([...idBySlug].map(([slug, id]) => [id, slug]));
       const therapy = groups.find((g) => g.group === "therapy");
       const next = seed.groups.map((sg) => {
@@ -60,11 +92,11 @@ export function planServicesMigration({ treatments, servicesPage, seed, links, d
             .map((ref) => [slugById.get(ref._ref), ref._key]),
         );
         const treatmentRefs = slugs
-          ? slugs.map((slug) => {
-              const _ref = idBySlug.get(slug);
-              if (!_ref) throw new Error(`Thiếu liệu pháp "${slug}"`);
-              return { _key: known.get(slug) ?? slug, _type: "reference", _ref };
-            })
+          ? slugs.map((slug) => ({
+              _key: known.get(slug) ?? slug,
+              _type: "reference",
+              _ref: idBySlug.get(slug),
+            }))
           : (existing?.treatments ?? []);
         return {
           ...sg,
