@@ -1,5 +1,7 @@
 # Services layout verification — GH-41
 
+> Historical verification for the first implementation. The owner rejected its visual density; the subsequent minimal revision is documented in [services-minimal-refinement.md](./services-minimal-refinement.md).
+
 Implemented on 2026-11-14 against the approved
 [execution spec](../_bmad-output/implementation-artifacts/spec-gh-41-services-layout.md).
 GitHub #41 under #1 remains the task-status authority.

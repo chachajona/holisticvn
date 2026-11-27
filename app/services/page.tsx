@@ -1,11 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
-import { serviceAnchor } from "@/lib/content";
-import { getPublicSiteData, getServices } from "@/lib/sanity";
+import { serviceAnchor, type ServiceGroup } from "@/lib/content";
+import { getServices } from "@/lib/sanity";
 import { HashOpen } from "./hash-open";
-import { ServicesContactLinks } from "./services-contact-links";
+import { ServicesIntro } from "./services-intro";
 import styles from "./services.module.css";
+
+// Owner-approved AI illustrations for this route; provenance: docs/services-ai-images.md.
+const illustrations = {
+  manual: {
+    src: "/images/services/manual-ai-v2.webp",
+    alt: "Thao tác bằng dụng cụ IASTM trên giường trị liệu",
+  },
+  electro: {
+    src: "/images/services/electro-ai-v1.webp",
+    alt: "Thiết bị điện trị liệu và hai miếng điện cực",
+  },
+  training: {
+    src: "/images/services/training-ai-v2.webp",
+    alt: "Tập với tạ đôi và nêm kê chân có người hướng dẫn",
+  },
+  recovery: {
+    src: "/images/services/recovery-ai-v2.webp",
+    alt: "Bồn ngâm lạnh mosaic xanh có nước và đá",
+  },
+} satisfies Record<ServiceGroup, { src: string; alt: string }>;
 
 /*
 Issue #41: typographic index. Each group is a native <details> row (first one open by default,
@@ -18,41 +38,30 @@ export const revalidate = 3600;
 
 export const metadata = createMetadata({
   title: "Dịch vụ",
-  description: "Trị liệu, tập luyện và thư giãn — kết hợp trên một lộ trình xuyên suốt.",
+  description:
+    "Trị liệu bằng tay, trị liệu bằng thiết bị, tập luyện và hồi phục thể chất tại HolisticVN. Tư vấn và lựa chọn phương pháp phù hợp với bạn.",
   path: "/services",
 });
 
 export default async function ServicesPage() {
-  const [services, { site }] = await Promise.all([getServices(), getPublicSiteData()]);
+  const services = await getServices();
   return (
     <main id="main" className={styles.root}>
-      <section className={styles.intro}>
-        <h1>Dịch vụ</h1>
-        <div className={styles.introSide}>
-          <p>
-            Chọn chương trình dịch vụ theo nhu cầu — hoặc lọc kỹ thuật theo triệu chứng tại Phương
-            pháp.
-          </p>
-          <Link href="/treatments" className={styles.textLink}>
-            Tìm theo triệu chứng ở Phương pháp <span aria-hidden="true">→</span>
-          </Link>
-          <ServicesContactLinks site={site} tone="light" />
-        </div>
-      </section>
+      <ServicesIntro />
 
       {services.length ? (
         <>
-          <nav aria-label="Đi nhanh đến nhóm dịch vụ" className={styles.groupNav}>
-            <p className={styles.groupNavLabel}>Đi nhanh đến nhóm dịch vụ</p>
-            <ul className={styles.groupNavLinks}>
-              {services.map((service) => (
-                <li key={service.group}>
-                  <a href={`#${serviceAnchor[service.group]}`}>
-                    <span>{service.shortTitle}</span> <span aria-hidden="true">→</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+          <nav aria-label="Chọn nhóm dịch vụ" className={styles.groupNav}>
+            <details className={styles.groupPicker}>
+              <summary>Chọn nhóm dịch vụ</summary>
+              <ul className={styles.groupNavLinks}>
+                {services.map((service) => (
+                  <li key={service.group}>
+                    <a href={`#${serviceAnchor[service.group]}`}>{service.shortTitle}</a>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </nav>
           <section className={styles.index} aria-label="Các nhóm dịch vụ">
             <HashOpen />
@@ -119,14 +128,19 @@ export default async function ServicesPage() {
                       ) : null}
                     </div>
                   </div>
-                  <div className={styles.panelMedia} data-group={service.group}>
-                    <Image
-                      src={service.image}
-                      alt={service.imageAlt}
-                      fill
-                      sizes="(max-width: 980px) 100vw, 40vw"
-                    />
-                  </div>
+                  <figure className={styles.panelFigure}>
+                    <div className={styles.panelMedia} data-group={service.group}>
+                      <Image
+                        src={illustrations[service.group].src}
+                        alt={illustrations[service.group].alt}
+                        fill
+                        loading={index === 0 ? "eager" : "lazy"}
+                        // Measured LCP at 1440px; the rest load lazily inside closed rows.
+                        fetchPriority={index === 0 ? "high" : undefined}
+                        sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 980px) calc(100vw - 48px), (max-width: 1408px) calc((100vw - 96px) / 2), 656px"
+                      />
+                    </div>
+                  </figure>
                 </div>
               </details>
             ))}
@@ -134,61 +148,54 @@ export default async function ServicesPage() {
         </>
       ) : null}
 
-      <section className={styles.process}>
+      <section className={styles.process} aria-labelledby="services-process-title">
         <div className={styles.processHead}>
-          <span>Cách chúng tôi làm việc</span>
-          <i />
+          <h2 id="services-process-title">Các bước chăm sóc tại HolisticVN</h2>
+          <i aria-hidden="true" />
         </div>
-        <div className={styles.processGrid}>
-          <div className={styles.processCard}>
-            <span className={styles.processNumeral}>01</span>
-            <strong>Đánh giá</strong>
-            <span>
-              Tìm hiểu tình trạng cơ thể và mục tiêu của bạn trước khi đề xuất phương pháp.
+        <ol className={styles.processGrid}>
+          <li className={styles.processCard}>
+            <span className={styles.processNumeral} aria-hidden="true">
+              01
             </span>
-            <Link href="/booking" className={styles.textLink}>
-              Đặt lịch đánh giá <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className={styles.processCard}>
-            <span className={styles.processNumeral}>02</span>
-            <strong>Trị liệu &amp; tập luyện</strong>
-            <span>Kết hợp các dịch vụ phù hợp trên một lộ trình xuyên suốt.</span>
-            <Link href="/treatments" className={styles.textLink}>
-              Xem các phương pháp <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className={styles.processCard}>
-            <span className={styles.processNumeral}>03</span>
-            <strong>Duy trì &amp; hồi phục</strong>
-            <span>Bài tập và thói quen giúp bạn giữ được sức khoẻ vận động lâu dài.</span>
-            <Link href="/about" className={styles.textLink}>
-              Cách Holistic đồng hành <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
+            <div>
+              <h3>Đánh giá ban đầu</h3>
+              <p>
+                Chuyên viên tìm hiểu tình trạng cơ thể và mục tiêu của bạn để đề xuất phương pháp
+                phù hợp.
+              </p>
+            </div>
+          </li>
+          <li className={styles.processCard}>
+            <span className={styles.processNumeral} aria-hidden="true">
+              02
+            </span>
+            <div>
+              <h3>Trị liệu và tập luyện</h3>
+              <p>
+                Bạn được hướng dẫn trị liệu và tập luyện theo cùng một lộ trình, từ tư vấn đến hồi
+                phục.
+              </p>
+            </div>
+          </li>
+          <li className={styles.processCard}>
+            <span className={styles.processNumeral} aria-hidden="true">
+              03
+            </span>
+            <div>
+              <h3>Duy trì vận động</h3>
+              <p>Duy trì các bài tập và thói quen vận động để chăm sóc sức khoẻ lâu dài.</p>
+            </div>
+          </li>
+        </ol>
       </section>
 
       <section className={styles.cta}>
         <div className={styles.ctaCard}>
-          <div className={styles.ctaCopy}>
-            <h2>Tìm ngay liệu trình thích hợp dành cho bạn</h2>
-            <p>Khám phá các dịch vụ vật lý trị liệu chuyên biệt của chúng tôi.</p>
-          </div>
-          <div className={styles.ctaActionSide}>
-            <div className={styles.ctaActions}>
-              <Link href="/booking" className={styles.lightButton}>
-                Đặt lịch đánh giá ban đầu
-              </Link>
-              <Link href="/treatments" className={styles.darkSolidButton}>
-                Tìm theo triệu chứng
-              </Link>
-              <Link href="/contact" className={styles.darkOutlineButton}>
-                Liên hệ
-              </Link>
-            </div>
-            <ServicesContactLinks site={site} tone="dark" />
-          </div>
+          <h2>Bạn cần tư vấn thêm?</h2>
+          <Link href="/booking" className={styles.lightButton}>
+            Đặt lịch tư vấn
+          </Link>
         </div>
       </section>
     </main>

@@ -1,5 +1,7 @@
 # Plan cải thiện bố cục trang Dịch vụ
 
+> Superseded in part by owner feedback: CTA must be minimal and contact rows are unnecessary. Current direction and evidence: [services-minimal-refinement.md](../docs/services-minimal-refinement.md). The original plans below are retained as history, not instructions to restore the rejected layout.
+
 Written against: `a5bd2debfdbc731421671a51b185cb631c7eb1b7`.
 
 Ngày: 2026-11-14. **Trạng thái: đã triển khai local theo yêu cầu ngày 2026-11-14; chờ người dùng xem giao diện cuối.**

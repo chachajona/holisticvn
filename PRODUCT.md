@@ -38,6 +38,8 @@ Phone (082 895 9598), the clinic address (109/15 Lê Quốc Hưng, P. Xóm Chi�
 
 ## Image Provenance
 
+Services page illustrations (owner approved 2026-11-26): `/services` now uses four AI-generated images under `public/images/services/`: `manual-ai-v2.webp`, `electro-ai-v1.webp`, `training-ai-v2.webp`, `recovery-ai-v2.webp`. The owner subsequently requested removing the visible AI captions; alt text describes the image content neutrally. These assets remain AI illustrations, not photographs of Holistic premises, personnel or equipment. Manual/Training/Recovery used existing clinic photographs as generation references; Electro is a generic device still life. Original real photographs and CMS image data are preserved. Generation prompts, references, hashes and integration scope: `docs/services-ai-images.md`.
+
 Homepage closing CTA texture (`public/assets/textures/brand-paper.webp`) comes directly from the owner's brand-guideline ZIP supplied on 2026-10-10: the standalone 626×417 paper/plaster background raster in `HoliBrandBrief_9.pdf`, converted to WebP without text, logos or generated decoration. It is used as a subtle static background on the brown consultation card. Extraction provenance and screen references: `docs/homepage-closing-cta-research.md`.
 
 Homepage core-value icons (`public/images/pillars/{whole,thread-linked-v2,root}.webp`) are original AI-generated symbolic illustrations, created with OpenAI's built-in image generation tool on 2026-10-09 at the owner's request. They represent supportive care, continuity, and lasting strength; they are decorative concepts, not portraits of clinic staff or evidence of treatment outcomes. Prompts and production details: `docs/core-value-icons.md`.

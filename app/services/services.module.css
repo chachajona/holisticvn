@@ -9,6 +9,9 @@
   --numeral: #ab917e;
   --warm-band: #ede6dc;
   --dark-cta: #181f1a;
+  --line: rgba(58, 42, 36, 0.2);
+  /* Same exponential ease-out as the Methods page (treatments.module.css). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--ink);
   background: var(--card);
   font-family: var(--font-accent);
@@ -27,38 +30,45 @@
   font-family: var(--font-display);
   font-weight: 300;
   letter-spacing: -0.015em;
-  text-wrap: pretty;
+  text-wrap: balance;
   color: var(--ink);
 }
 
 /* ---------- Intro ---------- */
 .intro {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 64px;
-  align-items: end;
-  padding: 72px max(24px, calc((100vw - 1360px) / 2)) 56px;
+  padding: 48px max(24px, calc((100vw - 1360px) / 2)) 32px;
 }
 .intro h1 {
-  font-size: clamp(64px, 10vw, 148px);
-  line-height: 0.95;
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1.05;
 }
-.introSide {
+.introRail {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-bottom: 14px;
+  align-items: center;
+  gap: 24px;
+  margin-top: 16px;
 }
-.introSide p {
-  max-width: 420px;
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.7;
-  color: var(--muted);
+.introRule {
+  flex: 1;
+  min-width: 24px;
+  height: 1px;
+  background: rgba(58, 42, 36, 0.2);
+}
+.introRail > .introLink {
+  align-self: center;
+  font-size: 0.90625rem;
+  line-height: 1.6;
+}
+.introLink > span {
+  flex: none;
 }
 .textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
   align-self: flex-start;
-  font: 400 14.5px var(--font-accent);
+  font: 400 0.90625rem var(--font-accent);
   color: var(--clay-deep);
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -68,41 +78,54 @@
   color: var(--clay-hover);
   text-decoration-color: currentColor;
 }
-.contactLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  min-width: 0;
-}
-.contactLinks a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  min-width: 0;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  line-height: 1.6;
-}
-.contactLinks[data-tone="dark"] a {
-  color: #f7f3f0;
-  text-decoration-color: currentColor;
-}
-.contactLinks[data-tone="dark"] a:hover {
-  text-decoration-thickness: 2px;
-}
-
 .groupNav {
   display: none;
   margin: 0 max(24px, calc((100vw - 1360px) / 2)) 24px;
 }
-.groupNavLabel {
-  margin: 0 0 12px;
-  font: 400 14.5px/1.6 var(--font-accent);
+.groupPicker > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--clay-deep);
+  font: 400 1rem/1.5 var(--font-accent);
+  list-style: none;
+  cursor: pointer;
+}
+.groupPicker > summary::-webkit-details-marker {
+  display: none;
+}
+.groupPicker > summary::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-inline: 4px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s var(--ease-out);
+}
+.groupPicker[open] > summary::after {
+  transform: rotate(225deg);
+}
+.groupPicker > summary:hover {
+  color: var(--clay-hover);
+}
+.groupPicker > summary:active {
+  background: var(--warm-band);
+}
+.groupPicker > summary:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 3px;
 }
 .groupNavLinks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 0 24px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -114,24 +137,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-width: 0;
+  gap: 16px;
   min-height: 44px;
-  height: 100%;
-  padding: 12px;
-  border: 1px solid rgba(116, 77, 64, 0.3);
-  border-radius: 14px;
-  background: var(--card);
+  padding-block: 12px;
+  border-bottom: 1px solid rgba(58, 42, 36, 0.2);
   color: var(--clay-deep);
-  font: 400 14.5px/1.6 var(--font-accent);
+  font: 400 0.90625rem/1.6 var(--font-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
   overflow-wrap: anywhere;
-}
-.groupNavLinks a span:first-child {
-  min-width: 0;
 }
 .groupNavLinks a:hover {
   color: var(--clay-hover);
-  border-color: var(--clay-deep);
+  text-decoration-color: currentColor;
 }
 
 /* ---------- Index rows ---------- */
@@ -144,16 +163,14 @@
   scroll-margin-top: 110px;
 }
 .row summary {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) 1fr 40px;
-  gap: 40px;
-  align-items: baseline;
-  padding: 30px 0;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+  padding: 28px 0;
   cursor: pointer;
   list-style: none;
-}
-.row summary {
-  position: relative;
   scroll-margin-top: 110px;
 }
 /* Empty alias anchor: out of the grid flow so it does not take a column. */
@@ -166,17 +183,23 @@
   display: none;
 }
 .row summary::after {
+  /* Decorative: "/ \"\"" keeps the glyph out of the summary's accessible name. */
   content: "+";
-  justify-self: end;
-  font: 200 34px/1 var(--font-display);
+  content: "+" / "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 200 1.75rem/1 var(--font-display);
   color: var(--clay-deep);
 }
 .row[open] summary::after {
   content: "–";
+  content: "–" / "";
 }
 .row summary h2 {
-  font-size: clamp(30px, 4vw, 54px);
-  line-height: 1.05;
+  font-size: clamp(1.625rem, 3vw, 2.625rem);
+  line-height: 1.2;
   transition: color 0.2s ease;
 }
 .row summary:hover h2,
@@ -184,31 +207,32 @@
   color: var(--sage);
 }
 .rowSummary {
-  font-size: 15px;
+  padding-right: 48px;
+  font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--muted);
 }
 
 .panel {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 40px;
-  gap: 40px;
-  padding: 0 0 52px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  padding: 0 0 40px;
 }
 .panelCopy {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   max-width: 560px;
 }
 .panelCopy > p {
   margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.75;
   color: var(--muted);
 }
 .panelCopy > .panelTitle {
-  font: 400 19px var(--font-display);
+  font: 400 1.1875rem var(--font-display);
   color: var(--ink);
 }
 .list {
@@ -221,15 +245,17 @@
 }
 .list li {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
   color: #4a3b34;
 }
 .list li::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 5px;
+  margin-top: 0.65em;
   flex: none;
   border-radius: 50%;
   background: var(--sage);
@@ -237,27 +263,28 @@
 .methods {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0 20px;
 }
 .methods a {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  font: 400 0.90625rem/1.6 var(--font-accent);
   color: var(--clay-deep);
-  border: 1px solid rgba(116, 77, 64, 0.3);
-  padding: 6px 12px;
-  border-radius: 999px;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease;
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
 }
 .methods a:hover {
-  border-color: var(--clay-deep);
   color: var(--clay-hover);
+  text-decoration-color: currentColor;
 }
 .subCards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -267,10 +294,8 @@
   flex-direction: column;
   gap: 6px;
   height: 100%;
-  padding: 18px 20px;
-  border: 1px solid rgba(58, 42, 36, 0.18);
-  border-radius: 14px;
-  background: var(--card);
+  padding: 16px 0;
+  border-top: 1px solid rgba(58, 42, 36, 0.18);
   color: var(--ink);
   transition: border-color 0.2s ease;
 }
@@ -278,10 +303,13 @@
   border-color: var(--clay-deep);
 }
 .subCard strong {
-  font: 400 18px var(--font-display);
+  font: 400 1.125rem/1.4 var(--font-display);
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 77, 64, 0.4);
+  text-underline-offset: 4px;
 }
 .subCard span {
-  font-size: 13.5px;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: var(--muted);
 }
@@ -291,149 +319,109 @@
   align-items: center;
   gap: 12px 24px;
 }
-.panelMedia {
-  grid-column: 2 / -1;
-  position: relative;
+.panelFigure {
+  grid-column: 2;
   align-self: start;
-  aspect-ratio: 4 / 3;
+  min-width: 0;
+  margin: 0;
+}
+.panelMedia {
+  position: relative;
+  aspect-ratio: 3 / 2;
   border-radius: 14px;
   overflow: hidden;
   background: var(--warm-band);
 }
 .panelMedia img {
   object-fit: cover;
-}
-/* Per-group crops keep the subject (tool, lamp) in frame instead of dead skin / wall. */
-.panelMedia[data-group="manual"] img {
-  object-position: 32% 62%;
-}
-.panelMedia[data-group="recovery"] img {
-  object-position: 50% 22%;
+  object-position: center;
 }
 
 /* ---------- Process band ---------- */
 .process {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  padding: 72px max(24px, calc((100vw - 1360px) / 2)) 0;
   display: flex;
   flex-direction: column;
-  gap: 34px;
+  gap: 28px;
 }
 .processHead {
   display: flex;
-  align-items: baseline;
-  gap: 20px;
+  align-items: center;
+  gap: 24px;
 }
-.processHead span {
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--clay);
+.processHead h2 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  line-height: 1.25;
+  color: var(--sage);
 }
 .processHead i {
   flex: 1;
   height: 1px;
   background: rgba(58, 42, 36, 0.16);
-  font-style: normal;
 }
 .processGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .processCard {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 36px;
-  border-top: 1px solid rgba(58, 42, 36, 0.22);
-}
-.processCard::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--sage);
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr); /* rem: grows with the numeral at larger text */
+  gap: 16px;
+  align-content: start;
+  padding: 24px 0;
+  border-top: 1px solid rgba(58, 42, 36, 0.2);
 }
 .processNumeral {
-  font: 200 44px/1 var(--font-display);
+  font: 200 1.75rem/1 var(--font-display);
   color: var(--numeral);
 }
-.processCard strong {
-  font: 400 21px var(--font-display);
-  color: var(--ink);
+.processCard h3 {
+  font: 400 1.25rem/1.35 var(--font-display);
 }
-.processCard span {
-  font-size: 15px;
+.processCard p {
+  max-width: 52ch;
+  margin: 10px 0 0;
+  font-size: 0.9375rem;
   line-height: 1.7;
   color: var(--muted);
-}
-.processCard .textLink {
-  margin-top: auto;
 }
 
 /* ---------- CTA band ---------- */
 .cta {
-  padding: 96px max(24px, calc((100vw - 1360px) / 2)) 0;
+  padding: 56px max(24px, calc((100vw - 1360px) / 2));
 }
 .ctaCard {
   background: var(--dark-cta);
-  border-radius: 18px;
-  padding: 56px;
+  border-radius: 16px;
+  padding: 28px 32px;
+  min-height: 140px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-}
-.ctaCopy {
-  flex: 1 1 420px;
-  min-width: min(100%, 420px);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 480px;
-}
-.ctaActionSide {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-  max-width: 100%;
-}
-.ctaCopy h2 {
-  font-size: clamp(1.5rem, 2.6vw, 32px);
-  line-height: 1.2;
-  color: #e4ebe6;
-}
-.ctaCopy p {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 300;
-  color: rgba(215, 225, 218, 0.85);
-}
-.ctaActions {
-  display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  max-width: 100%;
+  gap: 24px;
 }
-.ctaActions a {
+.ctaCard h2 {
+  flex: 1;
   min-width: 0;
+  font: 300 1.75rem/1.25 var(--font-display);
+  color: #f7f3f0;
+  text-wrap: balance;
+}
+.ctaCard > a {
+  flex-shrink: 0;
   max-width: 100%;
-  text-align: center;
   overflow-wrap: anywhere;
+  text-align: center;
 }
 
 /* ---------- Shared buttons ---------- */
 .primaryButton,
-.lightButton,
-.outlineButton,
-.darkSolidButton,
-.darkOutlineButton {
+.lightButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -441,12 +429,12 @@
   min-height: 46px;
   padding: 13px 24px;
   border-radius: 999px;
-  font: 400 14.5px var(--font-accent);
+  font: 400 0.90625rem var(--font-accent);
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    transform 0.16s var(--ease-out);
 }
 .primaryButton {
   background: var(--clay-deep);
@@ -454,37 +442,33 @@
 }
 .primaryButton:hover {
   background: var(--clay-hover);
-  transform: translateY(-2px);
+}
+/* Press feedback; the hover lift and arrow nudge stay off touch screens, where hover sticks. */
+.primaryButton:active,
+.lightButton:active {
+  transform: scale(0.97);
+}
+.primaryButton > span {
+  display: inline-block;
+  transition: transform 0.2s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .primaryButton:hover {
+    transform: translateY(-2px);
+  }
+  .primaryButton:hover:active {
+    transform: translateY(-2px) scale(0.97);
+  }
+  .primaryButton:hover > span {
+    transform: translateX(3px);
+  }
 }
 .lightButton {
   background: #f7f3f0;
   color: var(--ink);
 }
 .lightButton:hover {
-  background: var(--clay-deep);
-  color: #fff;
-}
-.outlineButton {
-  border: 1px solid rgba(58, 42, 36, 0.25);
-  color: var(--ink);
-}
-.outlineButton:hover {
-  border-color: var(--clay-deep);
-  color: var(--clay-deep);
-}
-.darkSolidButton {
-  background: rgba(247, 243, 240, 0.14);
-  color: #f7f3f0;
-}
-.darkSolidButton:hover {
-  background: rgba(247, 243, 240, 0.24);
-}
-.darkOutlineButton {
-  border: 1px solid rgba(247, 243, 240, 0.4);
-  color: #f7f3f0;
-}
-.darkOutlineButton:hover {
-  border-color: #fff;
+  background: var(--warm-band);
 }
 
 .root a:focus-visible,
@@ -496,78 +480,115 @@
   outline-color: #f7f3f0;
 }
 
+/*
+Disclosure open/close: height and fade on ::details-content (verified in Chromium only).
+Browsers without the pseudo-element keep the instant native toggle. No @starting-style,
+so the first row, open in the server HTML, does not animate on load.
+*/
+@supports selector(::details-content) {
+  .row,
+  .groupPicker {
+    interpolate-size: allow-keywords;
+  }
+  .row::details-content,
+  .groupPicker::details-content {
+    block-size: 0;
+    overflow: clip;
+    /* Room for the 2px + 3px focus ring on links flush with the panel edge. */
+    overflow-clip-margin: 6px;
+    opacity: 0;
+    transition:
+      block-size 0.3s var(--ease-out),
+      opacity 0.2s var(--ease-out),
+      content-visibility 0.3s allow-discrete;
+  }
+  .row[open]::details-content,
+  .groupPicker[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+  /* HashOpen sets this while it opens a row and scrolls to it, so nothing resizes under the scroll. */
+  .index[data-jump] .row::details-content {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :global(html):has(.root) {
     scroll-behavior: auto;
   }
   .root a,
-  .row summary h2 {
+  .root a > span,
+  .row summary h2,
+  .groupPicker > summary::after {
     transition: none;
   }
-  .primaryButton:hover {
-    transform: none;
+  .root a:hover,
+  .root a:active,
+  .root a > span {
+    transform: none !important;
   }
-}
-
-@media (max-width: 1280px) {
-  .ctaCard {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-  }
-  .ctaCopy {
-    flex: none;
-    width: 100%;
-    min-width: 0;
+  /* Panels appear at full height and only fade in. */
+  .row::details-content,
+  .groupPicker::details-content {
+    transition: opacity 0.2s ease;
   }
 }
 
 @media (max-width: 980px) {
   .processGrid {
     grid-template-columns: 1fr;
+    gap: 0;
   }
   .panel {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .panelMedia {
+  .panelFigure {
     grid-column: auto;
+  }
+  .panelMedia {
     aspect-ratio: 16 / 9;
+    max-height: 360px;
   }
   .panelCopy {
     max-width: none;
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .groupNav {
     display: block;
   }
-  .intro {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+}
+
+@media (max-width: 860px) {
   .row summary {
-    grid-template-columns: 1fr 32px;
-    gap: 6px 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
   }
   .row summary h2 {
-    grid-column: 1;
-    grid-row: 1;
+    padding-right: 44px;
   }
   .row summary::after {
-    grid-column: 2;
-    grid-row: 1;
+    top: 28px;
+    transform: none;
   }
   .rowSummary {
-    grid-column: 1 / -1;
-    grid-row: 2;
+    padding-right: 0;
   }
 }
 
 @media (max-width: 700px) {
   .intro {
-    padding: 40px 16px 32px;
+    padding: 32px 16px 28px;
+  }
+  .introRail {
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .groupNavLinks {
+    grid-template-columns: 1fr;
   }
   .index,
   .groupNav {
@@ -575,6 +596,9 @@
   }
   .row summary {
     padding: 22px 0;
+  }
+  .row summary::after {
+    top: 22px;
   }
   .panelMedia {
     aspect-ratio: 4 / 3;
@@ -586,21 +610,23 @@
   .cta {
     padding-inline: 16px;
   }
-  .processGrid {
-    gap: 28px;
+  .process {
+    padding-top: 56px;
+    gap: 24px;
+  }
+  .processCard {
+    padding-block: 20px;
+  }
+  .cta {
+    padding-block: 40px;
   }
   .ctaCard {
-    padding: 28px;
-    border-radius: 16px;
-  }
-  .ctaActions {
+    padding: 28px 20px;
     flex-direction: column;
-    align-self: stretch;
+    align-items: flex-start;
+    gap: 20px;
   }
-  .ctaActionSide {
+  .ctaCard > a {
     width: 100%;
-  }
-  .ctaActions a {
-    text-align: center;
   }
 }
